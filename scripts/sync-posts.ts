@@ -1,27 +1,11 @@
 #!/usr/bin/env tsx
 
-import { getCollection } from 'astro:content';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import yaml from 'js-yaml';
 import { supabase } from '../src/utils/database.js';
 import { createSlug } from '../src/utils/slug.js';
-
-interface PostData {
-  title: string;
-  description?: string;
-  pubDate: Date;
-  tags: string[];
-  featured: boolean;
-  draft: boolean;
-  author?: string;
-  image?: string;
-  imageAlt?: string;
-}
-
-interface PostEntry {
-  id: string;
-  slug: string;
-  body: string;
-  data: PostData;
-}
 
 async function syncPosts() {
   if (!supabase) {
@@ -30,63 +14,76 @@ async function syncPosts() {
   }
 
   try {
-    console.log('🔄 Fetching posts from content collection...');
-    const posts = await getCollection('posts') as PostEntry[];
-    
-    if (posts.length === 0) {
-      console.log('📝 No posts found in content collection.');
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const postsDir = path.resolve(__dirname, '../src/content/posts');
+
+    console.log('🔄 Fetching posts from content directory...');
+    const postFiles = await getPostFiles(postsDir);
+
+    if (postFiles.length === 0) {
+      console.log('📝 No posts found in content directory.');
       return;
     }
 
-    console.log(`📚 Found ${posts.length} posts to sync`);
+    console.log(`📚 Found ${postFiles.length} posts to sync`);
 
-    for (const post of posts) {
-      // Skip draft posts
-      if (post.data.draft) {
-        console.log(`⏭️  Skipping draft post: ${post.data.title}`);
+    for (const filePath of postFiles) {
+      const raw = await fs.readFile(filePath, 'utf-8');
+      const { data, content } = parseFrontmatter(raw);
+
+      if (data.draft) {
+        console.log(`⏭️  Skipping draft post: ${data.title}`);
         continue;
       }
 
-      const slug = post.slug || createSlug(post.data.title);
-      
-      console.log(`🔄 Syncing: ${post.data.title}`);
+      const title = String(data.title);
+      const description = data.description ? String(data.description) : undefined;
+      const pubDate = data.pubDate ? new Date(data.pubDate) : new Date();
+      const tags = Array.isArray(data.tags) ? data.tags.map(String) : [];
+      const featured = data.featured === true;
+      const draft = data.draft === true;
+      const author = data.author ? String(data.author) : undefined;
+      const image = data.image ? String(data.image) : undefined;
+      const imageAlt = data.imageAlt ? String(data.imageAlt) : undefined;
+      const slug = data.slug ? String(data.slug) : createSlug(title);
 
-      // Upsert post
+      console.log(`🔄 Syncing: ${title}`);
+
       const { data: postData, error: postError } = await supabase
         .from('posts')
-        .upsert({
-          title: post.data.title,
-          slug: slug,
-          content: post.body,
-          created_at: post.data.pubDate.toISOString(),
-          updated_at: new Date().toISOString(),
-        }, {
-          onConflict: 'slug'
-        })
+        .upsert(
+          {
+            title,
+            slug,
+            content,
+            created_at: pubDate.toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'slug' }
+        )
         .select()
         .single();
 
       if (postError) {
-        console.error(`❌ Error syncing post "${post.data.title}":`, postError);
+        console.error(`❌ Error syncing post "${title}":`, postError);
         continue;
       }
 
-      // Handle tags
-      if (post.data.tags && post.data.tags.length > 0) {
-        console.log(`🏷️  Processing ${post.data.tags.length} tags for: ${post.data.title}`);
-        
-        for (const tagName of post.data.tags) {
+      if (tags.length > 0) {
+        console.log(`🏷️  Processing ${tags.length} tags for: ${title}`);
+
+        for (const tagName of tags) {
           const tagSlug = createSlug(tagName);
-          
-          // Upsert tag
+
           const { data: tagData, error: tagError } = await supabase
             .from('tags')
-            .upsert({
-              name: tagName,
-              slug: tagSlug,
-            }, {
-              onConflict: 'slug'
-            })
+            .upsert(
+              {
+                name: tagName,
+                slug: tagSlug,
+              },
+              { onConflict: 'slug' }
+            )
             .select()
             .single();
 
@@ -95,15 +92,15 @@ async function syncPosts() {
             continue;
           }
 
-          // Link post to tag
           const { error: linkError } = await supabase
             .from('post_tags')
-            .upsert({
-              post_id: postData.id,
-              tag_id: tagData.id,
-            }, {
-              onConflict: 'post_id,tag_id'
-            });
+            .upsert(
+              {
+                post_id: postData.id,
+                tag_id: tagData.id,
+              },
+              { onConflict: 'post_id,tag_id' }
+            );
 
           if (linkError) {
             console.error(`❌ Error linking tag "${tagName}" to post:`, linkError);
@@ -111,15 +108,48 @@ async function syncPosts() {
         }
       }
 
-      console.log(`✅ Successfully synced: ${post.data.title}`);
+      console.log(`✅ Successfully synced: ${title}`);
     }
 
     console.log('🎉 Post sync completed successfully!');
-    
   } catch (error) {
     console.error('❌ Error during post sync:', error);
     process.exit(1);
   }
+}
+
+function parseFrontmatter(raw: string) {
+  if (!raw.startsWith('---')) {
+    return { data: {}, content: raw };
+  }
+  const endIndex = raw.indexOf('---', 3);
+  if (endIndex === -1) {
+    return { data: {}, content: raw };
+  }
+  const fm = raw.slice(3, endIndex).trim();
+  const content = raw.slice(endIndex + 3).trimStart();
+  let data: any;
+  try {
+    data = yaml.load(fm) || {};
+  } catch (e) {
+    console.error('❌ Error parsing YAML frontmatter:', e);
+    data = {};
+  }
+  return { data, content };
+}
+
+async function getPostFiles(dir: string): Promise<string[]> {
+  let files: string[] = [];
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files = files.concat(await getPostFiles(fullPath));
+    } else if (entry.isFile() && (fullPath.endsWith('.md') || fullPath.endsWith('.mdx'))) {
+      files.push(fullPath);
+    }
+  }
+  return files;
 }
 
 // Run the sync
