@@ -146,4 +146,3 @@ public/images/posts/
 
 ---
 
-**Remove this template content when creating your actual blog post!**
