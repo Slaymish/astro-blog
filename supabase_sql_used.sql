@@ -21,3 +21,4 @@ CREATE TABLE post_tags (
     tag_id INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
     PRIMARY KEY (post_id, tag_id)
 );
+

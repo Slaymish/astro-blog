@@ -1,0 +1,81 @@
+---
+import Layout from "../../components/Layout.astro";
+import { supabase } from "../../utils/database";
+import type { PostWithTags } from "../../../supabase/types";
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+let post: PostWithTags | null = null;
+
+if (supabase && slug) {
+  const { data } = await supabase
+    .from("posts")
+    .select(`
+      *,
+      post_tags(
+        tags(
+          id,
+          name,
+          slug
+        )
+      )
+    `)
+    .eq("slug", slug)
+    .single();
+  
+  post = data as PostWithTags | null;
+}
+
+if (!post) {
+  return Astro.redirect("/404");
+}
+---
+
+<Layout title={post.title}>
+  <article class="max-w-4xl mx-auto">
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold mb-4">{post.title}</h1>
+      <div class="flex items-center gap-4 text-gray-600 mb-4">
+        <time datetime={post.created_at}>
+          {new Date(post.created_at).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+          })}
+        </time>
+        {post.updated_at !== post.created_at && (
+          <span>
+            • Updated {new Date(post.updated_at).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long", 
+              day: "numeric"
+            })}
+          </span>
+        )}
+      </div>
+      {post.post_tags && post.post_tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-8">
+          {post.post_tags.map((postTag) => (
+            <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+              {postTag.tags.name}
+            </span>
+          ))}
+        </div>
+      )}
+    </header>
+    
+    <div class="prose max-w-none">
+      {post.content.split('\n').map((paragraph: string) => (
+        <p class="mb-4">{paragraph}</p>
+      ))}
+    </div>
+    
+    <footer class="mt-12 pt-8 border-t border-gray-200">
+      <a href="/" class="text-blue-600 hover:text-blue-800">
+        ← Back to all posts
+      </a>
+    </footer>
+  </article>
+</Layout>

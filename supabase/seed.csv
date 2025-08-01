@@ -1,8 +1,24 @@
-name,url,logo,likes,description
-Astro,https://astro.build/,astro.svg,0,"Astro is a fresh but familiar approach to building websites. Astro combines decades of proven performance best practices with the DX improvements of the component-oriented era."
-Eleventy,https://svelte.dev/,eleventy.svg,0,"Eleventy (11ty) is a flexible, minimalist static site generator that builds fast, content-driven websites using multiple templating languages and a zero-client-JavaScript philosophy."
-Gatsby,https://www.gatsbyjs.com/,gatsby.svg,0,"Gatsby.js is a React-based framework for building fast, SEO-friendly websites and applications with powerful data integration and static site generation capabilities."
-Next,https://nextjs.org/,next.svg,0,"Next.js enables you to create high-quality web applications with the power of React components."
-Nuxt,https://nuxt.com/,nuxt.svg,0,"Nuxt is an open source framework that makes web development intuitive and powerful. Create performant and production-grade full-stack web apps and websites with confidence."
-Remix,https://remix.run/,remix.svg,0,"Remix is a React framework designed for server-side rendering (SSR). Is a full-stack web framework, allowing developers to build both backend and frontend within a single app."
-Svelte,https://svelte.dev/,svelte.svg,0,"Svelte is a UI framework that uses a compiler to let you write breathtakingly concise components that do minimal work in the browser, using languages you already know — HTML, CSS and JavaScript."
+-- Sample blog posts data
+INSERT INTO posts (title, slug, content) VALUES 
+('Welcome to My Blog', 'welcome-to-my-blog', 'This is my first blog post! I''m excited to share my thoughts and experiences with you. This blog will cover topics about web development, technology, and more.'),
+('Getting Started with Astro', 'getting-started-with-astro', 'Astro is an amazing static site generator that lets you build fast websites. In this post, I''ll walk through the basics of setting up an Astro project and why it''s great for modern web development.'),
+('Building with Supabase', 'building-with-supabase', 'Supabase is a fantastic open-source alternative to Firebase. It provides a PostgreSQL database, authentication, real-time subscriptions, and more. Let''s explore how to integrate it into your projects.');
+
+-- Sample tags data
+INSERT INTO tags (name, slug) VALUES 
+('Web Development', 'web-development'),
+('Astro', 'astro'),
+('Supabase', 'supabase'),
+('Tutorial', 'tutorial'),
+('Getting Started', 'getting-started');
+
+-- Link posts with tags
+INSERT INTO post_tags (post_id, tag_id) VALUES 
+(1, 1), -- Welcome post - Web Development
+(1, 5), -- Welcome post - Getting Started
+(2, 1), -- Astro post - Web Development
+(2, 2), -- Astro post - Astro
+(2, 4), -- Astro post - Tutorial
+(3, 1), -- Supabase post - Web Development
+(3, 3), -- Supabase post - Supabase
+(3, 4); -- Supabase post - Tutorial

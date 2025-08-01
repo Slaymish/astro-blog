@@ -9,33 +9,63 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      frameworks: {
+      posts: {
         Row: {
-          description: string;
+          id: number;
+          title: string;
+          slug: string;
+          content: string;
           created_at: string;
-          url: string;
-          id: string;
-          logo: string;
-          name: string;
-          likes: number;
+          updated_at: string;
         };
         Insert: {
-          description: string;
+          id?: number;
+          title: string;
+          slug: string;
+          content: string;
           created_at?: string;
-          url: string;
-          id?: string;
-          logo: string;
-          name: string;
-          likes?: number;
+          updated_at?: string;
         };
         Update: {
-          description?: string;
+          id?: number;
+          title?: string;
+          slug?: string;
+          content?: string;
           created_at?: string;
-          url?: string;
-          id?: string;
-          logo?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      tags: {
+        Row: {
+          id: number;
+          name: string;
+          slug: string;
+        };
+        Insert: {
+          id?: number;
+          name: string;
+          slug: string;
+        };
+        Update: {
+          id?: number;
           name?: string;
-          likes?: number;
+          slug?: string;
+        };
+        Relationships: [];
+      };
+      post_tags: {
+        Row: {
+          post_id: number;
+          tag_id: number;
+        };
+        Insert: {
+          post_id: number;
+          tag_id: number;
+        };
+        Update: {
+          post_id?: number;
+          tag_id?: number;
         };
         Relationships: [];
       };
@@ -136,3 +166,10 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never;
+
+// Custom types for nested queries
+export type PostWithTags = Tables<"posts"> & {
+  post_tags: Array<{
+    tags: Tables<"tags">;
+  }>;
+};
