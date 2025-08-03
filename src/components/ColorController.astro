@@ -56,6 +56,20 @@
         </select>
       </div>
 
+      <!-- Dark/Light Mode Toggle -->
+      <div>
+        <label class="block text-xs text-gray-400 mb-2">
+          Theme Mode:
+        </label>
+        <button 
+          id="theme-toggle"
+          class="w-full p-2 text-sm bg-gray-700 hover:bg-gray-600 text-white rounded border border-gray-600 focus:border-blue-500 transition-colors flex items-center justify-center gap-2"
+        >
+          <span id="theme-icon">🌙</span>
+          <span id="theme-text">Dark Mode</span>
+        </button>
+      </div>
+
       <!-- Color Preview -->
       <div class="grid grid-cols-5 gap-2 mt-4">
         <div class="h-8 rounded" id="color-preview-1" style="background: hsl(142, 70%, 60%)"></div>
@@ -85,6 +99,9 @@
       saturationSlider: document.getElementById('saturation-slider'),
       harmonySelect: document.getElementById('harmony-select'),
       resetButton: document.getElementById('reset-colors'),
+      themeToggle: document.getElementById('theme-toggle'),
+      themeIcon: document.getElementById('theme-icon'),
+      themeText: document.getElementById('theme-text'),
       hueValue: document.getElementById('hue-value'),
       saturationValue: document.getElementById('saturation-value'),
       
@@ -106,9 +123,11 @@
         this.saturationSlider.addEventListener('input', () => this.updateColors());
         this.harmonySelect.addEventListener('change', () => this.updateColors());
         this.resetButton.addEventListener('click', () => this.resetColors());
+        this.themeToggle.addEventListener('click', () => this.toggleTheme());
         
         this.loadPreferences();
         this.updateColors();
+        this.initTheme();
       },
 
       updateColors() {
@@ -235,6 +254,32 @@
             console.warn('Failed to load color preferences:', e);
           }
         }
+      },
+
+      initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        this.setTheme(theme);
+      },
+
+      toggleTheme() {
+        const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        this.setTheme(newTheme);
+      },
+
+      setTheme(theme) {
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+          this.themeIcon.textContent = '🌙';
+          this.themeText.textContent = 'Dark Mode';
+        } else {
+          document.documentElement.classList.remove('dark');
+          this.themeIcon.textContent = '☀️';
+          this.themeText.textContent = 'Light Mode';
+        }
+        localStorage.setItem('theme', theme);
       }
     };
 

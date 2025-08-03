@@ -38,6 +38,19 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
+    <!-- Theme initialization script (must be early to prevent FOUC) -->
+    <script is:inline>
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    
     <!-- Basic Meta Tags -->
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
