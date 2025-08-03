@@ -21,11 +21,14 @@ function extractTableOfContents(markdown: string): TocItem[] {
   while ((match = headingRegex.exec(markdown)) !== null) {
     const level = match[1].length;
     const text = match[2].trim();
+    
+    // Use the same ID generation algorithm as rehype-slug
     const id = text
       .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .trim();
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/[^\w\-]/g, '') // Remove non-word characters except hyphens
+      .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
+      .replace(/-+/g, '-'); // Replace multiple hyphens with single hyphen
 
     // Only include h2-h4 headings
     if (level >= 2 && level <= 4) {
