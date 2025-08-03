@@ -124,13 +124,13 @@ const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
         
         <span>•</span>
         
-        <span 
+        <time 
           itemprop="timeRequired" 
-          content={`PT${readingTime.minutes}M`}
+          datetime={`PT${readingTime.minutes}M`}
           title={`${readingTime.words} words`}
         >
           {readingTime.text}
-        </span>
+        </time>
         
         {post.updated_at !== post.created_at && (
           <>
