@@ -1,0 +1,57 @@
+---
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const siteURL = "https://hamishburke.dev";
+---
+
+<nav aria-label="Breadcrumb" class="mb-8">
+  <ol class="flex items-center space-x-2 text-sm" style="color: var(--color-text-muted);" role="list">
+    <li role="listitem">
+      <a href="/" style="color: var(--color-link);" class="hover:underline">
+        Home
+      </a>
+    </li>
+    {items.map((item, index) => (
+      <li role="listitem" class="flex items-center space-x-2">
+        <span style="color: var(--color-text-subtle);">/</span>
+        {index === items.length - 1 ? (
+          <span style="color: var(--color-text-primary);" aria-current="page">
+            {item.name}
+          </span>
+        ) : (
+          <a href={item.url} style="color: var(--color-link);" class="hover:underline">
+            {item.name}
+          </a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<!-- Structured Data for Breadcrumbs -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": siteURL
+    },
+    ...items.map((item, index) => ({
+      "@type": "ListItem",
+      "position": index + 2,
+      "name": item.name,
+      "item": `${siteURL}${item.url}`
+    }))
+  ]
+})} />

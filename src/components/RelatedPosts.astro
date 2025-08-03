@@ -1,0 +1,106 @@
+---
+import { supabase } from "../utils/database";
+import type { PostWithTags } from "../../supabase/types";
+
+interface Props {
+  currentPostId: number;
+  currentPostTags: string[];
+  limit?: number;
+}
+
+const { currentPostId, currentPostTags, limit = 3 } = Astro.props;
+
+let relatedPosts: PostWithTags[] = [];
+
+if (supabase && currentPostTags.length > 0) {
+  // Find posts that share tags with the current post
+  const { data } = await supabase
+    .from('posts')
+    .select(`
+      id,
+      title,
+      slug,
+      created_at,
+      post_tags (
+        tags (
+          name,
+          slug
+        )
+      )
+    `)
+    .neq('id', currentPostId)
+    .limit(limit * 2); // Get more than needed to filter
+
+  if (data) {
+    // Score posts by shared tags
+    const scoredPosts = data
+      .map(post => {
+        const postTags = post.post_tags?.map(pt => pt.tags.name) || [];
+        const sharedTags = postTags.filter(tag => currentPostTags.includes(tag));
+        return {
+          ...post,
+          score: sharedTags.length
+        };
+      })
+      .filter(post => post.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit);
+
+    relatedPosts = scoredPosts as PostWithTags[];
+  }
+}
+---
+
+{relatedPosts.length > 0 && (
+  <aside class="mt-12 pt-8" style="border-top: 1px solid var(--color-border-secondary);">
+    <h2 class="text-2xl font-bold mb-6" style="color: var(--color-text-primary);">
+      Related Posts
+    </h2>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {relatedPosts.map((post) => (
+        <article 
+          class="p-4 rounded-lg" 
+          style="background-color: var(--color-bg-tertiary);"
+          itemScope 
+          itemType="http://schema.org/BlogPosting"
+        >
+          <h3 class="text-lg font-semibold mb-2">
+            <a 
+              href={`/posts/${post.slug}`}
+              style="color: var(--color-text-primary);"
+              class="hover:underline"
+              itemProp="headline"
+            >
+              {post.title}
+            </a>
+          </h3>
+          <time 
+            datetime={post.created_at}
+            class="text-sm"
+            style="color: var(--color-text-muted);"
+            itemProp="datePublished"
+          >
+            {new Date(post.created_at).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric"
+            })}
+          </time>
+          {post.post_tags && post.post_tags.length > 0 && (
+            <div class="flex flex-wrap gap-1 mt-3">
+              {post.post_tags.slice(0, 2).map((postTag) => (
+                <span
+                  class="text-xs px-2 py-1 rounded"
+                  style="background-color: var(--color-tag-bg); color: var(--color-tag-text);"
+                  itemProp="keywords"
+                >
+                  {postTag.tags.name}
+                </span>
+              ))}
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </aside>
+)}

@@ -43,6 +43,8 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <meta name="description" content={description} />
     <meta name="author" content={author} />
     <link rel="canonical" href={canonicalURL} />
+    <link rel="alternate" hreflang="en" href={canonicalURL} />
+    <link rel="alternate" hreflang="x-default" href={canonicalURL} />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={article ? "article" : "website"} />
@@ -58,7 +60,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${siteURL}${image}`} />
-    <meta name="twitter:creator" content="@your_twitter" /> <!-- Update this -->
+    <meta name="twitter:creator" content="@slaymishh" />
     
     <!-- Article-specific meta tags -->
     {article && publishedTime && <meta property="article:published_time" content={publishedTime} />}
@@ -76,12 +78,21 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
       "author": {
         "@type": "Person",
         "name": author,
-        "url": siteURL
+        "url": siteURL,
+        "sameAs": [
+          "https://github.com/Slaymish",
+          "https://linkedin.com/in/hamish-burke",
+          "https://instagram.com/hamish.burke"
+        ]
       },
       "publisher": {
         "@type": "Person",
         "name": author,
-        "url": siteURL
+        "url": siteURL,
+        "sameAs": [
+          "https://github.com/Slaymish",
+          "https://linkedin.com/in/hamish-burke"
+        ]
       },
       "image": `${siteURL}${image}`,
       ...(article && publishedTime ? { "datePublished": publishedTime } : {}),
@@ -90,15 +101,57 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": canonicalURL
-      }
+      },
+      ...(article ? {} : {
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": `${siteURL}/search?q={search_term_string}`,
+          "query-input": "required name=search_term_string"
+        }
+      })
+    })} />
+    
+    <!-- Additional Person/Organization Schema -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Hamish Burke",
+      "url": siteURL,
+      "jobTitle": "Software Engineer",
+      "description": "Software engineer passionate about AI, mathematics, and technology",
+      "sameAs": [
+        "https://github.com/Slaymish",
+        "https://linkedin.com/in/hamish-burke",
+        "https://instagram.com/hamish.burke"
+      ],
+      "knowsAbout": [
+        "Software Engineering",
+        "Artificial Intelligence",
+        "Mathematics",
+        "Machine Learning",
+        "Programming",
+        "Technology"
+      ]
     })} />
     
     <!-- Additional meta for LLMs -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
     
+    <!-- Performance and Security -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="theme-color" content="#10b981" />
+    <meta name="msapplication-TileColor" content="#10b981" />
+    
+    <!-- Preconnect to external domains for faster loading -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    
     <!-- Favicon and Icons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     
     <!-- RSS Feed -->
     <link rel="alternate" type="application/rss+xml" title="Hamish's Blog RSS Feed" href="/rss.xml" />

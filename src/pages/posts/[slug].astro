@@ -1,6 +1,10 @@
 ---
 import Layout from "../../components/Layout.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import TableOfContents from "../../components/TableOfContents.astro";
+import RelatedPosts from "../../components/RelatedPosts.astro";
 import { supabase } from "../../utils/database";
+import { calculateReadingTime } from "../../utils/reading-time";
 import type { PostWithTags } from "../../../supabase/types";
 import rehypeFormat from 'rehype-format'
 import rehypeKatex from 'rehype-katex'
@@ -59,6 +63,9 @@ if (!post) {
 const file = await processor.process(post.content)
 const htmlContent = String(file)
 
+// Calculate reading time
+const readingTime = calculateReadingTime(post.content);
+
 // Extract description from content (first 160 characters, cleaned)
 const textContent = post.content.replace(/[#*`\[\]]/g, '').trim();
 const description = textContent.length > 160 
@@ -84,6 +91,11 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
   tags={tagNames}
   canonicalURL={`${Astro.url.origin}/posts/${post.slug}`}
 >
+  <Breadcrumb items={[
+    { name: "Posts", url: "/" },
+    { name: post.title, url: `/posts/${post.slug}` }
+  ]} />
+  
   <article 
     class="max-w-4xl mx-auto"
     itemScope 
@@ -109,19 +121,33 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
             day: "numeric"
           })}
         </time>
+        
+        <span>•</span>
+        
+        <span 
+          itemProp="timeRequired" 
+          content={`PT${readingTime.minutes}M`}
+          title={`${readingTime.words} words`}
+        >
+          {readingTime.text}
+        </span>
+        
         {post.updated_at !== post.created_at && (
-          <span>
-            • Updated <time 
-              datetime={post.updated_at}
-              itemProp="dateModified"
-            >
-              {new Date(post.updated_at).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long", 
-                day: "numeric"
-              })}
-            </time>
-          </span>
+          <>
+            <span>•</span>
+            <span>
+              Updated <time 
+                datetime={post.updated_at}
+                itemProp="dateModified"
+              >
+                {new Date(post.updated_at).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long", 
+                  day: "numeric"
+                })}
+              </time>
+            </span>
+          </>
         )}
         
         <!-- Hidden author info for schema -->
@@ -153,12 +179,19 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
       )}
     </header>
     
+    <TableOfContents content={post.content} />
+    
     <div 
       class="prose prose-invert max-w-none" 
       set:html={htmlContent}
       itemProp="articleBody"
     >
     </div>
+    
+    <RelatedPosts 
+      currentPostId={post.id}
+      currentPostTags={tagNames}
+    />
     
     <footer class="mt-12 pt-8" style="border-top: 1px solid var(--color-border-secondary);">
       <nav aria-label="Post navigation">

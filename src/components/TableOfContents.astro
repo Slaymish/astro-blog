@@ -1,0 +1,67 @@
+---
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+interface Props {
+  content: string;
+  minItems?: number;
+}
+
+const { content, minItems = 3 } = Astro.props;
+
+// Extract headings from markdown content
+function extractTableOfContents(markdown: string): TocItem[] {
+  const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+  const toc: TocItem[] = [];
+  let match;
+
+  while ((match = headingRegex.exec(markdown)) !== null) {
+    const level = match[1].length;
+    const text = match[2].trim();
+    const id = text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .trim();
+
+    // Only include h2-h4 headings
+    if (level >= 2 && level <= 4) {
+      toc.push({ id, text, level });
+    }
+  }
+
+  return toc;
+}
+
+const toc = extractTableOfContents(content);
+const shouldShowToc = toc.length >= minItems;
+---
+
+{shouldShowToc && (
+  <aside class="mb-8 p-6 rounded-lg" style="background-color: var(--color-bg-tertiary); border-left: 3px solid var(--color-primary-500);">
+    <h2 class="text-lg font-semibold mb-4" style="color: var(--color-text-primary);">
+      Table of Contents
+    </h2>
+    <nav aria-label="Table of contents">
+      <ol class="space-y-2" role="list">
+        {toc.map((item) => (
+          <li 
+            role="listitem"
+            class={`text-sm ${item.level === 2 ? 'ml-0' : item.level === 3 ? 'ml-4' : 'ml-8'}`}
+          >
+            <a 
+              href={`#${item.id}`}
+              style="color: var(--color-link);"
+              class="hover:underline block py-1"
+            >
+              {item.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </aside>
+)}

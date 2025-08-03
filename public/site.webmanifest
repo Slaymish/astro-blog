@@ -1,0 +1,29 @@
+{
+  "name": "Hamish's Blog",
+  "short_name": "Hamish's Blog",
+  "description": "Software engineering, AI, mathematics, and technology insights by Hamish Burke",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#262626",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": [
+    "education",
+    "technology",
+    "productivity"
+  ],
+  "lang": "en",
+  "dir": "ltr",
+  "orientation": "portrait-primary"
+}
