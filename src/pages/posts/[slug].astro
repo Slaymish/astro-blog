@@ -58,14 +58,51 @@ if (!post) {
 
 const file = await processor.process(post.content)
 const htmlContent = String(file)
+
+// Extract description from content (first 160 characters, cleaned)
+const textContent = post.content.replace(/[#*`\[\]]/g, '').trim();
+const description = textContent.length > 160 
+  ? textContent.substring(0, 157) + '...' 
+  : textContent;
+
+// Format dates for meta tags
+const publishedTime = new Date(post.created_at).toISOString();
+const modifiedTime = post.updated_at !== post.created_at 
+  ? new Date(post.updated_at).toISOString() 
+  : publishedTime;
+
+// Get tag names
+const tagNames = post.tags?.map(tag => tag.name) || [];
 ---
 
-<Layout title={post.title}>
-  <article class="max-w-4xl mx-auto">
+<Layout 
+  title={post.title}
+  description={description}
+  article={true}
+  publishedTime={publishedTime}
+  modifiedTime={modifiedTime}
+  tags={tagNames}
+  canonicalURL={`${Astro.url.origin}/posts/${post.slug}`}
+>
+  <article 
+    class="max-w-4xl mx-auto"
+    itemScope 
+    itemType="http://schema.org/BlogPosting"
+  >
     <header class="mb-8">
-      <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-primary);">{post.title}</h1>
+      <h1 
+        class="text-4xl font-bold mb-4" 
+        style="color: var(--color-text-primary);"
+        itemProp="headline"
+      >
+        {post.title}
+      </h1>
+      
       <div class="flex items-center gap-4 mb-4" style="color: var(--color-text-muted);">
-        <time datetime={post.created_at}>
+        <time 
+          datetime={post.created_at}
+          itemProp="datePublished"
+        >
           {new Date(post.created_at).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
@@ -74,21 +111,40 @@ const htmlContent = String(file)
         </time>
         {post.updated_at !== post.created_at && (
           <span>
-            • Updated {new Date(post.updated_at).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long", 
-              day: "numeric"
-            })}
+            • Updated <time 
+              datetime={post.updated_at}
+              itemProp="dateModified"
+            >
+              {new Date(post.updated_at).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long", 
+                day: "numeric"
+              })}
+            </time>
           </span>
         )}
+        
+        <!-- Hidden author info for schema -->
+        <span itemProp="author" itemScope itemType="http://schema.org/Person" style="display: none;">
+          <span itemProp="name">Hamish Burke</span>
+          <span itemProp="url">https://hamishburke.dev</span>
+        </span>
+        
+        <!-- Hidden publisher info for schema -->
+        <span itemProp="publisher" itemScope itemType="http://schema.org/Person" style="display: none;">
+          <span itemProp="name">Hamish Burke</span>
+          <span itemProp="url">https://hamishburke.dev</span>
+        </span>
       </div>
       {post.post_tags && post.post_tags.length > 0 && (
-        <div class="flex flex-wrap gap-2 mb-8">
+        <div class="flex flex-wrap gap-2 mb-8" role="list" aria-label="Article tags">
           {post.post_tags.map((postTag) => (
             <a
+              role="listitem"
               href={`/tags/${postTag.tags.slug}`}
               class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
               style="background-color: var(--color-tag-bg); color: var(--color-tag-text);"
+              itemProp="keywords"
             >
               {postTag.tags.name}
             </a>
@@ -97,13 +153,19 @@ const htmlContent = String(file)
       )}
     </header>
     
-    <div class="prose prose-invert max-w-none" set:html={htmlContent}>
+    <div 
+      class="prose prose-invert max-w-none" 
+      set:html={htmlContent}
+      itemProp="articleBody"
+    >
     </div>
     
     <footer class="mt-12 pt-8" style="border-top: 1px solid var(--color-border-secondary);">
-      <a href="/" style="color: var(--color-link);" class="hover:underline">
-        ← Back to all posts
-      </a>
+      <nav aria-label="Post navigation">
+        <a href="/" style="color: var(--color-link);" class="hover:underline">
+          ← Back to all posts
+        </a>
+      </nav>
     </footer>
   </article>
 </Layout>

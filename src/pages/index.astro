@@ -26,45 +26,80 @@ if (supabase) {
   posts = data as PostWithTags[] | null;
   // postsError = error;
 }
+
+const homeDescription = "Welcome to Hamish's blog - exploring software engineering, AI, mathematics, and technology. Discover insights on programming, machine learning, algorithms, and modern development practices.";
 ---
 
-<Layout title="Hamish's Blog">
+<Layout 
+  title="Hamish's Blog" 
+  description={homeDescription}
+  canonicalURL={Astro.url.href}
+>
   {
     supabase ? (
       posts ? (
         <>
-          <h1 class="mb-8 text-4xl font-bold" style="color: var(--color-text-primary);">
-            Recent Posts
-          </h1>
-          <div class="space-y-8">
-            {posts?.map((post) => (
-              <article class="pb-8" style="border-bottom: 1px solid var(--color-border-secondary);">
-                <h2 class="text-2xl font-bold mb-2">
-                  <a href={`/posts/${post.slug}`} style="color: var(--color-text-primary);" class="hover:underline">
-                    {post.title}
-                  </a>
-                </h2>
-                <p class="mb-4" style="color: var(--color-text-muted);">
-                  {new Date(post.created_at).toLocaleDateString()}
-                </p>
-                <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);">
-                  {post.content.substring(0, 200)}...
-                </div>
-                {post.post_tags && post.post_tags.length > 0 && (
-                  <div class="flex flex-wrap gap-2">
-                    {post.post_tags.map((postTag) => (
-                      <a
-                        href={`/tags/${postTag.tags.slug}`}
-                        class="text-sm px-2 py-1 rounded hover:opacity-80 transition-all"
-                        style="background-color: var(--color-tag-bg); color: var(--color-tag-text);"
+          <section aria-labelledby="recent-posts-heading">
+            <h1 id="recent-posts-heading" class="mb-8 text-4xl font-bold" style="color: var(--color-text-primary);">
+              Recent Posts
+            </h1>
+            <div class="space-y-8" role="list">
+              {posts?.map((post) => (
+                <article 
+                  role="listitem"
+                  class="pb-8" 
+                  style="border-bottom: 1px solid var(--color-border-secondary);"
+                  itemScope 
+                  itemType="http://schema.org/BlogPosting"
+                >
+                  <header>
+                    <h2 class="text-2xl font-bold mb-2">
+                      <a 
+                        href={`/posts/${post.slug}`} 
+                        style="color: var(--color-text-primary);" 
+                        class="hover:underline"
+                        itemProp="headline"
                       >
-                        {postTag.tags.name}
+                        {post.title}
                       </a>
-                    ))}
+                    </h2>
+                  </header>
+                  
+                  <div class="mb-4" style="color: var(--color-text-muted);">
+                    <time 
+                      datetime={post.created_at}
+                      itemProp="datePublished"
+                    >
+                      {new Date(post.created_at).toLocaleDateString()}
+                    </time>
+                    <span itemProp="author" itemScope itemType="http://schema.org/Person" style="display: none;">
+                      <span itemProp="name">Hamish Burke</span>
+                    </span>
                   </div>
-                )}
-              </article>
-            ))}
+                  
+                  <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemProp="description">
+                    {post.content.substring(0, 200)}...
+                  </div>
+                  
+                  {post.post_tags && post.post_tags.length > 0 && (
+                    <div class="flex flex-wrap gap-2" role="list" aria-label="Post tags">
+                      {post.post_tags.map((postTag) => (
+                        <a
+                          role="listitem"
+                          href={`/tags/${postTag.tags.slug}`}
+                          class="text-sm px-2 py-1 rounded hover:opacity-80 transition-all"
+                          style="background-color: var(--color-tag-bg); color: var(--color-tag-text);"
+                          itemProp="keywords"
+                        >
+                          {postTag.tags.name}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          </section>
           </div>
         </>
       ) : (
