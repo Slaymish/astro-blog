@@ -1,17 +1,36 @@
 @import 'tailwindcss';
-@plugin "@tailwindcss/typography";
+@import './theme.css';
 
 @layer base {
+  body {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+  }
+
   a {
-    @apply hover:underline hover:underline-offset-2 hover:decoration-green-500;
+    color: var(--color-link);
+    transition: color 0.2s ease;
   }
+  
+  a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--color-primary-500);
+  }
+  
   td {
-    @apply pt-4 pb-6;
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
   }
+  
   th {
-    @apply py-4;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
+  
   img {
-    @apply border rounded-sm border-neutral-500;
+    border: 1px solid var(--color-border-primary);
+    border-radius: 0.125rem;
   }
 }

@@ -1,0 +1,119 @@
+/* 
+ * Theme Configuration
+ * 
+ * To change your color palette, simply modify the CSS custom properties in this file.
+ * The entire website will automatically update to use your new colors.
+ * 
+ * Want a different theme? Try these color combinations:
+ * 
+ * BLUE THEME:
+ * --color-primary-500: #3b82f6;
+ * --color-primary-400: #60a5fa;
+ * --color-primary-300: #93c5fd;
+ * 
+ * PURPLE THEME:
+ * --color-primary-500: #8b5cf6;
+ * --color-primary-400: #a78bfa;
+ * --color-primary-300: #c4b5fd;
+ * 
+ * ORANGE THEME:
+ * --color-primary-500: #f97316;
+ * --color-primary-400: #fb923c;
+ * --color-primary-300: #fdba74;
+ * 
+ * RED THEME:
+ * --color-primary-500: #ef4444;
+ * --color-primary-400: #f87171;
+ * --color-primary-300: #fca5a5;
+ */
+
+:root {
+  /* === PRIMARY COLOR PALETTE === */
+  /* These are your brand colors - change these to customize your theme */
+  --color-primary-50: #ecfdf5;   /* Lightest green */
+  --color-primary-100: #d1fae5;  /* Very light green */
+  --color-primary-200: #a7f3d0;  /* Light green */
+  --color-primary-300: #6ee7b7;  /* Medium-light green */
+  --color-primary-400: #34d399;  /* Medium green */
+  --color-primary-500: #10b981;  /* Main brand color */
+  --color-primary-600: #059669;  /* Medium-dark green */
+  --color-primary-700: #047857;  /* Dark green */
+  --color-primary-800: #065f46;  /* Very dark green */
+  --color-primary-900: #064e3b;  /* Darkest green */
+
+  /* === BACKGROUND COLORS === */
+  /* Main page backgrounds */
+  --color-bg-primary: #171717;    /* Darkest background (neutral-900) */
+  --color-bg-secondary: #262626;  /* Main background (neutral-800) */
+  --color-bg-tertiary: #404040;   /* Elevated elements (neutral-700) */
+
+  /* === TEXT COLORS === */
+  /* Hierarchy of text colors for readability */
+  --color-text-primary: #ffffff;    /* Main headings and important text */
+  --color-text-secondary: #d4d4d8;  /* Body text (zinc-300) */
+  --color-text-muted: #a1a1aa;      /* Secondary text (zinc-400) */
+  --color-text-subtle: #71717a;     /* Least important text (zinc-500) */
+
+  /* === BORDER COLORS === */
+  /* Used for dividers and element borders */
+  --color-border-primary: #525252;   /* Main borders (neutral-600) */
+  --color-border-secondary: #404040;  /* Subtle borders (neutral-700) */
+
+  /* === COMPONENT-SPECIFIC COLORS === */
+  /* Tag styling */
+  --color-tag-bg: rgba(16, 185, 129, 0.1);      /* Tag background with transparency */
+  --color-tag-bg-hover: rgba(16, 185, 129, 0.2); /* Tag hover state */
+  --color-tag-text: var(--color-primary-300);    /* Tag text color */
+
+  /* Link styling */
+  --color-link: var(--color-primary-400);        /* Default link color */
+  --color-link-hover: var(--color-primary-300);  /* Link hover color */
+}
+
+/* 
+ * Quick Theme Presets
+ * 
+ * Uncomment one of these sections to quickly change your entire color scheme:
+ */
+
+/* OCEAN BLUE THEME */
+/*
+:root {
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-tag-bg: rgba(14, 165, 233, 0.1);
+  --color-tag-bg-hover: rgba(14, 165, 233, 0.2);
+  --color-tag-text: #7dd3fc;
+  --color-link: #38bdf8;
+  --color-link-hover: #7dd3fc;
+}
+*/
+
+/* SUNSET ORANGE THEME */
+/*
+:root {
+  --color-primary-300: #fdba74;
+  --color-primary-400: #fb923c;
+  --color-primary-500: #f97316;
+  --color-tag-bg: rgba(249, 115, 22, 0.1);
+  --color-tag-bg-hover: rgba(249, 115, 22, 0.2);
+  --color-tag-text: #fdba74;
+  --color-link: #fb923c;
+  --color-link-hover: #fdba74;
+}
+*/
+
+/* ROYAL PURPLE THEME */
+/*
+:root {
+  --color-primary-300: #c4b5fd;
+  --color-primary-400: #a78bfa;
+  --color-primary-500: #8b5cf6;
+  --color-tag-bg: rgba(139, 92, 246, 0.1);
+  --color-tag-bg-hover: rgba(139, 92, 246, 0.2);
+  --color-tag-text: #c4b5fd;
+  --color-link: #a78bfa;
+  --color-link-hover: #c4b5fd;
+}
+*/

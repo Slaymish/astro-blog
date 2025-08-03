@@ -1,7 +1,4 @@
 ---
-import { getEntry } from "astro:content";
-import Alert from "../components/Alert.astro";
-import Guide from "../components/Guide.astro";
 import Layout from "../components/Layout.astro";
 import { supabase } from "../utils/database";
 import type { PostWithTags } from "../../supabase/types";
@@ -29,32 +26,28 @@ if (supabase) {
   posts = data as PostWithTags[] | null;
   postsError = error;
 }
-
-// Get guides
-const connectGuide = await getEntry("guides", "guide-connect-supabase");
-const fetchDataGuide = await getEntry("guides", "guide-fetch-data");
 ---
 
-<Layout title="My Blog">
+<Layout title="Hamish's Blog">
   {
     supabase ? (
       posts ? (
         <>
-          <h1 class="mb-8 text-4xl font-bold">
-            My Blog Posts
+          <h1 class="mb-8 text-4xl font-bold" style="color: var(--color-text-primary);">
+            Recent Posts
           </h1>
           <div class="space-y-8">
             {posts?.map((post) => (
-              <article class="border-b border-gray-200 pb-8">
+              <article class="pb-8" style="border-bottom: 1px solid var(--color-border-secondary);">
                 <h2 class="text-2xl font-bold mb-2">
-                  <a href={`/posts/${post.slug}`} class="hover:text-blue-600">
+                  <a href={`/posts/${post.slug}`} style="color: var(--color-text-primary);" class="hover:underline">
                     {post.title}
                   </a>
                 </h2>
-                <p class="text-gray-600 mb-4">
+                <p class="mb-4" style="color: var(--color-text-muted);">
                   {new Date(post.created_at).toLocaleDateString()}
                 </p>
-                <div class="prose prose-invert max-w-none mb-4">
+                <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);">
                   {post.content.substring(0, 200)}...
                 </div>
                 {post.post_tags && post.post_tags.length > 0 && (
@@ -62,7 +55,8 @@ const fetchDataGuide = await getEntry("guides", "guide-fetch-data");
                     {post.post_tags.map((postTag) => (
                       <a
                         href={`/tags/${postTag.tags.slug}`}
-                        class="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-200 transition-colors"
+                        class="text-sm px-2 py-1 rounded hover:opacity-80 transition-all"
+                        style="background-color: var(--color-tag-bg); color: var(--color-tag-text);"
                       >
                         {postTag.tags.name}
                       </a>
@@ -74,22 +68,20 @@ const fetchDataGuide = await getEntry("guides", "guide-fetch-data");
           </div>
         </>
       ) : (
-        <>
-          {postsError && (
-            <Alert
-              title={postsError.code}
-              text={postsError.message}
-              variant="error"
-            />
-          )}
-          {fetchDataGuide && <Guide guide={fetchDataGuide} />}
-        </>
+        <div class="text-center py-12">
+          <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-secondary);">Welcome to my blog!</h1>
+          <p class="mb-8" style="color: var(--color-text-muted);">
+            I'm currently setting up the database connection. Please check back soon!
+          </p>
+        </div>
       )
     ) : (
-      <>
-        <Alert title="Finish setting up your new site" text="Before your website is ready, you must complete the steps from the guide below to create, populate, and connect your Supabase database."/>
-        {connectGuide && <Guide guide={connectGuide} />}
-      </>
+      <div class="text-center py-12">
+        <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-secondary);">Welcome to my blog!</h1>
+        <p class="mb-8" style="color: var(--color-text-muted);">
+          I'm currently setting up the database connection. Please check back soon!
+        </p>
+      </div>
     )
   }
 </Layout>

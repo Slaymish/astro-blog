@@ -60,19 +60,19 @@ if (!supabase) {
 <Layout title={tagInfo ? `Posts tagged "${tagInfo.name}"` : "Tag not found"}>
   {error ? (
     <div class="text-center py-12">
-      <h1 class="text-4xl font-bold text-gray-900 mb-4">Tag Not Found</h1>
-      <p class="text-gray-600 mb-8">{error}</p>
-      <a href="/" class="text-blue-600 hover:text-blue-800 underline">
+      <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-primary);">Tag Not Found</h1>
+      <p class="mb-8" style="color: var(--color-text-muted);">{error}</p>
+      <a href="/" style="color: var(--color-link);" class="underline">
         Back to Home
       </a>
     </div>
   ) : (
     <>
       <div class="mb-8">
-        <h1 class="text-4xl font-bold mb-4">
+        <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-primary);">
           Posts tagged "{tagInfo?.name}"
         </h1>
-        <a href="/" class="text-blue-600 hover:text-blue-800 underline">
+        <a href="/" style="color: var(--color-link);" class="underline">
           ← Back to all posts
         </a>
       </div>
@@ -80,37 +80,38 @@ if (!supabase) {
       {posts && posts.length > 0 ? (
         <div class="space-y-8">
           {posts.map((post) => (
-            <article class="border-b border-gray-200 pb-8">
+            <article class="pb-8" style="border-bottom: 1px solid var(--color-border-secondary);">
               <h2 class="text-2xl font-bold mb-2">
-                <a href={`/posts/${post.slug}`} class="hover:text-blue-600">
+                <a href={`/posts/${post.slug}`} style="color: var(--color-text-primary);" class="hover:underline">
                   {post.title}
                 </a>
               </h2>
-              <p class="text-gray-600 mb-4">
+              <p class="mb-4" style="color: var(--color-text-muted);">
                 {new Date(post.created_at).toLocaleDateString()}
               </p>
-              <div class="prose prose-invert max-w-none mb-4">
+              <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);">
                 {post.content.substring(0, 200)}...
               </div>
               {post.post_tags && post.post_tags.length > 0 && (
-                <div class="flex flex-wrap gap-2">
-                  {post.post_tags.map((postTag) => (
-                    <a
-                      href={`/tags/${postTag.tags.slug}`}
-                      class="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-200 transition-colors"
-                    >
-                      {postTag.tags.name}
-                    </a>
-                  ))}
-                </div>
+                        <div class="flex flex-wrap gap-2 mb-8">
+          {post.post_tags.map((postTag) => (
+            <a
+              href={`/tags/${postTag.tags.slug}`}
+              class="text-sm px-2 py-1 rounded hover:opacity-80 transition-all"
+              style="background-color: var(--color-tag-bg); color: var(--color-tag-text);"
+            >
+              {postTag.tags.name}
+            </a>
+          ))}
+        </div>
               )}
             </article>
           ))}
         </div>
       ) : (
         <div class="text-center py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-4">No posts found</h2>
-          <p class="text-gray-600">
+          <h2 class="text-2xl font-bold mb-4" style="color: var(--color-text-primary);">No posts found</h2>
+          <p style="color: var(--color-text-muted);">
             There are no posts tagged with "{tagInfo?.name}" yet.
           </p>
         </div>

@@ -1,7 +1,8 @@
 {
-  "name": "astro-supabase-starter",
+  "name": "hamish-blog",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "Hamish's personal blog built with Astro and Supabase",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

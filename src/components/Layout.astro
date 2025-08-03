@@ -17,7 +17,7 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
   </head>
-  <body class="px-4 antialiased bg-neutral-800 sm:px-8 text-white">
+  <body class="px-4 antialiased sm:px-8" style="background-color: var(--color-bg-secondary); color: var(--color-text-primary);">
     <Header />
     <main class="w-full max-w-4xl mx-auto grow">
       <slot />
