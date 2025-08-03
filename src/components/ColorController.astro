@@ -280,6 +280,19 @@
     display: none;
   }
 
+  details summary::-moz-details-marker {
+    display: none;
+  }
+
+  details summary::marker {
+    display: none;
+  }
+
+  details summary {
+    list-style: none;
+    outline: none;
+  }
+
   details summary::before {
     content: '▶';
     margin-right: 0.5rem;
