@@ -37,7 +37,7 @@ async function syncPosts() {
       }
 
       const title = String(data.title);
-      const description = data.description ? String(data.description) : undefined;
+      // const description = data.description ? String(data.description) : undefined;
       const pubDate = data.pubDate ? new Date(data.pubDate) : new Date();
       const tags = Array.isArray(data.tags) ? data.tags.map(String) : [];
       // const featured = data.featured === true;
