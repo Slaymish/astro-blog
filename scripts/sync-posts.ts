@@ -40,11 +40,11 @@ async function syncPosts() {
       const description = data.description ? String(data.description) : undefined;
       const pubDate = data.pubDate ? new Date(data.pubDate) : new Date();
       const tags = Array.isArray(data.tags) ? data.tags.map(String) : [];
-      const featured = data.featured === true;
-      const draft = data.draft === true;
-      const author = data.author ? String(data.author) : undefined;
-      const image = data.image ? String(data.image) : undefined;
-      const imageAlt = data.imageAlt ? String(data.imageAlt) : undefined;
+      // const featured = data.featured === true;
+      // const draft = data.draft === true;
+      // const author = data.author ? String(data.author) : undefined;
+      // const image = data.image ? String(data.image) : undefined;
+      // const imageAlt = data.imageAlt ? String(data.imageAlt) : undefined;
       const slug = data.slug ? String(data.slug) : createSlug(title);
 
       console.log(`🔄 Syncing: ${title}`);

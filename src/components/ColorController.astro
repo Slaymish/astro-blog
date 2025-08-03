@@ -76,178 +76,176 @@
   </details>
 </div>
 
-<script>
-  class ColorPaletteController {
-    constructor() {
-      this.hueSlider = document.getElementById('hue-slider');
-      this.saturationSlider = document.getElementById('saturation-slider');
-      this.harmonySelect = document.getElementById('harmony-select');
-      this.resetButton = document.getElementById('reset-colors');
+<script is:inline>
+  // Color palette controller for dynamic theme switching
+  function initColorController() {
+    const controller = {
+      // DOM elements
+      hueSlider: document.getElementById('hue-slider'),
+      saturationSlider: document.getElementById('saturation-slider'),
+      harmonySelect: document.getElementById('harmony-select'),
+      resetButton: document.getElementById('reset-colors'),
+      hueValue: document.getElementById('hue-value'),
+      saturationValue: document.getElementById('saturation-value'),
       
-      this.hueValue = document.getElementById('hue-value');
-      this.saturationValue = document.getElementById('saturation-value');
+      // Default values
+      defaultHue: 142,
+      defaultSaturation: 70,
       
-      this.previews = [
-        document.getElementById('color-preview-1'),
-        document.getElementById('color-preview-2'),
-        document.getElementById('color-preview-3'),
-        document.getElementById('color-preview-4'),
-        document.getElementById('color-preview-5')
-      ];
+      // Initialize
+      init() {
+        this.previews = [
+          document.getElementById('color-preview-1'),
+          document.getElementById('color-preview-2'),
+          document.getElementById('color-preview-3'),
+          document.getElementById('color-preview-4'),
+          document.getElementById('color-preview-5')
+        ];
 
-      this.defaultHue = 142;
-      this.defaultSaturation = 70;
-      
-      this.init();
-    }
+        this.hueSlider.addEventListener('input', () => this.updateColors());
+        this.saturationSlider.addEventListener('input', () => this.updateColors());
+        this.harmonySelect.addEventListener('change', () => this.updateColors());
+        this.resetButton.addEventListener('click', () => this.resetColors());
+        
+        this.loadPreferences();
+        this.updateColors();
+      },
 
-    init() {
-      this.hueSlider.addEventListener('input', () => this.updateColors());
-      this.saturationSlider.addEventListener('input', () => this.updateColors());
-      this.harmonySelect.addEventListener('change', () => this.updateColors());
-      this.resetButton.addEventListener('click', () => this.resetColors());
-      
-      // Load saved preferences
-      this.loadPreferences();
-      this.updateColors();
-    }
+      updateColors() {
+        const hue = parseInt(this.hueSlider.value);
+        const saturation = parseInt(this.saturationSlider.value);
+        const harmony = this.harmonySelect.value;
 
-    updateColors() {
-      const hue = parseInt(this.hueSlider.value);
-      const saturation = parseInt(this.saturationSlider.value);
-      const harmony = this.harmonySelect.value;
+        this.hueValue.textContent = hue.toString();
+        this.saturationValue.textContent = saturation.toString();
 
-      // Update display values
-      this.hueValue.textContent = hue;
-      this.saturationValue.textContent = saturation;
+        const colors = this.calculateColorHarmony(hue, saturation, harmony);
+        this.applyColors(colors);
+        this.updatePreview(colors);
+        this.savePreferences();
+      },
 
-      // Calculate color harmony
-      const colors = this.calculateColorHarmony(hue, saturation, harmony);
-      
-      // Update CSS custom properties
-      this.applyColors(colors);
-      
-      // Update preview
-      this.updatePreview(colors);
-      
-      // Save preferences
-      this.savePreferences();
-    }
+      calculateColorHarmony(baseHue, saturation, harmony) {
+        const colors = {
+          primary300: '',
+          primary400: '',
+          primary500: '',
+          primary600: '',
+          tag: ''
+        };
 
-    calculateColorHarmony(baseHue, saturation, harmony) {
-      const colors = {
-        primary300: null,
-        primary400: null,
-        primary500: null,
-        primary600: null,
-        tag: null
-      };
+        switch (harmony) {
+          case 'monochromatic':
+            colors.primary300 = `hsl(${baseHue}, ${saturation}%, 75%)`;
+            colors.primary400 = `hsl(${baseHue}, ${saturation}%, 65%)`;
+            colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
+            colors.primary600 = `hsl(${baseHue}, ${saturation}%, 45%)`;
+            colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
+            break;
+            
+          case 'analogous':
+            colors.primary300 = `hsl(${(baseHue + 20) % 360}, ${saturation}%, 75%)`;
+            colors.primary400 = `hsl(${(baseHue + 10) % 360}, ${saturation}%, 65%)`;
+            colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
+            colors.primary600 = `hsl(${(baseHue - 10 + 360) % 360}, ${saturation}%, 45%)`;
+            colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
+            break;
+            
+          case 'complementary':
+            const complementary = (baseHue + 180) % 360;
+            colors.primary300 = `hsl(${baseHue}, ${saturation}%, 75%)`;
+            colors.primary400 = `hsl(${baseHue}, ${saturation}%, 65%)`;
+            colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
+            colors.primary600 = `hsl(${complementary}, ${saturation}%, 45%)`;
+            colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
+            break;
+            
+          case 'triadic':
+            colors.primary300 = `hsl(${baseHue}, ${saturation}%, 75%)`;
+            colors.primary400 = `hsl(${(baseHue + 120) % 360}, ${saturation}%, 65%)`;
+            colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
+            colors.primary600 = `hsl(${(baseHue + 240) % 360}, ${saturation}%, 45%)`;
+            colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
+            break;
+            
+          case 'split-complementary':
+            colors.primary300 = `hsl(${(baseHue + 150) % 360}, ${saturation}%, 75%)`;
+            colors.primary400 = `hsl(${baseHue}, ${saturation}%, 65%)`;
+            colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
+            colors.primary600 = `hsl(${(baseHue + 210) % 360}, ${saturation}%, 45%)`;
+            colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
+            break;
+        }
 
-      switch (harmony) {
-        case 'monochromatic':
-          colors.primary300 = `hsl(${baseHue}, ${saturation}%, 75%)`;
-          colors.primary400 = `hsl(${baseHue}, ${saturation}%, 65%)`;
-          colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
-          colors.primary600 = `hsl(${baseHue}, ${saturation}%, 45%)`;
-          colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
-          break;
-          
-        case 'analogous':
-          colors.primary300 = `hsl(${(baseHue + 20) % 360}, ${saturation}%, 75%)`;
-          colors.primary400 = `hsl(${(baseHue + 10) % 360}, ${saturation}%, 65%)`;
-          colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
-          colors.primary600 = `hsl(${(baseHue - 10 + 360) % 360}, ${saturation}%, 45%)`;
-          colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
-          break;
-          
-        case 'complementary':
-          const complementary = (baseHue + 180) % 360;
-          colors.primary300 = `hsl(${baseHue}, ${saturation}%, 75%)`;
-          colors.primary400 = `hsl(${baseHue}, ${saturation}%, 65%)`;
-          colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
-          colors.primary600 = `hsl(${complementary}, ${saturation}%, 45%)`;
-          colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
-          break;
-          
-        case 'triadic':
-          colors.primary300 = `hsl(${baseHue}, ${saturation}%, 75%)`;
-          colors.primary400 = `hsl(${(baseHue + 120) % 360}, ${saturation}%, 65%)`;
-          colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
-          colors.primary600 = `hsl(${(baseHue + 240) % 360}, ${saturation}%, 45%)`;
-          colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
-          break;
-          
-        case 'split-complementary':
-          colors.primary300 = `hsl(${(baseHue + 150) % 360}, ${saturation}%, 75%)`;
-          colors.primary400 = `hsl(${baseHue}, ${saturation}%, 65%)`;
-          colors.primary500 = `hsl(${baseHue}, ${saturation}%, 55%)`;
-          colors.primary600 = `hsl(${(baseHue + 210) % 360}, ${saturation}%, 45%)`;
-          colors.tag = `hsla(${baseHue}, ${saturation}%, 55%, 0.15)`;
-          break;
+        return colors;
+      },
+
+      applyColors(colors) {
+        const root = document.documentElement;
+        
+        root.style.setProperty('--color-primary-300', colors.primary300);
+        root.style.setProperty('--color-primary-400', colors.primary400);
+        root.style.setProperty('--color-primary-500', colors.primary500);
+        root.style.setProperty('--color-primary-600', colors.primary600);
+        
+        root.style.setProperty('--color-tag-bg', colors.tag);
+        root.style.setProperty('--color-tag-bg-hover', colors.tag.replace('0.15', '0.25'));
+        root.style.setProperty('--color-tag-text', colors.primary300);
+        
+        root.style.setProperty('--color-link', colors.primary400);
+        root.style.setProperty('--color-link-hover', colors.primary300);
+      },
+
+      updatePreview(colors) {
+        if (this.previews && this.previews.length === 5) {
+          this.previews[0].style.background = colors.primary300;
+          this.previews[1].style.background = colors.primary400;
+          this.previews[2].style.background = colors.primary500;
+          this.previews[3].style.background = colors.primary600;
+          this.previews[4].style.background = colors.tag.replace('0.15', '1');
+        }
+      },
+
+      resetColors() {
+        this.hueSlider.value = this.defaultHue.toString();
+        this.saturationSlider.value = this.defaultSaturation.toString();
+        this.harmonySelect.value = 'analogous';
+        this.updateColors();
+        localStorage.removeItem('colorPreferences');
+      },
+
+      savePreferences() {
+        const preferences = {
+          hue: this.hueSlider.value,
+          saturation: this.saturationSlider.value,
+          harmony: this.harmonySelect.value
+        };
+        localStorage.setItem('colorPreferences', JSON.stringify(preferences));
+      },
+
+      loadPreferences() {
+        const saved = localStorage.getItem('colorPreferences');
+        if (saved) {
+          try {
+            const preferences = JSON.parse(saved);
+            this.hueSlider.value = preferences.hue || this.defaultHue.toString();
+            this.saturationSlider.value = preferences.saturation || this.defaultSaturation.toString();
+            this.harmonySelect.value = preferences.harmony || 'analogous';
+          } catch (e) {
+            console.warn('Failed to load color preferences:', e);
+          }
+        }
       }
+    };
 
-      return colors;
-    }
-
-    applyColors(colors) {
-      const root = document.documentElement;
-      
-      root.style.setProperty('--color-primary-300', colors.primary300);
-      root.style.setProperty('--color-primary-400', colors.primary400);
-      root.style.setProperty('--color-primary-500', colors.primary500);
-      root.style.setProperty('--color-primary-600', colors.primary600);
-      
-      root.style.setProperty('--color-tag-bg', colors.tag);
-      root.style.setProperty('--color-tag-bg-hover', colors.tag.replace('0.15', '0.25'));
-      root.style.setProperty('--color-tag-text', colors.primary300);
-      
-      root.style.setProperty('--color-link', colors.primary400);
-      root.style.setProperty('--color-link-hover', colors.primary300);
-    }
-
-    updatePreview(colors) {
-      this.previews[0].style.background = colors.primary300;
-      this.previews[1].style.background = colors.primary400;
-      this.previews[2].style.background = colors.primary500;
-      this.previews[3].style.background = colors.primary600;
-      this.previews[4].style.background = colors.tag.replace('0.15', '1');
-    }
-
-    resetColors() {
-      this.hueSlider.value = this.defaultHue;
-      this.saturationSlider.value = this.defaultSaturation;
-      this.harmonySelect.value = 'analogous';
-      this.updateColors();
-      localStorage.removeItem('colorPreferences');
-    }
-
-    savePreferences() {
-      const preferences = {
-        hue: this.hueSlider.value,
-        saturation: this.saturationSlider.value,
-        harmony: this.harmonySelect.value
-      };
-      localStorage.setItem('colorPreferences', JSON.stringify(preferences));
-    }
-
-    loadPreferences() {
-      const saved = localStorage.getItem('colorPreferences');
-      if (saved) {
-        const preferences = JSON.parse(saved);
-        this.hueSlider.value = preferences.hue || this.defaultHue;
-        this.saturationSlider.value = preferences.saturation || this.defaultSaturation;
-        this.harmonySelect.value = preferences.harmony || 'analogous';
-      }
-    }
+    controller.init();
   }
 
-  // Initialize when DOM is loaded
+  // Initialize when DOM is ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      new ColorPaletteController();
-    });
+    document.addEventListener('DOMContentLoaded', initColorController);
   } else {
-    new ColorPaletteController();
+    initColorController();
   }
 </script>
 
