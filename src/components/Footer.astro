@@ -1,5 +1,11 @@
+---
+import ColorController from "./ColorController.astro";
+---
+
 <footer class="max-w-4xl mx-auto mt-12 text-center">
-  <p class="text-sm" style="color: var(--color-text-muted);">
+  <ColorController />
+  
+  <p class="text-sm mt-6" style="color: var(--color-text-muted);">
     Built with <a href="https://astro.build/" style="color: var(--color-primary-400);" class="hover:underline">Astro</a> 
     and <a href="https://supabase.com/" style="color: var(--color-primary-400);" class="hover:underline">Supabase</a>
   </p>
