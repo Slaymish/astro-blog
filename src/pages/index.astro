@@ -10,7 +10,7 @@ let posts: PostWithTags[] | null = null;
 
 // Fetch posts data from Supabase if connection is set up
 if (supabase) {
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("posts")
     .select(`
       *,
@@ -49,8 +49,8 @@ const homeDescription = "Welcome to Hamish's blog - exploring software engineeri
                   role="listitem"
                   class="pb-8" 
                   style="border-bottom: 1px solid var(--color-border-secondary);"
-                  itemScope 
-                  itemType="http://schema.org/BlogPosting"
+                  itemscope 
+                  itemtype="http://schema.org/BlogPosting"
                 >
                   <header>
                     <h2 class="text-2xl font-bold mb-2">
@@ -58,7 +58,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring software engineeri
                         href={`/posts/${post.slug}`} 
                         style="color: var(--color-text-primary);" 
                         class="hover:underline"
-                        itemProp="headline"
+                        itemprop="headline"
                       >
                         {post.title}
                       </a>
@@ -68,16 +68,16 @@ const homeDescription = "Welcome to Hamish's blog - exploring software engineeri
                   <div class="mb-4" style="color: var(--color-text-muted);">
                     <time 
                       datetime={post.created_at}
-                      itemProp="datePublished"
+                      itemprop="datePublished"
                     >
                       {new Date(post.created_at).toLocaleDateString()}
                     </time>
-                    <span itemProp="author" itemScope itemType="http://schema.org/Person" style="display: none;">
-                      <span itemProp="name">Hamish Burke</span>
+                    <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
+                      <span itemprop="name">Hamish Burke</span>
                     </span>
                   </div>
                   
-                  <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemProp="description">
+                  <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
                     {post.content.substring(0, 200)}...
                   </div>
                   
@@ -89,7 +89,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring software engineeri
                           href={`/tags/${postTag.tags.slug}`}
                           class="text-sm px-2 py-1 rounded hover:opacity-80 transition-all"
                           style="background-color: var(--color-tag-bg); color: var(--color-tag-text);"
-                          itemProp="keywords"
+                          itemprop="keywords"
                         >
                           {postTag.tags.name}
                         </a>
@@ -100,7 +100,6 @@ const homeDescription = "Welcome to Hamish's blog - exploring software engineeri
               ))}
             </div>
           </section>
-          </div>
         </>
       ) : (
         <div class="text-center py-12">

@@ -69,7 +69,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     {article && tags.map(tag => <meta property="article:tag" content={tag} />)}
     
     <!-- Structured Data for LLMs and Search Engines -->
-    <script type="application/ld+json" set:html={JSON.stringify({
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": article ? "BlogPosting" : "WebSite",
       "headline": title,
@@ -112,7 +112,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     })} />
     
     <!-- Additional Person/Organization Schema -->
-    <script type="application/ld+json" set:html={JSON.stringify({
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Hamish Burke",

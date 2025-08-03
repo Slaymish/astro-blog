@@ -79,7 +79,7 @@ const modifiedTime = post.updated_at !== post.created_at
   : publishedTime;
 
 // Get tag names
-const tagNames = post.tags?.map(tag => tag.name) || [];
+const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
 ---
 
 <Layout 
@@ -98,14 +98,14 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
   
   <article 
     class="max-w-4xl mx-auto"
-    itemScope 
-    itemType="http://schema.org/BlogPosting"
+    itemscope 
+    itemtype="http://schema.org/BlogPosting"
   >
     <header class="mb-8">
       <h1 
         class="text-4xl font-bold mb-4" 
         style="color: var(--color-text-primary);"
-        itemProp="headline"
+        itemprop="headline"
       >
         {post.title}
       </h1>
@@ -113,7 +113,7 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
       <div class="flex items-center gap-4 mb-4" style="color: var(--color-text-muted);">
         <time 
           datetime={post.created_at}
-          itemProp="datePublished"
+          itemprop="datePublished"
         >
           {new Date(post.created_at).toLocaleDateString("en-US", {
             year: "numeric",
@@ -125,7 +125,7 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
         <span>•</span>
         
         <span 
-          itemProp="timeRequired" 
+          itemprop="timeRequired" 
           content={`PT${readingTime.minutes}M`}
           title={`${readingTime.words} words`}
         >
@@ -138,7 +138,7 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
             <span>
               Updated <time 
                 datetime={post.updated_at}
-                itemProp="dateModified"
+                itemprop="dateModified"
               >
                 {new Date(post.updated_at).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -151,15 +151,15 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
         )}
         
         <!-- Hidden author info for schema -->
-        <span itemProp="author" itemScope itemType="http://schema.org/Person" style="display: none;">
-          <span itemProp="name">Hamish Burke</span>
-          <span itemProp="url">https://hamishburke.dev</span>
+        <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
+          <span itemprop="name">Hamish Burke</span>
+          <span itemprop="url">https://hamishburke.dev</span>
         </span>
         
         <!-- Hidden publisher info for schema -->
-        <span itemProp="publisher" itemScope itemType="http://schema.org/Person" style="display: none;">
-          <span itemProp="name">Hamish Burke</span>
-          <span itemProp="url">https://hamishburke.dev</span>
+        <span itemprop="publisher" itemscope itemtype="http://schema.org/Person" style="display: none;">
+          <span itemprop="name">Hamish Burke</span>
+          <span itemprop="url">https://hamishburke.dev</span>
         </span>
       </div>
       {post.post_tags && post.post_tags.length > 0 && (
@@ -170,7 +170,7 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
               href={`/tags/${postTag.tags.slug}`}
               class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
               style="background-color: var(--color-tag-bg); color: var(--color-tag-text);"
-              itemProp="keywords"
+              itemprop="keywords"
             >
               {postTag.tags.name}
             </a>
@@ -184,7 +184,7 @@ const tagNames = post.tags?.map(tag => tag.name) || [];
     <div 
       class="prose prose-invert max-w-none" 
       set:html={htmlContent}
-      itemProp="articleBody"
+      itemprop="articleBody"
     >
     </div>
     
