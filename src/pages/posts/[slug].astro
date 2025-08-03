@@ -57,6 +57,7 @@ if (!post) {
 }
 
 const file = await processor.process(post.content)
+const htmlContent = String(file)
 ---
 
 <Layout title={post.title}>
@@ -92,8 +93,7 @@ const file = await processor.process(post.content)
       )}
     </header>
     
-    <div class="prose max-w-none">
-      {file}
+    <div class="prose prose-invert max-w-none" set:html={htmlContent}>
     </div>
     
     <footer class="mt-12 pt-8 border-t border-gray-200">

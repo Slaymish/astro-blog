@@ -1,6 +1,6 @@
 ---
 title: "Intro to Lambda Calculus"
-date: 2025-03-30
+pubDate: 2025-03-30
 tags: ["math"]
 featured: false
 draft: false

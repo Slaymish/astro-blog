@@ -1,6 +1,6 @@
 ---
 title: Using Latent space for reasoning
-date: 2025-03-29
+pubDate: 2025-03-29
 tags: ["AI","research","tech"]
 featured: false
 draft: false

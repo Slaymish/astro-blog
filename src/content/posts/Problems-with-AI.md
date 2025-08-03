@@ -1,6 +1,6 @@
 ---
 title: "Problems with AI"
-date: 2025-03-31
+pubDate: 2025-03-31
 tags: ["AI","ethics"]
 featured: false
 draft: false

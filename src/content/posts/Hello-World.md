@@ -1,6 +1,6 @@
 ---
 title: "Hello World!"
-date: 2024-01-15
+pubDate: 2024-01-15
 tags: ["random"]
 featured: false
 draft: false

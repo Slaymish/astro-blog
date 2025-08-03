@@ -89,7 +89,7 @@ if (!supabase) {
               <p class="text-gray-600 mb-4">
                 {new Date(post.created_at).toLocaleDateString()}
               </p>
-              <div class="prose max-w-none mb-4">
+              <div class="prose prose-invert max-w-none mb-4">
                 {post.content.substring(0, 200)}...
               </div>
               {post.post_tags && post.post_tags.length > 0 && (

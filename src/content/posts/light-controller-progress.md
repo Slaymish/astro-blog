@@ -1,6 +1,6 @@
 ---
 title: "Progress Update: ESP32 Controller for Smart Lighting"
-date: 2025-05-30
+pubDate: 2025-05-30
 tags: ["tech","hardware"]
 featured: false
 draft: false
@@ -89,5 +89,5 @@ For the exterior of my remote, I'm planning to 3D print a minimal case to hold a
 
 Heres a pic of my rotary controller setup on my breadboard with the LED ring light.
 
-![Controller progress](controller-progress.jpg)
+![Controller progress](/images/posts/controller-progress.jpg)
 
