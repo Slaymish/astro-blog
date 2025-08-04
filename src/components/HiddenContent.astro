@@ -284,14 +284,17 @@
     }
   }
   
-  function addSeasonalSecret(text, position) {
+  function addSeasonalSecret(text: string, position: string) {
+    const contextualContainer = document.querySelector('.contextual-hidden-content');
+    if (!contextualContainer) return;
+    
     const seasonalItem = document.createElement('div');
     seasonalItem.className = 'hidden-item seasonal-secret';
     seasonalItem.setAttribute('data-reveal-distance', '75');
     seasonalItem.style.cssText = `position: absolute; ${position}`;
     seasonalItem.innerHTML = `<div class="hidden-text">${text}</div>`;
     
-    document.querySelector('.contextual-hidden-content').appendChild(seasonalItem);
+    contextualContainer.appendChild(seasonalItem);
   }
 
   // Initialize when DOM is ready
