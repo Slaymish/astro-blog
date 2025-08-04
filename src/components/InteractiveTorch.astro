@@ -39,6 +39,7 @@ const catPositions = [
 ];
 ---
 
+<!-- Torch container - fixed to viewport -->
 <div class="torch-game-container">
   <div id="torch-container">
     <!-- Torch icon that can be picked up -->
@@ -56,102 +57,102 @@ const catPositions = [
     <!-- Overlay to create the darkness effect -->
     <div id="darkness-overlay" class="darkness-overlay"></div>
   </div>
+</div>
 
-  <!-- Hidden content that gets revealed by the torch -->
-  <div class="hidden-content">
-    <!-- Pixel art cats scattered around -->
-    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[0].y}; left: ${catPositions[0].x};`} data-cat-type="orange">
-      <div class="hidden-cat pixel-cat orange-cat">
-        <div class="cat-ears">
-          <div class="cat-ear cat-ear-left"></div>
-          <div class="cat-ear cat-ear-right"></div>
-        </div>
-        <div class="cat-head">
-          <div class="cat-eyes">
-            <div class="cat-eye cat-eye-left"></div>
-            <div class="cat-eye cat-eye-right"></div>
-          </div>
-          <div class="cat-nose"></div>
-          <div class="cat-mouth"></div>
-        </div>
-        <div class="cat-body">
-          <div class="cat-belly"></div>
-        </div>
-        <div class="cat-tail"></div>
-      </div>
+<!-- Cats positioned as document elements -->
+<div class="hidden-item" data-reveal-distance="80" style={`position: fixed; top: ${catPositions[0].y}; left: ${catPositions[0].x}; z-index: 1001;`} data-cat-type="orange">
+  <div class="hidden-cat pixel-cat orange-cat">
+    <div class="cat-ears">
+      <div class="cat-ear cat-ear-left"></div>
+      <div class="cat-ear cat-ear-right"></div>
     </div>
-    
-    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[1].y}; left: ${catPositions[1].x};`} data-cat-type="gray">
-      <div class="hidden-cat pixel-cat gray-cat">
-        <div class="cat-ears">
-          <div class="cat-ear cat-ear-left"></div>
-          <div class="cat-ear cat-ear-right"></div>
-        </div>
-        <div class="cat-head">
-          <div class="cat-eyes">
-            <div class="cat-eye cat-eye-left"></div>
-            <div class="cat-eye cat-eye-right"></div>
-          </div>
-          <div class="cat-nose"></div>
-          <div class="cat-mouth"></div>
-        </div>
-        <div class="cat-body">
-          <div class="cat-belly"></div>
-        </div>
-        <div class="cat-tail"></div>
+    <div class="cat-head">
+      <div class="cat-eyes">
+        <div class="cat-eye cat-eye-left"></div>
+        <div class="cat-eye cat-eye-right"></div>
       </div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
     </div>
-    
-    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[2].y}; left: ${catPositions[2].x};`} data-cat-type="black">
-      <div class="hidden-cat pixel-cat black-cat">
-        <div class="cat-ears">
-          <div class="cat-ear cat-ear-left"></div>
-          <div class="cat-ear cat-ear-right"></div>
-        </div>
-        <div class="cat-head">
-          <div class="cat-eyes">
-            <div class="cat-eye cat-eye-left"></div>
-            <div class="cat-eye cat-eye-right"></div>
-          </div>
-          <div class="cat-nose"></div>
-          <div class="cat-mouth"></div>
-        </div>
-        <div class="cat-body">
-          <div class="cat-belly"></div>
-        </div>
-        <div class="cat-tail"></div>
+    <div class="cat-body">
+      <div class="cat-belly"></div>
+    </div>
+    <div class="cat-tail"></div>
+  </div>
+</div>
+
+<div class="hidden-item" data-reveal-distance="80" style={`position: fixed; top: ${catPositions[1].y}; left: ${catPositions[1].x}; z-index: 1001;`} data-cat-type="gray">
+  <div class="hidden-cat pixel-cat gray-cat">
+    <div class="cat-ears">
+      <div class="cat-ear cat-ear-left"></div>
+      <div class="cat-ear cat-ear-right"></div>
+    </div>
+    <div class="cat-head">
+      <div class="cat-eyes">
+        <div class="cat-eye cat-eye-left"></div>
+        <div class="cat-eye cat-eye-right"></div>
       </div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
     </div>
-    
-    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[3].y}; left: ${catPositions[3].x};`} data-cat-type="white">
-      <div class="hidden-cat pixel-cat white-cat">
-        <div class="cat-ears">
-          <div class="cat-ear cat-ear-left"></div>
-          <div class="cat-ear cat-ear-right"></div>
-        </div>
-        <div class="cat-head">
-          <div class="cat-eyes">
-            <div class="cat-eye cat-eye-left"></div>
-            <div class="cat-eye cat-eye-right"></div>
-          </div>
-          <div class="cat-nose"></div>
-          <div class="cat-mouth"></div>
-        </div>
-        <div class="cat-body">
-          <div class="cat-belly"></div>
-        </div>
-        <div class="cat-tail"></div>
+    <div class="cat-body">
+      <div class="cat-belly"></div>
+    </div>
+    <div class="cat-tail"></div>
+  </div>
+</div>
+
+<div class="hidden-item" data-reveal-distance="80" style={`position: fixed; top: ${catPositions[2].y}; left: ${catPositions[2].x}; z-index: 1001;`} data-cat-type="black">
+  <div class="hidden-cat pixel-cat black-cat">
+    <div class="cat-ears">
+      <div class="cat-ear cat-ear-left"></div>
+      <div class="cat-ear cat-ear-right"></div>
+    </div>
+    <div class="cat-head">
+      <div class="cat-eyes">
+        <div class="cat-eye cat-eye-left"></div>
+        <div class="cat-eye cat-eye-right"></div>
       </div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
     </div>
+    <div class="cat-body">
+      <div class="cat-belly"></div>
+    </div>
+    <div class="cat-tail"></div>
+  </div>
+</div>
+
+<div class="hidden-item" data-reveal-distance="80" style={`position: fixed; top: ${catPositions[3].y}; left: ${catPositions[3].x}; z-index: 1001;`} data-cat-type="white">
+  <div class="hidden-cat pixel-cat white-cat">
+    <div class="cat-ears">
+      <div class="cat-ear cat-ear-left"></div>
+      <div class="cat-ear cat-ear-right"></div>
+    </div>
+    <div class="cat-head">
+      <div class="cat-eyes">
+        <div class="cat-eye cat-eye-left"></div>
+        <div class="cat-eye cat-eye-right"></div>
+      </div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-belly"></div>
+    </div>
+    <div class="cat-tail"></div>
   </div>
 </div>
 
 <style>
   .torch-game-container {
-    position: relative;
-    width: 100%;
-    min-height: 150vh; /* Ensure enough height for cats to be spread out */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     pointer-events: none;
+    z-index: 1000;
   }
 
   .torch-container {
@@ -275,17 +276,10 @@ const catPositions = [
     opacity: 1;
   }
 
-  .hidden-content {
-    position: relative;
-    pointer-events: none;
-  }
-
   .hidden-item {
-    position: absolute;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
-    z-index: 1001;
   }
 
   .hidden-item.revealed {
