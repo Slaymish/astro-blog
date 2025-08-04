@@ -1,0 +1,303 @@
+---
+// HiddenContent.astro - Additional hidden content for specific pages
+---
+
+<div class="contextual-hidden-content">
+  <!-- Programming-related easter eggs -->
+  <div class="hidden-item programming-secret" data-reveal-distance="85" style="top: 25%; left: 10%;">
+    <div class="hidden-graphic">💻</div>
+    <div class="hidden-text">// TODO: Add more easter eggs</div>
+  </div>
+  
+  <div class="hidden-item programming-secret" data-reveal-distance="75" style="top: 45%; right: 15%;">
+    <div class="hidden-text">console.log("You found me!");</div>
+  </div>
+  
+  <div class="hidden-item programming-secret" data-reveal-distance="90" style="top: 65%; left: 70%;">
+    <div class="hidden-graphic">🐛</div>
+    <div class="hidden-text">Bug successfully debugged!</div>
+  </div>
+  
+  <!-- AI/Tech related -->
+  <div class="hidden-item ai-secret" data-reveal-distance="80" style="top: 35%; left: 80%;">
+    <div class="hidden-graphic">🤖</div>
+    <div class="hidden-text">AI is just fancy autocomplete</div>
+  </div>
+  
+  <div class="hidden-item ai-secret" data-reveal-distance="70" style="top: 75%; right: 25%;">
+    <div class="hidden-text">🧠 Neural networks dream of electric sheep</div>
+  </div>
+  
+  <!-- Mathematical/Lambda calculus references -->
+  <div class="hidden-item math-secret" data-reveal-distance="85" style="top: 15%; left: 45%;">
+    <div class="hidden-text">λx.λy.x + y</div>
+  </div>
+  
+  <div class="hidden-item math-secret" data-reveal-distance="75" style="top: 55%; left: 25%;">
+    <div class="hidden-graphic">∞</div>
+    <div class="hidden-text">The beauty of infinity</div>
+  </div>
+  
+  <!-- Personal/fun secrets -->
+  <div class="hidden-item fun-secret" data-reveal-distance="80" style="top: 85%; left: 60%;">
+    <div class="hidden-graphic">🎨</div>
+    <div class="hidden-text">Made with love and lots of coffee</div>
+  </div>
+  
+  <div class="hidden-item fun-secret" data-reveal-distance="90" style="top: 20%; right: 40%;">
+    <div class="hidden-text">🌟 "First, solve the problem. Then, write the code." - John Johnson</div>
+  </div>
+  
+  <div class="hidden-item fun-secret" data-reveal-distance="75" style="top: 50%; right: 5%;">
+    <div class="hidden-graphic">🔥</div>
+    <div class="hidden-text">This blog is lit! 🔥</div>
+  </div>
+  
+  <!-- Interactive elements -->
+  <div class="hidden-item interactive-secret" data-reveal-distance="100" style="top: 40%; left: 5%;">
+    <div class="hidden-graphic">🎯</div>
+    <div class="hidden-text">Press 'R' to reset the torch!</div>
+  </div>
+  
+  <div class="hidden-item interactive-secret" data-reveal-distance="85" style="top: 70%; left: 40%;">
+    <div class="hidden-text">🕵️ You're getting good at this!</div>
+  </div>
+  
+  <!-- Achievement unlocked style messages -->
+  <div class="hidden-item achievement" data-reveal-distance="60" style="top: 10%; left: 75%;">
+    <div class="hidden-graphic">🏆</div>
+    <div class="hidden-text">Achievement: Explorer</div>
+  </div>
+  
+  <div class="hidden-item achievement" data-reveal-distance="65" style="top: 60%; right: 10%;">
+    <div class="hidden-graphic">🎖️</div>
+    <div class="hidden-text">Secret Hunter Badge Earned!</div>
+  </div>
+  
+  <!-- Contextual blog content -->
+  <div class="hidden-item blog-meta" data-reveal-distance="70" style="top: 30%; left: 35%;">
+    <div class="hidden-text">📝 This blog runs on Astro + Supabase</div>
+  </div>
+  
+  <div class="hidden-item blog-meta" data-reveal-distance="80" style="top: 80%; right: 15%;">
+    <div class="hidden-graphic">⚡</div>
+    <div class="hidden-text">Powered by curiosity and caffeine</div>
+  </div>
+  
+  <!-- Dynamic weather/time based -->
+  <div class="hidden-item dynamic-secret" data-reveal-distance="85" style="top: 45%; left: 55%;">
+    <div class="hidden-graphic">🌙</div>
+    <div class="hidden-text" id="time-based-message">Happy exploring!</div>
+  </div>
+</div>
+
+<style>
+  .contextual-hidden-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1001;
+  }
+
+  .contextual-hidden-content .hidden-item {
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: none;
+  }
+
+  .contextual-hidden-content .hidden-item.revealed {
+    opacity: 1;
+    transform: scale(1);
+    animation: contextual-sparkle 0.6s ease-out;
+  }
+
+  .contextual-hidden-content .hidden-item.discovered {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+
+  @keyframes contextual-sparkle {
+    0% { 
+      transform: scale(0.5) rotate(0deg);
+      filter: brightness(1);
+    }
+    50% { 
+      transform: scale(1.3) rotate(360deg);
+      filter: brightness(1.8) drop-shadow(0 0 15px rgba(255, 215, 0, 0.9));
+    }
+    100% { 
+      transform: scale(1) rotate(720deg);
+      filter: brightness(1);
+    }
+  }
+
+  /* Special styling for different types of secrets */
+  .programming-secret .hidden-text {
+    background: linear-gradient(45deg, 
+      rgba(0, 255, 127, 0.9), 
+      rgba(50, 205, 50, 0.9));
+    border-color: rgba(0, 255, 127, 0.6);
+    font-family: var(--font-mono);
+  }
+
+  .ai-secret .hidden-text {
+    background: linear-gradient(45deg, 
+      rgba(138, 43, 226, 0.9), 
+      rgba(75, 0, 130, 0.9));
+    color: white;
+    border-color: rgba(138, 43, 226, 0.6);
+  }
+
+  .math-secret .hidden-text {
+    background: linear-gradient(45deg, 
+      rgba(255, 20, 147, 0.9), 
+      rgba(199, 21, 133, 0.9));
+    color: white;
+    border-color: rgba(255, 20, 147, 0.6);
+    font-family: var(--font-mono);
+  }
+
+  .fun-secret .hidden-text {
+    background: linear-gradient(45deg, 
+      rgba(255, 69, 0, 0.9), 
+      rgba(255, 140, 0, 0.9));
+    border-color: rgba(255, 69, 0, 0.6);
+  }
+
+  .interactive-secret .hidden-text {
+    background: linear-gradient(45deg, 
+      rgba(30, 144, 255, 0.9), 
+      rgba(0, 191, 255, 0.9));
+    color: white;
+    border-color: rgba(30, 144, 255, 0.6);
+  }
+
+  .achievement .hidden-text {
+    background: linear-gradient(45deg, 
+      rgba(255, 215, 0, 0.95), 
+      rgba(255, 193, 7, 0.95));
+    border-color: rgba(255, 215, 0, 0.8);
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .blog-meta .hidden-text {
+    background: linear-gradient(45deg, 
+      rgba(106, 90, 205, 0.9), 
+      rgba(123, 104, 238, 0.9));
+    color: white;
+    border-color: rgba(106, 90, 205, 0.6);
+  }
+
+  .dynamic-secret .hidden-text {
+    background: linear-gradient(45deg, 
+      rgba(72, 61, 139, 0.9), 
+      rgba(147, 112, 219, 0.9));
+    color: white;
+    border-color: rgba(72, 61, 139, 0.6);
+  }
+
+  /* Special effects for achievements */
+  .achievement.revealed {
+    animation: achievement-unlock 1s ease-out;
+  }
+
+  @keyframes achievement-unlock {
+    0% { 
+      transform: scale(0.3);
+      opacity: 0;
+    }
+    30% { 
+      transform: scale(1.4);
+      opacity: 0.8;
+      filter: brightness(2) drop-shadow(0 0 20px gold);
+    }
+    60% { 
+      transform: scale(0.9);
+      opacity: 1;
+    }
+    100% { 
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .contextual-hidden-content .hidden-text {
+      font-size: 0.7rem;
+      padding: 5px 8px;
+      max-width: 200px;
+    }
+    
+    .contextual-hidden-content .hidden-graphic {
+      font-size: 1.3rem;
+    }
+  }
+</style>
+
+<script>
+  function initContextualContent() {
+    const timeBasedMessage = document.getElementById('time-based-message');
+    
+    if (timeBasedMessage) {
+      const hour = new Date().getHours();
+      let message = "Happy exploring!";
+      let emoji = "🌟";
+      
+      if (hour >= 5 && hour < 12) {
+        message = "Good morning, explorer!";
+        emoji = "🌅";
+      } else if (hour >= 12 && hour < 17) {
+        message = "Good afternoon, adventurer!";
+        emoji = "☀️";
+      } else if (hour >= 17 && hour < 21) {
+        message = "Good evening, discoverer!";
+        emoji = "🌆";
+      } else {
+        message = "Burning the midnight oil?";
+        emoji = "🌙";
+      }
+      
+      timeBasedMessage.innerHTML = `${emoji} ${message}`;
+    }
+    
+    // Add some seasonal or date-based content
+    const today = new Date();
+    const month = today.getMonth();
+    const date = today.getDate();
+    
+    // Add special messages for holidays/seasons
+    if (month === 11 && date >= 20) { // Winter
+      addSeasonalSecret("❄️ Winter wonderland of code!", "top: 12%; left: 20%;");
+    } else if (month >= 2 && month <= 4) { // Spring
+      addSeasonalSecret("🌸 Spring cleaning your code?", "top: 18%; right: 30%;");
+    } else if (month >= 5 && month <= 7) { // Summer
+      addSeasonalSecret("☀️ Summer coding sessions!", "top: 22%; left: 80%;");
+    } else if (month >= 8 && month <= 10) { // Fall
+      addSeasonalSecret("🍂 Falling leaves, rising code!", "top: 88%; left: 15%;");
+    }
+  }
+  
+  function addSeasonalSecret(text, position) {
+    const seasonalItem = document.createElement('div');
+    seasonalItem.className = 'hidden-item seasonal-secret';
+    seasonalItem.setAttribute('data-reveal-distance', '75');
+    seasonalItem.style.cssText = `position: absolute; ${position}`;
+    seasonalItem.innerHTML = `<div class="hidden-text">${text}</div>`;
+    
+    document.querySelector('.contextual-hidden-content').appendChild(seasonalItem);
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initContextualContent);
+  } else {
+    initContextualContent();
+  }
+</script>
