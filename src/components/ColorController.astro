@@ -2,16 +2,16 @@
 // Color Palette Controller Component
 ---
 
-<div id="color-controller" class="mt-8 p-4 rounded-lg border border-gray-600/30 bg-gray-800/20">
+<div id="color-controller" class="mt-8 p-4 rounded-lg border" style="border-color: var(--color-border-primary); background-color: var(--color-bg-tertiary);">
   <details class="group">
-    <summary class="cursor-pointer text-sm font-medium text-gray-300 hover:text-white transition-colors">
+    <summary class="cursor-pointer text-sm font-medium transition-colors" style="color: var(--color-text-secondary);" onmouseover="this.style.color='var(--color-text-primary)'" onmouseout="this.style.color='var(--color-text-secondary)'">
       🎨 Customize Color Palette
     </summary>
     
     <div class="mt-4 space-y-4">
       <!-- Primary Hue Control -->
       <div>
-        <label for="hue-slider" class="block text-xs text-gray-400 mb-2">
+        <label for="hue-slider" class="block text-xs mb-2" style="color: var(--color-text-muted);">
           Primary Hue: <span id="hue-value">142</span>°
         </label>
         <input 
@@ -20,13 +20,14 @@
           min="0" 
           max="360" 
           value="142"
-          class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+          class="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
+          style="background-color: var(--color-bg-secondary);"
         />
       </div>
 
       <!-- Saturation Control -->
       <div>
-        <label for="saturation-slider" class="block text-xs text-gray-400 mb-2">
+        <label for="saturation-slider" class="block text-xs mb-2" style="color: var(--color-text-muted);">
           Saturation: <span id="saturation-value">70</span>%
         </label>
         <input 
@@ -35,18 +36,20 @@
           min="30" 
           max="100" 
           value="70"
-          class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+          class="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
+          style="background-color: var(--color-bg-secondary);"
         />
       </div>
 
       <!-- Color Harmony Control -->
       <div>
-        <label for="harmony-select" class="block text-xs text-gray-400 mb-2">
+        <label for="harmony-select" class="block text-xs mb-2" style="color: var(--color-text-muted);">
           Color Harmony:
         </label>
         <select 
           id="harmony-select"
-          class="w-full p-2 text-sm bg-gray-700 text-white rounded border border-gray-600 focus:border-blue-500"
+          class="w-full p-2 text-sm rounded border focus:border-blue-500"
+          style="background-color: var(--color-bg-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary);"
         >
           <option value="monochromatic">Monochromatic</option>
           <option value="analogous" selected>Analogous</option>
@@ -58,12 +61,15 @@
 
       <!-- Dark/Light Mode Toggle -->
       <div>
-        <label class="block text-xs text-gray-400 mb-2">
+        <label class="block text-xs mb-2" style="color: var(--color-text-muted);">
           Theme Mode:
         </label>
         <button 
           id="theme-toggle"
-          class="w-full p-2 text-sm bg-gray-700 hover:bg-gray-600 text-white rounded border border-gray-600 focus:border-blue-500 transition-colors flex items-center justify-center gap-2"
+          class="w-full p-2 text-sm rounded border transition-colors flex items-center justify-center gap-2"
+          style="background-color: var(--color-bg-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary);"
+          onmouseover="this.style.backgroundColor='var(--color-bg-primary)'"
+          onmouseout="this.style.backgroundColor='var(--color-bg-secondary)'"
         >
           <span id="theme-icon">🌙</span>
           <span id="theme-text">Dark Mode</span>
@@ -82,7 +88,10 @@
       <!-- Reset Button -->
       <button 
         id="reset-colors"
-        class="w-full mt-3 px-3 py-2 text-xs bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors"
+        class="w-full mt-3 px-3 py-2 text-xs rounded transition-colors"
+        style="background-color: var(--color-bg-secondary); color: var(--color-text-primary);"
+        onmouseover="this.style.backgroundColor='var(--color-bg-primary)'"
+        onmouseout="this.style.backgroundColor='var(--color-bg-secondary)'"
       >
         Reset to Default
       </button>
