@@ -8,6 +8,7 @@ const contentStart = 15; // % - where main content starts (accounting for max-w-
 const contentEnd = 85; // % - where main content ends
 const minTopOffset = 200; // px - minimum distance from top of page
 const pageHeight = 1500; // px - approximate page height for positioning
+const edgePadding = 50; // px - padding from screen edges so cats are fully visible
 
 // Generate random positions for cats in the side margins
 function generateRandomPosition() {
@@ -17,15 +18,15 @@ function generateRandomPosition() {
   let x, y;
   
   if (isLeftMargin) {
-    // Left margin: leftMarginWidth to contentStart
-    x = Math.random() * (contentStart - leftMarginWidth) + leftMarginWidth;
+    // Left margin: leftMarginWidth to contentStart, with padding
+    x = Math.random() * (contentStart - leftMarginWidth - 3) + leftMarginWidth + 1;
   } else {
-    // Right margin: contentEnd to (100 - rightMarginWidth)
-    x = Math.random() * (100 - rightMarginWidth - contentEnd) + contentEnd;
+    // Right margin: contentEnd to (100 - rightMarginWidth), with padding
+    x = Math.random() * (100 - rightMarginWidth - contentEnd - 3) + contentEnd + 1;
   }
   
-  // Y position: random position down the page (in pixels)
-  y = Math.random() * (pageHeight - minTopOffset) + minTopOffset;
+  // Y position: random position down the page (in pixels), with top and bottom padding
+  y = Math.random() * (pageHeight - minTopOffset - edgePadding) + minTopOffset + (edgePadding / 2);
   
   return { x: x + '%', y: y + 'px' };
 }
@@ -35,7 +36,8 @@ const catPositions = [
   generateRandomPosition(), // orange
   generateRandomPosition(), // gray
   generateRandomPosition(), // black
-  generateRandomPosition()  // white
+  generateRandomPosition(), // white
+  generateRandomPosition()  // brown/tan
 ];
 ---
 
@@ -44,11 +46,9 @@ const catPositions = [
   <div id="torch-container">
     <!-- Torch icon that can be picked up -->
     <div id="torch" class="torch" data-picked-up="false">
-      <div class="torch-handle"></div>
-      <div class="torch-flame">
-        <div class="flame-inner"></div>
-        <div class="flame-outer"></div>
-      </div>
+      <div class="flashlight-head"></div>
+      <div class="flashlight-body"></div>
+      <div class="flashlight-grip"></div>
     </div>
     
     <!-- Light effect that follows the torch -->
@@ -57,6 +57,11 @@ const catPositions = [
     <!-- Instructions when torch is picked up -->
     <div id="torch-instructions" class="torch-instructions">
       Press R to reset
+    </div>
+    
+    <!-- Cat counter -->
+    <div id="cat-counter" class="cat-counter">
+      🐱 0/5
     </div>
   </div>
 </div>
@@ -144,7 +149,7 @@ const catPositions = [
     </div>
     <div class="cat-tail"></div>
   </div>
-</div>iv>
+</div>
     <div class="cat-head">
       <div class="cat-eyes">
         <div class="cat-eye cat-eye-left"></div>
@@ -162,6 +167,27 @@ const catPositions = [
 
 <div class="hidden-item" data-reveal-distance="80" style={`position: fixed; top: ${catPositions[3].y}; left: ${catPositions[3].x}; z-index: 1001;`} data-cat-type="white">
   <div class="hidden-cat pixel-cat white-cat">
+    <div class="cat-ears">
+      <div class="cat-ear cat-ear-left"></div>
+      <div class="cat-ear cat-ear-right"></div>
+    </div>
+    <div class="cat-head">
+      <div class="cat-eyes">
+        <div class="cat-eye cat-eye-left"></div>
+        <div class="cat-eye cat-eye-right"></div>
+      </div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-belly"></div>
+    </div>
+    <div class="cat-tail"></div>
+  </div>
+</div>
+
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[4].y}; left: ${catPositions[4].x}; z-index: 1001;`} data-cat-type="brown">
+  <div class="hidden-cat pixel-cat brown-cat">
     <div class="cat-ears">
       <div class="cat-ear cat-ear-left"></div>
       <div class="cat-ear cat-ear-right"></div>
@@ -206,77 +232,123 @@ const catPositions = [
     position: absolute;
     top: 20px;
     right: 20px;
-    width: 32px;
-    height: 52px;
+    width: 28px;
+    height: 65px;
     cursor: grab;
     pointer-events: auto;
     z-index: 1002;
     transition: all 0.3s ease;
-    opacity: 0.8;
-    filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.3));
+    opacity: 0.85;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
   }
 
   .torch:hover {
     transform: scale(1.1);
     opacity: 1;
-    filter: drop-shadow(0 0 15px rgba(255, 140, 0, 0.5));
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
   }
 
   .torch.dragging {
     cursor: grabbing;
-    transform: scale(1.2);
+    transform: scale(1.15);
     z-index: 1003;
-    filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.7));
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
   }
 
-  .torch-handle {
-    width: 6px;
-    height: 20px;
-    background: linear-gradient(to bottom, #8B4513 0%, #654321 100%);
-    margin: 0 auto 2px;
-    border-radius: 3px;
-    box-shadow: inset 1px 0 0 rgba(255,255,255,0.2), inset -1px 0 0 rgba(0,0,0,0.3);
-  }
-
-  .torch-flame {
-    width: 20px;
-    height: 24px;
-    position: relative;
+  .flashlight-head {
+    width: 24px;
+    height: 18px;
+    background: linear-gradient(135deg, #f0f0f0 0%, #d4d4d4 50%, #b8b8b8 100%);
     margin: 0 auto;
+    border-radius: 12px 12px 4px 4px;
+    border: 2px solid #999;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), inset 0 -1px 2px rgba(0,0,0,0.2);
   }
 
-  .flame-outer {
-    width: 20px;
-    height: 24px;
-    background: linear-gradient(45deg, #ff4500 0%, #ff6b35 30%, #ffa500 70%, #ffff00 100%);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  .flashlight-head::before {
+    content: '';
     position: absolute;
-    animation: flicker 1s ease-in-out infinite alternate;
-    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.6));
-  }
-
-  .flame-inner {
-    width: 12px;
-    height: 16px;
-    background: linear-gradient(45deg, #ffa500 0%, #ffff00 50%, #ffffff 100%);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    position: absolute;
-    top: 4px;
+    top: 3px;
     left: 50%;
     transform: translateX(-50%);
-    animation: flicker 0.8s ease-in-out infinite alternate-reverse;
-    opacity: 0.9;
+    width: 14px;
+    height: 8px;
+    background: radial-gradient(circle, #ffeb3b 20%, #ffc107 60%, #ff8f00 100%);
+    border-radius: 50%;
+    border: 1px solid #e65100;
+    box-shadow: 0 0 6px rgba(255, 193, 7, 0.8), inset 0 1px 2px rgba(255,255,255,0.4);
   }
 
-  @keyframes flicker {
-    0% { 
-      transform: translateX(-50%) scale(0.95) rotate(-2deg);
-      opacity: 0.8;
-    }
-    100% { 
-      transform: translateX(-50%) scale(1.05) rotate(2deg);
-      opacity: 1;
-    }
+  .flashlight-head::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 4px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    opacity: 0.8;
+  }
+
+  .flashlight-body {
+    width: 18px;
+    height: 32px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 30%, #4a6741 70%, #2c3e50 100%);
+    margin: 2px auto;
+    border-radius: 4px;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 4px rgba(0,0,0,0.3);
+  }
+
+  .flashlight-body::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 2px;
+    right: 2px;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 1px;
+  }
+
+  .flashlight-body::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 2px;
+    right: 2px;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 1px;
+  }
+
+  .flashlight-grip {
+    width: 16px;
+    height: 15px;
+    background: linear-gradient(135deg, #1a252f 0%, #2c3e50 50%, #1a252f 100%);
+    margin: 0 auto;
+    border-radius: 0 0 8px 8px;
+    position: relative;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 1px 3px rgba(0,0,0,0.3);
+  }
+
+  .flashlight-grip::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 1px;
+    right: 1px;
+    height: 1px;
+    background: repeating-linear-gradient(
+      to right,
+      rgba(255,255,255,0.1) 0px,
+      rgba(255,255,255,0.1) 2px,
+      transparent 2px,
+      transparent 4px
+    );
   }
 
   .torch-light {
@@ -298,21 +370,73 @@ const catPositions = [
 
   .torch-instructions {
     position: fixed;
-    top: 80px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-size: 12px;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
     z-index: 1003;
     pointer-events: none;
+    border: 2px solid rgba(255, 140, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 140, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    text-align: center;
+    min-width: 140px;
   }
 
   .torch-instructions.show {
     opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+  }
+
+  .torch-instructions::before {
+    content: '🔥';
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 16px;
+  }
+
+  .cat-counter {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1003;
+    pointer-events: none;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    text-align: center;
+    min-width: 60px;
+  }
+
+  .cat-counter.show {
+    opacity: 0.8;
+  }
+
+  .cat-counter.complete {
+    background: rgba(0, 150, 0, 0.8);
+    border-color: rgba(0, 255, 0, 0.3);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
   }
 
   .hidden-item {
@@ -504,6 +628,17 @@ const catPositions = [
     background: #ffffff;
   }
 
+  .brown-cat .cat-ear,
+  .brown-cat .cat-head,
+  .brown-cat .cat-body,
+  .brown-cat .cat-tail {
+    background: #8b4513;
+  }
+
+  .brown-cat .cat-belly {
+    background: #cd853f;
+  }
+
   /* Instructions */
   .instructions-overlay {
     position: fixed;
@@ -526,21 +661,35 @@ const catPositions = [
 
   .reset-text {
     position: fixed;
-    bottom: 20px;
+    top: 30px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 100, 0, 0.9);
     color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 10px 20px;
+    border-radius: 20px;
     font-size: 14px;
+    font-weight: 600;
     z-index: 1004;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(0, 255, 0, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 100, 0, 0.3);
+    text-align: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
   .reset-text.show {
     opacity: 1;
+    transform: translateX(-50%) translateY(5px);
+  }
+
+  .reset-text::before {
+    content: '🎉';
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 16px;
   }
 </style>
 
@@ -550,6 +699,7 @@ const catPositions = [
   let torch: HTMLElement | null = null;
   let torchLight: HTMLElement | null = null;
   let torchInstructions: HTMLElement | null = null;
+  let catCounter: HTMLElement | null = null;
   let foundCats: Set<string> = new Set();
   let audioContext: AudioContext | null = null;
   let resetText: HTMLElement | null = null;
@@ -586,6 +736,9 @@ const catPositions = [
       case 'white':
         frequencies = [500, 650, 600, 750]; // High meow
         break;
+      case 'brown':
+        frequencies = [350, 450, 400, 550]; // Mid-range meow
+        break;
       default:
         frequencies = [400, 500, 450, 550];
     }
@@ -606,6 +759,51 @@ const catPositions = [
     oscillator.type = 'sine';
     oscillator.start(currentTime);
     oscillator.stop(currentTime + 0.4);
+  }
+
+  // Play victory sound when all cats are found
+  function playVictorySound() {
+    if (!audioContext) return;
+
+    // Create a triumphant melody
+    const notes = [523, 659, 784, 1047]; // C5, E5, G5, C6
+    const durations = [0.2, 0.2, 0.2, 0.4];
+    
+    let currentTime = audioContext.currentTime;
+    
+    notes.forEach((freq, index) => {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.setValueAtTime(freq, currentTime);
+      oscillator.type = 'triangle';
+      
+      // Volume envelope
+      gainNode.gain.setValueAtTime(0, currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.3, currentTime + 0.02);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + durations[index]);
+      
+      oscillator.start(currentTime);
+      oscillator.stop(currentTime + durations[index]);
+      
+      currentTime += durations[index] * 0.8; // Slight overlap
+    });
+  }
+
+  // Update cat counter display
+  function updateCatCounter() {
+    if (catCounter) {
+      catCounter.textContent = `🐱 ${foundCats.size}/5`;
+      
+      if (foundCats.size === 5) {
+        catCounter.classList.add('complete');
+      } else {
+        catCounter.classList.remove('complete');
+      }
+    }
   }
 
   function getDistance(x1: number, y1: number, x2: number, y2: number): number {
@@ -642,10 +840,12 @@ const catPositions = [
           foundCats.add(catType);
           initAudio();
           playMeow(catType);
+          updateCatCounter();
           
-          // Show reset text when all cats are found
-          if (foundCats.size === 4) {
+          // Show reset text and play victory sound when all cats are found
+          if (foundCats.size === 5) {
             showResetText();
+            playVictorySound();
           }
         }
       }
@@ -677,6 +877,12 @@ const catPositions = [
       resetText.classList.remove('show');
     }
     
+    // Reset cat counter
+    updateCatCounter();
+    if (catCounter) {
+      catCounter.classList.remove('show');
+    }
+    
     // Reset torch position
     if (torch) {
       torch.style.right = '20px';
@@ -699,8 +905,9 @@ const catPositions = [
     torch = document.getElementById('torch');
     torchLight = document.getElementById('torch-light');
     torchInstructions = document.getElementById('torch-instructions');
+    catCounter = document.getElementById('cat-counter');
 
-    if (!torch || !torchLight || !torchInstructions) return;
+    if (!torch || !torchLight || !torchInstructions || !catCounter) return;
 
     // Mouse events for torch dragging
     torch.addEventListener('mousedown', (e: MouseEvent) => {
@@ -708,9 +915,11 @@ const catPositions = [
       torch!.classList.add('dragging');
       torch!.setAttribute('data-picked-up', 'true');
       
-      // Show light effect and instructions
+      // Show light effect, instructions, and counter
       torchLight!.classList.add('active');
       torchInstructions!.classList.add('show');
+      catCounter!.classList.add('show');
+      updateCatCounter();
       
       const rect = torch!.getBoundingClientRect();
       dragOffset.x = e.clientX - rect.left - rect.width / 2;
@@ -745,6 +954,8 @@ const catPositions = [
         
         torchLight!.classList.add('active');
         torchInstructions!.classList.add('show');
+        catCounter!.classList.add('show');
+        updateCatCounter();
         
         const touch = e.touches[0];
         const rect = torch!.getBoundingClientRect();
@@ -777,7 +988,7 @@ const catPositions = [
 
     // Keyboard events
     document.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === 'r' && foundCats.size === 4) {
+      if (e.key.toLowerCase() === 'r' && torch && torch.getAttribute('data-picked-up') === 'true') {
         resetGame();
       }
     });

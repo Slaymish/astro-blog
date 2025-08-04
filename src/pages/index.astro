@@ -4,7 +4,7 @@ import InteractiveTorch from "../components/InteractiveTorch.astro";
 import { supabase } from "../utils/database";
 import type { PostWithTags } from "../../supabase/types";
 
-export const prerender = false;
+export const prerender = true; // Enable prerendering for development
 
 // Function to create a clean text preview from markdown
 function createPreview(markdown: string, maxLength: number = 200): string {

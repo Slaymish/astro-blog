@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from "@tailwindcss/vite";
-import netlify from '@astrojs/netlify';
 
+// Development configuration without Netlify adapter
 export default defineConfig({
   markdown: {
     shikiConfig: {
@@ -11,8 +11,4 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  output: 'server',
-  adapter: netlify({
-    edgeMiddleware: false,
-  })
 });
