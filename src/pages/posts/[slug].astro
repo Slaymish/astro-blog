@@ -181,7 +181,7 @@ const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
       )}
     </header>
     
-    <TableOfContents content={post.content} />
+    <TableOfContents content={post.content} htmlContent={htmlContent} />
     
     <div 
       class="prose prose-invert max-w-none" 

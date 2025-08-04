@@ -7,39 +7,72 @@ interface TocItem {
 
 interface Props {
   content: string;
+  htmlContent?: string; // Add optional processed HTML
   minItems?: number;
 }
 
-const { content, minItems = 3 } = Astro.props;
+const { content, htmlContent, minItems = 3 } = Astro.props;
 
-// Extract headings from markdown content
-function extractTableOfContents(markdown: string): TocItem[] {
-  const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+// Extract headings from processed HTML if available, otherwise fall back to markdown
+function extractTableOfContents(markdown: string, html?: string): TocItem[] {
   const toc: TocItem[] = [];
-  let match;
-
-  while ((match = headingRegex.exec(markdown)) !== null) {
-    const level = match[1].length;
-    const text = match[2].trim();
+  
+  if (html) {
+    // Extract from processed HTML - this ensures perfect ID matching
+    const headingRegex = /<h([2-4])[^>]*id="([^"]*)"[^>]*>(.*?)<\/h[2-4]>/gi;
+    let match;
     
-    // Use the same ID generation algorithm as rehype-slug
-    const id = text
-      .toLowerCase()
-      .replace(/\s+/g, '-') // Replace spaces with hyphens
-      .replace(/[^\w\-]/g, '') // Remove non-word characters except hyphens
-      .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
-      .replace(/-+/g, '-'); // Replace multiple hyphens with single hyphen
+    while ((match = headingRegex.exec(html)) !== null) {
+      const level = parseInt(match[1]);
+      const id = match[2];
+      const rawText = match[3];
+      
+      // Clean up the text content (remove HTML tags)
+      const text = rawText
+        .replace(/<[^>]*>/g, '') // Remove HTML tags
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .trim();
+      
+      if (level >= 2 && level <= 4 && id && text) {
+        toc.push({ id, text, level });
+      }
+    }
+  } else {
+    // Fallback to markdown parsing if no HTML provided
+    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+    let match;
 
-    // Only include h2-h4 headings
-    if (level >= 2 && level <= 4) {
-      toc.push({ id, text, level });
+    while ((match = headingRegex.exec(markdown)) !== null) {
+      const level = match[1].length;
+      const text = match[2].trim();
+      
+      // Simple ID generation for fallback
+      const id = text
+        .toLowerCase()
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/`(.*?)`/g, '$1')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]/g, '')
+        .replace(/^-+|-+$/g, '')
+        .replace(/-+/g, '-');
+
+      if (level >= 2 && level <= 4 && id) {
+        toc.push({ id, text, level });
+      }
     }
   }
-
+  
   return toc;
 }
 
-const toc = extractTableOfContents(content);
+const toc = extractTableOfContents(content, htmlContent);
 const shouldShowToc = toc.length >= minItems;
 ---
 
