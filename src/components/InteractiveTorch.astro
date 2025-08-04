@@ -54,13 +54,15 @@ const catPositions = [
     <!-- Light effect that follows the torch -->
     <div id="torch-light" class="torch-light"></div>
     
-    <!-- Overlay to create the darkness effect -->
-    <div id="darkness-overlay" class="darkness-overlay"></div>
+    <!-- Instructions when torch is picked up -->
+    <div id="torch-instructions" class="torch-instructions">
+      Press R to reset
+    </div>
   </div>
 </div>
 
-<!-- Cats positioned as document elements -->
-<div class="hidden-item" data-reveal-distance="80" style={`position: fixed; top: ${catPositions[0].y}; left: ${catPositions[0].x}; z-index: 1001;`} data-cat-type="orange">
+<!-- Cats positioned as document elements that scroll with the page -->
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[0].y}; left: ${catPositions[0].x}; z-index: 1001;`} data-cat-type="orange">
   <div class="hidden-cat pixel-cat orange-cat">
     <div class="cat-ears">
       <div class="cat-ear cat-ear-left"></div>
@@ -81,7 +83,7 @@ const catPositions = [
   </div>
 </div>
 
-<div class="hidden-item" data-reveal-distance="80" style={`position: fixed; top: ${catPositions[1].y}; left: ${catPositions[1].x}; z-index: 1001;`} data-cat-type="gray">
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[1].y}; left: ${catPositions[1].x}; z-index: 1001;`} data-cat-type="gray">
   <div class="hidden-cat pixel-cat gray-cat">
     <div class="cat-ears">
       <div class="cat-ear cat-ear-left"></div>
@@ -102,12 +104,47 @@ const catPositions = [
   </div>
 </div>
 
-<div class="hidden-item" data-reveal-distance="80" style={`position: fixed; top: ${catPositions[2].y}; left: ${catPositions[2].x}; z-index: 1001;`} data-cat-type="black">
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[2].y}; left: ${catPositions[2].x}; z-index: 1001;`} data-cat-type="black">
   <div class="hidden-cat pixel-cat black-cat">
     <div class="cat-ears">
       <div class="cat-ear cat-ear-left"></div>
       <div class="cat-ear cat-ear-right"></div>
     </div>
+    <div class="cat-head">
+      <div class="cat-eyes">
+        <div class="cat-eye cat-eye-left"></div>
+        <div class="cat-eye cat-eye-right"></div>
+      </div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-belly"></div>
+    </div>
+    <div class="cat-tail"></div>
+  </div>
+</div>
+
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[3].y}; left: ${catPositions[3].x}; z-index: 1001;`} data-cat-type="white">
+  <div class="hidden-cat pixel-cat white-cat">
+    <div class="cat-ears">
+      <div class="cat-ear cat-ear-left"></div>
+      <div class="cat-ear cat-ear-right"></div>
+    </div>
+    <div class="cat-head">
+      <div class="cat-eyes">
+        <div class="cat-eye cat-eye-left"></div>
+        <div class="cat-eye cat-eye-right"></div>
+      </div>
+      <div class="cat-nose"></div>
+      <div class="cat-mouth"></div>
+    </div>
+    <div class="cat-body">
+      <div class="cat-belly"></div>
+    </div>
+    <div class="cat-tail"></div>
+  </div>
+</div>iv>
     <div class="cat-head">
       <div class="cat-eyes">
         <div class="cat-eye cat-eye-left"></div>
@@ -259,20 +296,22 @@ const catPositions = [
     opacity: 1;
   }
 
-  .darkness-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    pointer-events: none;
-    z-index: 999;
+  .torch-instructions {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.3s ease;
+    z-index: 1003;
+    pointer-events: none;
   }
 
-  .darkness-overlay.active {
+  .torch-instructions.show {
     opacity: 1;
   }
 
@@ -510,7 +549,7 @@ const catPositions = [
   let dragOffset = { x: 0, y: 0 };
   let torch: HTMLElement | null = null;
   let torchLight: HTMLElement | null = null;
-  let darknessOverlay: HTMLElement | null = null;
+  let torchInstructions: HTMLElement | null = null;
   let foundCats: Set<string> = new Set();
   let audioContext: AudioContext | null = null;
   let resetText: HTMLElement | null = null;
@@ -646,12 +685,12 @@ const catPositions = [
       torch.setAttribute('data-picked-up', 'false');
     }
     
-    // Hide torch light and darkness
+    // Hide torch light and instructions
     if (torchLight) {
       torchLight.classList.remove('active');
     }
-    if (darknessOverlay) {
-      darknessOverlay.classList.remove('active');
+    if (torchInstructions) {
+      torchInstructions.classList.remove('show');
     }
   }
 
@@ -659,9 +698,9 @@ const catPositions = [
   document.addEventListener('DOMContentLoaded', () => {
     torch = document.getElementById('torch');
     torchLight = document.getElementById('torch-light');
-    darknessOverlay = document.getElementById('darkness-overlay');
+    torchInstructions = document.getElementById('torch-instructions');
 
-    if (!torch || !torchLight || !darknessOverlay) return;
+    if (!torch || !torchLight || !torchInstructions) return;
 
     // Mouse events for torch dragging
     torch.addEventListener('mousedown', (e: MouseEvent) => {
@@ -669,9 +708,9 @@ const catPositions = [
       torch!.classList.add('dragging');
       torch!.setAttribute('data-picked-up', 'true');
       
-      // Show light and darkness effects
+      // Show light effect and instructions
       torchLight!.classList.add('active');
-      darknessOverlay!.classList.add('active');
+      torchInstructions!.classList.add('show');
       
       const rect = torch!.getBoundingClientRect();
       dragOffset.x = e.clientX - rect.left - rect.width / 2;
@@ -705,7 +744,7 @@ const catPositions = [
         torch!.setAttribute('data-picked-up', 'true');
         
         torchLight!.classList.add('active');
-        darknessOverlay!.classList.add('active');
+        torchInstructions!.classList.add('show');
         
         const touch = e.touches[0];
         const rect = torch!.getBoundingClientRect();
