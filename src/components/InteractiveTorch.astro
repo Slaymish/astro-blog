@@ -339,10 +339,12 @@
     const hiddenItems = document.querySelectorAll('.hidden-item'); // This will get all hidden items from both components
     const instructions = document.getElementById('torch-instructions');
     
+    if (!torch || !torchLight || !darknessOverlay || !instructions) return;
+    
     let isDragging = false;
     let isPickedUp = false;
-    let startX, startY;
-    let foundItems = new Set();
+    let startX: number, startY: number;
+    let foundItems = new Set<Element>();
     let totalSecrets = hiddenItems.length;
     let foundCount = 0;
     
@@ -385,7 +387,7 @@
     document.addEventListener('touchmove', dragTouch, { passive: false });
     document.addEventListener('touchend', stopDrag);
 
-    function startDrag(e) {
+    function startDrag(e: MouseEvent) {
       isDragging = true;
       isPickedUp = true;
       torch.classList.add('dragging');
@@ -401,7 +403,7 @@
       e.preventDefault();
     }
 
-    function startDragTouch(e) {
+    function startDragTouch(e: TouchEvent) {
       const touch = e.touches[0];
       const mouseEvent = new MouseEvent('mousedown', {
         clientX: touch.clientX,
@@ -411,7 +413,7 @@
       e.preventDefault();
     }
 
-    function drag(e) {
+    function drag(e: MouseEvent) {
       if (!isDragging) return;
       
       const x = e.clientX - startX;
@@ -436,7 +438,7 @@
       e.preventDefault();
     }
 
-    function dragTouch(e) {
+    function dragTouch(e: TouchEvent) {
       if (!isDragging) return;
       const touch = e.touches[0];
       const mouseEvent = new MouseEvent('mousemove', {
@@ -488,12 +490,12 @@
       });
     }
 
-    function updateLightPosition(x, y) {
+    function updateLightPosition(x: number, y: number) {
       torchLight.style.left = x + 'px';
       torchLight.style.top = y + 'px';
     }
 
-    function checkHiddenItems(torchX, torchY) {
+    function checkHiddenItems(torchX: number, torchY: number) {
       hiddenItems.forEach(item => {
         const rect = item.getBoundingClientRect();
         const itemCenterX = rect.left + rect.width / 2;
@@ -504,7 +506,7 @@
           Math.pow(torchY - itemCenterY, 2)
         );
         
-        const revealDistance = parseInt(item.dataset.revealDistance) || 80;
+        const revealDistance = parseInt((item as HTMLElement).dataset.revealDistance || '80');
         
         if (distance < revealDistance) {
           if (!item.classList.contains('revealed') && !foundItems.has(item)) {
@@ -527,25 +529,28 @@
     }
 
     function playDiscoverySound() {
-      // Create a simple audio feedback
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
-      
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.3);
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+      } catch (e) {
+        // Silently fail if audio context isn't available
+      }
     }
 
-    function createDiscoveryParticles(x, y) {
+    function createDiscoveryParticles(x: number, y: number) {
       for (let i = 0; i < 8; i++) {
         const particle = document.createElement('div');
         particle.style.cssText = `
@@ -699,7 +704,7 @@
       }
     }
 
-    function showProgressNotification(message) {
+    function showProgressNotification(message: string) {
       // Remove existing notification
       const existing = document.querySelector('.progress-notification');
       if (existing) existing.remove();
@@ -733,7 +738,7 @@
       }, 2000);
     }
 
-    function showAchievement(title, description) {
+    function showAchievement(title: string, description: string) {
       const achievement = document.createElement('div');
       achievement.className = 'achievement-notification';
       achievement.innerHTML = `
@@ -779,9 +784,13 @@
         opacity: 0.8;
       `;
       
-      achievement.querySelector('.achievement-icon').style.cssText = iconStyle;
-      achievement.querySelector('.achievement-title').style.cssText = titleStyle;
-      achievement.querySelector('.achievement-desc').style.cssText = descStyle;
+      const iconEl = achievement.querySelector('.achievement-icon') as HTMLElement;
+      const titleEl = achievement.querySelector('.achievement-title') as HTMLElement;
+      const descEl = achievement.querySelector('.achievement-desc') as HTMLElement;
+      
+      if (iconEl) iconEl.style.cssText = iconStyle;
+      if (titleEl) titleEl.style.cssText = titleStyle;
+      if (descEl) descEl.style.cssText = descStyle;
       
       document.body.appendChild(achievement);
       
@@ -833,7 +842,7 @@
 
     function playAchievementSound() {
       try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
         
         // Play a triumphant chord
         const frequencies = [523.25, 659.25, 783.99]; // C, E, G
