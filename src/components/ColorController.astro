@@ -5,7 +5,7 @@
 <div id="color-controller" class="mt-8 p-4 rounded-lg border" style="border-color: var(--color-border-primary); background-color: var(--color-bg-tertiary);">
   <details class="group">
     <summary class="cursor-pointer text-sm font-medium transition-colors" style="color: var(--color-text-secondary);" onmouseover="this.style.color='var(--color-text-primary)'" onmouseout="this.style.color='var(--color-text-secondary)'">
-      🎨 Customize Color Palette
+      🎨 Customize Appearance
     </summary>
     
     <div class="mt-4 space-y-4">
@@ -76,6 +76,25 @@
         </button>
       </div>
 
+      <!-- Font Selection -->
+      <div>
+        <label for="font-select" class="block text-xs mb-2" style="color: var(--color-text-muted);">
+          Font Style:
+        </label>
+        <select 
+          id="font-select"
+          class="w-full p-2 text-sm rounded border focus:border-blue-500"
+          style="background-color: var(--color-bg-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary);"
+        >
+          <option value="modern">Modern (Inter + Playfair)</option>
+          <option value="classic">Classic (Georgia + Arial)</option>
+          <option value="minimal">Minimal (System Sans)</option>
+          <option value="editorial">Editorial (Crimson + Source Sans)</option>
+          <option value="tech">Tech (SF Mono + Inter)</option>
+          <option value="creative">Creative (Merriweather + Open Sans)</option>
+        </select>
+      </div>
+
       <!-- Color Preview -->
       <div class="grid grid-cols-5 gap-2 mt-4">
         <div class="h-8 rounded" id="color-preview-1" style="background: hsl(142, 70%, 60%)"></div>
@@ -93,7 +112,7 @@
         onmouseover="this.style.backgroundColor='var(--color-bg-primary)'"
         onmouseout="this.style.backgroundColor='var(--color-bg-secondary)'"
       >
-        Reset to Default
+        Reset to Defaults
       </button>
     </div>
   </details>
@@ -111,6 +130,7 @@
       themeToggle: document.getElementById('theme-toggle'),
       themeIcon: document.getElementById('theme-icon'),
       themeText: document.getElementById('theme-text'),
+      fontSelect: document.getElementById('font-select'),
       hueValue: document.getElementById('hue-value'),
       saturationValue: document.getElementById('saturation-value'),
       
@@ -133,10 +153,12 @@
         this.harmonySelect.addEventListener('change', () => this.updateColors());
         this.resetButton.addEventListener('click', () => this.resetColors());
         this.themeToggle.addEventListener('click', () => this.toggleTheme());
+        this.fontSelect.addEventListener('change', () => this.updateFont());
         
         this.loadPreferences();
         this.updateColors();
         this.initTheme();
+        this.initFont();
       },
 
       updateColors() {
@@ -238,8 +260,11 @@
         this.hueSlider.value = this.defaultHue.toString();
         this.saturationSlider.value = this.defaultSaturation.toString();
         this.harmonySelect.value = 'analogous';
+        this.fontSelect.value = 'modern';
         this.updateColors();
+        this.applyFont('modern');
         localStorage.removeItem('colorPreferences');
+        localStorage.removeItem('fontStyle');
       },
 
       savePreferences() {
@@ -289,6 +314,63 @@
           this.themeText.textContent = 'Light Mode';
         }
         localStorage.setItem('theme', theme);
+      },
+
+      // Font management methods
+      fontStacks: {
+        modern: {
+          heading: "'Playfair Display', Georgia, serif",
+          body: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+          mono: "'JetBrains Mono', 'Fira Code', Consolas, monospace"
+        },
+        classic: {
+          heading: "Georgia, 'Times New Roman', serif",
+          body: "Arial, -apple-system, BlinkMacSystemFont, sans-serif",
+          mono: "'Courier New', Courier, monospace"
+        },
+        minimal: {
+          heading: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+          body: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+          mono: "'SF Mono', Monaco, 'Cascadia Code', monospace"
+        },
+        editorial: {
+          heading: "'Crimson Text', Georgia, serif",
+          body: "'Source Sans Pro', -apple-system, sans-serif",
+          mono: "'Source Code Pro', monospace"
+        },
+        tech: {
+          heading: "'SF Mono', 'JetBrains Mono', monospace",
+          body: "'Inter', -apple-system, system-ui, sans-serif",
+          mono: "'SF Mono', 'JetBrains Mono', monospace"
+        },
+        creative: {
+          heading: "'Merriweather', Georgia, serif",
+          body: "'Open Sans', -apple-system, sans-serif",
+          mono: "'Fira Code', 'JetBrains Mono', monospace"
+        }
+      },
+
+      initFont() {
+        const savedFont = localStorage.getItem('fontStyle');
+        const fontStyle = savedFont || 'modern';
+        this.fontSelect.value = fontStyle;
+        this.applyFont(fontStyle);
+      },
+
+      updateFont() {
+        const fontStyle = this.fontSelect.value;
+        this.applyFont(fontStyle);
+        localStorage.setItem('fontStyle', fontStyle);
+      },
+
+      applyFont(fontStyle) {
+        const fonts = this.fontStacks[fontStyle];
+        if (fonts) {
+          const root = document.documentElement;
+          root.style.setProperty('--font-heading', fonts.heading);
+          root.style.setProperty('--font-body', fonts.body);
+          root.style.setProperty('--font-mono', fonts.mono);
+        }
       }
     };
 
