@@ -1,5 +1,6 @@
 ---
 import Layout from "../components/Layout.astro";
+import InteractiveTorch from "../components/InteractiveTorch.astro";
 import { supabase } from "../utils/database";
 import type { PostWithTags } from "../../supabase/types";
 
@@ -56,6 +57,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring software engineeri
   description={homeDescription}
   canonicalURL={Astro.url.href}
 >
+  <InteractiveTorch />
   {
     supabase ? (
       posts ? (

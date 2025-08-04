@@ -1,5 +1,82 @@
 ---
-// InteractiveTorch.astro - Interactive torch that reveals hidden content
+// InteractiveTor<!-- Hidden content that gets revealed by the torch -->
+<div class="hidden-content">
+  <!-- Cute pixel art cats that scroll with the page -->
+  <div class="hidden-item" data-reveal-distance="80" data-cat-type="orange" style="top: 300px; left: 15%;">
+    <div class="pixel-cat orange-cat">
+      <div class="cat-ears">
+        <div class="ear left"></div>
+        <div class="ear right"></div>
+      </div>
+      <div class="cat-head">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="nose"></div>
+        <div class="mouth"></div>
+      </div>
+      <div class="cat-body">
+        <div class="stripe"></div>
+        <div class="stripe"></div>
+      </div>
+      <div class="cat-tail"></div>
+    </div>
+  </div>
+  
+  <div class="hidden-item" data-reveal-distance="80" data-cat-type="gray" style="top: 600px; right: 20%;">
+    <div class="pixel-cat gray-cat">
+      <div class="cat-ears">
+        <div class="ear left"></div>
+        <div class="ear right"></div>
+      </div>
+      <div class="cat-head">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="nose"></div>
+        <div class="mouth"></div>
+      </div>
+      <div class="cat-body">
+        <div class="spot"></div>
+      </div>
+      <div class="cat-tail"></div>
+    </div>
+  </div>
+  
+  <div class="hidden-item" data-reveal-distance="80" data-cat-type="black" style="top: 900px; left: 25%;">
+    <div class="pixel-cat black-cat">
+      <div class="cat-ears">
+        <div class="ear left"></div>
+        <div class="ear right"></div>
+      </div>
+      <div class="cat-head">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="nose"></div>
+        <div class="mouth"></div>
+      </div>
+      <div class="cat-body"></div>
+      <div class="cat-tail"></div>
+    </div>
+  </div>
+  
+  <div class="hidden-item" data-reveal-distance="80" data-cat-type="white" style="top: 1200px; right: 15%;">
+    <div class="pixel-cat white-cat">
+      <div class="cat-ears">
+        <div class="ear left"></div>
+        <div class="ear right"></div>
+      </div>
+      <div class="cat-head">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="nose"></div>
+        <div class="mouth"></div>
+      </div>
+      <div class="cat-body">
+        <div class="heart"></div>
+      </div>
+      <div class="cat-tail"></div>
+    </div>
+  </div>
+</div>ive torch that reveals hidden content
 ---
 
 <div id="torch-container" class="torch-container">
@@ -181,7 +258,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -193,11 +270,11 @@
   }
 
   .hidden-content {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: 1001;
   }
@@ -242,6 +319,258 @@
 
   .hidden-cat:hover {
     transform: scale(1.1);
+  }
+
+  /* Pixel Art Cats */
+  .pixel-cat {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    cursor: default;
+    transition: transform 0.2s ease;
+  }
+
+  .pixel-cat:hover {
+    transform: scale(1.1);
+  }
+
+  .cat-ears {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .ear {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    top: -2px;
+  }
+
+  .ear.left {
+    left: -8px;
+    transform: rotate(-45deg);
+  }
+
+  .ear.right {
+    right: -8px;
+    transform: rotate(45deg);
+  }
+
+  .cat-head {
+    position: absolute;
+    width: 20px;
+    height: 16px;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 8px 8px 6px 6px;
+  }
+
+  .eye {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #000;
+    border-radius: 1px;
+    top: 4px;
+  }
+
+  .eye.left {
+    left: 4px;
+  }
+
+  .eye.right {
+    right: 4px;
+  }
+
+  .nose {
+    position: absolute;
+    width: 2px;
+    height: 1px;
+    background: #ff69b4;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .mouth {
+    position: absolute;
+    width: 6px;
+    height: 1px;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom: 1px solid #000;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .cat-body {
+    position: absolute;
+    width: 16px;
+    height: 20px;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 4px;
+  }
+
+  .cat-tail {
+    position: absolute;
+    width: 3px;
+    height: 12px;
+    top: 18px;
+    right: 2px;
+    border-radius: 2px;
+    transform: rotate(20deg);
+  }
+
+  /* Orange Cat */
+  .orange-cat .ear {
+    background: #ff8c42;
+    border: 1px solid #e67e22;
+  }
+
+  .orange-cat .cat-head {
+    background: #ff8c42;
+    border: 1px solid #e67e22;
+  }
+
+  .orange-cat .cat-body {
+    background: #ff8c42;
+    border: 1px solid #e67e22;
+  }
+
+  .orange-cat .cat-tail {
+    background: #ff8c42;
+    border: 1px solid #e67e22;
+  }
+
+  .orange-cat .stripe {
+    position: absolute;
+    width: 12px;
+    height: 2px;
+    background: #e67e22;
+    left: 2px;
+  }
+
+  .orange-cat .stripe:first-child {
+    top: 4px;
+  }
+
+  .orange-cat .stripe:last-child {
+    top: 8px;
+  }
+
+  /* Gray Cat */
+  .gray-cat .ear {
+    background: #95a5a6;
+    border: 1px solid #7f8c8d;
+  }
+
+  .gray-cat .cat-head {
+    background: #95a5a6;
+    border: 1px solid #7f8c8d;
+  }
+
+  .gray-cat .cat-body {
+    background: #95a5a6;
+    border: 1px solid #7f8c8d;
+  }
+
+  .gray-cat .cat-tail {
+    background: #95a5a6;
+    border: 1px solid #7f8c8d;
+  }
+
+  .gray-cat .spot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #7f8c8d;
+    border-radius: 2px;
+    top: 6px;
+    left: 6px;
+  }
+
+  /* Black Cat */
+  .black-cat .ear {
+    background: #2c3e50;
+    border: 1px solid #1a1a1a;
+  }
+
+  .black-cat .cat-head {
+    background: #2c3e50;
+    border: 1px solid #1a1a1a;
+  }
+
+  .black-cat .cat-body {
+    background: #2c3e50;
+    border: 1px solid #1a1a1a;
+  }
+
+  .black-cat .cat-tail {
+    background: #2c3e50;
+    border: 1px solid #1a1a1a;
+  }
+
+  .black-cat .eye {
+    background: #f1c40f;
+  }
+
+  /* White Cat */
+  .white-cat .ear {
+    background: #ecf0f1;
+    border: 1px solid #bdc3c7;
+  }
+
+  .white-cat .cat-head {
+    background: #ecf0f1;
+    border: 1px solid #bdc3c7;
+  }
+
+  .white-cat .cat-body {
+    background: #ecf0f1;
+    border: 1px solid #bdc3c7;
+  }
+
+  .white-cat .cat-tail {
+    background: #ecf0f1;
+    border: 1px solid #bdc3c7;
+  }
+
+  .white-cat .heart {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    top: 7px;
+    left: 5px;
+  }
+
+  .white-cat .heart::before {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #e74c3c;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+  }
+
+  .white-cat .heart::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: #e74c3c;
+    border-radius: 50%;
+    top: 0;
+    right: 0;
   }
 
   /* Responsive adjustments */
@@ -315,6 +644,7 @@
     let isDragging = false;
     let startX: number, startY: number;
     let foundItems = new Set<Element>();
+    let allCatsFound = false;
     
     // Show instructions on first visit (smaller, less intrusive)
     const hasSeenTorch = localStorage.getItem('torch-tutorial-seen');
@@ -433,14 +763,17 @@
       darknessOverlay.classList.remove('active');
       torchLight.classList.remove('active');
       
-      // Hide all revealed items
+      // Properly reset all cats
+      foundItems.clear();
+      allCatsFound = false;
       hiddenItems.forEach(item => {
-        if (!foundItems.has(item)) {
-          item.classList.remove('revealed');
-        } else {
-          item.classList.add('discovered');
-        }
+        item.classList.remove('revealed');
+        item.classList.remove('discovered');
       });
+      
+      // Hide reset message if showing
+      const resetMsg = document.querySelector('.reset-message');
+      if (resetMsg) resetMsg.remove();
     }
 
     function updateLightPosition(x: number, y: number) {
@@ -467,38 +800,110 @@
             item.classList.add('revealed');
             foundItems.add(item);
             
-            // Play a cute meow sound
-            playMeowSound();
+            // Play different meow sound based on cat type
+            const catType = (item as HTMLElement).dataset.catType || 'default';
+            playMeowSound(catType);
+            
+            // Check if all cats are found
+            if (foundItems.size === hiddenItems.length) {
+              allCatsFound = true;
+              setTimeout(() => {
+                showResetMessage();
+              }, 1000);
+            }
           }
         }
       });
     }
 
-    function playMeowSound() {
+    function playMeowSound(catType: string) {
       try {
         const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-        
-        // Create a cute meow-like sound
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
         
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
         
-        // Meow frequency pattern
-        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-        oscillator.frequency.linearRampToValueAtTime(800, audioContext.currentTime + 0.1);
-        oscillator.frequency.linearRampToValueAtTime(300, audioContext.currentTime + 0.2);
+        // Different meow patterns for different cat types
+        switch (catType) {
+          case 'orange':
+            // Deep, friendly meow
+            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(500, audioContext.currentTime + 0.1);
+            oscillator.frequency.linearRampToValueAtTime(250, audioContext.currentTime + 0.3);
+            break;
+          
+          case 'gray':
+            // Soft, gentle meow
+            oscillator.frequency.setValueAtTime(450, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(600, audioContext.currentTime + 0.08);
+            oscillator.frequency.linearRampToValueAtTime(350, audioContext.currentTime + 0.25);
+            break;
+          
+          case 'black':
+            // Mysterious, lower meow
+            oscillator.frequency.setValueAtTime(280, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(450, audioContext.currentTime + 0.12);
+            oscillator.frequency.linearRampToValueAtTime(200, audioContext.currentTime + 0.35);
+            break;
+          
+          case 'white':
+            // High, cute meow
+            oscillator.frequency.setValueAtTime(500, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(750, audioContext.currentTime + 0.06);
+            oscillator.frequency.linearRampToValueAtTime(400, audioContext.currentTime + 0.2);
+            break;
+          
+          default:
+            // Default meow
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(600, audioContext.currentTime + 0.1);
+            oscillator.frequency.linearRampToValueAtTime(300, audioContext.currentTime + 0.2);
+        }
         
         gainNode.gain.setValueAtTime(0, audioContext.currentTime);
         gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
         
         oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
+        oscillator.stop(audioContext.currentTime + 0.4);
       } catch (e) {
         // Silently fail if audio context isn't available
       }
+    }
+
+    function showResetMessage() {
+      const message = document.createElement('div');
+      message.className = 'reset-message';
+      message.innerHTML = '🎉 All cats found! Press "R" to reset and find them again! 🐱';
+      message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 15px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: center;
+        z-index: 1010;
+        animation: fadeIn 0.5s ease-out;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border: 3px solid #ff8c42;
+      `;
+      
+      document.body.appendChild(message);
+      
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (message.parentNode) {
+          message.style.animation = 'fadeOut 0.5s ease-in forwards';
+          setTimeout(() => message.remove(), 500);
+        }
+      }, 5000);
     }
 
     // Simple animation for particle burst (keeping this minimal)
@@ -512,6 +917,28 @@
         100% {
           transform: translate(var(--end-x), var(--end-y)) scale(0);
           opacity: 0;
+        }
+      }
+      
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+      
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.8);
         }
       }
     `;
