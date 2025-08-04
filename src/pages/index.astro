@@ -61,15 +61,15 @@ const homeDescription = "Welcome to Hamish's blog - exploring software engineeri
       posts ? (
         <>
           <section aria-labelledby="recent-posts-heading">
-            <h1 id="recent-posts-heading" class="mb-12" style="color: var(--color-text-primary); font-family: var(--font-heading);">
+            <h1 id="recent-posts-heading" class="mb-12 fade-in gradient-text" style="color: var(--color-text-primary); font-family: var(--font-heading);">
               Recent Posts
             </h1>
             <div class="space-y-8" role="list">
-              {posts?.map((post) => (
+              {posts?.map((post, index) => (
                 <article 
                   role="listitem"
-                  class="pb-8" 
-                  style="border-bottom: 1px solid var(--color-border-secondary);"
+                  class={`pb-8 slide-in`}
+                  style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
                   itemscope 
                   itemtype="http://schema.org/BlogPosting"
                 >
