@@ -1,16 +1,31 @@
 ---
 // InteractiveTorch.astro - Interactive torch that reveals hidden cats
 
-// Define layout margins (in viewport units)
-const leftMargin = 10; // vw
-const rightMargin = 10; // vw  
-const topHeaderMargin = 15; // vh
-const headerTextMargin = 25; // vh
+// Define layout margins and content area
+const leftMarginWidth = 10; // vw - width of left margin
+const rightMarginWidth = 10; // vw - width of right margin  
+const contentStart = 50 - 32; // vw - where main content starts (50vw center - half of max-w-4xl)
+const contentEnd = 50 + 32; // vw - where main content ends
+const topHeaderMargin = 15; // vh - avoid header area
 
-// Generate random positions for cats within the margins
+// Generate random positions for cats in the side margins
 function generateRandomPosition() {
-  const x = Math.random() * (100 - leftMargin - rightMargin) + leftMargin;
-  const y = Math.random() * (100 - headerTextMargin - topHeaderMargin) + headerTextMargin;
+  // Randomly choose left or right margin
+  const isLeftMargin = Math.random() < 0.5;
+  
+  let x, y;
+  
+  if (isLeftMargin) {
+    // Left margin: 0 to contentStart
+    x = Math.random() * (contentStart - leftMarginWidth) + leftMarginWidth;
+  } else {
+    // Right margin: contentEnd to 100vw
+    x = Math.random() * (100 - rightMarginWidth - contentEnd) + contentEnd;
+  }
+  
+  // Y position: anywhere below header, full height of page
+  y = Math.random() * (100 - topHeaderMargin) + topHeaderMargin;
+  
   return { x, y };
 }
 
