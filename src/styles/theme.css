@@ -21,31 +21,49 @@
   --color-primary-800: #065f46;  /* Very dark shade */
   --color-primary-900: #064e3b;  /* Darkest shade */
 
+  /* === LIGHT THEME COLORS (DEFAULT) === */
+  --color-bg-primary: #ffffff;     /* Main background */
+  --color-bg-secondary: #f8fafc;   /* Secondary background */
+  --color-bg-tertiary: #f1f5f9;    /* Elevated elements */
+
+  --color-text-primary: #0f172a;    /* Main headings and important text */
+  --color-text-secondary: #334155;  /* Body text */
+  --color-text-muted: #64748b;      /* Secondary text */
+  --color-text-subtle: #94a3b8;     /* Least important text */
+
+  --color-border-primary: #e2e8f0;   /* Main borders */
+  --color-border-secondary: #f1f5f9; /* Subtle borders */
+
+  /* === DYNAMIC COMPONENT COLORS === */
+  /* These are calculated and updated by the color controller */
+  --color-tag-bg: hsla(142, 70%, 55%, 0.15);      /* Tag background (dynamic) */
+  --color-tag-bg-hover: hsla(142, 70%, 55%, 0.25); /* Tag hover state (dynamic) */
+  --color-tag-text: var(--color-primary-600);      /* Tag text color (dynamic) */
+
+  /* Link styling (dynamic) */
+  --color-link: var(--color-primary-600);          /* Default link color (dynamic) */
+  --color-link-hover: var(--color-primary-500);    /* Link hover color (dynamic) */
+}
+
+/* === DARK THEME === */
+.dark {
   /* === BACKGROUND COLORS === */
-  /* Static background colors for consistency */
   --color-bg-primary: #171717;    /* Darkest background (neutral-900) */
   --color-bg-secondary: #262626;  /* Main background (neutral-800) */
   --color-bg-tertiary: #404040;   /* Elevated elements (neutral-700) */
 
   /* === TEXT COLORS === */
-  /* Static text colors for readability */
   --color-text-primary: #ffffff;    /* Main headings and important text */
   --color-text-secondary: #d4d4d8;  /* Body text (zinc-300) */
   --color-text-muted: #a1a1aa;      /* Secondary text (zinc-400) */
   --color-text-subtle: #71717a;     /* Least important text (zinc-500) */
 
   /* === BORDER COLORS === */
-  /* Static border colors */
   --color-border-primary: #525252;   /* Main borders (neutral-600) */
   --color-border-secondary: #404040;  /* Subtle borders (neutral-700) */
 
   /* === DYNAMIC COMPONENT COLORS === */
-  /* These are calculated and updated by the color controller */
-  --color-tag-bg: hsla(142, 70%, 55%, 0.15);      /* Tag background (dynamic) */
-  --color-tag-bg-hover: hsla(142, 70%, 55%, 0.25); /* Tag hover state (dynamic) */
   --color-tag-text: var(--color-primary-300);      /* Tag text color (dynamic) */
-
-  /* Link styling (dynamic) */
   --color-link: var(--color-primary-400);          /* Default link color (dynamic) */
   --color-link-hover: var(--color-primary-300);    /* Link hover color (dynamic) */
 }

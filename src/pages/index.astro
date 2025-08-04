@@ -5,6 +5,27 @@ import type { PostWithTags } from "../../supabase/types";
 
 export const prerender = false;
 
+// Function to create a clean text preview from markdown
+function createPreview(markdown: string, maxLength: number = 200): string {
+  // Remove markdown syntax
+  const cleanText = markdown
+    .replace(/^---[\s\S]*?---/, '') // Remove frontmatter
+    .replace(/#{1,6}\s+/g, '') // Remove headings
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+    .replace(/\*(.*?)\*/g, '$1') // Remove italic
+    .replace(/`(.*?)`/g, '$1') // Remove inline code
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to text
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1') // Remove images
+    .replace(/>\s*/g, '') // Remove blockquotes
+    .replace(/\n+/g, ' ') // Replace line breaks with spaces
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+
+  return cleanText.length > maxLength 
+    ? cleanText.substring(0, maxLength - 3) + '...'
+    : cleanText;
+}
+
 let posts: PostWithTags[] | null = null;
 // let postsError;
 
@@ -78,7 +99,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring software engineeri
                   </div>
                   
                   <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
-                    {post.content.substring(0, 200)}...
+                    {createPreview(post.content, 200)}
                   </div>
                   
                   {post.post_tags && post.post_tags.length > 0 && (
