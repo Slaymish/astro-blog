@@ -150,39 +150,6 @@ const catPositions = [
     <div class="cat-tail"></div>
   </div>
 </div>
-    <div class="cat-head">
-      <div class="cat-eyes">
-        <div class="cat-eye cat-eye-left"></div>
-        <div class="cat-eye cat-eye-right"></div>
-      </div>
-      <div class="cat-nose"></div>
-      <div class="cat-mouth"></div>
-    </div>
-    <div class="cat-body">
-      <div class="cat-belly"></div>
-    </div>
-    <div class="cat-tail"></div>
-  </div>
-</div>
-
-<div class="hidden-item" data-reveal-distance="80" style={`position: fixed; top: ${catPositions[3].y}; left: ${catPositions[3].x}; z-index: 1001;`} data-cat-type="white">
-  <div class="hidden-cat pixel-cat white-cat">
-    <div class="cat-ears">
-      <div class="cat-ear cat-ear-left"></div>
-      <div class="cat-ear cat-ear-right"></div>
-    </div>
-    <div class="cat-head">
-      <div class="cat-eyes">
-        <div class="cat-eye cat-eye-left"></div>
-        <div class="cat-eye cat-eye-right"></div>
-      </div>
-      <div class="cat-nose"></div>
-      <div class="cat-mouth"></div>
-    </div>
-    <div class="cat-body">
-      <div class="cat-belly"></div>
-    </div>
-    <div class="cat-tail"></div>
   </div>
 </div>
 
@@ -772,6 +739,8 @@ const catPositions = [
     let currentTime = audioContext.currentTime;
     
     notes.forEach((freq, index) => {
+      if (!audioContext) return; // Additional null check for TypeScript
+      
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       
