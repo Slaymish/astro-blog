@@ -342,7 +342,6 @@
     if (!torch || !torchLight || !darknessOverlay || !instructions) return;
     
     let isDragging = false;
-    let isPickedUp = false;
     let startX: number, startY: number;
     let foundItems = new Set<Element>();
     let totalSecrets = hiddenItems.length;
@@ -388,8 +387,9 @@
     document.addEventListener('touchend', stopDrag);
 
     function startDrag(e: MouseEvent) {
+      if (!torch) return;
+      
       isDragging = true;
-      isPickedUp = true;
       torch.classList.add('dragging');
       torch.setAttribute('data-picked-up', 'true');
       
@@ -414,7 +414,7 @@
     }
 
     function drag(e: MouseEvent) {
-      if (!isDragging) return;
+      if (!isDragging || !torch) return;
       
       const x = e.clientX - startX;
       const y = e.clientY - startY;
@@ -450,7 +450,7 @@
     }
 
     function stopDrag() {
-      if (!isDragging) return;
+      if (!isDragging || !torch) return;
       
       isDragging = false;
       torch.classList.remove('dragging');
@@ -466,12 +466,13 @@
     }
 
     function activateTorch() {
+      if (!darknessOverlay || !torchLight) return;
       darknessOverlay.classList.add('active');
       torchLight.classList.add('active');
     }
 
     function resetTorch() {
-      isPickedUp = false;
+      if (!torch || !darknessOverlay || !torchLight) return;
       torch.setAttribute('data-picked-up', 'false');
       torch.style.left = '';
       torch.style.top = '';
@@ -491,6 +492,7 @@
     }
 
     function updateLightPosition(x: number, y: number) {
+      if (!torchLight) return;
       torchLight.style.left = x + 'px';
       torchLight.style.top = y + 'px';
     }
