@@ -1,12 +1,13 @@
 ---
 // InteractiveTorch.astro - Interactive torch that reveals hidden cats
 
-// Define layout margins and content area
-const leftMarginWidth = 10; // vw - width of left margin
-const rightMarginWidth = 10; // vw - width of right margin  
-const contentStart = 50 - 32; // vw - where main content starts (50vw center - half of max-w-4xl)
-const contentEnd = 50 + 32; // vw - where main content ends
-const topHeaderMargin = 15; // vh - avoid header area
+// Define layout margins and content area (in pixels/percentages relative to page)
+const leftMarginWidth = 5; // % - width of left margin
+const rightMarginWidth = 5; // % - width of right margin  
+const contentStart = 15; // % - where main content starts (accounting for max-w-4xl centering)
+const contentEnd = 85; // % - where main content ends
+const minTopOffset = 200; // px - minimum distance from top of page
+const pageHeight = 1500; // px - approximate page height for positioning
 
 // Generate random positions for cats in the side margins
 function generateRandomPosition() {
@@ -16,17 +17,17 @@ function generateRandomPosition() {
   let x, y;
   
   if (isLeftMargin) {
-    // Left margin: 0 to contentStart
+    // Left margin: leftMarginWidth to contentStart
     x = Math.random() * (contentStart - leftMarginWidth) + leftMarginWidth;
   } else {
-    // Right margin: contentEnd to 100vw
+    // Right margin: contentEnd to (100 - rightMarginWidth)
     x = Math.random() * (100 - rightMarginWidth - contentEnd) + contentEnd;
   }
   
-  // Y position: anywhere below header, full height of page
-  y = Math.random() * (100 - topHeaderMargin) + topHeaderMargin;
+  // Y position: random position down the page (in pixels)
+  y = Math.random() * (pageHeight - minTopOffset) + minTopOffset;
   
-  return { x, y };
+  return { x: x + '%', y: y + 'px' };
 }
 
 // Generate positions for each cat
@@ -59,7 +60,7 @@ const catPositions = [
   <!-- Hidden content that gets revealed by the torch -->
   <div class="hidden-content">
     <!-- Pixel art cats scattered around -->
-    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[0].y}vh; left: ${catPositions[0].x}vw;`} data-cat-type="orange">
+    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[0].y}; left: ${catPositions[0].x};`} data-cat-type="orange">
       <div class="hidden-cat pixel-cat orange-cat">
         <div class="cat-ears">
           <div class="cat-ear cat-ear-left"></div>
@@ -80,7 +81,7 @@ const catPositions = [
       </div>
     </div>
     
-    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[1].y}vh; left: ${catPositions[1].x}vw;`} data-cat-type="gray">
+    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[1].y}; left: ${catPositions[1].x};`} data-cat-type="gray">
       <div class="hidden-cat pixel-cat gray-cat">
         <div class="cat-ears">
           <div class="cat-ear cat-ear-left"></div>
@@ -101,7 +102,7 @@ const catPositions = [
       </div>
     </div>
     
-    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[2].y}vh; left: ${catPositions[2].x}vw;`} data-cat-type="black">
+    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[2].y}; left: ${catPositions[2].x};`} data-cat-type="black">
       <div class="hidden-cat pixel-cat black-cat">
         <div class="cat-ears">
           <div class="cat-ear cat-ear-left"></div>
@@ -122,7 +123,7 @@ const catPositions = [
       </div>
     </div>
     
-    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[3].y}vh; left: ${catPositions[3].x}vw;`} data-cat-type="white">
+    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[3].y}; left: ${catPositions[3].x};`} data-cat-type="white">
       <div class="hidden-cat pixel-cat white-cat">
         <div class="cat-ears">
           <div class="cat-ear cat-ear-left"></div>
@@ -149,7 +150,7 @@ const catPositions = [
   .torch-game-container {
     position: relative;
     width: 100%;
-    min-height: 100vh;
+    min-height: 150vh; /* Ensure enough height for cats to be spread out */
     pointer-events: none;
   }
 
