@@ -21,32 +21,21 @@
 
 <!-- Hidden content that gets revealed by the torch -->
 <div class="hidden-content">
-  <!-- These will be positioned around the page -->
-  <div class="hidden-item" data-reveal-distance="80" style="top: 20%; left: 15%;">
-    <div class="hidden-text">💎 Secret gem found!</div>
+  <!-- Just a few cute cats scattered around -->
+  <div class="hidden-item" data-reveal-distance="80" style="top: 25%; left: 20%;">
+    <div class="hidden-cat">🐱</div>
   </div>
   
-  <div class="hidden-item" data-reveal-distance="100" style="top: 40%; right: 20%;">
-    <div class="hidden-graphic">🌟</div>
-    <div class="hidden-text">You found a star!</div>
+  <div class="hidden-item" data-reveal-distance="80" style="top: 60%; right: 25%;">
+    <div class="hidden-cat">😸</div>
   </div>
   
-  <div class="hidden-item" data-reveal-distance="90" style="top: 60%; left: 25%;">
-    <div class="hidden-text">🦄 Magical unicorn!</div>
+  <div class="hidden-item" data-reveal-distance="80" style="top: 40%; left: 70%;">
+    <div class="hidden-cat">�</div>
   </div>
   
-  <div class="hidden-item" data-reveal-distance="75" style="top: 80%; right: 30%;">
-    <div class="hidden-graphic">🏰</div>
-    <div class="hidden-text">Ancient castle discovered</div>
-  </div>
-  
-  <div class="hidden-item" data-reveal-distance="85" style="top: 30%; left: 60%;">
-    <div class="hidden-text">📜 "The real treasure was the code we wrote along the way"</div>
-  </div>
-  
-  <div class="hidden-item" data-reveal-distance="70" style="top: 70%; left: 80%;">
-    <div class="hidden-graphic">🔥</div>
-    <div class="hidden-text">Eternal flame</div>
+  <div class="hidden-item" data-reveal-distance="80" style="top: 75%; left: 40%;">
+    <div class="hidden-cat">🐈</div>
   </div>
 </div>
 
@@ -65,16 +54,18 @@
     position: absolute;
     top: 20px;
     right: 20px;
-    width: 40px;
-    height: 60px;
+    width: 32px;
+    height: 48px;
     cursor: grab;
     pointer-events: auto;
     z-index: 1002;
     transition: transform 0.2s ease;
+    opacity: 0.7;
   }
 
   .torch:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
+    opacity: 1;
   }
 
   .torch.dragging {
@@ -84,31 +75,31 @@
   }
 
   .torch-handle {
-    width: 12px;
-    height: 35px;
+    width: 10px;
+    height: 28px;
     background: linear-gradient(to bottom, #8B4513, #654321);
-    border-radius: 6px;
+    border-radius: 5px;
     margin: 0 auto;
     position: relative;
   }
 
   .torch-flame {
     position: absolute;
-    top: -15px;
+    top: -12px;
     left: 50%;
     transform: translateX(-50%);
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
   }
 
   .flame-outer {
     position: absolute;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     background: radial-gradient(circle, 
-      rgba(255, 165, 0, 0.9) 0%, 
-      rgba(255, 69, 0, 0.8) 40%, 
-      rgba(220, 20, 60, 0.6) 70%, 
+      rgba(255, 165, 0, 0.8) 0%, 
+      rgba(255, 69, 0, 0.7) 40%, 
+      rgba(220, 20, 60, 0.5) 70%, 
       transparent 100%);
     border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
     animation: flicker 1.5s ease-in-out infinite alternate;
@@ -116,14 +107,14 @@
 
   .flame-inner {
     position: absolute;
-    top: 3px;
+    top: 2px;
     left: 50%;
     transform: translateX(-50%);
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
     background: radial-gradient(circle, 
-      rgba(255, 255, 0, 0.8) 0%, 
-      rgba(255, 165, 0, 0.6) 60%, 
+      rgba(255, 255, 0, 0.7) 0%, 
+      rgba(255, 165, 0, 0.5) 60%, 
       transparent 100%);
     border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
     animation: flicker-inner 1s ease-in-out infinite alternate;
@@ -153,12 +144,12 @@
 
   .torch-light {
     position: absolute;
-    width: 200px;
-    height: 200px;
+    width: 160px;
+    height: 160px;
     background: radial-gradient(circle, 
-      rgba(255, 220, 100, 0.3) 0%, 
-      rgba(255, 165, 0, 0.2) 30%, 
-      rgba(255, 69, 0, 0.1) 60%, 
+      rgba(255, 220, 100, 0.2) 0%, 
+      rgba(255, 165, 0, 0.15) 30%, 
+      rgba(255, 69, 0, 0.08) 60%, 
       transparent 100%);
     border-radius: 50%;
     pointer-events: none;
@@ -190,7 +181,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.4);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -226,46 +217,31 @@
   }
 
   .hidden-item.discovered {
-    opacity: 0.7;
+    opacity: 0.6;
     transform: scale(0.9);
   }
 
   @keyframes sparkle {
     0% { 
       transform: scale(0.5) rotate(0deg);
-      filter: brightness(1);
     }
     50% { 
-      transform: scale(1.2) rotate(180deg);
-      filter: brightness(1.5) drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+      transform: scale(1.3) rotate(10deg);
     }
     100% { 
-      transform: scale(1) rotate(360deg);
-      filter: brightness(1);
+      transform: scale(1) rotate(0deg);
     }
   }
 
-  .hidden-text {
-    background: linear-gradient(45deg, 
-      rgba(255, 215, 0, 0.9), 
-      rgba(255, 165, 0, 0.9));
-    color: #2d1810;
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: 600;
+  .hidden-cat {
+    font-size: 2.5rem;
     text-align: center;
-    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
-    border: 2px solid rgba(255, 215, 0, 0.6);
-    white-space: nowrap;
-    backdrop-filter: blur(5px);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    cursor: default;
   }
 
-  .hidden-graphic {
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 8px;
-    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+  .hidden-cat:hover {
+    transform: scale(1.1);
   }
 
   /* Responsive adjustments */
@@ -282,13 +258,8 @@
       height: 150px;
     }
     
-    .hidden-text {
-      font-size: 0.75rem;
-      padding: 6px 10px;
-    }
-    
-    .hidden-graphic {
-      font-size: 1.5rem;
+    .hidden-cat {
+      font-size: 2rem;
     }
   }
 
@@ -297,11 +268,11 @@
     position: fixed;
     top: 80px;
     right: 20px;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.7);
     color: white;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 0.875rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
     z-index: 1004;
     opacity: 0;
     transform: translateY(-10px);
@@ -328,7 +299,7 @@
 </style>
 
 <div id="torch-instructions" class="torch-instructions">
-  🔦 Drag the torch to explore!
+  🔦 Find the hidden cats!
 </div>
 
 <script>
@@ -344,10 +315,8 @@
     let isDragging = false;
     let startX: number, startY: number;
     let foundItems = new Set<Element>();
-    let totalSecrets = hiddenItems.length;
-    let foundCount = 0;
     
-    // Show instructions on first visit
+    // Show instructions on first visit (smaller, less intrusive)
     const hasSeenTorch = localStorage.getItem('torch-tutorial-seen');
     if (!hasSeenTorch) {
       setTimeout(() => {
@@ -355,25 +324,8 @@
         setTimeout(() => {
           instructions.classList.remove('show');
           localStorage.setItem('torch-tutorial-seen', 'true');
-        }, 3000);
+        }, 2000); // Shorter display time
       }, 1000);
-    }
-
-    // Load previous progress
-    const savedFound = localStorage.getItem('torch-secrets-found');
-    const savedTotal = localStorage.getItem('torch-total-secrets');
-    if (savedFound && savedTotal && parseInt(savedTotal) === totalSecrets) {
-      foundCount = parseInt(savedFound);
-      if (foundCount > 0) {
-        setTimeout(() => {
-          showProgressNotification(`🔍 Welcome back! Secrets found: ${foundCount}/${totalSecrets}`);
-        }, 500);
-      }
-    } else {
-      // Reset if total secrets changed (new content added)
-      localStorage.removeItem('torch-secrets-found');
-      localStorage.removeItem('torch-total-secrets');
-      foundCount = 0;
     }
 
     // Mouse events
@@ -514,35 +466,32 @@
           if (!item.classList.contains('revealed') && !foundItems.has(item)) {
             item.classList.add('revealed');
             foundItems.add(item);
-            foundCount++;
             
-            // Play a discovery sound effect (optional)
-            playDiscoverySound();
-            
-            // Add some particle effects
-            createDiscoveryParticles(itemCenterX, itemCenterY);
-            
-            // Update progress and check for achievements
-            updateProgress();
-            checkAchievements();
+            // Play a cute meow sound
+            playMeowSound();
           }
         }
       });
     }
 
-    function playDiscoverySound() {
+    function playMeowSound() {
       try {
         const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        
+        // Create a cute meow-like sound
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
         
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
         
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+        // Meow frequency pattern
+        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+        oscillator.frequency.linearRampToValueAtTime(800, audioContext.currentTime + 0.1);
+        oscillator.frequency.linearRampToValueAtTime(300, audioContext.currentTime + 0.2);
         
-        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
         
         oscillator.start(audioContext.currentTime);
@@ -552,34 +501,7 @@
       }
     }
 
-    function createDiscoveryParticles(x: number, y: number) {
-      for (let i = 0; i < 8; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-          position: fixed;
-          left: ${x}px;
-          top: ${y}px;
-          width: 4px;
-          height: 4px;
-          background: gold;
-          border-radius: 50%;
-          pointer-events: none;
-          z-index: 1005;
-          animation: particle-burst 0.8s ease-out forwards;
-        `;
-        
-        const angle = (i / 8) * Math.PI * 2;
-        const distance = 50 + Math.random() * 30;
-        particle.style.setProperty('--end-x', Math.cos(angle) * distance + 'px');
-        particle.style.setProperty('--end-y', Math.sin(angle) * distance + 'px');
-        
-        document.body.appendChild(particle);
-        
-        setTimeout(() => particle.remove(), 800);
-      }
-    }
-
-    // Add particle burst animation
+    // Simple animation for particle burst (keeping this minimal)
     const style = document.createElement('style');
     style.textContent = `
       @keyframes particle-burst {
@@ -592,80 +514,6 @@
           opacity: 0;
         }
       }
-      
-      @keyframes slideDown {
-        0% {
-          transform: translateX(-50%) translateY(-20px);
-          opacity: 0;
-        }
-        100% {
-          transform: translateX(-50%) translateY(0);
-          opacity: 1;
-        }
-      }
-      
-      @keyframes slideUp {
-        0% {
-          transform: translateX(-50%) translateY(0);
-          opacity: 1;
-        }
-        100% {
-          transform: translateX(-50%) translateY(-20px);
-          opacity: 0;
-        }
-      }
-      
-      @keyframes achievementPop {
-        0% {
-          transform: translate(-50%, -50%) scale(0);
-          opacity: 0;
-        }
-        50% {
-          transform: translate(-50%, -50%) scale(1.1);
-          opacity: 1;
-        }
-        100% {
-          transform: translate(-50%, -50%) scale(1);
-          opacity: 1;
-        }
-      }
-      
-      @keyframes achievementFadeOut {
-        0% {
-          transform: translate(-50%, -50%) scale(1);
-          opacity: 1;
-        }
-        100% {
-          transform: translate(-50%, -50%) scale(0.8);
-          opacity: 0;
-        }
-      }
-      
-      @keyframes bounce {
-        0%, 20%, 53%, 80%, 100% {
-          transform: translate3d(0, 0, 0);
-        }
-        40%, 43% {
-          transform: translate3d(0, -15px, 0);
-        }
-        70% {
-          transform: translate3d(0, -7px, 0);
-        }
-        90% {
-          transform: translate3d(0, -2px, 0);
-        }
-      }
-      
-      @keyframes confettiFall {
-        0% {
-          transform: translateY(0) rotate(0deg);
-          opacity: 1;
-        }
-        100% {
-          transform: translateY(100vh) rotate(360deg);
-          opacity: 0;
-        }
-      }
     `;
     document.head.appendChild(style);
 
@@ -675,197 +523,6 @@
         resetTorch();
       }
     });
-
-    function updateProgress() {
-      const percentage = Math.round((foundCount / totalSecrets) * 100);
-      
-      // Create or update progress notification
-      showProgressNotification(`🔍 Secrets found: ${foundCount}/${totalSecrets} (${percentage}%)`);
-      
-      // Save progress to localStorage
-      localStorage.setItem('torch-secrets-found', foundCount.toString());
-      localStorage.setItem('torch-total-secrets', totalSecrets.toString());
-    }
-
-    function checkAchievements() {
-      const percentage = (foundCount / totalSecrets) * 100;
-      
-      if (foundCount === 1) {
-        showAchievement('🎉 First Discovery!', 'You found your first secret!');
-      } else if (foundCount === 5) {
-        showAchievement('🕵️ Detective', 'Found 5 secrets');
-      } else if (foundCount === 10) {
-        showAchievement('🏴‍☠️ Treasure Hunter', 'Found 10 secrets');
-      } else if (percentage >= 50) {
-        showAchievement('🌟 Explorer', 'Found half of all secrets');
-      } else if (percentage >= 80) {
-        showAchievement('🏆 Master Explorer', 'Found 80% of secrets');
-      } else if (foundCount === totalSecrets) {
-        showAchievement('👑 Secret Master', 'Found ALL secrets! You are amazing!');
-        celebrateCompletion();
-      }
-    }
-
-    function showProgressNotification(message: string) {
-      // Remove existing notification
-      const existing = document.querySelector('.progress-notification');
-      if (existing) existing.remove();
-      
-      const notification = document.createElement('div');
-      notification.className = 'progress-notification';
-      notification.textContent = message;
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 25px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        z-index: 1006;
-        pointer-events: none;
-        animation: slideDown 0.3s ease-out;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 215, 0, 0.3);
-      `;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.animation = 'slideUp 0.3s ease-in forwards';
-        setTimeout(() => notification.remove(), 300);
-      }, 2000);
-    }
-
-    function showAchievement(title: string, description: string) {
-      const achievement = document.createElement('div');
-      achievement.className = 'achievement-notification';
-      achievement.innerHTML = `
-        <div class="achievement-icon">🏆</div>
-        <div class="achievement-content">
-          <div class="achievement-title">${title}</div>
-          <div class="achievement-desc">${description}</div>
-        </div>
-      `;
-      achievement.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        background: linear-gradient(135deg, #FFD700, #FFA500);
-        color: #2d1810;
-        padding: 20px;
-        border-radius: 15px;
-        font-weight: 600;
-        z-index: 1007;
-        pointer-events: none;
-        animation: achievementPop 2s ease-out forwards;
-        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        text-align: center;
-        min-width: 250px;
-      `;
-      
-      const iconStyle = `
-        font-size: 3rem;
-        margin-bottom: 10px;
-        animation: bounce 0.6s ease-out 0.5s;
-      `;
-      
-      const titleStyle = `
-        font-size: 1.25rem;
-        margin-bottom: 5px;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-      `;
-      
-      const descStyle = `
-        font-size: 0.875rem;
-        opacity: 0.8;
-      `;
-      
-      const iconEl = achievement.querySelector('.achievement-icon') as HTMLElement;
-      const titleEl = achievement.querySelector('.achievement-title') as HTMLElement;
-      const descEl = achievement.querySelector('.achievement-desc') as HTMLElement;
-      
-      if (iconEl) iconEl.style.cssText = iconStyle;
-      if (titleEl) titleEl.style.cssText = titleStyle;
-      if (descEl) descEl.style.cssText = descStyle;
-      
-      document.body.appendChild(achievement);
-      
-      // Play achievement sound
-      playAchievementSound();
-      
-      setTimeout(() => {
-        achievement.style.animation = 'achievementFadeOut 0.5s ease-in forwards';
-        setTimeout(() => achievement.remove(), 500);
-      }, 3000);
-    }
-
-    function celebrateCompletion() {
-      // Create confetti effect
-      for (let i = 0; i < 50; i++) {
-        setTimeout(() => {
-          createConfetti();
-        }, i * 50);
-      }
-      
-      // Show special completion message
-      setTimeout(() => {
-        showProgressNotification('🎊 Congratulations! You are a true explorer! 🎊');
-      }, 1000);
-    }
-
-    function createConfetti() {
-      const confetti = document.createElement('div');
-      const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      
-      confetti.style.cssText = `
-        position: fixed;
-        left: ${Math.random() * 100}vw;
-        top: -10px;
-        width: 8px;
-        height: 8px;
-        background: ${color};
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 1008;
-        animation: confettiFall ${2 + Math.random() * 3}s linear forwards;
-      `;
-      
-      document.body.appendChild(confetti);
-      
-      setTimeout(() => confetti.remove(), 5000);
-    }
-
-    function playAchievementSound() {
-      try {
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-        
-        // Play a triumphant chord
-        const frequencies = [523.25, 659.25, 783.99]; // C, E, G
-        frequencies.forEach((freq, index) => {
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-          
-          oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
-          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
-          
-          oscillator.start(audioContext.currentTime + index * 0.1);
-          oscillator.stop(audioContext.currentTime + 0.8 + index * 0.1);
-        });
-      } catch (e) {
-        // Silently fail if audio context isn't available
-      }
-    }
   }
 
   // Initialize when DOM is ready
