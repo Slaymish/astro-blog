@@ -1,119 +1,149 @@
 ---
 // InteractiveTorch.astro - Interactive torch that reveals hidden cats
+
+// Define layout margins (in viewport units)
+const leftMargin = 10; // vw
+const rightMargin = 10; // vw  
+const topHeaderMargin = 15; // vh
+const headerTextMargin = 25; // vh
+
+// Generate random positions for cats within the margins
+function generateRandomPosition() {
+  const x = Math.random() * (100 - leftMargin - rightMargin) + leftMargin;
+  const y = Math.random() * (100 - headerTextMargin - topHeaderMargin) + headerTextMargin;
+  return { x, y };
+}
+
+// Generate positions for each cat
+const catPositions = [
+  generateRandomPosition(), // orange
+  generateRandomPosition(), // gray
+  generateRandomPosition(), // black
+  generateRandomPosition()  // white
+];
 ---
 
-<div id="torch-container">
-  <!-- Torch icon that can be picked up -->
-  <div id="torch" class="torch" data-picked-up="false">
-    <div class="torch-handle"></div>
-    <div class="torch-flame">
-      <div class="flame-inner"></div>
-      <div class="flame-outer"></div>
+<div class="torch-game-container">
+  <div id="torch-container">
+    <!-- Torch icon that can be picked up -->
+    <div id="torch" class="torch" data-picked-up="false">
+      <div class="torch-handle"></div>
+      <div class="torch-flame">
+        <div class="flame-inner"></div>
+        <div class="flame-outer"></div>
+      </div>
     </div>
+    
+    <!-- Light effect that follows the torch -->
+    <div id="torch-light" class="torch-light"></div>
+    
+    <!-- Overlay to create the darkness effect -->
+    <div id="darkness-overlay" class="darkness-overlay"></div>
   </div>
-  
-  <!-- Light effect that follows the torch -->
-  <div id="torch-light" class="torch-light"></div>
-  
-  <!-- Overlay to create the darkness effect -->
-  <div id="darkness-overlay" class="darkness-overlay"></div>
-</div>
 
-<!-- Hidden content that gets revealed by the torch -->
-<div class="hidden-content">
-  <!-- Pixel art cats scattered around -->
-  <div class="hidden-item" data-reveal-distance="80" style="top: 25%; left: 20%;" data-cat-type="orange">
-    <div class="hidden-cat pixel-cat orange-cat">
-      <div class="cat-ears">
-        <div class="cat-ear cat-ear-left"></div>
-        <div class="cat-ear cat-ear-right"></div>
-      </div>
-      <div class="cat-head">
-        <div class="cat-eyes">
-          <div class="cat-eye cat-eye-left"></div>
-          <div class="cat-eye cat-eye-right"></div>
+  <!-- Hidden content that gets revealed by the torch -->
+  <div class="hidden-content">
+    <!-- Pixel art cats scattered around -->
+    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[0].y}vh; left: ${catPositions[0].x}vw;`} data-cat-type="orange">
+      <div class="hidden-cat pixel-cat orange-cat">
+        <div class="cat-ears">
+          <div class="cat-ear cat-ear-left"></div>
+          <div class="cat-ear cat-ear-right"></div>
         </div>
-        <div class="cat-nose"></div>
-        <div class="cat-mouth"></div>
+        <div class="cat-head">
+          <div class="cat-eyes">
+            <div class="cat-eye cat-eye-left"></div>
+            <div class="cat-eye cat-eye-right"></div>
+          </div>
+          <div class="cat-nose"></div>
+          <div class="cat-mouth"></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-belly"></div>
+        </div>
+        <div class="cat-tail"></div>
       </div>
-      <div class="cat-body">
-        <div class="cat-belly"></div>
-      </div>
-      <div class="cat-tail"></div>
     </div>
-  </div>
-  
-  <div class="hidden-item" data-reveal-distance="80" style="top: 60%; right: 25%;" data-cat-type="gray">
-    <div class="hidden-cat pixel-cat gray-cat">
-      <div class="cat-ears">
-        <div class="cat-ear cat-ear-left"></div>
-        <div class="cat-ear cat-ear-right"></div>
-      </div>
-      <div class="cat-head">
-        <div class="cat-eyes">
-          <div class="cat-eye cat-eye-left"></div>
-          <div class="cat-eye cat-eye-right"></div>
+    
+    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[1].y}vh; left: ${catPositions[1].x}vw;`} data-cat-type="gray">
+      <div class="hidden-cat pixel-cat gray-cat">
+        <div class="cat-ears">
+          <div class="cat-ear cat-ear-left"></div>
+          <div class="cat-ear cat-ear-right"></div>
         </div>
-        <div class="cat-nose"></div>
-        <div class="cat-mouth"></div>
+        <div class="cat-head">
+          <div class="cat-eyes">
+            <div class="cat-eye cat-eye-left"></div>
+            <div class="cat-eye cat-eye-right"></div>
+          </div>
+          <div class="cat-nose"></div>
+          <div class="cat-mouth"></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-belly"></div>
+        </div>
+        <div class="cat-tail"></div>
       </div>
-      <div class="cat-body">
-        <div class="cat-belly"></div>
-      </div>
-      <div class="cat-tail"></div>
     </div>
-  </div>
-  
-  <div class="hidden-item" data-reveal-distance="80" style="top: 40%; left: 70%;" data-cat-type="black">
-    <div class="hidden-cat pixel-cat black-cat">
-      <div class="cat-ears">
-        <div class="cat-ear cat-ear-left"></div>
-        <div class="cat-ear cat-ear-right"></div>
-      </div>
-      <div class="cat-head">
-        <div class="cat-eyes">
-          <div class="cat-eye cat-eye-left"></div>
-          <div class="cat-eye cat-eye-right"></div>
+    
+    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[2].y}vh; left: ${catPositions[2].x}vw;`} data-cat-type="black">
+      <div class="hidden-cat pixel-cat black-cat">
+        <div class="cat-ears">
+          <div class="cat-ear cat-ear-left"></div>
+          <div class="cat-ear cat-ear-right"></div>
         </div>
-        <div class="cat-nose"></div>
-        <div class="cat-mouth"></div>
+        <div class="cat-head">
+          <div class="cat-eyes">
+            <div class="cat-eye cat-eye-left"></div>
+            <div class="cat-eye cat-eye-right"></div>
+          </div>
+          <div class="cat-nose"></div>
+          <div class="cat-mouth"></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-belly"></div>
+        </div>
+        <div class="cat-tail"></div>
       </div>
-      <div class="cat-body">
-        <div class="cat-belly"></div>
-      </div>
-      <div class="cat-tail"></div>
     </div>
-  </div>
-  
-  <div class="hidden-item" data-reveal-distance="80" style="top: 75%; left: 40%;" data-cat-type="white">
-    <div class="hidden-cat pixel-cat white-cat">
-      <div class="cat-ears">
-        <div class="cat-ear cat-ear-left"></div>
-        <div class="cat-ear cat-ear-right"></div>
-      </div>
-      <div class="cat-head">
-        <div class="cat-eyes">
-          <div class="cat-eye cat-eye-left"></div>
-          <div class="cat-eye cat-eye-right"></div>
+    
+    <div class="hidden-item" data-reveal-distance="80" style={`top: ${catPositions[3].y}vh; left: ${catPositions[3].x}vw;`} data-cat-type="white">
+      <div class="hidden-cat pixel-cat white-cat">
+        <div class="cat-ears">
+          <div class="cat-ear cat-ear-left"></div>
+          <div class="cat-ear cat-ear-right"></div>
         </div>
-        <div class="cat-nose"></div>
-        <div class="cat-mouth"></div>
+        <div class="cat-head">
+          <div class="cat-eyes">
+            <div class="cat-eye cat-eye-left"></div>
+            <div class="cat-eye cat-eye-right"></div>
+          </div>
+          <div class="cat-nose"></div>
+          <div class="cat-mouth"></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-belly"></div>
+        </div>
+        <div class="cat-tail"></div>
       </div>
-      <div class="cat-body">
-        <div class="cat-belly"></div>
-      </div>
-      <div class="cat-tail"></div>
     </div>
   </div>
 </div>
 
 <style>
+  .torch-game-container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    pointer-events: none;
+  }
+
   .torch-container {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: 1000;
   }
@@ -123,64 +153,76 @@
     top: 20px;
     right: 20px;
     width: 32px;
-    height: 48px;
+    height: 52px;
     cursor: grab;
     pointer-events: auto;
     z-index: 1002;
-    transition: transform 0.2s ease;
-    opacity: 0.7;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.3));
   }
 
   .torch:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
     opacity: 1;
+    filter: drop-shadow(0 0 15px rgba(255, 140, 0, 0.5));
   }
 
   .torch.dragging {
     cursor: grabbing;
     transform: scale(1.2);
     z-index: 1003;
+    filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.7));
   }
 
   .torch-handle {
-    width: 8px;
-    height: 24px;
-    background: #4a2c2a;
-    margin: 0 auto 4px;
-    border-radius: 2px;
+    width: 6px;
+    height: 20px;
+    background: linear-gradient(to bottom, #8B4513 0%, #654321 100%);
+    margin: 0 auto 2px;
+    border-radius: 3px;
+    box-shadow: inset 1px 0 0 rgba(255,255,255,0.2), inset -1px 0 0 rgba(0,0,0,0.3);
   }
 
   .torch-flame {
-    width: 16px;
-    height: 20px;
+    width: 20px;
+    height: 24px;
     position: relative;
     margin: 0 auto;
   }
 
   .flame-outer {
-    width: 16px;
-    height: 20px;
-    background: radial-gradient(circle, #ff6b35 20%, #ff4500 50%, #ff8c00 80%);
+    width: 20px;
+    height: 24px;
+    background: linear-gradient(45deg, #ff4500 0%, #ff6b35 30%, #ffa500 70%, #ffff00 100%);
     border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
     position: absolute;
-    animation: flicker 0.5s infinite alternate;
+    animation: flicker 1s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.6));
   }
 
   .flame-inner {
-    width: 8px;
-    height: 12px;
-    background: radial-gradient(circle, #ffeb3b 30%, #ffc107 70%);
+    width: 12px;
+    height: 16px;
+    background: linear-gradient(45deg, #ffa500 0%, #ffff00 50%, #ffffff 100%);
     border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
     position: absolute;
     top: 4px;
     left: 50%;
     transform: translateX(-50%);
-    animation: flicker 0.7s infinite alternate;
+    animation: flicker 0.8s ease-in-out infinite alternate-reverse;
+    opacity: 0.9;
   }
 
   @keyframes flicker {
-    0% { transform: translateX(-50%) scale(1) rotate(-1deg); }
-    100% { transform: translateX(-50%) scale(1.05) rotate(1deg); }
+    0% { 
+      transform: translateX(-50%) scale(0.95) rotate(-2deg);
+      opacity: 0.8;
+    }
+    100% { 
+      transform: translateX(-50%) scale(1.05) rotate(2deg);
+      opacity: 1;
+    }
   }
 
   .torch-light {
@@ -201,11 +243,11 @@
   }
 
   .darkness-overlay {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.4);
     pointer-events: none;
     z-index: 999;
