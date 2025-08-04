@@ -95,6 +95,23 @@
         </select>
       </div>
 
+      <!-- Font Size Control -->
+      <div>
+        <label for="font-size-slider" class="block text-xs mb-2" style="color: var(--color-text-muted);">
+          Font Size: <span id="font-size-value">100</span>%
+        </label>
+        <input 
+          type="range" 
+          id="font-size-slider" 
+          min="75" 
+          max="150" 
+          value="100"
+          step="5"
+          class="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
+          style="background-color: var(--color-bg-secondary);"
+        />
+      </div>
+
       <!-- Color Preview -->
       <div class="grid grid-cols-5 gap-2 mt-4">
         <div class="h-8 rounded" id="color-preview-1" style="background: hsl(142, 70%, 60%)"></div>
@@ -131,6 +148,8 @@
       themeIcon: document.getElementById('theme-icon'),
       themeText: document.getElementById('theme-text'),
       fontSelect: document.getElementById('font-select'),
+      fontSizeSlider: document.getElementById('font-size-slider'),
+      fontSizeValue: document.getElementById('font-size-value'),
       hueValue: document.getElementById('hue-value'),
       saturationValue: document.getElementById('saturation-value'),
       
@@ -154,11 +173,13 @@
         this.resetButton.addEventListener('click', () => this.resetColors());
         this.themeToggle.addEventListener('click', () => this.toggleTheme());
         this.fontSelect.addEventListener('change', () => this.updateFont());
+        this.fontSizeSlider.addEventListener('input', () => this.updateFontSize());
         
         this.loadPreferences();
         this.updateColors();
         this.initTheme();
         this.initFont();
+        this.initFontSize();
       },
 
       updateColors() {
@@ -261,10 +282,14 @@
         this.saturationSlider.value = this.defaultSaturation.toString();
         this.harmonySelect.value = 'analogous';
         this.fontSelect.value = 'modern';
+        this.fontSizeSlider.value = '100';
+        this.fontSizeValue.textContent = '100';
         this.updateColors();
         this.applyFont('modern');
+        this.applyFontSize(100);
         localStorage.removeItem('colorPreferences');
         localStorage.removeItem('fontStyle');
+        localStorage.removeItem('fontSize');
       },
 
       savePreferences() {
@@ -371,6 +396,66 @@
           root.style.setProperty('--font-body', fonts.body);
           root.style.setProperty('--font-mono', fonts.mono);
         }
+      },
+
+      // Font size management methods
+      initFontSize() {
+        const savedSize = localStorage.getItem('fontSize');
+        const fontSize = savedSize ? parseInt(savedSize) : 100;
+        this.fontSizeSlider.value = fontSize.toString();
+        this.fontSizeValue.textContent = fontSize.toString();
+        this.applyFontSize(fontSize);
+      },
+
+      updateFontSize() {
+        const fontSize = parseInt(this.fontSizeSlider.value);
+        this.fontSizeValue.textContent = fontSize.toString();
+        this.applyFontSize(fontSize);
+        localStorage.setItem('fontSize', fontSize.toString());
+      },
+
+      applyFontSize(sizePercent) {
+        const root = document.documentElement;
+        const scaleFactor = sizePercent / 100;
+        
+        // Apply scaling to CSS custom properties for different text elements
+        root.style.setProperty('--font-scale', scaleFactor.toString());
+        
+        // Update specific font sizes
+        root.style.fontSize = `${16 * scaleFactor}px`; // Base font size
+        
+        // You can also update specific elements if needed
+        const elements = [
+          { selector: '.prose p', baseFontSize: 17 },
+          { selector: '.prose h1', baseFontSize: 40 },
+          { selector: '.prose h2', baseFontSize: 32 },
+          { selector: '.prose h3', baseFontSize: 26 },
+          { selector: '.prose h4', baseFontSize: 22 },
+          { selector: '.prose h5', baseFontSize: 20 },
+          { selector: '.prose h6', baseFontSize: 16 },
+          { selector: '.prose li', baseFontSize: 17 },
+          { selector: '.prose blockquote', baseFontSize: 18 },
+          { selector: '.prose code', baseFontSize: 14 },
+        ];
+        
+        // Remove existing dynamic styles
+        const existingStyle = document.getElementById('dynamic-font-sizes');
+        if (existingStyle) {
+          existingStyle.remove();
+        }
+        
+        // Create new dynamic styles
+        const style = document.createElement('style');
+        style.id = 'dynamic-font-sizes';
+        let css = '';
+        
+        elements.forEach(({ selector, baseFontSize }) => {
+          const newSize = baseFontSize * scaleFactor;
+          css += `${selector} { font-size: ${newSize}px !important; }\n`;
+        });
+        
+        style.textContent = css;
+        document.head.appendChild(style);
       }
     };
 
