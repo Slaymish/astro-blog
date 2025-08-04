@@ -764,9 +764,9 @@ const catPositions = [
   // Play victory sound when all cats are found
   function playVictorySound() {
     if (!audioContext) return;
-
-    // Create a triumphant melody
-    const notes = [523, 659, 784, 1047]; // C5, E5, G5, C6
+    
+    // Victory melody: C5, E5, G5, C6
+    const notes = [523.25, 659.25, 783.99, 1046.50];
     const durations = [0.2, 0.2, 0.2, 0.4];
     
     let currentTime = audioContext.currentTime;
@@ -783,13 +783,13 @@ const catPositions = [
       
       // Volume envelope
       gainNode.gain.setValueAtTime(0, currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.3, currentTime + 0.02);
+      gainNode.gain.linearRampToValueAtTime(0.3, currentTime + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + durations[index]);
       
       oscillator.start(currentTime);
       oscillator.stop(currentTime + durations[index]);
       
-      currentTime += durations[index] * 0.8; // Slight overlap
+      currentTime += durations[index];
     });
   }
 
