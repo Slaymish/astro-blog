@@ -50,8 +50,9 @@ if (supabase) {
 }
 
 const reports = await getCollection('reports');
-const allReports = reports
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+const sortedReports = reports
+  .filter(report => !report.data.draft)
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 
 const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, mathematics, and technology. Discover insights on programming, machine learning, algorithms, and philosophy.";
 ---
@@ -130,20 +131,14 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
           <section class="reports-section">
             <h2>Reports</h2>
             <div class="reports-grid">
-              {allReports.map((report) => (
-                <article class="report-card">
-                  <h3>
-                    <a href={`/reports/${report.id}`}>
-                      {report.data.title}
-                    </a>
-                  </h3>
-                  <p class="report-date">
-                    {new Date(report.data.date).toLocaleDateString()}
-                  </p>
-                  <p class="report-description">
-                    {report.data.description}
-                  </p>
-                </article>
+              {sortedReports.map(report => (
+                <div class="report-card">
+                  <h3><a href={`/reports/${report.slug}`}>{report.data.title}</a></h3>
+                  <time>
+                    {new Date(report.data.pubDate).toLocaleDateString()}
+                  </time>
+                  {report.data.description && <p>{report.data.description}</p>}
+                </div>
               ))}
             </div>
           </section>

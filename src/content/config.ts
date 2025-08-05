@@ -11,13 +11,18 @@ const blog = defineCollection({
 });
 
 const reports = defineCollection({
-  type: 'content',  // Changed from 'data' to 'content'
+  type: 'content',
   schema: z.object({
     title: z.string(),
-    description: z.string(),
-    date: z.date(),
+    description: z.string().optional(),
+    pubDate: z.date(), // Changed from 'date' to match actual data
     tags: z.array(z.string()).optional(),
-    pdfPath: z.string(), // relative path to PDF file
+    featured: z.boolean().optional(),
+    draft: z.boolean().optional(),
+    author: z.string().optional(),
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    pdfPath: z.string().optional(), // Made optional since it might not always be present
   }),
 });
 
