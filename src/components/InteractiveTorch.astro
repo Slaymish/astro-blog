@@ -117,54 +117,40 @@ const catPositions = [
     }
   }
 
-  // Create different meow sounds for each cat type
+  // Play meow sound using audio clips
   function playMeow(catType: string) {
-    if (!audioContext) return;
-
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    // Different frequency patterns for each cat
-    let frequencies: number[] = [];
+    // Map cat types to audio files
+    let audioFile: string;
     switch (catType) {
       case 'orange':
-        frequencies = [300, 400, 350, 500]; // Deep meow
+        audioFile = '/audio/Audio 1.mp3';
         break;
       case 'gray':
-        frequencies = [450, 550, 500, 600]; // Medium meow
+        audioFile = '/audio/Audio 2.mp3';
         break;
       case 'black':
-        frequencies = [280, 350, 320, 450]; // Low meow
+        audioFile = '/audio/Audio 3.mp3';
         break;
       case 'white':
-        frequencies = [500, 650, 600, 750]; // High meow
+        audioFile = '/audio/Audio 4.mp3';
         break;
       case 'brown':
-        frequencies = [350, 450, 400, 550]; // Mid-range meow
+        audioFile = '/audio/Audio 5.mp3';
         break;
       default:
-        frequencies = [400, 500, 450, 550];
+        audioFile = '/audio/Audio 1.mp3';
     }
 
-    let currentTime = audioContext.currentTime;
-    
-    // Create a meow pattern
-    frequencies.forEach((freq, index) => {
-      oscillator.frequency.setValueAtTime(freq, currentTime + index * 0.1);
-    });
-
-    // Volume envelope for meow effect
-    gainNode.gain.setValueAtTime(0, currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.3, currentTime + 0.05);
-    gainNode.gain.exponentialRampToValueAtTime(0.1, currentTime + 0.2);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + 0.4);
-
-    oscillator.type = 'sine';
-    oscillator.start(currentTime);
-    oscillator.stop(currentTime + 0.4);
+    // Create and play audio
+    try {
+      const audio = new Audio(audioFile);
+      audio.volume = 0.5; // Set volume to 50%
+      audio.play().catch(error => {
+        console.warn('Could not play meow sound:', error);
+      });
+    } catch (error) {
+      console.warn('Could not create audio element:', error);
+    }
   }
 
   // Play victory sound when all cats are found
@@ -249,13 +235,13 @@ const catPositions = [
         
         if (!foundCats.has(catType)) {
           foundCats.add(catType);
-          initAudio();
           playMeow(catType);
           updateCatCounter();
           
           // Show reset text and play victory sound when all cats are found
           if (foundCats.size === 5) {
             showResetText();
+            initAudio();
             playVictorySound();
           }
         }
