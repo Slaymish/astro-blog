@@ -1,0 +1,493 @@
+---
+// Theme Customizer Panel Component
+// A slide-out panel with theme controls and animations
+---
+
+<!-- Fixed gear button -->
+<button
+  id="theme-customizer-toggle"
+  class="fixed top-4 right-4 z-40 w-11 h-11 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 backdrop-blur-sm"
+  style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-primary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);"
+  aria-label="Open theme customizer"
+  aria-expanded="false"
+  aria-controls="theme-customizer-panel"
+>
+  <span class="text-lg" aria-hidden="true">⚙️</span>
+</button>
+
+<!-- Overlay -->
+<div
+  id="theme-customizer-overlay"
+  class="fixed inset-0 z-30 opacity-0 pointer-events-none transition-opacity duration-300"
+  style="background-color: rgba(0, 0, 0, 0.4);"
+  aria-hidden="true"
+></div>
+
+<!-- Slide-out panel -->
+<div
+  id="theme-customizer-panel"
+  class="fixed top-0 right-0 h-full z-50 transform translate-x-full transition-transform duration-300 ease-in-out backdrop-blur-md w-4/5 sm:w-2/3 md:w-1/2 lg:w-1/3"
+  style="background-color: var(--color-bg-primary); border-left: 1px solid var(--color-border-primary); box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);"
+  role="dialog"
+  aria-labelledby="theme-customizer-title"
+  aria-hidden="true"
+>
+  <!-- Panel header -->
+  <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--color-border-primary);">
+    <h2 id="theme-customizer-title" class="text-lg font-semibold" style="color: var(--color-text-primary);">
+      🎨 Theme Customizer
+    </h2>
+    <button
+      id="theme-customizer-close"
+      class="w-11 h-11 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2"
+      style="background-color: var(--color-bg-secondary); color: var(--color-text-primary); border: 1px solid var(--color-border-primary);"
+      aria-label="Close theme customizer"
+    >
+      <span class="text-xl" aria-hidden="true">×</span>
+    </button>
+  </div>
+
+  <!-- Panel content -->
+  <div class="p-4 h-full overflow-y-auto pb-20">
+    <div class="space-y-6">
+      
+      <!-- Theme Mode Toggle -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium" style="color: var(--color-text-secondary);">
+          Appearance
+        </label>
+        <div class="flex rounded-lg p-1" style="background-color: var(--color-bg-secondary);">
+          <button
+            id="light-mode-btn"
+            class="flex-1 py-2 px-3 rounded text-sm font-medium transition-all duration-200"
+            style="color: var(--color-text-primary);"
+            data-theme="light"
+          >
+            ☀️ Light
+          </button>
+          <button
+            id="dark-mode-btn"
+            class="flex-1 py-2 px-3 rounded text-sm font-medium transition-all duration-200"
+            style="color: var(--color-text-primary);"
+            data-theme="dark"
+          >
+            🌙 Dark
+          </button>
+        </div>
+      </div>
+
+      <!-- Font Family Selection -->
+      <div class="space-y-2">
+        <label for="font-family-select" class="block text-sm font-medium" style="color: var(--color-text-secondary);">
+          Font Style
+        </label>
+        <select 
+          id="font-family-select"
+          class="w-full p-3 text-sm rounded-lg border transition-all duration-200 focus:ring-2 focus:ring-offset-1"
+          style="background-color: var(--color-bg-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary);"
+        >
+          <option value="modern">Modern (Inter + Playfair)</option>
+          <option value="classic">Classic (Georgia + Times)</option>
+          <option value="minimal">Minimal (System Sans)</option>
+          <option value="editorial">Editorial (Crimson + Source Sans)</option>
+          <option value="tech">Tech (JetBrains Mono + Inter)</option>
+          <option value="creative">Creative (Merriweather + Open Sans)</option>
+        </select>
+      </div>
+
+      <!-- Font Size Control -->
+      <div class="space-y-2">
+        <label for="font-size-slider" class="block text-sm font-medium" style="color: var(--color-text-secondary);">
+          Font Size: <span id="font-size-value">16px</span>
+        </label>
+        <input 
+          type="range" 
+          id="font-size-slider" 
+          min="14" 
+          max="20" 
+          value="16"
+          step="1"
+          class="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
+        />
+      </div>
+
+      <!-- Primary Color Control -->
+      <div class="space-y-2">
+        <label for="hue-slider" class="block text-sm font-medium" style="color: var(--color-text-secondary);">
+          Primary Color: <span id="hue-value">142</span>°
+        </label>
+        <input 
+          type="range" 
+          id="hue-slider" 
+          min="0" 
+          max="360" 
+          value="142"
+          class="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
+        />
+        <!-- Color preview -->
+        <div class="flex space-x-2 mt-2">
+          <div class="w-8 h-8 rounded border-2 border-white shadow-sm" id="color-preview-1"></div>
+          <div class="w-8 h-8 rounded border-2 border-white shadow-sm" id="color-preview-2"></div>
+          <div class="w-8 h-8 rounded border-2 border-white shadow-sm" id="color-preview-3"></div>
+        </div>
+      </div>
+
+      <!-- Saturation Control -->
+      <div class="space-y-2">
+        <label for="saturation-slider" class="block text-sm font-medium" style="color: var(--color-text-secondary);">
+          Color Intensity: <span id="saturation-value">70</span>%
+        </label>
+        <input 
+          type="range" 
+          id="saturation-slider" 
+          min="30" 
+          max="100" 
+          value="70"
+          class="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
+        />
+      </div>
+
+      <!-- Color Harmony -->
+      <div class="space-y-2">
+        <label for="harmony-select" class="block text-sm font-medium" style="color: var(--color-text-secondary);">
+          Color Harmony
+        </label>
+        <select 
+          id="harmony-select"
+          class="w-full p-3 text-sm rounded-lg border transition-all duration-200 focus:ring-2 focus:ring-offset-1"
+          style="background-color: var(--color-bg-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary);"
+        >
+          <option value="monochromatic">Monochromatic</option>
+          <option value="analogous" selected>Analogous</option>
+          <option value="complementary">Complementary</option>
+          <option value="triadic">Triadic</option>
+          <option value="split-complementary">Split Complementary</option>
+        </select>
+      </div>
+
+      <!-- Reset Button -->
+      <div class="pt-4">
+        <button
+          id="reset-theme-btn"
+          class="w-full py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2"
+          style="background-color: var(--color-bg-secondary); color: var(--color-text-primary); border: 1px solid var(--color-border-primary);"
+        >
+          Reset to Defaults
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Custom slider styles */
+  .slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-primary-500);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+  }
+
+  .slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-primary-500);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+  }
+
+  .slider::-webkit-slider-track {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-primary);
+  }
+
+  .slider::-moz-range-track {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-primary);
+  }
+
+  /* Panel animations */
+  .theme-panel-open {
+    transform: translateX(0) !important;
+  }
+
+  .theme-overlay-visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Focus styles for accessibility */
+  .slider:focus {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  /* Ensure panel leaves content visible on mobile */
+  @media (max-width: 640px) {
+    #theme-customizer-panel {
+      width: 85%; /* Leaves 15% of screen visible */
+    }
+  }
+</style>
+
+<script>
+class ThemeCustomizer {
+  constructor() {
+    this.isOpen = false;
+    this.toggle = document.getElementById('theme-customizer-toggle');
+    this.panel = document.getElementById('theme-customizer-panel');
+    this.overlay = document.getElementById('theme-customizer-overlay');
+    this.closeBtn = document.getElementById('theme-customizer-close');
+    
+    // Theme controls
+    this.lightModeBtn = document.getElementById('light-mode-btn');
+    this.darkModeBtn = document.getElementById('dark-mode-btn');
+    this.fontFamilySelect = document.getElementById('font-family-select');
+    this.fontSizeSlider = document.getElementById('font-size-slider');
+    this.hueSlider = document.getElementById('hue-slider');
+    this.saturationSlider = document.getElementById('saturation-slider');
+    this.harmonySelect = document.getElementById('harmony-select');
+    this.resetBtn = document.getElementById('reset-theme-btn');
+    
+    // Value displays
+    this.fontSizeValue = document.getElementById('font-size-value');
+    this.hueValue = document.getElementById('hue-value');
+    this.saturationValue = document.getElementById('saturation-value');
+    
+    // Color previews
+    this.colorPreviews = [
+      document.getElementById('color-preview-1'),
+      document.getElementById('color-preview-2'),
+      document.getElementById('color-preview-3')
+    ];
+
+    this.init();
+  }
+
+  init() {
+    // Load saved preferences
+    this.loadPreferences();
+    
+    // Event listeners
+    this.toggle?.addEventListener('click', () => this.togglePanel());
+    this.closeBtn?.addEventListener('click', () => this.closePanel());
+    this.overlay?.addEventListener('click', () => this.closePanel());
+    
+    // Theme mode buttons
+    this.lightModeBtn?.addEventListener('click', () => this.setTheme('light'));
+    this.darkModeBtn?.addEventListener('click', () => this.setTheme('dark'));
+    
+    // Font controls
+    this.fontFamilySelect?.addEventListener('change', (e) => this.setFontFamily(e.target.value));
+    this.fontSizeSlider?.addEventListener('input', (e) => this.setFontSize(e.target.value));
+    
+    // Color controls
+    this.hueSlider?.addEventListener('input', (e) => this.setHue(e.target.value));
+    this.saturationSlider?.addEventListener('input', (e) => this.setSaturation(e.target.value));
+    this.harmonySelect?.addEventListener('change', (e) => this.setHarmony(e.target.value));
+    
+    // Reset button
+    this.resetBtn?.addEventListener('click', () => this.resetToDefaults());
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.isOpen) {
+        this.closePanel();
+      }
+    });
+
+    // Update UI to reflect current theme
+    this.updateThemeButtons();
+    this.updateColorPreviews();
+  }
+
+  togglePanel() {
+    if (this.isOpen) {
+      this.closePanel();
+    } else {
+      this.openPanel();
+    }
+  }
+
+  openPanel() {
+    this.isOpen = true;
+    this.panel?.classList.add('theme-panel-open');
+    this.overlay?.classList.add('theme-overlay-visible');
+    this.toggle?.setAttribute('aria-expanded', 'true');
+    this.panel?.setAttribute('aria-hidden', 'false');
+    
+    // Focus management
+    this.panel?.focus();
+  }
+
+  closePanel() {
+    this.isOpen = false;
+    this.panel?.classList.remove('theme-panel-open');
+    this.overlay?.classList.remove('theme-overlay-visible');
+    this.toggle?.setAttribute('aria-expanded', 'false');
+    this.panel?.setAttribute('aria-hidden', 'true');
+    
+    // Return focus to toggle button
+    this.toggle?.focus();
+  }
+
+  setTheme(theme) {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+    this.updateThemeButtons();
+  }
+
+  updateThemeButtons() {
+    const isDark = document.documentElement.classList.contains('dark');
+    const activeStyle = 'background-color: var(--color-primary-500); color: white;';
+    const inactiveStyle = 'background-color: transparent; color: var(--color-text-primary);';
+    
+    if (this.lightModeBtn && this.darkModeBtn) {
+      this.lightModeBtn.style.cssText = !isDark ? activeStyle : inactiveStyle;
+      this.darkModeBtn.style.cssText = isDark ? activeStyle : inactiveStyle;
+    }
+  }
+
+  setFontFamily(family) {
+    const fontMappings = {
+      modern: { heading: 'Playfair Display', body: 'Inter' },
+      classic: { heading: 'Georgia', body: 'Arial' },
+      minimal: { heading: 'system-ui', body: 'system-ui' },
+      editorial: { heading: 'Crimson Text', body: 'Source Sans Pro' },
+      tech: { heading: 'Inter', body: 'JetBrains Mono' },
+      creative: { heading: 'Merriweather', body: 'Open Sans' }
+    };
+
+    const fonts = fontMappings[family] || fontMappings.modern;
+    document.documentElement.style.setProperty('--font-heading', fonts.heading);
+    document.documentElement.style.setProperty('--font-body', fonts.body);
+    
+    localStorage.setItem('fontFamily', family);
+  }
+
+  setFontSize(size) {
+    document.documentElement.style.fontSize = size + 'px';
+    this.fontSizeValue.textContent = size + 'px';
+    localStorage.setItem('fontSize', size);
+  }
+
+  setHue(hue) {
+    this.hueValue.textContent = hue;
+    this.updateColors(parseInt(hue), this.saturationSlider?.value || 70);
+    this.updateColorPreviews();
+    localStorage.setItem('hue', hue);
+  }
+
+  setSaturation(saturation) {
+    this.saturationValue.textContent = saturation;
+    this.updateColors(this.hueSlider?.value || 142, parseInt(saturation));
+    this.updateColorPreviews();
+    localStorage.setItem('saturation', saturation);
+  }
+
+  setHarmony(harmony) {
+    this.updateColors(this.hueSlider?.value || 142, this.saturationSlider?.value || 70, harmony);
+    this.updateColorPreviews();
+    localStorage.setItem('harmony', harmony);
+  }
+
+  updateColors(hue, saturation, harmony = 'analogous') {
+    const root = document.documentElement;
+    
+    // Update primary color scale
+    root.style.setProperty('--color-primary-300', `hsl(${hue}, ${saturation}%, 75%)`);
+    root.style.setProperty('--color-primary-400', `hsl(${hue}, ${saturation}%, 65%)`);
+    root.style.setProperty('--color-primary-500', `hsl(${hue}, ${saturation}%, 55%)`);
+    root.style.setProperty('--color-primary-600', `hsl(${hue}, ${saturation}%, 45%)`);
+  }
+
+  updateColorPreviews() {
+    const hue = this.hueSlider?.value || 142;
+    const saturation = this.saturationSlider?.value || 70;
+    
+    if (this.colorPreviews.length >= 3) {
+      this.colorPreviews[0].style.backgroundColor = `hsl(${hue}, ${saturation}%, 75%)`;
+      this.colorPreviews[1].style.backgroundColor = `hsl(${hue}, ${saturation}%, 55%)`;
+      this.colorPreviews[2].style.backgroundColor = `hsl(${hue}, ${saturation}%, 45%)`;
+    }
+  }
+
+  resetToDefaults() {
+    // Reset all values to defaults
+    this.setTheme('light');
+    this.setFontFamily('modern');
+    this.setFontSize(16);
+    this.setHue(142);
+    this.setSaturation(70);
+    this.setHarmony('analogous');
+    
+    // Update UI controls
+    if (this.fontFamilySelect) this.fontFamilySelect.value = 'modern';
+    if (this.fontSizeSlider) this.fontSizeSlider.value = 16;
+    if (this.hueSlider) this.hueSlider.value = 142;
+    if (this.saturationSlider) this.saturationSlider.value = 70;
+    if (this.harmonySelect) this.harmonySelect.value = 'analogous';
+    
+    // Clear localStorage
+    localStorage.removeItem('theme');
+    localStorage.removeItem('fontFamily');
+    localStorage.removeItem('fontSize');
+    localStorage.removeItem('hue');
+    localStorage.removeItem('saturation');
+    localStorage.removeItem('harmony');
+  }
+
+  loadPreferences() {
+    // Load saved theme preferences
+    const theme = localStorage.getItem('theme') || 'light';
+    const fontFamily = localStorage.getItem('fontFamily') || 'modern';
+    const fontSize = localStorage.getItem('fontSize') || '16';
+    const hue = localStorage.getItem('hue') || '142';
+    const saturation = localStorage.getItem('saturation') || '70';
+    const harmony = localStorage.getItem('harmony') || 'analogous';
+    
+    // Apply loaded preferences
+    this.setTheme(theme);
+    this.setFontFamily(fontFamily);
+    this.setFontSize(fontSize);
+    this.setHue(hue);
+    this.setSaturation(saturation);
+    this.setHarmony(harmony);
+    
+    // Update UI controls
+    if (this.fontFamilySelect) this.fontFamilySelect.value = fontFamily;
+    if (this.fontSizeSlider) this.fontSizeSlider.value = fontSize;
+    if (this.hueSlider) this.hueSlider.value = hue;
+    if (this.saturationSlider) this.saturationSlider.value = saturation;
+    if (this.harmonySelect) this.harmonySelect.value = harmony;
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new ThemeCustomizer();
+});
+</script>

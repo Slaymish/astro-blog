@@ -5,6 +5,7 @@ import Header from "./Header.astro";
 import ParticleBackground from "./ParticleBackground.astro";
 import AnimatedBackground from "./AnimatedBackground.astro";
 import ScrollProgress from "./ScrollProgress.astro";
+import ThemeCustomizer from "./ThemeCustomizer.astro";
 
 interface Props {
   title: string;
@@ -184,6 +185,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <ScrollProgress />
     <AnimatedBackground />
     <ParticleBackground />
+    <ThemeCustomizer />
     <Header />
     <main class="w-full max-w-4xl mx-auto grow">
       <slot />
