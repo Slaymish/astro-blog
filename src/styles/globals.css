@@ -304,8 +304,17 @@
     background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
+    color: var(--color-primary-500); /* Fallback color */
     -webkit-text-fill-color: transparent;
     animation: gradient-shift 3s ease infinite;
+  }
+
+  /* Fallback for browsers that don't support background-clip: text */
+  @supports not (-webkit-background-clip: text) {
+    .gradient-text {
+      color: var(--color-primary-500);
+      -webkit-text-fill-color: unset;
+    }
   }
 
   @keyframes gradient-shift {
