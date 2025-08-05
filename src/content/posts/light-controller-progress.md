@@ -7,7 +7,7 @@ draft: false
 author: "Hamish Burke"
 ---
 
-## 🧪 Why I Started This Project
+## Why I Started This Project
 
 I've had my WiFi-controlled Tapo lights for a couple of years, and I enjoy the ability to get the vibe in my room *just* right. For instance, as I'm winding down for bed, I can set them to a dim, warm orange, and when I wake up, I can make them turn on automatically at full brightness in a daylight colour. The main issue I've found with it is that I currently have two forms of control: either through the Tapo app on my phone or by speaking commands to my Google Home Mini. As I've experienced in several instances, neither of these options are optimal for me. For example, if my phone is in another room, or it's late at night, and I don't want to yell across the room to turn off my lights. Of course, this problem has been solved for non-WiFi-controlled lights with a simple wall switch. 
 
@@ -18,7 +18,7 @@ My goal was to create a simple-to-use physical remote for my WiFi lights. My req
 - **Immediate feedback:** I wanted any adjustments made using the physical components I use to be immediately clear about what they do. I'm aware that changing my lights by contacting an API introduces some latency in the adjustments made. This means I'll want an additional status indicator that displays what my lights are currently showing and responds immediately to button or dial presses. 
 - **Feature complete**: I wanted to be able to control my lights in every way I'd typically do with my Google Home or phone. So that means not just on/off, but also brightness and colour. 
 
-## ⚙️ Current Hardware Setup
+## Current Hardware Setup
 
 I'm currently running everything on a breadboard. The setup includes:
 
@@ -28,7 +28,7 @@ I'm currently running everything on a breadboard. The setup includes:
 - **PIR motion sensor** – detects whether someone is using the controller and triggers deep sleep when idle  
 - **24-bulb RGB LED ring light** – shows real-time visual feedback (brightness, colour, etc.)
 
-## 🧠 Logic + Behaviour
+## Logic + Behaviour
 
 Currently, to meet my low-power requirement, the ESP32 starts in deep sleep with the LED ring light off. When the PIR motion sensor detects movement in the room, it wakes the ESP32 from deep sleep and initiates its boot-up process. This involves connecting to the WiFi, establishing a connection with the Tapo lights, and turning on the LED ring light. The ring light shows the current status of the Tapo lights. Currently, I am storing the previous state of the lights (colour, power, and brightness) on the ESP32's disk so that when it wakes up, it can retrieve the last state of the lights and display it on the ring LED. 
 
@@ -45,7 +45,7 @@ To set the Tapo colour and brightness level, I modified an existing open-source 
 - `set_brightness(uint8_t level)`
 - `set_colour(uint16_t hue, uint_t saturation)`
 
-## 📉 Dealing with Latency
+## Dealing with Latency
 
 To align with my **immediate feedback** requirement, I wanted to ensure it didn't feel 'laggy' or cumbersome to use. My initial testing felt disappointing, as I'd rotate the encoder, then have to wait one or two seconds for the Tapo lights and ring LED to adjust. This created a user experience of turning it slightly, then waiting for the lights to update, turning it a bit more, and waiting again, etc. I'd have to address issues with two different components: the **Tapo lights** and the **ring LED light**. 
 
@@ -79,7 +79,7 @@ if (encVal != prevEncVal) {
 
 **For the Tapo lights**, improving the latency and performance wasn't as obvious. Due to the requirement to make an API call to control the lights, there was a definite lower limit to how quickly I could get it to respond. One solution I came up with was to parallelise the API calls so both of my Tapo lights would adjust to their updated state simultaneously rather than sequentially. As I have two Tapo lights, this effectively cut the waiting time for the lights to update *in half completely*. Another improvement I made was to change the API calls from blocking to asynchronous. I achieved this by creating two threads: one for my core application logic (connecting to WiFi, reading encoder values, etc.) and the other solely for Tapo API calls. The two threads communicate through a shared mutex, which contains the current brightness, power, and colour state that the lights are expected to be in. The Tapo thread regularly checks these mutexes, and if they are out of sync with how the lights are currently set, it'll call to update them. Separating the logic in this way came with several benefits. Previously, every adjustment to the joystick or rotary encoder made a blocking API call to update the lights. Now, even if the user changes many values rapidly, this will only update the value of the mutex, meaning the API calls now occur at regular intervals. In practice, this allows me to adjust the control as much or as quickly as I like and for the Tapo lights to update to whatever I finally settle on.
 
-## 🎯 What's Next
+## What's Next
 
 In terms of what's next, I'd like to avoid having a bundle of cables on a breadboard for very long. My next step would be to make a more semi-permanent prototype using a solder-able prototyping board. This will allow the circuit to be less fragile when moved and enable me to start considering casing options. 
 
