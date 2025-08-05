@@ -7,12 +7,12 @@ export async function getStaticPaths() {
   const reports = await getCollection('reports');
   return reports.map(r => {
     const slug = r.id.replace(/\.(md|mdx)$/, '');
-    return { params: { slug: slug.split('/') } };
+    return { params: { slug } };
   });
 }
 
-const rawSlug = Astro.params.slug;
-const slug = Array.isArray(rawSlug) ? rawSlug.join('/') : rawSlug;
+const slug = Astro.params.slug as string;
+
 const report = await getEntry('reports', slug);
 if (!report) {
   throw new Error(`Report not found: ${slug}`);
