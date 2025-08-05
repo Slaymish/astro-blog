@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntryBySlug } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
@@ -12,7 +12,10 @@ export async function getStaticPaths() {
 
 const rawSlug = Astro.params.slug;
 const slug = Array.isArray(rawSlug) ? rawSlug.join('/') : rawSlug;
-const report = await getEntryBySlug('reports', slug);
+const report = await getEntry('reports', slug);
+if (!report) {
+  throw new Error(`Report not found: ${slug}`);
+}
 const data = report.data as any;
 const { Content } = await report.render();
 ---
