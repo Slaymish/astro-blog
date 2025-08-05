@@ -42,9 +42,9 @@
 
   /* === DYNAMIC COMPONENT COLORS === */
   /* These are calculated and updated by the color controller */
-  --color-tag-bg: hsla(142, 70%, 55%, 0.15);      /* Tag background (dynamic) */
-  --color-tag-bg-hover: hsla(142, 70%, 55%, 0.25); /* Tag hover state (dynamic) */
-  --color-tag-text: var(--color-primary-600);      /* Tag text color (dynamic) */
+  --color-tag-bg: var(--color-primary-100);        /* Light background for better contrast */
+  --color-tag-bg-hover: var(--color-primary-200);  /* Slightly darker on hover */
+  --color-tag-text: var(--color-primary-800);      /* Dark text for readability */
 
   /* Link styling (dynamic) */
   --color-link: var(--color-primary-600);          /* Default link color (dynamic) */
@@ -69,6 +69,8 @@
   --color-border-secondary: #404040;  /* Subtle borders (neutral-700) */
 
   /* === DYNAMIC COMPONENT COLORS === */
+  --color-tag-bg: hsla(142, 70%, 55%, 0.15);      /* Tag background (dynamic) */
+  --color-tag-bg-hover: hsla(142, 70%, 55%, 0.25); /* Tag hover state (dynamic) */
   --color-tag-text: var(--color-primary-300);      /* Tag text color (dynamic) */
   --color-link: var(--color-primary-400);          /* Default link color (dynamic) */
   --color-link-hover: var(--color-primary-300);    /* Link hover color (dynamic) */
