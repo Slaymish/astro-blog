@@ -5,6 +5,14 @@ tags: ["AI","research","tech"]
 featured: false
 draft: false
 author: "Hamish Burke"
+---
+
+I just watched a talk on Meta's new paper, "Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach"[^1]. It seems like a big deal, because instead of offloading "thinking" into token outputs, the model reasons inside its hidden layers. First I'll outline how mostg Latent Space for Reasoning: Why Meta's Recurrent-Depth Approach Could Outperform Chain-of-Thought"
+pubDate: 2025-03-29
+tags: ["AI","research","tech"]
+featured: false
+draft: false
+author: "Hamish Burke"
 ---e: Using Latent Space for Reasoning: Why Meta’s Recurrent-Depth Approach Could Outperform Chain-of-Thought
 pubDate: 2025-03-29
 tags: ["AI","research","tech"]
