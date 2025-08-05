@@ -1,3 +1,6 @@
+@tailwind utilities;
+@reference;
+
 .torch-game-container { /* minimal overrides via Tailwind */ }
 
 .torch { /* keep any custom overrides */ }
