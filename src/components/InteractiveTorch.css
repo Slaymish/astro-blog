@@ -4,12 +4,16 @@
 .torch-game-container { /* Back to fixed positioning to match social buttons */ }
 
 /* Remove fixed positioning - now uses absolute from Astro file */
-.torch { /* keep any custom overrides */ }
+.torch { 
+  position: relative;
+  display: inline-block;
+  /* Remove absolute positioning */
+}
 .torch:hover { /* ...existing hover rules... */ }
 .torch.dragging { /* ...existing dragging rules... */ }
 
 .torch-light {
-  position: absolute;
+  position: fixed;
   width: 18rem; /* w-72 equivalent */
   height: 18rem; /* h-72 equivalent */
   border-radius: 50%; /* rounded-full */
@@ -27,6 +31,12 @@
 }
 .torch-light.active {
   opacity: 1;
+}
+
+/* Header container for torch */
+.torch-header-container {
+  position: relative;
+  display: inline-block;
 }
 
 /* container wrapper */
@@ -198,8 +208,10 @@
 /* tooltip */
 .torch-tooltip {
   position: absolute;
-  top: 1.25rem; /* top-5 - same as torch */
-  right: 28rem; /* right-112 - to the left of torch (torch at right-96 = 24rem + gap) */
+  top: 100%; /* below the torch */
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0.5rem;
   background-color: color-mix(in srgb, var(--color-bg-tertiary) 80%, transparent);
   color: var(--color-text-secondary);
   padding: 0.375rem 0.75rem; /* px-3 py-1.5 */

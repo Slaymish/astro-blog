@@ -42,30 +42,28 @@ const catPositions = [
 ];
 ---
 
-<!-- Torch container - positioned relative to viewport like social buttons -->
-<div class="torch-game-container fixed top-0 right-0 pointer-events-none z-50">
-  <div id="torch-container" class="absolute top-0 right-0 pointer-events-none z-50">
-    <!-- Torch icon - positioned far left of social buttons -->
-    <div id="torch" class="torch absolute top-5 right-96 w-12 h-16 cursor-grab pointer-events-auto z-60 transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
-      <img src="/images/flashlight.png" alt="Torch" class="torch-img" />
-    </div>
-    
-    <div id="torch-tooltip" class="torch-tooltip">
-      Drag me to find the cats!
-    </div>
+<!-- Torch positioned as an inline element in header -->
+<div class="torch-header-container relative">
+  <!-- Torch icon that can be picked up -->
+  <div id="torch" class="torch w-12 h-16 cursor-grab transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
+    <img src="/images/flashlight.png" alt="Torch" class="torch-img" />
+  </div>
+  
+  <div id="torch-tooltip" class="torch-tooltip">
+    Drag me to find the cats!
+  </div>
 
-    <!-- Light effect that follows the torch -->
-    <div id="torch-light" class="torch-light"></div>
-    
-    <!-- Instructions when torch is picked up -->
-    <div id="torch-instructions" class="torch-instructions">
-      Press R to reset
-    </div>
-    
-    <!-- Cat counter -->
-    <div id="cat-counter" class="cat-counter">
-      🐱 0/5
-    </div>
+  <!-- Light effect that follows the torch - now fixed positioned -->
+  <div id="torch-light" class="torch-light fixed pointer-events-none"></div>
+  
+  <!-- Instructions when torch is picked up -->
+  <div id="torch-instructions" class="torch-instructions">
+    Press R to reset
+  </div>
+  
+  <!-- Cat counter -->
+  <div id="cat-counter" class="cat-counter">
+    🐱 0/5
   </div>
 </div>
 

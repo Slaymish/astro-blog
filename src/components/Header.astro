@@ -1,3 +1,7 @@
+---
+import InteractiveTorch from './InteractiveTorch.astro';
+---
+
 <header class="max-w-4xl mx-auto mt-6 mb-16">
   <nav class="flex justify-between items-center">
     <a
@@ -7,8 +11,13 @@
       ><span style="color: var(--color-primary-500);">&#10022;</span> Hamish's Blog
     </a>
     
-    <!-- Social Media Icons -->
+    <!-- Social Media Icons with Torch -->
     <div class="flex items-center space-x-4">
+      <!-- Interactive Torch positioned with social buttons -->
+      <div class="social-icon-wrapper">
+        <InteractiveTorch />
+      </div>
+      
       <!-- GitHub -->
       <a
         href="https://github.com/Slaymish"
@@ -96,5 +105,23 @@
       width: 18px;
       height: 18px;
     }
+  }
+
+  .social-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Make sure torch aligns with social icons */
+  .social-icon-wrapper .torch {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+  }
+  
+  .social-icon-wrapper .torch:hover {
+    background-color: var(--color-bg-tertiary);
+    transform: translateY(-1px);
   }
 </style>
