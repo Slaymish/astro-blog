@@ -16,11 +16,11 @@ const report = await getEntry('reports', slug);
 if (!report) {
   throw new Error(`Report not found: ${slug}`);
 }
-if (!report.rendered) {
+if (!report.rendered?.content) {
   throw new Error(`Failed to render report: ${slug}`);
 }
 const data = report.data as any;
-const { Content } = report.rendered;
+const { content } = report.rendered;
 ---
 
 <Layout title={data.title}>
@@ -43,7 +43,7 @@ const { Content } = report.rendered;
         </a>
       )}
 
-      <Content />
+      <div class="prose prose-invert max-w-none" set:html={content} />
     </article>
   </main>
 </Layout>
