@@ -45,8 +45,8 @@ const catPositions = [
 <!-- Torch container - positioned relative to viewport like social buttons -->
 <div class="torch-game-container fixed top-0 right-0 pointer-events-none z-50">
   <div id="torch-container" class="absolute top-0 right-0 pointer-events-none z-50">
-    <!-- Torch icon - positioned to be guaranteed left of social buttons -->
-    <div id="torch" class="torch absolute top-5 right-40 w-12 h-16 cursor-grab pointer-events-auto z-60 transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
+    <!-- Torch icon - positioned far left of social buttons -->
+    <div id="torch" class="torch absolute top-5 right-96 w-12 h-16 cursor-grab pointer-events-auto z-60 transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
       <img src="/images/flashlight.png" alt="Torch" class="torch-img" />
     </div>
     
@@ -285,9 +285,9 @@ const catPositions = [
       catCounter.classList.remove('show');
     }
     
-    // Reset torch position and rotation - use fixed right positioning
+    // Reset torch position and rotation - use much larger gap
     if (torch) {
-      torch.style.right = '10rem'; /* right-40 equivalent - guaranteed left of social buttons */
+      torch.style.right = '24rem'; /* right-96 equivalent - guaranteed left of social buttons */
       torch.style.top = '1.25rem'; /* top-5 equivalent */
       torch.style.left = 'auto';
       torch.setAttribute('data-picked-up', 'false');

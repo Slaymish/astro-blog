@@ -199,7 +199,7 @@
 .torch-tooltip {
   position: absolute;
   top: 1.25rem; /* top-5 - same as torch */
-  right: 14rem; /* right-56 - to the left of torch (torch at right-40 = 10rem + gap) */
+  right: 28rem; /* right-112 - to the left of torch (torch at right-96 = 24rem + gap) */
   background-color: color-mix(in srgb, var(--color-bg-tertiary) 80%, transparent);
   color: var(--color-text-secondary);
   padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
