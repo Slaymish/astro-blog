@@ -42,11 +42,11 @@ const catPositions = [
 ];
 ---
 
-<!-- Torch container - fixed to viewport -->
-<div class="torch-game-container fixed inset-0 w-screen h-screen pointer-events-none z-50">
-  <div id="torch-container" class="absolute inset-0 pointer-events-none z-50">
+<!-- Torch container - positioned relative to page content -->
+<div class="torch-game-container absolute top-0 right-0 pointer-events-none z-50">
+  <div id="torch-container" class="absolute top-0 right-0 pointer-events-none z-50">
     <!-- Torch icon that can be picked up -->
-    <div id="torch" class="torch absolute top-5 right-48 w-12 h-16 cursor-grab pointer-events-auto z-60 transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
+    <div id="torch" class="torch absolute top-5 right-56 w-12 h-16 cursor-grab pointer-events-auto z-60 transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
       <img src="/images/flashlight.png" alt="Torch" class="torch-img" />
     </div>
     
@@ -287,7 +287,7 @@ const catPositions = [
     
     // Reset torch position and rotation
     if (torch) {
-      torch.style.right = '12rem'; /* right-48 equivalent */
+      torch.style.right = '14rem'; /* right-56 equivalent */
       torch.style.top = '1.25rem'; /* top-5 equivalent */
       torch.style.left = 'auto';
       torch.setAttribute('data-picked-up', 'false');
