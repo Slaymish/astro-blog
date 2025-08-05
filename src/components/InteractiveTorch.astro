@@ -46,9 +46,7 @@ const catPositions = [
   <div id="torch-container">
     <!-- Torch icon that can be picked up -->
     <div id="torch" class="torch" data-picked-up="false">
-      <div class="flashlight-head"></div>
-      <div class="flashlight-body"></div>
-      <div class="flashlight-grip"></div>
+      <img src="/images/flashlight.png" alt="Torch" class="torch-img" />
     </div>
     
     <!-- Light effect that follows the torch -->
@@ -199,14 +197,24 @@ const catPositions = [
     position: absolute;
     top: 20px;
     right: 20px;
-    width: 28px;
-    height: 65px;
+    width: 48px;        /* adjust to your image dimensions */
+    height: 64px;       /* adjust to your image dimensions */
     cursor: grab;
     pointer-events: auto;
     z-index: 1002;
     transition: all 0.3s ease;
     opacity: 0.85;
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+
+    /* new background image instead of CSS shapes */
+    background: none;       
+  }
+
+  .torch-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
   }
 
   .torch:hover {
@@ -220,102 +228,6 @@ const catPositions = [
     transform: scale(1.15);
     z-index: 1003;
     filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
-  }
-
-  .flashlight-head {
-    width: 24px;
-    height: 18px;
-    background: linear-gradient(135deg, #f0f0f0 0%, #d4d4d4 50%, #b8b8b8 100%);
-    margin: 0 auto;
-    border-radius: 12px 12px 4px 4px;
-    border: 2px solid #999;
-    position: relative;
-    box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), inset 0 -1px 2px rgba(0,0,0,0.2);
-  }
-
-  .flashlight-head::before {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 14px;
-    height: 8px;
-    background: radial-gradient(circle, #ffeb3b 20%, #ffc107 60%, #ff8f00 100%);
-    border-radius: 50%;
-    border: 1px solid #e65100;
-    box-shadow: 0 0 6px rgba(255, 193, 7, 0.8), inset 0 1px 2px rgba(255,255,255,0.4);
-  }
-
-  .flashlight-head::after {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 4px;
-    background: rgba(255,255,255,0.9);
-    border-radius: 50%;
-    opacity: 0.8;
-  }
-
-  .flashlight-body {
-    width: 18px;
-    height: 32px;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 30%, #4a6741 70%, #2c3e50 100%);
-    margin: 2px auto;
-    border-radius: 4px;
-    position: relative;
-    box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -2px 4px rgba(0,0,0,0.3);
-  }
-
-  .flashlight-body::before {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 2px;
-    right: 2px;
-    height: 2px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 1px;
-  }
-
-  .flashlight-body::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    left: 2px;
-    right: 2px;
-    height: 2px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 1px;
-  }
-
-  .flashlight-grip {
-    width: 16px;
-    height: 15px;
-    background: linear-gradient(135deg, #1a252f 0%, #2c3e50 50%, #1a252f 100%);
-    margin: 0 auto;
-    border-radius: 0 0 8px 8px;
-    position: relative;
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 1px 3px rgba(0,0,0,0.3);
-  }
-
-  .flashlight-grip::before {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 1px;
-    right: 1px;
-    height: 1px;
-    background: repeating-linear-gradient(
-      to right,
-      rgba(255,255,255,0.1) 0px,
-      rgba(255,255,255,0.1) 2px,
-      transparent 2px,
-      transparent 4px
-    );
   }
 
   .torch-light {
