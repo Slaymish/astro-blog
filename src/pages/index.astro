@@ -1,5 +1,5 @@
 ---
-import Layout from "../components/Layout.astro";
+import Layout from "../layouts/Layout.astro";    // was ../components/Layout.astro
 import { supabase } from "../utils/database";
 import { getCollection } from 'astro:content';
 import type { PostWithTags } from "../../supabase/types";
@@ -51,8 +51,8 @@ if (supabase) {
 
 const reports = await getCollection('reports');
 const sortedReports = reports
-  .filter(report => !report.data.draft)
-  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+  .filter(r => !r.data.draft)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
 const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, mathematics, and technology. Discover insights on programming, machine learning, algorithms, and philosophy.";
 ---
@@ -132,10 +132,10 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
             <h2>Reports</h2>
             <div class="reports-grid">
               {sortedReports.map(report => (
-                <div class="report-card">
+                <div class="report-card" key={report.slug}>
                   <h3><a href={`/reports/${report.slug}`}>{report.data.title}</a></h3>
                   <time>
-                    {new Date(report.data.pubDate).toLocaleDateString()}
+                    {new Date(report.data.date).toLocaleDateString()}
                   </time>
                   {report.data.description && <p>{report.data.description}</p>}
                 </div>

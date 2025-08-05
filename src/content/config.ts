@@ -15,14 +15,14 @@ const reports = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    pubDate: z.date(), // Changed from 'date' to match actual data
+    date: z.date(),            // renamed from pubDate
     tags: z.array(z.string()).optional(),
     featured: z.boolean().optional(),
     draft: z.boolean().optional(),
     author: z.string().optional(),
     image: z.string().optional(),
     imageAlt: z.string().optional(),
-    pdfPath: z.string().optional(), // Made optional since it might not always be present
+    pdfPath: z.string().optional(), // ensure this is here
   }),
 });
 

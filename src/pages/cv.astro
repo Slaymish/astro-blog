@@ -1,5 +1,5 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '../layouts/Layout.astro';  // ensure this path is correct
 ---
 
 <Layout title="CV - Hamish Burke">
@@ -7,15 +7,14 @@ import Layout from '../layouts/Layout.astro';
     <article>
       <h1>Curriculum Vitae</h1>
       <div class="pdf-container">
-        <iframe 
-          src="/cv.pdf" 
-          width="100%" 
+        <iframe
+          src="/cv.pdf"
+          width="100%"
           height="800px"
           style="border: none;"
-        >
-          <p>Your browser does not support PDFs.</p>
-          <a href="/cv.pdf">Download the PDF</a>
-        </iframe>
+        />
+        <p>Your browser does not support PDFs.</p>
+        <a href="/cv.pdf">Download the PDF</a>
       </div>
     </article>
   </main>
