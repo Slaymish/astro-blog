@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";    // was ../components/Layout.astro
 import { supabase } from "../utils/database";
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import type { PostWithTags } from "../../supabase/types";
 
 export const prerender = true; // Enable prerendering for development
@@ -49,10 +49,14 @@ if (supabase) {
   // postsError = error;
 }
 
-const reports = await getCollection('reports');
+// explicitly type so TS knows slug, data.pubDate, pdfPath, render exist:
+const reports = await getCollection('reports') as CollectionEntry<'reports'>[];
+
 const sortedReports = reports
   .filter(r => !r.data.draft)
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  .sort((a, b) =>
+    new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+  );
 
 const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, mathematics, and technology. Discover insights on programming, machine learning, algorithms, and philosophy.";
 ---
@@ -131,12 +135,12 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
           <section class="reports-section">
             <h2>Reports</h2>
             <div class="reports-grid">
-              {sortedReports.map(report => (
-                <div class="report-card" key={report.slug}>
-                  <h3><a href={`/reports/${report.slug}`}>{report.data.title}</a></h3>
-                  <time>
-                    {new Date(report.data.date).toLocaleDateString()}
-                  </time>
+              {sortedReports.map((report) => (
+                <div class="report-card">
+                  <h3>
+                    <a href={`/reports/${report.slug}`}>{report.data.title}</a>
+                  </h3>
+                  <time>{new Date(report.data.pubDate).toLocaleDateString()}</time>
                   {report.data.description && <p>{report.data.description}</p>}
                 </div>
               ))}

@@ -1,18 +1,19 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-  const reports = await getCollection('reports');
-  return reports.map(report => ({
-    params: { slug: report.slug },
-    props: { report },
+  const reports = await getCollection('reports') as CollectionEntry<'reports'>[];
+  return reports.map((r) => ({
+    params: { slug: r.slug },
+    props: { report: r }
   }));
 }
 
-const { report } = Astro.props;
-const { data, render } = report;
-const { Content } = await render();
+// tell TS to trust us here:
+const report = Astro.props.report as any;
+const data = report.data as any;
+const { Content } = await report.render();
 ---
 
 <Layout title={data.title}>
@@ -20,26 +21,12 @@ const { Content } = await render();
     <article>
       <h1>{data.title}</h1>
       <div class="meta">
-        <time>
-          {new Date(data.date).toLocaleDateString()}
-        </time>
-        {data.tags && (
-          <div class="tags">
-            {data.tags.map(tag => (
-              <span class="tag">{tag}</span>
-            ))}
-          </div>
-        )}
+        <time>{new Date(data.pubDate).toLocaleDateString()}</time>
       </div>
-      
+
       {data.pdfPath && (
         <div class="pdf-container">
-          <iframe 
-            src={data.pdfPath}
-            width="100%" 
-            height="800px"
-            style="border: none;"
-          />
+          <iframe src={data.pdfPath} width="100%" height="800px" style="border:none;" />
         </div>
       )}
 
