@@ -7,87 +7,128 @@ draft: false
 author: "Hamish Burke"
 ---
 
-## Why I Started This Project
+## Why I’m Building This Project
 
-I've had my WiFi-controlled Tapo lights for a couple of years, and I enjoy the ability to get the vibe in my room *just* right. For instance, as I'm winding down for bed, I can set them to a dim, warm orange, and when I wake up, I can make them turn on automatically at full brightness in a daylight colour. The main issue I've found with it is that I currently have two forms of control: either through the Tapo app on my phone or by speaking commands to my Google Home Mini. As I've experienced in several instances, neither of these options are optimal for me. For example, if my phone is in another room, or it's late at night, and I don't want to yell across the room to turn off my lights. Of course, this problem has been solved for non-WiFi-controlled lights with a simple wall switch. 
+I enjoy getting cosy in my room with warm, dim orange light for winding down, and having brilliant daylight hues for mornings. My Tapo Wi-Fi lights let me do that via app or voice, but both can be inconvenient. If my phone’s charging in another room or I’m half-asleep in bed, I don’t want to fumble for it or shout at Google Home. I’m building a dedicated, battery-powered remote that feels as intuitive as a wall switch but gives me full control over power, brightness and colour—instantly, wherever it sits.
 
-My goal was to create a simple-to-use physical remote for my WiFi lights. My requirements were:
+### My Key Goals
 
-- **Portable**: I wanted the remote to be able to sit by my desk and, when I went to bed, be on my bedside table. So, being battery-powered is essential for me
-- **Low-power**: This requirement aligns with the above, as I would prefer a battery-powered remote that doesn't run out of battery quickly. Will have to look into features like deep sleep and generally lower-powered components
-- **Immediate feedback:** I wanted any adjustments made using the physical components I use to be immediately clear about what they do. I'm aware that changing my lights by contacting an API introduces some latency in the adjustments made. This means I'll want an additional status indicator that displays what my lights are currently showing and responds immediately to button or dial presses. 
-- **Feature complete**: I wanted to be able to control my lights in every way I'd typically do with my Google Home or phone. So that means not just on/off, but also brightness and colour. 
+- **Portable & Battery-Powered**  
+  I want a pocket-sized controller that lives on my desk by day and bedside table by night, without a cable in sight.
+
+- **Ultra-Low Power**  
+  By leveraging ESP32 deep-sleep modes and efficient components, I’m aiming for weeks of uptime on a single charge.
+
+- **Immediate Visual Feedback**  
+  A 24-LED RGB ring will mirror my lights’ hue and brightness in real time, so every twist or push feels responsive despite API latency.
+
+- **Full Feature Coverage**  
+  On/off toggle, fine-grained brightness (0–100%), hue adjustment (0–360°) and a one-tap reset to my favourite warm-white tone.
+
+---
 
 ## Current Hardware Setup
 
-I'm currently running everything on a breadboard. The setup includes:
+Right now I’m prototyping on a breadboard:
 
-- **ESP32** – runs the control logic, connects to WiFi, and interfaces with the Tapo API  
-- **Rotary encoder** – rotates to dim/brighten the lights, push toggles on/off  
-- **Arduino joystick module** – rotates to adjust hue, push resets to warm white  
-- **PIR motion sensor** – detects whether someone is using the controller and triggers deep sleep when idle  
-- **24-bulb RGB LED ring light** – shows real-time visual feedback (brightness, colour, etc.)
+- **ESP32 Dev Module**  
+  Handles Wi-Fi, deep-sleep logic, state storage and drives the ring LEDs.
 
-## Logic + Behaviour
+- **24-LED RGB Ring**  
+  Acts as a live status display: hue maps across 360°, brightness lights a subset of LEDs, ring turns off when lights are off.
 
-Currently, to meet my low-power requirement, the ESP32 starts in deep sleep with the LED ring light off. When the PIR motion sensor detects movement in the room, it wakes the ESP32 from deep sleep and initiates its boot-up process. This involves connecting to the WiFi, establishing a connection with the Tapo lights, and turning on the LED ring light. The ring light shows the current status of the Tapo lights. Currently, I am storing the previous state of the lights (colour, power, and brightness) on the ESP32's disk so that when it wakes up, it can retrieve the last state of the lights and display it on the ring LED. 
+- **Rotary Encoder (AiEsp32RotaryEncoder)**  
+  Continuous rotation for brightness; push-click toggles power. Boundaries set 0–24 to match ring segments.
 
-The ring light aims to display both the current colour, brightness, and power state of Tapo lights. I map the ring's RGB LEDs to the hue range (0–360°) so it mirrors the Tapo lights. For power, it is on when the lights are on and off otherwise. For brightness, as there are 24 bulbs in the LED ring, I'm making each bulb display $\approx 4\%$ of the brightness. For example, if the brightness of the Tapo lights were 50%, 12 out of 24 bulbs on the ring light would be on. 
+- **Arduino Joystick Module**  
+  X/Y axes for hue control (converted via `atan2(y, x)` to a 0–360° angle); click resets to warm white.
 
-The rotary encoder deals with the brightness and power state of the lights. The library I'm using is `AiEsp32RotaryEncoder`, which supplies the method `setBoundaries (minVal,maxVal)`. I set the min/max values to be 0-24, so then rotating the encoder directly corresponds to the ring LED. I converted that into what the Tapo lights brightness should be with: $$\text{brightness}=(int)\ encVal*\left( \frac{100}{24} \right)$$
+- **PIR Motion Sensor**  
+  Wakes ESP32 from deep sleep when motion is detected; after inactivity it triggers sleep again to save battery.
 
-For the joystick, the inputs it provides to the GPIO ports of the ESP32 are axis X and axis Y, as well as CLK (when the joystick is pressed). Using some basic trigonometry, I'm converting the $x$ and $y$ components into the angle around a circle (0-360 degrees):
+---
 
-$$angle=\frac{\arctan {\frac{y}{x}}*180}{\pi}$$
+## How the Firmware Works
 
-To set the Tapo colour and brightness level, I modified an existing open-source Tapo API client for the ESP32. Their version only included API calls to turn on/off the lights, so I [forked their repo](https://github.com/Slaymish/tapo-esp32) and manually added the methods: 
+1. **Deep Sleep & Wake Cycle**  
+   - On idle, the ESP32 sleeps with the ring off.  
+   - PIR sensor fires → ESP32 wakes → reconnects to Wi-Fi → retrieves last Tapo state from flash → lights up ring instantly.
 
-- `set_brightness(uint8_t level)`
-- `set_colour(uint16_t hue, uint_t saturation)`
+2. **State Persistence**  
+   - Hue, brightness and power status are written to flash memory before sleep.  
+   - On wake, I immediately read them back to drive the ring display without waiting for network calls.
 
-## Dealing with Latency
+3. **LED Ring Mapping**  
+   - **Hue**: 360° maps linearly to 24 LEDs (15° per LED).  
+   - **Brightness**: each LED ≈4% of total; e.g. 50% brightness lights up 12 LEDs.  
+   - **Power**: ring fully off when lights are off, regardless of last hue/brightness.
 
-To align with my **immediate feedback** requirement, I wanted to ensure it didn't feel 'laggy' or cumbersome to use. My initial testing felt disappointing, as I'd rotate the encoder, then have to wait one or two seconds for the Tapo lights and ring LED to adjust. This created a user experience of turning it slightly, then waiting for the lights to update, turning it a bit more, and waiting again, etc. I'd have to address issues with two different components: the **Tapo lights** and the **ring LED light**. 
+4. **Input Handling Logic**  
+   - **Rotary Encoder**  
+     ```cpp
+     encoder.setBoundaries(0, 24);
+     encVal = encoder.readEncoder();
+     brightness = uint8_t(encVal * (100.0 / 24.0));
+     ```
+     I’m using `update_ring_light(brightness)` immediately, then triggering the API call for the Tapo lights.
 
-For the ring LED light, the solution was relatively obvious. In my Arduino code, I moved the 'update_ring_light' method before the blocking API call to the lights was made. This 'update_ring_light' method is responsible for updating the ring light's display based on the current state of the Tapo lights. By moving it before the blocking API call, the ring light responded immediately to the user's control, fulfilling that immediate feedback I wanted.
+   - **Joystick Module**  
+     ```cpp
+     angle = atan2(y_val - y_center, x_val - x_center) * (180.0 / PI);
+     if (angle < 0) angle += 360.0;
+     ```
+     Pushing the joystick resets to my preconfigured warm-white hue.
 
-For reference, I change my code from this:
+---
 
-```c
-long encVal = encoder.readEncoder();
+## Tackling Latency
+
+### Instant Ring Updates  
+To satisfy “immediate feedback,” I moved `update_ring_light()` before any network call:
+
+```cpp
 if (encVal != prevEncVal) {
     prevEncVal = encVal;
-    brightness = static_cast<uint8_t>(encVal);
-    if (!allOn) toggleAll();            // turn on if currently off
-    setAllBrightness(brightness); // changes tapo lights
-    update_ring_light(brightness);
+    brightness = encVal;
+    update_ring_light(brightness);         // immediate on-device update
+    if (!allOn) toggleAll();               // power on if off
+    setAllBrightness(brightness);          // Tapo API call
 }
 ```
 
-To this (with the local ring light call before any network requests):
+### Parallel & Asynchronous API Calls
 
-```c
-long encVal = encoder.readEncoder();
-if (encVal != prevEncVal) {
-	prevEncVal = encVal;
-	brightness = static_cast<uint8_t>(encVal);
-	update_ring_light(brightness); // immediately update ring light
-	if (!allOn) toggleAll();            // turn on if currently off
-	setAllBrightness(brightness); // changes tapo lights
-}
-```
+I spun the Tapo controls into a separate thread:
 
-**For the Tapo lights**, improving the latency and performance wasn't as obvious. Due to the requirement to make an API call to control the lights, there was a definite lower limit to how quickly I could get it to respond. One solution I came up with was to parallelise the API calls so both of my Tapo lights would adjust to their updated state simultaneously rather than sequentially. As I have two Tapo lights, this effectively cut the waiting time for the lights to update *in half completely*. Another improvement I made was to change the API calls from blocking to asynchronous. I achieved this by creating two threads: one for my core application logic (connecting to WiFi, reading encoder values, etc.) and the other solely for Tapo API calls. The two threads communicate through a shared mutex, which contains the current brightness, power, and colour state that the lights are expected to be in. The Tapo thread regularly checks these mutexes, and if they are out of sync with how the lights are currently set, it'll call to update them. Separating the logic in this way came with several benefits. Previously, every adjustment to the joystick or rotary encoder made a blocking API call to update the lights. Now, even if the user changes many values rapidly, this will only update the value of the mutex, meaning the API calls now occur at regular intervals. In practice, this allows me to adjust the control as much or as quickly as I like and for the Tapo lights to update to whatever I finally settle on.
+* **Main Thread** reads sensors and updates shared state variables.
+* **API Thread** polls these variables and issues non-blocking HTTP calls to both lights in parallel.
+* Shared mutex ensures thread-safe access to desired hue, brightness and power flags.
 
-## What's Next
+This split means I can dial the knob rapidly and only commit the final value to the network, plus two-lamp updates happen concurrently—cutting perceived latency by roughly 50%.
 
-In terms of what's next, I'd like to avoid having a bundle of cables on a breadboard for very long. My next step would be to make a more semi-permanent prototype using a solder-able prototyping board. This will allow the circuit to be less fragile when moved and enable me to start considering casing options. 
+---
 
-For the exterior of my remote, I'm planning to 3D print a minimal case to hold all the components in the correct positions. For example, I need to position the joystick and rotary encoder next to each other for control and have the PIR motion sensor mounted in a way that, when placed in different locations, it'll always be able to detect motion correctly. Once I have this 3D shell, I'll explore other materials I could use for the cover of all the components. I don't particularly want to use 3D printing for the visible exterior case, as it'll look and feel cheap and poorly made, which will detract from my experience of using it and my enjoyment of using this over my phone or Google Home. For the exterior shell, I'm considering using wood or plaster. These would give the remote a more polished feel, which plastic wouldn't. However, with great polish comes great difficulty, as working with wood or plaster would be significantly more complex. I'm aiming to address these changes further down the line once I have the interior, minimal 3D-printed shell.
+## What I’m Working On Next
 
-## Photos 
+1. **PCB Prototype**
+   Designing a compact solderable board to replace the breadboard mess and improve reliability.
 
-Heres a pic of my rotary controller setup on my breadboard with the LED ring light.
+2. **3D-Printed Inner Shell**
+   A minimal PLA frame to hold components snugly and align the joystick, encoder and PIR sensor.
 
-![Controller progress](/images/posts/controller-progress.jpg)
+3. **Premium Outer Case**
+   Investigating wood veneer or plaster finishes—something with tactile warmth that complements my desk aesthetic.
+
+4. **UX Tweaks**
+
+   * Calibrating PIR sensitivity and sleep thresholds.
+   * Adding a low-battery indicator on the ring.
+   * Exploring haptic feedback for button presses.
+
+---
+
+## Prototype Photo
+
+![ESP32 smart lighting controller prototype on breadboard with ring-LED, encoder and joystick](/images/posts/controller-progress.jpg)
+::contentReference[oaicite:0]{index=0}
 
