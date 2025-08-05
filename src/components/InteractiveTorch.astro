@@ -658,6 +658,13 @@ const catPositions = [
     margin-right: 8px;
     font-size: 16px;
   }
+
+  /* hide torch completely on small screens */
+  @media (max-width: 640px) {
+    .torch-game-container {
+      display: none !important;
+    }
+  }
 </style>
 
 <script>
@@ -670,6 +677,7 @@ const catPositions = [
   let foundCats: Set<string> = new Set();
   let audioContext: AudioContext | null = null;
   let resetText: HTMLElement | null = null;
+  let rafPending = false; // throttle flag
 
   // Initialize audio context
   function initAudio() {
@@ -901,9 +909,14 @@ const catPositions = [
       if (isDragging && torch) {
         const x = e.clientX - dragOffset.x;
         const y = e.clientY - dragOffset.y;
-        
-        updateTorchPosition(x, y);
-        checkForHiddenItems(x, y);
+        if (!rafPending) {
+          rafPending = true;
+          requestAnimationFrame(() => {
+            handleMove(x,y);
+            rafPending = false;
+          });
+        }
+        e.preventDefault();
       }
     });
 
@@ -937,13 +950,16 @@ const catPositions = [
 
     document.addEventListener('touchmove', (e: TouchEvent) => {
       if (isDragging && e.touches.length === 1) {
-        const touch = e.touches[0];
-        const x = touch.clientX - dragOffset.x;
-        const y = touch.clientY - dragOffset.y;
-        
-        updateTorchPosition(x, y);
-        checkForHiddenItems(x, y);
-        
+        const t = e.touches[0];
+        const x = t.clientX - dragOffset.x;
+        const y = t.clientY - dragOffset.y;
+        if (!rafPending) {
+          rafPending = true;
+          requestAnimationFrame(() => {
+            handleMove(x,y);
+            rafPending = false;
+          });
+        }
         e.preventDefault();
       }
     });
@@ -962,4 +978,10 @@ const catPositions = [
       }
     });
   });
+
+  // consolidate move + hit checks
+  function handleMove(x: number, y: number) {
+    updateTorchPosition(x, y);
+    checkForHiddenItems(x, y);
+  }
 </script>
