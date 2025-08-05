@@ -17,7 +17,7 @@ if (!report) {
   throw new Error(`Report not found: ${slug}`);
 }
 const data = report.data as any;
-const { Content } = await report.render();
+const { Content } = report.rendered;
 ---
 
 <Layout title={data.title}>
