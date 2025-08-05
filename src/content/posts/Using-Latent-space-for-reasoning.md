@@ -35,15 +35,15 @@ and then continues reasoning only on the word “love.” Everything else in tha
 
 Meta’s paper proposes carrying the full probability vector (or latent activation) forward inside the model instead of emitting text. They call it **recurrent depth** because they loop the hidden representations through additional transformer layers at inference time. In practice this means:
 
-1. **Encode input** and compute initial hidden states.
+1. **Encode input**: and compute initial hidden states.
 2. **Iterate**: pass the hidden states through extra depth layers to refine reasoning.
-3. **Decode** only once at the end, collapsing the richer latent into final tokens.
+3. **Decode**: only once at the end, collapsing the richer latent into final tokens.
 
 ### Why This Matters
 
-* **No information loss** – the full high-dimensional activation carries every hypothesis forward.
-* **Richer intermediate signals** – the model can re-weigh and prune ideas inside its own “brain” before committing to words.
-* **Flexibility** – you can adjust the number of extra layers to trade off speed for depth without retraining.
+* **No information loss**: The full high-dimensional activation carries every hypothesis forward.
+* **Richer intermediate signals**: The model can re-weigh and prune ideas inside its own “brain” before committing to words.
+* **Flexibility**: You can adjust the number of extra layers to trade off speed for depth without retraining.
 
 Meta’s experiments on arithmetic and logical puzzles show up to a 15 percent accuracy boost over standard chain-of-thought baselines at similar compute budgets[^1].
 

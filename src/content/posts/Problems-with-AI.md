@@ -22,13 +22,13 @@ My first thought as a software engineer was to retrain the model with more inclu
 Contemporary AI models – from large language models to vision systems – consume vast troves of data that no organisation fully controls. Most of it is harvested without genuine consent:
 
 1. **Public Web Scrapes**  
-   Blogs, tweets and forum posts are bulk-collected and monetised without explicit permission, eroding informed consent [1]:contentReference[oaicite:0]{index=0}.
+   Blogs, tweets and forum posts are bulk-collected and monetised without explicit permission, eroding informed consent[^1].
 
 2. **Semi-Private Platforms**  
-   YouTube videos and Instagram stories can be mined for deepfake generation, even though creators never agreed to that use [2]:contentReference[oaicite:1]{index=1}.
+   YouTube videos and Instagram stories can be mined for deepfake generation, even though creators never agreed to that use[^2].
 
 3. **Synthetic Data**  
-   Promoted as “neutral,” it’s generated from biased originals, which only doubles down on existing prejudices [1]:contentReference[oaicite:2]{index=2}.
+   Promoted as “neutral,” it’s generated from biased originals, which only doubles down on existing prejudices[^1].
 
 ---
 
@@ -37,22 +37,22 @@ Contemporary AI models – from large language models to vision systems – cons
 The “move fast and patch later” mindset seems inadequate. Real change might look more like:
 
 - **Consent-Driven Data Co-ops**  
-  People voluntarily pool their data and receive clear benefits or payment. No consent = no data [1]:contentReference[oaicite:3]{index=3}.
+  People voluntarily pool their data and receive clear benefits or payment. No consent = no data[^1].
 
 - **Community-Led Design**  
-  Bring in the most affected groups – for instance, trans travellers – to help shape how systems ought to work [2]:contentReference[oaicite:4]{index=4}.
+  Bring in the most affected groups – for instance, trans travellers – to help shape how systems ought to work[^2].
 
 - **Tiered Regulation**  
-  1. **Ban outright:** Gender verification, predictive policing, social scoring [3]:contentReference[oaicite:5]{index=5}.  
-  2. **High risk (audit + human oversight):** Hiring algorithms, healthcare triage, credit scoring [4]:contentReference[oaicite:6]{index=6}.  
-  3. **Medium risk (transparency + opt-outs):** Chatbots, recommendation engines [4]:contentReference[oaicite:7]{index=7}.  
-  4. **Low risk:** Spellcheckers, spam filters – basic oversight suffices [3]:contentReference[oaicite:8]{index=8}.
+  1. **Ban outright:** Gender verification, predictive policing, social scoring[^3].  
+  2. **High risk (audit + human oversight):** Hiring algorithms, healthcare triage, credit scoring [^4].  
+  3. **Medium risk (transparency + opt-outs):** Chatbots, recommendation engines [^4].  
+  4. **Low risk:** Spellcheckers, spam filters – basic oversight suffices [^3].
 
 - **Right to Explanation & Compensation**  
-  If an AI decision harms you, you deserve a clear explanation, human review and fair recompense [5][6]:contentReference[oaicite:9]{index=9}.
+  If an AI decision harms you, you deserve a clear explanation, human review and fair recompense [^5][^6].
 
 - **Regular Ethical Audits**  
-  Treat models like cars and give them a “warrant of fitness.” Failing systems must be taken offline until they pass [7][8]:contentReference[oaicite:10]{index=10}.
+  Treat models like cars and give them a “warrant of fitness.” Failing systems must be taken offline until they pass [^7][^8].
 
 
 ## 3. In Short
