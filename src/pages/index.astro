@@ -1,7 +1,7 @@
 ---
 import Layout from "../components/Layout.astro";
-import InteractiveTorch from "../components/InteractiveTorch.astro";
 import { supabase } from "../utils/database";
+import { getCollection } from 'astro:content';
 import type { PostWithTags } from "../../supabase/types";
 
 export const prerender = true; // Enable prerendering for development
@@ -48,6 +48,10 @@ if (supabase) {
   posts = data as PostWithTags[] | null;
   // postsError = error;
 }
+
+const reports = await getCollection('reports');
+const allReports = reports
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
 const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, mathematics, and technology. Discover insights on programming, machine learning, algorithms, and philosophy.";
 ---
@@ -122,6 +126,27 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
               ))}
             </div>
           </section>
+
+          <section class="reports-section">
+            <h2>Reports</h2>
+            <div class="reports-grid">
+              {allReports.map((report) => (
+                <article class="report-card">
+                  <h3>
+                    <a href={`/reports/${report.id}`}>
+                      {report.data.title}
+                    </a>
+                  </h3>
+                  <p class="report-date">
+                    {new Date(report.data.date).toLocaleDateString()}
+                  </p>
+                  <p class="report-description">
+                    {report.data.description}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
         </>
       ) : (
         <div class="text-center py-12">
@@ -141,3 +166,53 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     )
   }
 </Layout>
+
+<style>
+  .reports-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+  }
+  
+  .reports-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .report-card {
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .report-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .report-card h3 {
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .report-card h3 a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .report-card h3 a:hover {
+    color: #0066cc;
+  }
+  
+  .report-date {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+  
+  .report-description {
+    margin: 1rem 0 0 0;
+    color: #555;
+  }
+</style>
