@@ -7,10 +7,15 @@
 .torch { 
   position: relative;
   display: inline-block;
+  transition: all 0.2s ease;
   /* Remove absolute positioning */
 }
 .torch:hover { /* ...existing hover rules... */ }
-.torch.dragging { /* ...existing dragging rules... */ }
+.torch.dragging { 
+  cursor: grabbing;
+  transform: scale(1.1);
+  /* Position will be set to fixed by JavaScript when dragging */
+}
 
 .torch-light {
   position: fixed;

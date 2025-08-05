@@ -212,8 +212,11 @@ const catPositions = [
 
   function updateTorchPosition(x: number, y: number) {
     if (torch) {
-      torch.style.left = (x - 16) + 'px';
-      torch.style.top = (y - 24) + 'px';
+      // Position the torch absolutely when dragging
+      torch.style.position = 'fixed';
+      torch.style.left = (x - 24) + 'px'; // Center the torch on cursor
+      torch.style.top = (y - 32) + 'px';
+      torch.style.zIndex = '1004'; // Above everything else
     }
     
     if (torchLight) {
@@ -283,11 +286,13 @@ const catPositions = [
       catCounter.classList.remove('show');
     }
     
-    // Reset torch position and rotation - use much larger gap
+    // Reset torch position back to inline
     if (torch) {
-      torch.style.right = '24rem'; /* right-96 equivalent - guaranteed left of social buttons */
-      torch.style.top = '1.25rem'; /* top-5 equivalent */
+      torch.style.position = 'relative';
       torch.style.left = 'auto';
+      torch.style.top = 'auto';
+      torch.style.right = 'auto';
+      torch.style.zIndex = 'auto';
       torch.setAttribute('data-picked-up', 'false');
     }
     
