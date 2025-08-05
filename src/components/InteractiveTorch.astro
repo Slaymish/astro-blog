@@ -42,11 +42,11 @@ const catPositions = [
 ];
 ---
 
-<!-- Torch container - positioned relative to page content -->
-<div class="torch-game-container absolute top-0 right-0 pointer-events-none z-50">
+<!-- Torch container - positioned relative to viewport like social buttons -->
+<div class="torch-game-container fixed top-0 right-0 pointer-events-none z-50">
   <div id="torch-container" class="absolute top-0 right-0 pointer-events-none z-50">
-    <!-- Torch icon that can be picked up -->
-    <div id="torch" class="torch absolute top-5 right-56 w-12 h-16 cursor-grab pointer-events-auto z-60 transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
+    <!-- Torch icon that can be picked up - positioned relative to viewport edge -->
+    <div id="torch" class="torch absolute top-5 right-[calc(100vw-85vw)] w-12 h-16 cursor-grab pointer-events-auto z-60 transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
       <img src="/images/flashlight.png" alt="Torch" class="torch-img" />
     </div>
     
@@ -285,9 +285,10 @@ const catPositions = [
       catCounter.classList.remove('show');
     }
     
-    // Reset torch position and rotation
+    // Reset torch position and rotation - use viewport calc
     if (torch) {
-      torch.style.right = '14rem'; /* right-56 equivalent */
+      const viewportCalc = `calc(100vw - 85vw)`;
+      torch.style.right = viewportCalc;
       torch.style.top = '1.25rem'; /* top-5 equivalent */
       torch.style.left = 'auto';
       torch.setAttribute('data-picked-up', 'false');

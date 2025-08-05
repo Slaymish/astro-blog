@@ -1,7 +1,7 @@
 @tailwind utilities;
 @reference;
 
-.torch-game-container { /* minimal overrides via Tailwind */ }
+.torch-game-container { /* Back to fixed positioning to match social buttons */ }
 
 /* Remove fixed positioning - now uses absolute from Astro file */
 .torch { /* keep any custom overrides */ }
@@ -199,7 +199,7 @@
 .torch-tooltip {
   position: absolute;
   top: 1.25rem; /* top-5 - same as torch */
-  right: 18rem; /* to the left of torch (torch is at right-56 = 14rem, tooltip width + gap) */
+  right: calc(100vw - 85vw + 4rem); /* to the left of torch with gap */
   background-color: color-mix(in srgb, var(--color-bg-tertiary) 80%, transparent);
   color: var(--color-text-secondary);
   padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
