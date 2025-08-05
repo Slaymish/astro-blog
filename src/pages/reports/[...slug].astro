@@ -1,17 +1,18 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, getEntryBySlug } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
-  const reports = await getCollection('reports') as CollectionEntry<'reports'>[];
-  return reports.map((r) => ({
-    params: { slug: r.slug },
-    props: { report: r }
-  }));
+  const reports = await getCollection('reports');
+  return reports.map(r => {
+    const slug = r.id.replace(/\.(md|mdx)$/, '');
+    return { params: { slug: slug.split('/') } };
+  });
 }
 
-// tell TS to trust us here:
-const report = Astro.props.report as any;
+const rawSlug = Astro.params.slug;
+const slug = Array.isArray(rawSlug) ? rawSlug.join('/') : rawSlug;
+const report = await getEntryBySlug('reports', slug);
 const data = report.data as any;
 const { Content } = await report.render();
 ---

@@ -138,7 +138,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
               {sortedReports.map((report) => (
                 <div class="report-card">
                   <h3>
-                    <a href={`/reports/${report.slug}`}>{report.data.title}</a>
+                    <a href={`/reports/${report.id.replace(/\.(md|mdx)$/, '')}`}>{report.data.title}</a>
                   </h3>
                   <time>{new Date(report.data.pubDate).toLocaleDateString()}</time>
                   {report.data.description && <p>{report.data.description}</p>}
