@@ -16,6 +16,9 @@ const report = await getEntry('reports', slug);
 if (!report) {
   throw new Error(`Report not found: ${slug}`);
 }
+if (!report.rendered) {
+  throw new Error(`Failed to render report: ${slug}`);
+}
 const data = report.data as any;
 const { Content } = report.rendered;
 ---
