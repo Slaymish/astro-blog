@@ -27,6 +27,9 @@ async function syncPosts() {
 
     console.log(`📚 Found ${postFiles.length} posts to sync`);
 
+    // Track slugs of local posts for cleanup
+    const localPostSlugs = new Set<string>();
+
     for (const filePath of postFiles) {
       const raw = await fs.readFile(filePath, 'utf-8');
       const { data, content } = parseFrontmatter(raw);
@@ -46,6 +49,9 @@ async function syncPosts() {
       // const image = data.image ? String(data.image) : undefined;
       // const imageAlt = data.imageAlt ? String(data.imageAlt) : undefined;
       const slug = data.slug ? String(data.slug) : createSlug(title);
+
+      // Track this post's slug
+      localPostSlugs.add(slug);
 
       console.log(`🔄 Syncing: ${title}`);
 
@@ -109,6 +115,44 @@ async function syncPosts() {
       }
 
       console.log(`✅ Successfully synced: ${title}`);
+    }
+
+    // Clean up posts that no longer exist locally
+    console.log('🧹 Cleaning up deleted posts from Supabase...');
+    const { data: existingPosts, error: fetchError } = await supabase
+      .from('posts')
+      .select('id, slug, title');
+
+    if (fetchError) {
+      console.error('❌ Error fetching existing posts:', fetchError);
+    } else if (existingPosts) {
+      for (const post of existingPosts) {
+        if (!localPostSlugs.has(post.slug)) {
+          console.log(`🗑️  Deleting removed post: ${post.title}`);
+          
+          // Delete post_tags relationships first
+          const { error: tagDeleteError } = await supabase
+            .from('post_tags')
+            .delete()
+            .eq('post_id', post.id);
+
+          if (tagDeleteError) {
+            console.error(`❌ Error deleting tags for post "${post.title}":`, tagDeleteError);
+          }
+
+          // Delete the post
+          const { error: postDeleteError } = await supabase
+            .from('posts')
+            .delete()
+            .eq('id', post.id);
+
+          if (postDeleteError) {
+            console.error(`❌ Error deleting post "${post.title}":`, postDeleteError);
+          } else {
+            console.log(`✅ Successfully deleted: ${post.title}`);
+          }
+        }
+      }
     }
 
     console.log('🎉 Post sync completed successfully!');
