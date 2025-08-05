@@ -47,6 +47,13 @@
   pointer-events: none;
   background-color: transparent;
   border: none;
+  filter: brightness(0) saturate(100%) invert(15%) sepia(8%) saturate(1058%) hue-rotate(169deg) brightness(96%) contrast(93%);
+  transition: filter 0.2s ease;
+}
+
+/* Dark mode: make torch white to match text */
+.dark .torch-img {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
 }
 
 /* instructions bubble */
