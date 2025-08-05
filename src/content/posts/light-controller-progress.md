@@ -9,7 +9,7 @@ author: "Hamish Burke"
 
 ## Why I’m Building This Project
 
-I enjoy getting cosy in my room with warm, dim orange light for winding down, and having brilliant daylight hues for mornings. My Tapo Wi-Fi lights let me do that via app or voice, but both can be inconvenient. If my phone’s charging in another room or I’m half-asleep in bed, I don’t want to fumble for it or shout at Google Home. I’m building a dedicated, battery-powered remote that feels as intuitive as a wall switch but gives me full control over power, brightness and colour—instantly, wherever it sits.
+I enjoy getting cosy in my room with warm, dim orange light for winding down, and having brilliant daylight hues for mornings. My Tapo Wi-Fi lights let me do that via app or voice, but both can be inconvenient. If my phone’s charging in another room or I’m half-asleep in bed, I don’t want to fumble for it or shout at Google Home. I’m building a dedicated, battery-powered remote that feels as intuitive as a wall switch but gives me full control over power, brightness and colour instantly, wherever it sits.
 
 ### My Key Goals
 
@@ -117,7 +117,7 @@ This split means I can dial the knob rapidly and only commit the final value to 
    A minimal PLA frame to hold components snugly and align the joystick, encoder and PIR sensor.
 
 3. **Premium Outer Case**
-   Investigating wood veneer or plaster finishes—something with tactile warmth that complements my desk aesthetic.
+   Investigating wood veneer or plaster finishes. Something with tactile warmth that complements my desk aesthetic.
 
 4. **UX Tweaks**
 
