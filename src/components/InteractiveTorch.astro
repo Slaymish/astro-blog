@@ -101,6 +101,7 @@ const catPositions = [
   let rafPending = false; // throttle flag
   let tooltipTimer: number;
   let tooltip: HTMLElement | null = null;
+  let isInitialized = false;
 
   // Initialize audio context
   function initAudio() {
@@ -305,18 +306,46 @@ const catPositions = [
     }
   }
 
+  // Cleanup function
+  function cleanup() {
+    if (tooltipTimer) {
+      clearTimeout(tooltipTimer);
+    }
+    
+    // Remove dynamically created elements
+    if (resetText && resetText.parentNode) {
+      resetText.parentNode.removeChild(resetText);
+    }
+    
+    // Close audio context
+    if (audioContext && audioContext.state !== 'closed') {
+      audioContext.close();
+    }
+  }
+
   // Initialize when DOM is loaded
   document.addEventListener('DOMContentLoaded', () => {
+    // Prevent multiple initializations
+    if (isInitialized) return;
+    isInitialized = true;
+
     torch = document.getElementById('torch');
     torchLight = document.getElementById('torch-light');
     torchInstructions = document.getElementById('torch-instructions');
     catCounter = document.getElementById('cat-counter');
     tooltip = document.getElementById('torch-tooltip');
 
-    // show tooltip after 2s if not picked up
-    tooltipTimer = window.setTimeout(() => {
-      tooltip?.classList.add('show');
-    }, 2000);
+    // Hide tooltip immediately if torch was already picked up
+    if (torch && torch.getAttribute('data-picked-up') === 'true') {
+      tooltip?.classList.remove('show');
+    } else {
+      // show tooltip after 2s if not picked up
+      tooltipTimer = window.setTimeout(() => {
+        if (torch && torch.getAttribute('data-picked-up') === 'false') {
+          tooltip?.classList.add('show');
+        }
+      }, 2000);
+    }
 
     if (!torch || !torchLight || !torchInstructions || !catCounter) return;
 
@@ -420,6 +449,23 @@ const catPositions = [
         resetGame();
       }
     });
+  });
+
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', cleanup);
+  
+  // Handle visibility change (tab switching)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && isDragging) {
+      // Stop dragging if user switches tabs
+      isDragging = false;
+      if (torch) {
+        torch.classList.remove('dragging');
+      }
+      if (torchLight) {
+        torchLight.classList.remove('active');
+      }
+    }
   });
 
   // consolidate move + hit checks

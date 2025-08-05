@@ -15,6 +15,9 @@
   cursor: grabbing;
   transform: scale(1.1);
   /* Position will be set to fixed by JavaScript when dragging */
+  /* Constrain to viewport */
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
 .torch-light {
@@ -141,6 +144,8 @@
   opacity: 0;
   transform: scale(0);
   pointer-events: none;
+  /* Ensure cats don't go outside viewport bounds */
+  max-width: calc(100vw - 4rem);
 }
 .hidden-item.revealed {
   animation: pop 0.4s ease-out forwards;
