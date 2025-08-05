@@ -66,110 +66,23 @@ const catPositions = [
 
 <!-- Cats positioned as document elements that scroll with the page -->
 <div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[0].y}; left: ${catPositions[0].x}; z-index: 1001;`} data-cat-type="orange">
-  <div class="hidden-cat pixel-cat orange-cat">
-    <div class="cat-ears">
-      <div class="cat-ear cat-ear-left"></div>
-      <div class="cat-ear cat-ear-right"></div>
-    </div>
-    <div class="cat-head">
-      <div class="cat-eyes">
-        <div class="cat-eye cat-eye-left"></div>
-        <div class="cat-eye cat-eye-right"></div>
-      </div>
-      <div class="cat-nose"></div>
-      <div class="cat-mouth"></div>
-    </div>
-    <div class="cat-body">
-      <div class="cat-belly"></div>
-    </div>
-    <div class="cat-tail"></div>
-  </div>
+  <img src="/images/cats/cat1.png" alt="Orange cat" class="hidden-cat-img" />
 </div>
 
 <div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[1].y}; left: ${catPositions[1].x}; z-index: 1001;`} data-cat-type="gray">
-  <div class="hidden-cat pixel-cat gray-cat">
-    <div class="cat-ears">
-      <div class="cat-ear cat-ear-left"></div>
-      <div class="cat-ear cat-ear-right"></div>
-    </div>
-    <div class="cat-head">
-      <div class="cat-eyes">
-        <div class="cat-eye cat-eye-left"></div>
-        <div class="cat-eye cat-eye-right"></div>
-      </div>
-      <div class="cat-nose"></div>
-      <div class="cat-mouth"></div>
-    </div>
-    <div class="cat-body">
-      <div class="cat-belly"></div>
-    </div>
-    <div class="cat-tail"></div>
-  </div>
+  <img src="/images/cats/cat2.png" alt="Gray cat" class="hidden-cat-img" />
 </div>
 
 <div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[2].y}; left: ${catPositions[2].x}; z-index: 1001;`} data-cat-type="black">
-  <div class="hidden-cat pixel-cat black-cat">
-    <div class="cat-ears">
-      <div class="cat-ear cat-ear-left"></div>
-      <div class="cat-ear cat-ear-right"></div>
-    </div>
-    <div class="cat-head">
-      <div class="cat-eyes">
-        <div class="cat-eye cat-eye-left"></div>
-        <div class="cat-eye cat-eye-right"></div>
-      </div>
-      <div class="cat-nose"></div>
-      <div class="cat-mouth"></div>
-    </div>
-    <div class="cat-body">
-      <div class="cat-belly"></div>
-    </div>
-    <div class="cat-tail"></div>
-  </div>
+  <img src="/images/cats/cat3.png" alt="Black cat" class="hidden-cat-img" />
 </div>
 
 <div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[3].y}; left: ${catPositions[3].x}; z-index: 1001;`} data-cat-type="white">
-  <div class="hidden-cat pixel-cat white-cat">
-    <div class="cat-ears">
-      <div class="cat-ear cat-ear-left"></div>
-      <div class="cat-ear cat-ear-right"></div>
-    </div>
-    <div class="cat-head">
-      <div class="cat-eyes">
-        <div class="cat-eye cat-eye-left"></div>
-        <div class="cat-eye cat-eye-right"></div>
-      </div>
-      <div class="cat-nose"></div>
-      <div class="cat-mouth"></div>
-    </div>
-    <div class="cat-body">
-      <div class="cat-belly"></div>
-    </div>
-    <div class="cat-tail"></div>
-  </div>
-</div>
-  </div>
+  <img src="/images/cats/cat4.png" alt="White cat" class="hidden-cat-img" />
 </div>
 
 <div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[4].y}; left: ${catPositions[4].x}; z-index: 1001;`} data-cat-type="brown">
-  <div class="hidden-cat pixel-cat brown-cat">
-    <div class="cat-ears">
-      <div class="cat-ear cat-ear-left"></div>
-      <div class="cat-ear cat-ear-right"></div>
-    </div>
-    <div class="cat-head">
-      <div class="cat-eyes">
-        <div class="cat-eye cat-eye-left"></div>
-        <div class="cat-eye cat-eye-right"></div>
-      </div>
-      <div class="cat-nose"></div>
-      <div class="cat-mouth"></div>
-    </div>
-    <div class="cat-body">
-      <div class="cat-belly"></div>
-    </div>
-    <div class="cat-tail"></div>
-  </div>
+  <img src="/images/cats/cat5.png" alt="Brown cat" class="hidden-cat-img" />
 </div>
 
 <style>
@@ -215,6 +128,9 @@ const catPositions = [
     height: 100%;
     display: block;
     pointer-events: none;
+    border: none;              /* remove visible border */
+    outline: none;
+    background-color: transparent;
   }
 
   .torch:hover {
@@ -335,187 +251,11 @@ const catPositions = [
     100% { transform: scale(1); opacity: 1; }
   }
 
-  .pixel-cat {
+  .hidden-cat-img {
     width: 32px;
     height: 32px;
-    position: relative;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    cursor: pointer;
-  }
-
-  /* Cat structure */
-  .cat-ears {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 8px;
-  }
-
-  .cat-ear {
-    width: 6px;
-    height: 6px;
-    position: absolute;
-    top: 0;
-  }
-
-  .cat-ear-left {
-    left: 2px;
-    transform: rotate(-30deg);
-  }
-
-  .cat-ear-right {
-    right: 2px;
-    transform: rotate(30deg);
-  }
-
-  .cat-head {
-    position: absolute;
-    top: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 16px;
-    height: 12px;
-    border-radius: 8px;
-  }
-
-  .cat-eyes {
-    position: absolute;
-    top: 3px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 12px;
-    height: 2px;
-  }
-
-  .cat-eye {
-    width: 2px;
-    height: 2px;
-    background: #000;
-    position: absolute;
-    border-radius: 50%;
-  }
-
-  .cat-eye-left {
-    left: 2px;
-  }
-
-  .cat-eye-right {
-    right: 2px;
-  }
-
-  .cat-nose {
-    position: absolute;
-    top: 6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 1px;
-    background: #ff69b4;
-  }
-
-  .cat-mouth {
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 1px;
-    border-left: 1px solid #000;
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
-    border-radius: 0 0 2px 2px;
-  }
-
-  .cat-body {
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 12px;
-    height: 16px;
-    border-radius: 6px;
-  }
-
-  .cat-belly {
-    position: absolute;
-    top: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    opacity: 0.7;
-  }
-
-  .cat-tail {
-    position: absolute;
-    top: 16px;
-    right: -2px;
-    width: 2px;
-    height: 12px;
-    border-radius: 1px;
-    transform: rotate(15deg);
-  }
-
-  /* Cat color variations */
-  .orange-cat .cat-ear,
-  .orange-cat .cat-head,
-  .orange-cat .cat-body,
-  .orange-cat .cat-tail {
-    background: #ff8c42;
-  }
-
-  .orange-cat .cat-belly {
-    background: #ffb366;
-  }
-
-  .gray-cat .cat-ear,
-  .gray-cat .cat-head,
-  .gray-cat .cat-body,
-  .gray-cat .cat-tail {
-    background: #8e8e93;
-  }
-
-  .gray-cat .cat-belly {
-    background: #c7c7cc;
-  }
-
-  .black-cat .cat-ear,
-  .black-cat .cat-head,
-  .black-cat .cat-body,
-  .black-cat .cat-tail {
-    background: #2c2c2e;
-  }
-
-  .black-cat .cat-belly {
-    background: #48484a;
-  }
-
-  .white-cat .cat-ear,
-  .white-cat .cat-head,
-  .white-cat .cat-body,
-  .white-cat .cat-tail {
-    background: #f2f2f7;
-    border: 1px solid #d1d1d6;
-  }
-
-  .white-cat .cat-belly {
-    background: #ffffff;
-  }
-
-  .brown-cat .cat-ear,
-  .brown-cat .cat-head,
-  .brown-cat .cat-body,
-  .brown-cat .cat-tail {
-    background: #8b4513;
-  }
-
-  .brown-cat .cat-belly {
-    background: #cd853f;
+    display: block;
+    pointer-events: none;
   }
 
   /* Instructions */
