@@ -8,7 +8,12 @@
 .torch.dragging { /* ...existing dragging rules... */ }
 
 .torch-light {
-  @apply absolute w-72 h-72 rounded-full pointer-events-none transition-opacity duration-300;
+  position: absolute;
+  width: 18rem; /* w-72 equivalent */
+  height: 18rem; /* h-72 equivalent */
+  border-radius: 50%; /* rounded-full */
+  pointer-events: none;
+  transition: opacity 0.3s ease; /* transition-opacity duration-300 */
   background: radial-gradient(
     circle,
     var(--color-primary-300) 0%,
@@ -17,6 +22,7 @@
   );
   z-index: 51;
   opacity: 0;
+  transform: translate(-50%, -50%);
 }
 .torch-light.active {
   opacity: 1;
@@ -24,26 +30,46 @@
 
 /* container wrapper */
 .torch-container {
-  @apply absolute inset-0 pointer-events-none z-50;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 50;
 }
 
 /* torch image */
 .torch-img {
-  @apply w-full h-full block pointer-events-none bg-transparent border-none;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  background-color: transparent;
+  border: none;
 }
 
 /* instructions bubble */
 .torch-instructions {
-  @apply fixed bottom-8 left-1/2 transform -translate-x-1/2
-    bg-[var(--color-bg-tertiary)/85%]       /* overlay using tertiary bg */
-    text-[var(--color-text-secondary)]      /* secondary text color */
-    px-4 py-2 rounded-full opacity-0 transition-all duration-300
-    pointer-events-none z-60
-    border-2 border-[var(--color-primary-500)]   /* brand primary */
-    shadow-lg backdrop-blur;
+  position: fixed;
+  bottom: 2rem; /* bottom-8 */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: color-mix(in srgb, var(--color-bg-tertiary) 85%, transparent);
+  color: var(--color-text-secondary);
+  padding: 1rem 1rem; /* px-4 py-2 */
+  border-radius: 9999px; /* rounded-full */
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 60;
+  border: 2px solid var(--color-primary-500);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
 }
 .torch-instructions.show {
-  @apply opacity-100 -translate-y-1;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-0.25rem); /* -translate-y-1 */
 }
 .torch-instructions::before {
   content: '🔥';
@@ -53,13 +79,19 @@
 
 /* cat counter */
 .cat-counter {
-  @apply fixed top-5 left-5
-    bg-[var(--color-bg-tertiary)/70%]      /* overlay using tertiary bg */
-    text-[var(--color-text-secondary)]     /* secondary text color */
-    px-3 py-1.5 rounded-full opacity-0 transition-all duration-300
-    pointer-events-none z-60
-    border-2 border-[var(--color-border-secondary)]
-    backdrop-blur;
+  position: fixed;
+  top: 1.25rem; /* top-5 */
+  left: 1.25rem; /* left-5 */
+  background-color: color-mix(in srgb, var(--color-bg-tertiary) 70%, transparent);
+  color: var(--color-text-secondary);
+  padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
+  border-radius: 9999px; /* rounded-full */
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 60;
+  border: 2px solid var(--color-border-secondary);
+  backdrop-filter: blur(8px);
 }
 .cat-counter.show {
   opacity: 0.8;
@@ -104,9 +136,18 @@
 
 /* overlay instructions */
 .instructions-overlay {
-  @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-    bg-[var(--color-overlay-dark,rgba(0,0,0,0.8))] text-[var(--color-text,white)]
-    p-5 rounded-lg text-center z-70 opacity-0 transition-opacity duration-300;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--color-overlay-dark, rgba(0,0,0,0.8));
+  color: var(--color-text, white);
+  padding: 1.25rem; /* p-5 */
+  border-radius: 0.5rem; /* rounded-lg */
+  text-align: center;
+  z-index: 70;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 .instructions-overlay.show {
   opacity: 1;
@@ -114,15 +155,25 @@
 
 /* reset notification */
 .reset-text {
-  @apply fixed top-7 left-1/2 transform -translate-x-1/2
-    bg-[var(--color-primary-600)/90%]       /* brand dark overlay */
-    text-[var(--color-text-primary)]        /* primary text color */
-    px-4 py-2 rounded-full font-semibold z-65 opacity-0 transition-all duration-300
-    border-2 border-[var(--color-primary-500)]
-    shadow-lg backdrop-blur;
+  position: fixed;
+  top: 1.75rem; /* top-7 */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: color-mix(in srgb, var(--color-primary-600) 90%, transparent);
+  color: var(--color-text-primary);
+  padding: 1rem 1rem; /* px-4 py-2 */
+  border-radius: 9999px; /* rounded-full */
+  font-weight: 600; /* font-semibold */
+  z-index: 65;
+  opacity: 0;
+  transition: all 0.3s ease;
+  border: 2px solid var(--color-primary-500);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
 }
 .reset-text.show {
-  @apply opacity-100 translate-y-1;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0.25rem); /* translate-y-1 */
 }
 .reset-text::before {
   content: '🎉';
@@ -132,10 +183,17 @@
 
 /* tooltip */
 .torch-tooltip {
-  @apply absolute top-24 right-5
-    bg-[var(--color-bg-tertiary)/80%]    /* overlay using tertiary bg */
-    text-[var(--color-text-secondary)]   /* secondary text color */
-    px-3 py-1.5 rounded opacity-0 pointer-events-none transition-opacity duration-300 z-60;
+  position: absolute;
+  top: 6rem; /* top-24 */
+  right: 1.25rem; /* right-5 */
+  background-color: color-mix(in srgb, var(--color-bg-tertiary) 80%, transparent);
+  color: var(--color-text-secondary);
+  padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
+  border-radius: 0.25rem; /* rounded */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 60;
 }
 .torch-tooltip.show {
   opacity: 1;
