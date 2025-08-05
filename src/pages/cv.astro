@@ -1,28 +1,419 @@
 ---
-import Layout from '../components/Layout.astro';  // ensure this path is correct
+import Layout from '../components/Layout.astro';
 ---
 
-<Layout title="CV - Hamish Burke">
-  <main>
+<Layout title="CV - Hamish Burke" description="Hamish Burke's Curriculum Vitae - Computer Science Graduate Student specializing in Cybersecurity and Machine Learning Research at Victoria University of Wellington">
+  <main class="cv-page">
     <article>
-      <h1>Curriculum Vitae</h1>
+      <header class="cv-header">
+        <h1>Curriculum Vitae</h1>
+        <p class="cv-subtitle">Computer Science Graduate Student • Cybersecurity Researcher</p>
+      </header>
+
+      <div class="cv-actions">
+        <a href="/cv.pdf" class="download-btn primary" download>
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+          </svg>
+          Download PDF
+        </a>
+        <a href="/cv.pdf" class="download-btn secondary" target="_blank">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z" />
+          </svg>
+          Open in New Tab
+        </a>
+      </div>
+
       <div class="pdf-container">
         <iframe
           src="/cv.pdf"
           width="100%"
           height="800px"
-          style="border: none;"
-        />
-        <p>Your browser does not support PDFs.</p>
-        <a href="/cv.pdf">Download the PDF</a>
+          title="Hamish Burke CV"
+          loading="lazy"
+        >
+        </iframe>
+        <div class="pdf-fallback">
+          <h2>PDF Viewer Not Supported</h2>
+          <p>Your browser doesn't support embedded PDFs. Please download the CV using the button above.</p>
+          <a href="/cv.pdf" class="download-btn primary">Download CV</a>
+        </div>
+      </div>
+
+      <div class="cv-info">
+        <h2>About This CV</h2>
+        <p>
+          Cybersecurity-focused Computer Science graduate student with expertise in programming, system security, and 
+          machine learning. This CV showcases my academic achievements, research experience, and professional projects 
+          in cybersecurity and software development.
+        </p>
+        <div class="cv-highlights">
+          <div class="highlight-item">
+            <h3>Education</h3>
+            <p>Master of Computer Science (Expected 2026)<br/>Bachelor of Science, Computer Science (2024)<br/>Victoria University of Wellington</p>
+          </div>
+          <div class="highlight-item">
+            <h3>Research Focus</h3>
+            <p>Adversarial Machine Learning<br/>Malware Detection Systems<br/>Data Poisoning Attacks</p>
+          </div>
+          <div class="highlight-item">
+            <h3>Core Technologies</h3>
+            <p>Java, Python, C++, JavaScript<br/>PyTorch, Docker, AWS<br/>Cybersecurity & ML Tools</p>
+          </div>
+        </div>
+        
+        <div class="cv-sections">
+          <div class="cv-section">
+            <h3>Professional Experience</h3>
+            <ul>
+              <li><strong>Computer Science Tutor</strong> - Victoria University of Wellington (2023-Present)</li>
+              <li><strong>IT Installation Technician</strong> - HQ Limited (2024)</li>
+              <li><strong>Customer Service Representative</strong> - Noel Leeming (2022-2023)</li>
+            </ul>
+          </div>
+          
+          <div class="cv-section">
+            <h3>Key Research & Projects</h3>
+            <ul>
+              <li><strong>Data Poisoning Attacks on ML Models</strong> - Independent research on adversarial cybersecurity</li>
+              <li><strong>LLM Assistant</strong> - Java-based conversational AI using OpenAI API</li>
+              <li><strong>Wedding Event Platform</strong> - Full-stack web application with authentication</li>
+              <li><strong>2D Platformer Game</strong> - Team lead for physics-based game development</li>
+            </ul>
+          </div>
+          
+          <div class="cv-section">
+            <h3>Academic Achievements</h3>
+            <ul>
+              <li>Dean's List recognition (2022, 2024)</li>
+              <li>8.11 GPA (2024)</li>
+              <li>Wellington Tangiwai Scholarship (2022)</li>
+              <li>Specialization in Cybersecurity</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </article>
   </main>
 </Layout>
 
 <style>
+  /* === CV PAGE LAYOUT === */
+  .cv-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  /* === HEADER STYLING === */
+  .cv-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--color-primary-200);
+  }
+
+  .cv-header h1 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--color-primary-500);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  .cv-subtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+    font-weight: 300;
+  }
+
+  /* === ACTION BUTTONS === */
+  .cv-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+  }
+
+  .download-btn.primary {
+    background: var(--color-primary-500);
+    color: white;
+  }
+
+  .download-btn.primary:hover {
+    background: var(--color-primary-600);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .download-btn.secondary {
+    background: transparent;
+    color: var(--color-primary-500);
+    border-color: var(--color-primary-500);
+  }
+
+  .download-btn.secondary:hover {
+    background: var(--color-primary-50);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .download-btn.secondary:hover {
+    background: var(--color-primary-900);
+  }
+
+  /* === PDF CONTAINER === */
   .pdf-container {
     max-width: 100%;
-    margin: 2rem auto;
+    margin: 2rem 0;
+    border: 1px solid var(--color-border-primary);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    background: var(--color-bg-secondary);
+  }
+
+  .pdf-container iframe {
+    border: none;
+    display: block;
+    background: white;
+  }
+
+  .pdf-fallback {
+    padding: 3rem 2rem;
+    text-align: center;
+    background: var(--color-bg-secondary);
+    display: none;
+  }
+
+  .pdf-fallback h2 {
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+  }
+
+  .pdf-fallback p {
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+  }
+
+  /* === CV INFO SECTION === */
+  .cv-info {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: var(--color-bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--color-border-primary);
+  }
+
+  .cv-info h2 {
+    color: var(--color-primary-500);
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .cv-info > p {
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+
+  /* === HIGHLIGHTS GRID === */
+  .cv-highlights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .highlight-item {
+    padding: 1.5rem;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .highlight-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-primary-300);
+  }
+
+  .dark .highlight-item:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .highlight-item h3 {
+    color: var(--color-primary-500);
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .highlight-item p {
+    color: var(--color-text-secondary);
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  /* === CV SECTIONS === */
+  .cv-sections {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .cv-section {
+    padding: 1.5rem;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .cv-section:hover {
+    border-color: var(--color-primary-300);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .cv-section:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .cv-section h3 {
+    color: var(--color-primary-600);
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border-secondary);
+  }
+
+  .cv-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cv-section li {
+    color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .cv-section li:before {
+    content: "▸";
+    color: var(--color-primary-500);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+  }
+
+  .cv-section li strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  /* === RESPONSIVE DESIGN === */
+  @media (max-width: 768px) {
+    .cv-page {
+      padding: 1rem;
+    }
+
+    .cv-header h1 {
+      font-size: 2.5rem;
+    }
+
+    .cv-subtitle {
+      font-size: 1.1rem;
+    }
+
+    .cv-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .download-btn {
+      width: 100%;
+      max-width: 300px;
+      justify-content: center;
+    }
+
+    .cv-highlights {
+      grid-template-columns: 1fr;
+    }
+
+    .cv-info {
+      padding: 1.5rem;
+    }
+
+    .cv-sections {
+      gap: 1.5rem;
+    }
+
+    .cv-section {
+      padding: 1.25rem;
+    }
+
+    .pdf-container iframe {
+      height: 600px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cv-header h1 {
+      font-size: 2rem;
+    }
+
+    .cv-info h2 {
+      font-size: 1.5rem;
+    }
+
+    .pdf-container iframe {
+      height: 500px;
+    }
+  }
+
+  /* === PRINT STYLES === */
+  @media print {
+    .cv-actions,
+    .cv-info {
+      display: none;
+    }
+
+    .cv-page {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .pdf-container {
+      border: none;
+      box-shadow: none;
+      margin: 0;
+    }
   }
 </style>
