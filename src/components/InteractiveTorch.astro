@@ -103,6 +103,13 @@ const catPositions = [
   let tooltip: HTMLElement | null = null;
   let isInitialized = false;
 
+  // Mobile detection function
+  function isMobileDevice(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+           || window.innerWidth <= 640
+           || ('ontouchstart' in window && window.innerWidth <= 768);
+  }
+
   // Initialize audio context
   function initAudio() {
     if (!audioContext) {
@@ -325,6 +332,12 @@ const catPositions = [
 
   // Initialize when DOM is loaded
   document.addEventListener('DOMContentLoaded', () => {
+    // Exit early on mobile devices
+    if (isMobileDevice()) {
+      console.log('Interactive torch disabled on mobile device');
+      return;
+    }
+
     // Prevent multiple initializations
     if (isInitialized) return;
     isInitialized = true;

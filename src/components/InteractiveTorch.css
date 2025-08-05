@@ -242,3 +242,27 @@
     display: none !important;
   }
 }
+
+/* hide on mobile and tablets */
+@media (max-width: 768px) {
+  .torch-game-container,
+  .torch-header-container {
+    display: none !important;
+  }
+  
+  .hidden-item {
+    display: none !important;
+  }
+}
+
+/* Also hide on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .torch-game-container,
+  .torch-header-container {
+    display: none !important;
+  }
+  
+  .hidden-item {
+    display: none !important;
+  }
+}
