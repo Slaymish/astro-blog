@@ -1,5 +1,6 @@
 ---
 // InteractiveTorch.astro - Interactive torch that reveals hidden cats
+import './InteractiveTorch.css';
 
 // Define layout margins and content area (in pixels/percentages relative to page)
 const leftMarginWidth = 5; // % - width of left margin
@@ -42,13 +43,17 @@ const catPositions = [
 ---
 
 <!-- Torch container - fixed to viewport -->
-<div class="torch-game-container">
-  <div id="torch-container">
+<div class="torch-game-container fixed inset-0 w-screen h-screen pointer-events-none z-50">
+  <div id="torch-container" class="absolute inset-0 pointer-events-none z-50">
     <!-- Torch icon that can be picked up -->
-    <div id="torch" class="torch" data-picked-up="false">
+    <div id="torch" class="torch absolute top-5 right-5 w-12 h-16 cursor-grab pointer-events-auto z-60 transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
       <img src="/images/flashlight.png" alt="Torch" class="torch-img" />
     </div>
     
+    <div id="torch-tooltip" class="torch-tooltip">
+      Drag me to find the cats!
+    </div>
+
     <!-- Light effect that follows the torch -->
     <div id="torch-light" class="torch-light"></div>
     
@@ -85,251 +90,6 @@ const catPositions = [
   <img src="/images/cats/cat5.png" alt="Brown cat" class="hidden-cat-img" />
 </div>
 
-<style>
-  .torch-game-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 1000;
-  }
-
-  .torch-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1000;
-  }
-
-  .torch {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 48px;        /* adjust to your image dimensions */
-    height: 64px;       /* adjust to your image dimensions */
-    cursor: grab;
-    pointer-events: auto;
-    z-index: 1002;
-    transition: all 0.3s ease;
-    opacity: 0.85;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
-
-    /* new background image instead of CSS shapes */
-    background: none;       
-  }
-
-  .torch-img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    pointer-events: none;
-    border: none;              /* remove visible border */
-    outline: none;
-    background-color: transparent;
-  }
-
-  .torch:hover {
-    transform: scale(1.1);
-    opacity: 1;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-  }
-
-  .torch.dragging {
-    cursor: grabbing;
-    transform: scale(1.15);
-    z-index: 1003;
-    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
-  }
-
-  .torch-light {
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, rgba(255, 140, 0, 0.2) 30%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-    z-index: 1001;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .torch-light.active {
-    opacity: 1;
-  }
-
-  .torch-instructions {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.85);
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 25px;
-    font-size: 14px;
-    font-weight: 500;
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 1003;
-    pointer-events: none;
-    border: 2px solid rgba(255, 140, 0, 0.3);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 140, 0, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    text-align: center;
-    min-width: 140px;
-  }
-
-  .torch-instructions.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(-5px);
-  }
-
-  .torch-instructions::before {
-    content: '🔥';
-    display: inline-block;
-    margin-right: 8px;
-    font-size: 16px;
-  }
-
-  .cat-counter {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 1003;
-    pointer-events: none;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    text-align: center;
-    min-width: 60px;
-  }
-
-  .cat-counter.show {
-    opacity: 0.8;
-  }
-
-  .cat-counter.complete {
-    background: rgba(0, 150, 0, 0.8);
-    border-color: rgba(0, 255, 0, 0.3);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-
-  .hidden-item {
-    opacity: 0;
-    transform: scale(0);  /* start invisible & shrunk */
-    pointer-events: none;
-  }
-
-  .hidden-item.revealed {
-    animation: pop 0.4s ease-out forwards;
-  }
-
-  @keyframes pop {
-    0% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.2);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  .hidden-cat-img {
-    width: 45px;     /* fixed width */
-    height: auto;    /* maintain original aspect ratio */
-    display: block;
-    pointer-events: none;
-    border: none;        /* remove any border */
-    outline: none;
-    background-color: transparent;
-  }
-
-  /* Instructions */
-  .instructions-overlay {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    z-index: 2000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .instructions-overlay.show {
-    opacity: 1;
-  }
-
-  .reset-text {
-    position: fixed;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 100, 0, 0.9);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 1004;
-    opacity: 0;
-    transition: all 0.3s ease;
-    border: 2px solid rgba(0, 255, 0, 0.4);
-    box-shadow: 0 4px 15px rgba(0, 100, 0, 0.3);
-    text-align: center;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-
-  .reset-text.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(5px);
-  }
-
-  .reset-text::before {
-    content: '🎉';
-    display: inline-block;
-    margin-right: 8px;
-    font-size: 16px;
-  }
-
-  /* hide torch completely on small screens */
-  @media (max-width: 640px) {
-    .torch-game-container {
-      display: none !important;
-    }
-  }
-</style>
-
 <script>
   let isDragging = false;
   let dragOffset = { x: 0, y: 0 };
@@ -341,6 +101,8 @@ const catPositions = [
   let audioContext: AudioContext | null = null;
   let resetText: HTMLElement | null = null;
   let rafPending = false; // throttle flag
+  let tooltipTimer: number;
+  let tooltip: HTMLElement | null = null;
 
   // Initialize audio context
   function initAudio() {
@@ -546,11 +308,21 @@ const catPositions = [
     torchLight = document.getElementById('torch-light');
     torchInstructions = document.getElementById('torch-instructions');
     catCounter = document.getElementById('cat-counter');
+    tooltip = document.getElementById('torch-tooltip');
+
+    // show tooltip after 2s if not picked up
+    tooltipTimer = window.setTimeout(() => {
+      tooltip?.classList.add('show');
+    }, 2000);
 
     if (!torch || !torchLight || !torchInstructions || !catCounter) return;
 
     // Mouse events for torch dragging
     torch.addEventListener('mousedown', (e: MouseEvent) => {
+      // hide tooltip on first grab
+      clearTimeout(tooltipTimer);
+      tooltip?.classList.remove('show');
+
       isDragging = true;
       torch!.classList.add('dragging');
       torch!.setAttribute('data-picked-up', 'true');
@@ -584,14 +356,18 @@ const catPositions = [
     });
 
     document.addEventListener('mouseup', () => {
-      if (isDragging && torch) {
+      if (isDragging && torch && torchLight) {
         isDragging = false;
         torch.classList.remove('dragging');
+        torchLight.classList.remove('active');
       }
     });
 
     // Touch events for mobile
     torch.addEventListener('touchstart', (e: TouchEvent) => {
+      clearTimeout(tooltipTimer);
+      tooltip?.classList.remove('show');
+
       if (e.touches.length === 1) {
         isDragging = true;
         torch!.classList.add('dragging');
@@ -628,9 +404,10 @@ const catPositions = [
     });
 
     document.addEventListener('touchend', () => {
-      if (isDragging && torch) {
+      if (isDragging && torch && torchLight) {
         isDragging = false;
         torch.classList.remove('dragging');
+        torchLight.classList.remove('active');
       }
     });
 

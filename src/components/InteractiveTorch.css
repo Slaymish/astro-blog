@@ -1,0 +1,146 @@
+.torch-game-container { /* minimal overrides via Tailwind */ }
+
+.torch { /* keep any custom overrides */ }
+.torch:hover { /* ...existing hover rules... */ }
+.torch.dragging { /* ...existing dragging rules... */ }
+
+.torch-light {
+  @apply absolute w-72 h-72 rounded-full pointer-events-none transition-opacity duration-300;
+  background: radial-gradient(
+    circle,
+    var(--color-primary-300) 0%,
+    var(--color-primary-200) 30%,
+    transparent 70%
+  );
+  z-index: 51;
+  opacity: 0;
+}
+.torch-light.active {
+  opacity: 1;
+}
+
+/* container wrapper */
+.torch-container {
+  @apply absolute inset-0 pointer-events-none z-50;
+}
+
+/* torch image */
+.torch-img {
+  @apply w-full h-full block pointer-events-none bg-transparent border-none;
+}
+
+/* instructions bubble */
+.torch-instructions {
+  @apply fixed bottom-8 left-1/2 transform -translate-x-1/2
+    bg-[var(--color-bg-tertiary)/85%]       /* overlay using tertiary bg */
+    text-[var(--color-text-secondary)]      /* secondary text color */
+    px-4 py-2 rounded-full opacity-0 transition-all duration-300
+    pointer-events-none z-60
+    border-2 border-[var(--color-primary-500)]   /* brand primary */
+    shadow-lg backdrop-blur;
+}
+.torch-instructions.show {
+  @apply opacity-100 -translate-y-1;
+}
+.torch-instructions::before {
+  content: '🔥';
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+/* cat counter */
+.cat-counter {
+  @apply fixed top-5 left-5
+    bg-[var(--color-bg-tertiary)/70%]      /* overlay using tertiary bg */
+    text-[var(--color-text-secondary)]     /* secondary text color */
+    px-3 py-1.5 rounded-full opacity-0 transition-all duration-300
+    pointer-events-none z-60
+    border-2 border-[var(--color-border-secondary)]
+    backdrop-blur;
+}
+.cat-counter.show {
+  opacity: 0.8;
+}
+.cat-counter.complete {
+  background: var(--color-primary-600);      /* brand dark */
+  border-color: var(--color-primary-500);    /* brand main */
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+
+/* hidden cats */
+.hidden-item {
+  opacity: 0;
+  transform: scale(0);
+  pointer-events: none;
+}
+.hidden-item.revealed {
+  animation: pop 0.4s ease-out forwards;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0); opacity: 0; }
+  50%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* cat images */
+.hidden-cat-img {
+  width: 2.8rem; /* ~45px */
+  height: auto;
+  display: block;
+  pointer-events: none;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+/* overlay instructions */
+.instructions-overlay {
+  @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+    bg-[var(--color-overlay-dark,rgba(0,0,0,0.8))] text-[var(--color-text,white)]
+    p-5 rounded-lg text-center z-70 opacity-0 transition-opacity duration-300;
+}
+.instructions-overlay.show {
+  opacity: 1;
+}
+
+/* reset notification */
+.reset-text {
+  @apply fixed top-7 left-1/2 transform -translate-x-1/2
+    bg-[var(--color-primary-600)/90%]       /* brand dark overlay */
+    text-[var(--color-text-primary)]        /* primary text color */
+    px-4 py-2 rounded-full font-semibold z-65 opacity-0 transition-all duration-300
+    border-2 border-[var(--color-primary-500)]
+    shadow-lg backdrop-blur;
+}
+.reset-text.show {
+  @apply opacity-100 translate-y-1;
+}
+.reset-text::before {
+  content: '🎉';
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+/* tooltip */
+.torch-tooltip {
+  @apply absolute top-24 right-5
+    bg-[var(--color-bg-tertiary)/80%]    /* overlay using tertiary bg */
+    text-[var(--color-text-secondary)]   /* secondary text color */
+    px-3 py-1.5 rounded opacity-0 pointer-events-none transition-opacity duration-300 z-60;
+}
+.torch-tooltip.show {
+  opacity: 1;
+}
+
+/* hide on mobile */
+@media (max-width: 640px) {
+  .torch-game-container {
+    display: none !important;
+  }
+}
