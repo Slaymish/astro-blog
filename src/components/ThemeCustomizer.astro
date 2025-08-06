@@ -469,9 +469,9 @@ class ThemeCustomizer {
     this.updateThemeButtons();
     
     // Refresh colors to update tag colors for the new theme
-    const hue = parseInt(this.hueSlider?.value || '142');
+    const hue = parseInt(this.hueSlider?.value || '297');
     const saturation = parseInt(this.saturationSlider?.value || '70');
-    const harmony = this.harmonySelect?.value || 'analogous';
+    const harmony = this.harmonySelect?.value || 'monochromatic';
     this.updateColors(hue, saturation, harmony);
   }
 
@@ -496,7 +496,7 @@ class ThemeCustomizer {
       creative: { heading: 'Merriweather', body: 'Open Sans' }
     };
 
-    const fonts = fontMappings[family] || fontMappings.modern;
+    const fonts = fontMappings[family] || fontMappings.classic;
     document.documentElement.style.setProperty('--font-heading', fonts.heading);
     document.documentElement.style.setProperty('--font-body', fonts.body);
     
@@ -518,7 +518,7 @@ class ThemeCustomizer {
 
   setSaturation(saturation: string) {
     if (this.saturationValue) this.saturationValue.textContent = saturation;
-    this.updateColors(parseInt(this.hueSlider?.value || '142'), parseInt(saturation));
+    this.updateColors(parseInt(this.hueSlider?.value || '297'), parseInt(saturation));
     this.updateColorPreviews();
     localStorage.setItem('saturation', saturation);
   }
@@ -643,10 +643,10 @@ class ThemeCustomizer {
   }
 
   updateColorPreviews() {
-    const hue = parseInt(this.hueSlider?.value || '142');
+    const hue = parseInt(this.hueSlider?.value || '297');
     const saturation = parseInt(this.saturationSlider?.value || '70');
-    const harmony = this.harmonySelect?.value || 'analogous';
-    
+    const harmony = this.harmonySelect?.value || 'monochromatic';
+
     const colors = this.calculateHarmonyColors(hue, harmony);
     
     if (this.colorPreviews.length >= 3) {
@@ -663,18 +663,18 @@ class ThemeCustomizer {
   resetToDefaults() {
     // Reset all values to defaults
     this.setTheme('light');
-    this.setFontFamily('modern');
+    this.setFontFamily('classic');
     this.setFontSize('16');
-    this.setHue('142');
+    this.setHue('297');
     this.setSaturation('70');
-    this.setHarmony('analogous');
+    this.setHarmony('monochromatic');
     
     // Update UI controls
-    if (this.fontFamilySelect) this.fontFamilySelect.value = 'modern';
+    if (this.fontFamilySelect) this.fontFamilySelect.value = 'classic';
     if (this.fontSizeSlider) this.fontSizeSlider.value = '16';
-    if (this.hueSlider) this.hueSlider.value = '142';
+    if (this.hueSlider) this.hueSlider.value = '297';
     if (this.saturationSlider) this.saturationSlider.value = '70';
-    if (this.harmonySelect) this.harmonySelect.value = 'analogous';
+    if (this.harmonySelect) this.harmonySelect.value = 'monochromatic';
     
     // Clear localStorage
     localStorage.removeItem('theme');
@@ -688,11 +688,11 @@ class ThemeCustomizer {
   loadPreferences() {
     // Load saved theme preferences
     const theme = localStorage.getItem('theme') || 'light';
-    const fontFamily = localStorage.getItem('fontFamily') || 'modern';
+    const fontFamily = localStorage.getItem('fontFamily') || 'classic';
     const fontSize = localStorage.getItem('fontSize') || '16';
-    const hue = localStorage.getItem('hue') || '142';
+    const hue = localStorage.getItem('hue') || '297';
     const saturation = localStorage.getItem('saturation') || '70';
-    const harmony = localStorage.getItem('harmony') || 'analogous';
+    const harmony = localStorage.getItem('harmony') || 'monochromatic';
     
     // Apply loaded preferences
     this.setTheme(theme);
