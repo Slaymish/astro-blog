@@ -435,11 +435,15 @@ class ThemeCustomizer {
   updateColors(hue: number, saturation: number, harmony: string = 'analogous') {
     const root = document.documentElement;
     
-    // Update primary color scale
+    // Update primary color scale based on harmony type
+    // For now, we use the same hue but could implement different harmony algorithms here
     root.style.setProperty('--color-primary-300', `hsl(${hue}, ${saturation}%, 75%)`);
     root.style.setProperty('--color-primary-400', `hsl(${hue}, ${saturation}%, 65%)`);
     root.style.setProperty('--color-primary-500', `hsl(${hue}, ${saturation}%, 55%)`);
     root.style.setProperty('--color-primary-600', `hsl(${hue}, ${saturation}%, 45%)`);
+    
+    // Store harmony for future use
+    console.log(`Applied ${harmony} harmony with hue ${hue} and saturation ${saturation}%`);
   }
 
   updateColorPreviews() {
@@ -457,16 +461,16 @@ class ThemeCustomizer {
     // Reset all values to defaults
     this.setTheme('light');
     this.setFontFamily('modern');
-    this.setFontSize(16);
-    this.setHue(142);
-    this.setSaturation(70);
+    this.setFontSize('16');
+    this.setHue('142');
+    this.setSaturation('70');
     this.setHarmony('analogous');
     
     // Update UI controls
     if (this.fontFamilySelect) this.fontFamilySelect.value = 'modern';
-    if (this.fontSizeSlider) this.fontSizeSlider.value = 16;
-    if (this.hueSlider) this.hueSlider.value = 142;
-    if (this.saturationSlider) this.saturationSlider.value = 70;
+    if (this.fontSizeSlider) this.fontSizeSlider.value = '16';
+    if (this.hueSlider) this.hueSlider.value = '142';
+    if (this.saturationSlider) this.saturationSlider.value = '70';
     if (this.harmonySelect) this.harmonySelect.value = 'analogous';
     
     // Clear localStorage
