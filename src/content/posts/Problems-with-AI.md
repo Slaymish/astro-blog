@@ -62,11 +62,11 @@ We can’t simply tweak code to resolve deep ethical problems. AI systems need c
 
 ### References
 
-1. Andreotta AJ, Kirkham N, Rizzi M. **AI, big data, and the future of consent.** *AI & Society*. 2021;37(4):1715–28. :contentReference[oaicite:11]{index=11}  
-2. Hsu YC, Huang TH “Kenneth”, Verma H, et al. **Empowering Local Communities Using Artificial Intelligence.** *Patterns*. 2022;3(10):100378. :contentReference[oaicite:12]{index=12}  
-3. Zhang J. **A Three-Layered Framework: An AI Governance Guide.** SSRN. 2024. :contentReference[oaicite:13]{index=13}  
-4. Cajueiro DO, Celestino VR. **A Comprehensive Review of Artificial Intelligence Regulation: Weighing Ethical Principles and Innovation.** SSRN. 2024. :contentReference[oaicite:14]{index=14}  
-5. Metikoš L, Ausloos J. **The Right to an Explanation in Practice: Insights from Case Law for the GDPR and the AI Act.** *Law Innovation and Technology.* 2025;17(1):1–36. :contentReference[oaicite:15]{index=15}  
-6. Kaminski ME. **The Right to Explanation in the AI Act.** SSRN. 2023. :contentReference[oaicite:16]{index=16}  
-7. Laine J, Minkkinen M, Mäntymäki M. **Ethics-based AI auditing: A systematic literature review on conceptualizations of ethical principles and knowledge contributions to stakeholders.** *Information & Management.* 2024;61(5):103969. :contentReference[oaicite:17]{index=17}  
-8. Schiff DS, Kelley S, Camacho Ibáñez JC. **The emergence of artificial intelligence ethics auditing.** *Big Data & Society.* 2025. :contentReference[oaicite:18]{index=18}  
+1. [^1]: Andreotta AJ, Kirkham N, Rizzi M. **AI, big data, and the future of consent.** *AI & Society*. 2021;37(4):1715–28. 
+2. [^2]: Hsu YC, Huang TH “Kenneth”, Verma H, et al. **Empowering Local Communities Using Artificial Intelligence.** *Patterns*. 2022;3(10)
+3. [^3]: Zhang J. **A Three-Layered Framework: An AI Governance Guide.** SSRN. 2024.
+4. [^4]: Cajueiro DO, Celestino VR. **A Comprehensive Review of Artificial Intelligence Regulation: Weighing Ethical Principles and Innovation.** SSRN. 2024. 
+5. [^5]: Metikoš L, Ausloos J. **The Right to an Explanation in Practice: Insights from Case Law for the GDPR and the AI Act.** *Law Innovation and Technology.* 2025;17(1):1–36.
+6. [^6]:Kaminski ME. **The Right to Explanation in the AI Act.** SSRN. 2023.
+7. [^7]: Laine J, Minkkinen M, Mäntymäki M. **Ethics-based AI auditing: A systematic literature review on conceptualizations of ethical principles and knowledge contributions to stakeholders.** *Information & Management.* 2024;61(5):103969.
+8. [^8]: Schiff DS, Kelley S, Camacho Ibáñez JC. **The emergence of artificial intelligence ethics auditing.** *Big Data & Society.* 2025. 

@@ -53,5 +53,4 @@ This latent reasoning idea seems promising for tasks where every bit of nuance m
 
 ---
 
-1. [^1]:Geiping, J. et al. *Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach*. arXiv:2502.XXXXX (2025).
-::contentReference[oaicite:0]{index=0}
+1. [^1]:Geiping, J. et al. *Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach*. arXiv:2502.05171 (2025).

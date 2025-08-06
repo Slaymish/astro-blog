@@ -130,5 +130,4 @@ This split means I can dial the knob rapidly and only commit the final value to 
 ## Prototype Photo
 
 ![ESP32 smart lighting controller prototype on breadboard with ring-LED, encoder and joystick](/images/posts/controller-progress.jpg)
-::contentReference[oaicite:0]{index=0}
 
