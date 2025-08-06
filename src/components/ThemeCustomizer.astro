@@ -250,6 +250,24 @@
 
 <script>
 class ThemeCustomizer {
+  isOpen: boolean;
+  toggle: HTMLElement | null;
+  panel: HTMLElement | null;
+  overlay: HTMLElement | null;
+  closeBtn: HTMLElement | null;
+  lightModeBtn: HTMLElement | null;
+  darkModeBtn: HTMLElement | null;
+  fontFamilySelect: HTMLSelectElement | null;
+  fontSizeSlider: HTMLInputElement | null;
+  hueSlider: HTMLInputElement | null;
+  saturationSlider: HTMLInputElement | null;
+  harmonySelect: HTMLSelectElement | null;
+  resetBtn: HTMLElement | null;
+  fontSizeValue: HTMLElement | null;
+  hueValue: HTMLElement | null;
+  saturationValue: HTMLElement | null;
+  colorPreviews: (HTMLElement | null)[];
+
   constructor() {
     this.isOpen = false;
     this.toggle = document.getElementById('theme-customizer-toggle');
@@ -260,11 +278,11 @@ class ThemeCustomizer {
     // Theme controls
     this.lightModeBtn = document.getElementById('light-mode-btn');
     this.darkModeBtn = document.getElementById('dark-mode-btn');
-    this.fontFamilySelect = document.getElementById('font-family-select');
-    this.fontSizeSlider = document.getElementById('font-size-slider');
-    this.hueSlider = document.getElementById('hue-slider');
-    this.saturationSlider = document.getElementById('saturation-slider');
-    this.harmonySelect = document.getElementById('harmony-select');
+    this.fontFamilySelect = document.getElementById('font-family-select') as HTMLSelectElement;
+    this.fontSizeSlider = document.getElementById('font-size-slider') as HTMLInputElement;
+    this.hueSlider = document.getElementById('hue-slider') as HTMLInputElement;
+    this.saturationSlider = document.getElementById('saturation-slider') as HTMLInputElement;
+    this.harmonySelect = document.getElementById('harmony-select') as HTMLSelectElement;
     this.resetBtn = document.getElementById('reset-theme-btn');
     
     // Value displays
@@ -296,13 +314,13 @@ class ThemeCustomizer {
     this.darkModeBtn?.addEventListener('click', () => this.setTheme('dark'));
     
     // Font controls
-    this.fontFamilySelect?.addEventListener('change', (e) => this.setFontFamily(e.target.value));
-    this.fontSizeSlider?.addEventListener('input', (e) => this.setFontSize(e.target.value));
+    this.fontFamilySelect?.addEventListener('change', (e: Event) => this.setFontFamily((e.target as HTMLSelectElement).value));
+    this.fontSizeSlider?.addEventListener('input', (e: Event) => this.setFontSize((e.target as HTMLInputElement).value));
     
     // Color controls
-    this.hueSlider?.addEventListener('input', (e) => this.setHue(e.target.value));
-    this.saturationSlider?.addEventListener('input', (e) => this.setSaturation(e.target.value));
-    this.harmonySelect?.addEventListener('change', (e) => this.setHarmony(e.target.value));
+    this.hueSlider?.addEventListener('input', (e: Event) => this.setHue((e.target as HTMLInputElement).value));
+    this.saturationSlider?.addEventListener('input', (e: Event) => this.setSaturation((e.target as HTMLInputElement).value));
+    this.harmonySelect?.addEventListener('change', (e: Event) => this.setHarmony((e.target as HTMLSelectElement).value));
     
     // Reset button
     this.resetBtn?.addEventListener('click', () => this.resetToDefaults());
@@ -349,7 +367,7 @@ class ThemeCustomizer {
     this.toggle?.focus();
   }
 
-  setTheme(theme) {
+  setTheme(theme: string) {
     const root = document.documentElement;
     if (theme === 'dark') {
       root.classList.add('dark');
@@ -371,8 +389,8 @@ class ThemeCustomizer {
     }
   }
 
-  setFontFamily(family) {
-    const fontMappings = {
+  setFontFamily(family: string) {
+    const fontMappings: Record<string, { heading: string; body: string }> = {
       modern: { heading: 'Playfair Display', body: 'Inter' },
       classic: { heading: 'Georgia', body: 'Arial' },
       minimal: { heading: 'system-ui', body: 'system-ui' },
@@ -388,33 +406,33 @@ class ThemeCustomizer {
     localStorage.setItem('fontFamily', family);
   }
 
-  setFontSize(size) {
+  setFontSize(size: string) {
     document.documentElement.style.fontSize = size + 'px';
-    this.fontSizeValue.textContent = size + 'px';
+    if (this.fontSizeValue) this.fontSizeValue.textContent = size + 'px';
     localStorage.setItem('fontSize', size);
   }
 
-  setHue(hue) {
-    this.hueValue.textContent = hue;
-    this.updateColors(parseInt(hue), this.saturationSlider?.value || 70);
+  setHue(hue: string) {
+    if (this.hueValue) this.hueValue.textContent = hue;
+    this.updateColors(parseInt(hue), parseInt(this.saturationSlider?.value || '70'));
     this.updateColorPreviews();
     localStorage.setItem('hue', hue);
   }
 
-  setSaturation(saturation) {
-    this.saturationValue.textContent = saturation;
-    this.updateColors(this.hueSlider?.value || 142, parseInt(saturation));
+  setSaturation(saturation: string) {
+    if (this.saturationValue) this.saturationValue.textContent = saturation;
+    this.updateColors(parseInt(this.hueSlider?.value || '142'), parseInt(saturation));
     this.updateColorPreviews();
     localStorage.setItem('saturation', saturation);
   }
 
-  setHarmony(harmony) {
-    this.updateColors(this.hueSlider?.value || 142, this.saturationSlider?.value || 70, harmony);
+  setHarmony(harmony: string) {
+    this.updateColors(parseInt(this.hueSlider?.value || '142'), parseInt(this.saturationSlider?.value || '70'), harmony);
     this.updateColorPreviews();
     localStorage.setItem('harmony', harmony);
   }
 
-  updateColors(hue, saturation, harmony = 'analogous') {
+  updateColors(hue: number, saturation: number, harmony: string = 'analogous') {
     const root = document.documentElement;
     
     // Update primary color scale
@@ -425,13 +443,13 @@ class ThemeCustomizer {
   }
 
   updateColorPreviews() {
-    const hue = this.hueSlider?.value || 142;
-    const saturation = this.saturationSlider?.value || 70;
+    const hue = this.hueSlider?.value || '142';
+    const saturation = this.saturationSlider?.value || '70';
     
     if (this.colorPreviews.length >= 3) {
-      this.colorPreviews[0].style.backgroundColor = `hsl(${hue}, ${saturation}%, 75%)`;
-      this.colorPreviews[1].style.backgroundColor = `hsl(${hue}, ${saturation}%, 55%)`;
-      this.colorPreviews[2].style.backgroundColor = `hsl(${hue}, ${saturation}%, 45%)`;
+      if (this.colorPreviews[0]) this.colorPreviews[0].style.backgroundColor = `hsl(${hue}, ${saturation}%, 75%)`;
+      if (this.colorPreviews[1]) this.colorPreviews[1].style.backgroundColor = `hsl(${hue}, ${saturation}%, 55%)`;
+      if (this.colorPreviews[2]) this.colorPreviews[2].style.backgroundColor = `hsl(${hue}, ${saturation}%, 45%)`;
     }
   }
 
