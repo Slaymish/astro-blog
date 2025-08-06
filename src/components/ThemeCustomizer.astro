@@ -530,7 +530,7 @@ class ThemeCustomizer {
     const root = document.documentElement;
     
     // Calculate colors based on harmony type
-    let colors = this.calculateHarmonyColors(hue, saturation, harmony);
+    let colors = this.calculateHarmonyColors(hue, harmony);
     
     // Update primary color scale
     root.style.setProperty('--color-primary-300', `hsl(${colors.primary}, ${saturation}%, 75%)`);
@@ -550,7 +550,7 @@ class ThemeCustomizer {
     }
   }
 
-  calculateHarmonyColors(hue: number, saturation: number, harmony: string) {
+  calculateHarmonyColors(hue: number, harmony: string) {
     const normalizeHue = (h: number) => ((h % 360) + 360) % 360;
     
     switch (harmony) {
@@ -603,7 +603,7 @@ class ThemeCustomizer {
     const saturation = parseInt(this.saturationSlider?.value || '70');
     const harmony = this.harmonySelect?.value || 'analogous';
     
-    const colors = this.calculateHarmonyColors(hue, saturation, harmony);
+    const colors = this.calculateHarmonyColors(hue, harmony);
     
     if (this.colorPreviews.length >= 3) {
       if (this.colorPreviews[0]) this.colorPreviews[0].style.backgroundColor = `hsl(${colors.primary}, ${saturation}%, 55%)`;
