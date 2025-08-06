@@ -7,11 +7,9 @@ draft: false
 author: "Hamish Burke"
 ---
 
-I just watched Abigail Thorn’s Philosophy Tube video, . Spoiler: she’s right. Thorn breaks AI harm into two buckets:
-
 I just watched Abigail Thorn’s Philosophy Tube video, “[AI is an ethical nightmare](https://www.youtube.com/watch?v=AaU6tI2pb3M),” and it makes a persuasive case. She splits the harms into two areas: what the model outputs, and how we apply that output in the real world.
 
-Consider airport body scanners – the infamous “penis detectors.” An operator selects male or female before you enter. Anyone outside that binary, such as trans or gender-nonconforming people, ends up flagged as “anomaly” and pulled aside. This shows how an AI system can bake its designers’ limited worldview into actual bodies.
+Consider airport body scanners, what she calls the infamous “penis detectors.” An operator selects male or female before you enter. Anyone outside that binary, such as trans or gender-nonconforming people, ends up flagged as “anomaly” and pulled aside. This shows how an AI system can bake its designers’ limited worldview into actual bodies.
 
 My first thought as a software engineer was to retrain the model with more inclusive data. But that feels like a temporary patch. The deeper issue lies in how these systems are designed and trained from day one.
 
@@ -19,7 +17,7 @@ My first thought as a software engineer was to retrain the model with more inclu
 
 ## 1. Data: The Real Culprit
 
-Contemporary AI models – from large language models to vision systems – consume vast troves of data that no organisation fully controls. Most of it is harvested without genuine consent:
+Todays flagship AI models, from large language models to vision systems, consume vast troves of data that no organisation fully controls. Most of it is harvested without genuine consent:
 
 1. **Public Web Scrapes**  
    Blogs, tweets and forum posts are bulk-collected and monetised without explicit permission, eroding informed consent[^1].
