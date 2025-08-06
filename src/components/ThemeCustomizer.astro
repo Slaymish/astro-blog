@@ -6,7 +6,7 @@
 <!-- Fixed gear button -->
 <button
   id="theme-customizer-toggle"
-  class="fixed top-4 right-4 z-40 w-11 h-11 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 backdrop-blur-sm"
+  class="fixed top-4 right-4 z-40 w-11 h-11 rounded-full shadow-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 backdrop-blur-sm opacity-0 translate-y-2"
   style="background-color: var(--color-bg-tertiary); color: var(--color-text-primary); border: 1px solid var(--color-border-primary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);"
   aria-label="Open theme customizer"
   aria-expanded="false"
@@ -125,10 +125,22 @@
           class="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
         />
         <!-- Color preview -->
-        <div class="flex space-x-2 mt-2">
-          <div class="w-8 h-8 rounded border-2 border-white shadow-sm" id="color-preview-1"></div>
-          <div class="w-8 h-8 rounded border-2 border-white shadow-sm" id="color-preview-2"></div>
-          <div class="w-8 h-8 rounded border-2 border-white shadow-sm" id="color-preview-3"></div>
+        <div class="mt-2">
+          <div class="text-xs mb-2" style="color: var(--color-text-muted);">Color Preview:</div>
+          <div class="flex space-x-2">
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded border-2 border-white shadow-sm" id="color-preview-1"></div>
+              <div class="text-xs mt-1" style="color: var(--color-text-muted);">Primary</div>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded border-2 border-white shadow-sm" id="color-preview-2"></div>
+              <div class="text-xs mt-1" style="color: var(--color-text-muted);">Accent 1</div>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="w-8 h-8 rounded border-2 border-white shadow-sm" id="color-preview-3"></div>
+              <div class="text-xs mt-1" style="color: var(--color-text-muted);">Accent 2</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -257,6 +269,22 @@
       width: 85%; /* Leaves 15% of screen visible */
     }
   }
+
+  /* Scroll-based visibility for gear button */
+  #theme-customizer-toggle {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+
+  #theme-customizer-toggle.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #theme-customizer-toggle.hidden {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+  }
 </style>
 
 <script>
@@ -278,6 +306,7 @@ class ThemeCustomizer {
   hueValue: HTMLElement | null;
   saturationValue: HTMLElement | null;
   colorPreviews: (HTMLElement | null)[];
+  updateScrollVisibility?: () => void;
 
   constructor() {
     this.isOpen = false;
@@ -343,9 +372,54 @@ class ThemeCustomizer {
       }
     });
 
+    // Scroll-based visibility
+    this.initScrollVisibility();
+
     // Update UI to reflect current theme
     this.updateThemeButtons();
     this.updateColorPreviews();
+  }
+
+  initScrollVisibility() {
+    const scrollThreshold = 100; // Show button after scrolling 100px
+    let ticking = false;
+
+    const updateVisibility = () => {
+      // Always show the button if the panel is open
+      if (this.isOpen) {
+        this.toggle?.classList.add('visible');
+        this.toggle?.classList.remove('hidden');
+        return;
+      }
+
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      if (scrollTop > scrollThreshold) {
+        this.toggle?.classList.add('visible');
+        this.toggle?.classList.remove('hidden');
+      } else {
+        this.toggle?.classList.add('hidden');
+        this.toggle?.classList.remove('visible');
+      }
+      
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateVisibility);
+        ticking = true;
+      }
+    };
+
+    // Initial check
+    updateVisibility();
+
+    // Listen for scroll events
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Store reference to update function for use in open/close methods
+    this.updateScrollVisibility = updateVisibility;
   }
 
   togglePanel() {
@@ -357,15 +431,14 @@ class ThemeCustomizer {
   }
 
   openPanel() {
-    console.log('Opening panel...');
     this.isOpen = true;
     this.panel?.classList.add('theme-panel-open');
     this.overlay?.classList.add('theme-overlay-visible');
     this.toggle?.setAttribute('aria-expanded', 'true');
     this.panel?.setAttribute('aria-hidden', 'false');
     
-    console.log('Panel classes:', this.panel?.className);
-    console.log('Panel style:', this.panel?.style.transform);
+    // Ensure button is visible when panel is open
+    this.updateScrollVisibility?.();
     
     // Focus management
     this.panel?.focus();
@@ -377,6 +450,9 @@ class ThemeCustomizer {
     this.overlay?.classList.remove('theme-overlay-visible');
     this.toggle?.setAttribute('aria-expanded', 'false');
     this.panel?.setAttribute('aria-hidden', 'true');
+    
+    // Update button visibility based on scroll position
+    this.updateScrollVisibility?.();
     
     // Return focus to toggle button
     this.toggle?.focus();
@@ -442,7 +518,10 @@ class ThemeCustomizer {
   }
 
   setHarmony(harmony: string) {
-    this.updateColors(parseInt(this.hueSlider?.value || '142'), parseInt(this.saturationSlider?.value || '70'), harmony);
+    const hue = parseInt(this.hueSlider?.value || '142');
+    const saturation = parseInt(this.saturationSlider?.value || '70');
+    
+    this.updateColors(hue, saturation, harmony);
     this.updateColorPreviews();
     localStorage.setItem('harmony', harmony);
   }
@@ -450,25 +529,90 @@ class ThemeCustomizer {
   updateColors(hue: number, saturation: number, harmony: string = 'analogous') {
     const root = document.documentElement;
     
-    // Update primary color scale based on harmony type
-    // For now, we use the same hue but could implement different harmony algorithms here
-    root.style.setProperty('--color-primary-300', `hsl(${hue}, ${saturation}%, 75%)`);
-    root.style.setProperty('--color-primary-400', `hsl(${hue}, ${saturation}%, 65%)`);
-    root.style.setProperty('--color-primary-500', `hsl(${hue}, ${saturation}%, 55%)`);
-    root.style.setProperty('--color-primary-600', `hsl(${hue}, ${saturation}%, 45%)`);
+    // Calculate colors based on harmony type
+    let colors = this.calculateHarmonyColors(hue, saturation, harmony);
     
-    // Store harmony for future use
-    console.log(`Applied ${harmony} harmony with hue ${hue} and saturation ${saturation}%`);
+    // Update primary color scale
+    root.style.setProperty('--color-primary-300', `hsl(${colors.primary}, ${saturation}%, 75%)`);
+    root.style.setProperty('--color-primary-400', `hsl(${colors.primary}, ${saturation}%, 65%)`);
+    root.style.setProperty('--color-primary-500', `hsl(${colors.primary}, ${saturation}%, 55%)`);
+    root.style.setProperty('--color-primary-600', `hsl(${colors.primary}, ${saturation}%, 45%)`);
+    
+    // Update secondary colors for accents and backgrounds
+    if (colors.secondary !== undefined) {
+      root.style.setProperty('--color-accent-300', `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 75%)`);
+      root.style.setProperty('--color-accent-500', `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 55%)`);
+    }
+    
+    if (colors.tertiary !== undefined) {
+      root.style.setProperty('--color-accent2-300', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 75%)`);
+      root.style.setProperty('--color-accent2-500', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 55%)`);
+    }
+  }
+
+  calculateHarmonyColors(hue: number, saturation: number, harmony: string) {
+    const normalizeHue = (h: number) => ((h % 360) + 360) % 360;
+    
+    switch (harmony) {
+      case 'monochromatic':
+        return {
+          primary: hue,
+          secondary: hue,
+          tertiary: hue
+        };
+        
+      case 'analogous':
+        return {
+          primary: hue,
+          secondary: normalizeHue(hue + 30),
+          tertiary: normalizeHue(hue - 30)
+        };
+        
+      case 'complementary':
+        return {
+          primary: hue,
+          secondary: normalizeHue(hue + 180),
+          tertiary: normalizeHue(hue + 180)
+        };
+        
+      case 'triadic':
+        return {
+          primary: hue,
+          secondary: normalizeHue(hue + 120),
+          tertiary: normalizeHue(hue + 240)
+        };
+        
+      case 'split-complementary':
+        return {
+          primary: hue,
+          secondary: normalizeHue(hue + 150),
+          tertiary: normalizeHue(hue + 210)
+        };
+        
+      default:
+        return {
+          primary: hue,
+          secondary: normalizeHue(hue + 30),
+          tertiary: normalizeHue(hue - 30)
+        };
+    }
   }
 
   updateColorPreviews() {
-    const hue = this.hueSlider?.value || '142';
-    const saturation = this.saturationSlider?.value || '70';
+    const hue = parseInt(this.hueSlider?.value || '142');
+    const saturation = parseInt(this.saturationSlider?.value || '70');
+    const harmony = this.harmonySelect?.value || 'analogous';
+    
+    const colors = this.calculateHarmonyColors(hue, saturation, harmony);
     
     if (this.colorPreviews.length >= 3) {
-      if (this.colorPreviews[0]) this.colorPreviews[0].style.backgroundColor = `hsl(${hue}, ${saturation}%, 75%)`;
-      if (this.colorPreviews[1]) this.colorPreviews[1].style.backgroundColor = `hsl(${hue}, ${saturation}%, 55%)`;
-      if (this.colorPreviews[2]) this.colorPreviews[2].style.backgroundColor = `hsl(${hue}, ${saturation}%, 45%)`;
+      if (this.colorPreviews[0]) this.colorPreviews[0].style.backgroundColor = `hsl(${colors.primary}, ${saturation}%, 55%)`;
+      if (this.colorPreviews[1] && colors.secondary !== undefined) {
+        this.colorPreviews[1].style.backgroundColor = `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 55%)`;
+      }
+      if (this.colorPreviews[2] && colors.tertiary !== undefined) {
+        this.colorPreviews[2].style.backgroundColor = `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 55%)`;
+      }
     }
   }
 

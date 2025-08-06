@@ -27,6 +27,12 @@
   --color-primary-800: #065f46;  /* Very dark shade */
   --color-primary-900: #064e3b;  /* Darkest shade */
 
+  /* === ACCENT COLOR PALETTES (for color harmony) === */
+  --color-accent-300: hsl(172, 65%, 75%);   /* Accent color light */
+  --color-accent-500: hsl(172, 65%, 55%);   /* Accent color main */
+  --color-accent2-300: hsl(112, 65%, 75%);  /* Second accent color light */
+  --color-accent2-500: hsl(112, 65%, 55%);  /* Second accent color main */
+
   /* === LIGHT THEME COLORS (DEFAULT) === */
   --color-bg-primary: #ffffff;     /* Main background */
   --color-bg-secondary: #f8fafc;   /* Secondary background */
