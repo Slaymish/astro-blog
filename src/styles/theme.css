@@ -33,6 +33,12 @@
   --color-accent2-300: hsl(112, 65%, 75%);  /* Second accent color light */
   --color-accent2-500: hsl(112, 65%, 55%);  /* Second accent color main */
 
+  /* === TAG COLOR VARIATIONS === */
+  --color-tag-accent1-bg: hsl(172, 45%, 90%);   /* Accent 1 tag background (light) */
+  --color-tag-accent1-text: hsl(172, 65%, 30%); /* Accent 1 tag text (light) */
+  --color-tag-accent2-bg: hsl(112, 45%, 90%);   /* Accent 2 tag background (light) */
+  --color-tag-accent2-text: hsl(112, 65%, 30%); /* Accent 2 tag text (light) */
+
   /* === LIGHT THEME COLORS (DEFAULT) === */
   --color-bg-primary: #ffffff;     /* Main background */
   --color-bg-secondary: #f8fafc;   /* Secondary background */
@@ -80,6 +86,12 @@
   --color-tag-text: var(--color-primary-300);      /* Tag text color (dynamic) */
   --color-link: var(--color-primary-400);          /* Default link color (dynamic) */
   --color-link-hover: var(--color-primary-300);    /* Link hover color (dynamic) */
+  
+  /* === TAG COLOR VARIATIONS (DARK THEME) === */
+  --color-tag-accent1-bg: hsla(172, 45%, 55%, 0.15);   /* Accent 1 tag background (dark) */
+  --color-tag-accent1-text: hsl(172, 45%, 75%);        /* Accent 1 tag text (dark) */
+  --color-tag-accent2-bg: hsla(112, 45%, 55%, 0.15);   /* Accent 2 tag background (dark) */
+  --color-tag-accent2-text: hsl(112, 45%, 75%);        /* Accent 2 tag text (dark) */
 }
 
 /* 

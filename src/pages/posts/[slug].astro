@@ -166,17 +166,32 @@ const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
       </div>
       {post.post_tags && post.post_tags.length > 0 && (
         <div class="flex flex-wrap gap-2 mb-8" role="list" aria-label="Article tags">
-          {post.post_tags.map((postTag) => (
-            <a
-              role="listitem"
-              href={`/tags/${postTag.tags.slug}`}
-              class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-              style="background-color: var(--color-tag-bg); color: var(--color-tag-text);"
-              itemprop="keywords"
-            >
-              {postTag.tags.name}
-            </a>
-          ))}
+          {post.post_tags.map((postTag, index) => {
+            // Cycle through different tag colors for visual variety
+            const colorVariant = index % 3;
+            let bgColor = 'var(--color-tag-bg)';
+            let textColor = 'var(--color-tag-text)';
+            
+            if (colorVariant === 1) {
+              bgColor = 'var(--color-tag-accent1-bg)';
+              textColor = 'var(--color-tag-accent1-text)';
+            } else if (colorVariant === 2) {
+              bgColor = 'var(--color-tag-accent2-bg)';
+              textColor = 'var(--color-tag-accent2-text)';
+            }
+            
+            return (
+              <a
+                role="listitem"
+                href={`/tags/${postTag.tags.slug}`}
+                class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
+                style={`background-color: ${bgColor}; color: ${textColor};`}
+                itemprop="keywords"
+              >
+                {postTag.tags.name}
+              </a>
+            );
+          })}
         </div>
       )}
     </header>

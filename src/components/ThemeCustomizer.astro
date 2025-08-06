@@ -477,7 +477,7 @@ class ThemeCustomizer {
 
   updateThemeButtons() {
     const isDark = document.documentElement.classList.contains('dark');
-    const activeStyle = 'background-color: var(--color-primary-500); color: white;';
+    const activeStyle = 'background-color: var(--color-accent-500); color: white;';
     const inactiveStyle = 'background-color: transparent; color: var(--color-text-primary);';
     
     if (this.lightModeBtn && this.darkModeBtn) {
@@ -558,16 +558,40 @@ class ThemeCustomizer {
     // Update tag colors to use the primary color with appropriate opacity and contrast
     const isDark = document.documentElement.classList.contains('dark');
     if (isDark) {
-      // Dark theme: use semi-transparent primary color for background, lighter shade for text
+      // Dark theme: use semi-transparent colors for background, lighter shades for text
       root.style.setProperty('--color-tag-bg', `hsla(${colors.primary}, ${saturation}%, 55%, 0.15)`);
       root.style.setProperty('--color-tag-bg-hover', `hsla(${colors.primary}, ${saturation}%, 55%, 0.25)`);
       root.style.setProperty('--color-tag-text', `hsl(${colors.primary}, ${saturation}%, 75%)`);
+      
+      // Create accent tag colors for variety
+      if (colors.secondary !== undefined) {
+        root.style.setProperty('--color-tag-accent1-bg', `hsla(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 55%, 0.15)`);
+        root.style.setProperty('--color-tag-accent1-text', `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 75%)`);
+      }
+      if (colors.tertiary !== undefined) {
+        root.style.setProperty('--color-tag-accent2-bg', `hsla(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 55%, 0.15)`);
+        root.style.setProperty('--color-tag-accent2-text', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 75%)`);
+      }
     } else {
       // Light theme: use very light background, dark text
       root.style.setProperty('--color-tag-bg', `hsl(${colors.primary}, ${Math.max(30, saturation - 20)}%, 90%)`);
       root.style.setProperty('--color-tag-bg-hover', `hsl(${colors.primary}, ${Math.max(30, saturation - 20)}%, 85%)`);
       root.style.setProperty('--color-tag-text', `hsl(${colors.primary}, ${saturation}%, 30%)`);
+      
+      // Create accent tag colors for variety
+      if (colors.secondary !== undefined) {
+        root.style.setProperty('--color-tag-accent1-bg', `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 90%)`);
+        root.style.setProperty('--color-tag-accent1-text', `hsl(${colors.secondary}, ${saturation}%, 30%)`);
+      }
+      if (colors.tertiary !== undefined) {
+        root.style.setProperty('--color-tag-accent2-bg', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 90%)`);
+        root.style.setProperty('--color-tag-accent2-text', `hsl(${colors.tertiary}, ${saturation}%, 30%)`);
+      }
     }
+    
+    // Update link colors to use accent colors for variety
+    root.style.setProperty('--color-link', `hsl(${colors.secondary || colors.primary}, ${saturation}%, 55%)`);
+    root.style.setProperty('--color-link-hover', `hsl(${colors.tertiary || colors.primary}, ${saturation}%, 45%)`);
   }
 
   calculateHarmonyColors(hue: number, harmony: string) {
