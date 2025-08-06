@@ -26,8 +26,8 @@
 <!-- Slide-out panel -->
 <div
   id="theme-customizer-panel"
-  class="fixed top-0 right-0 h-full z-50 transform translate-x-full transition-transform duration-300 ease-in-out backdrop-blur-md w-4/5 sm:w-2/3 md:w-1/2 lg:w-1/3"
-  style="background-color: var(--color-bg-primary); border-left: 1px solid var(--color-border-primary); box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);"
+  class="fixed top-0 right-0 h-full z-50 transition-transform duration-300 ease-in-out backdrop-blur-md w-4/5 sm:w-2/3 md:w-1/2 lg:w-1/3"
+  style="background-color: var(--color-bg-primary); border-left: 1px solid var(--color-border-primary); box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15); transform: translateX(100%);"
   role="dialog"
   aria-labelledby="theme-customizer-title"
   aria-hidden="true"
@@ -225,11 +225,22 @@
   }
 
   /* Panel animations */
-  .theme-panel-open {
+  #theme-customizer-panel {
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  #theme-customizer-panel.theme-panel-open {
     transform: translateX(0) !important;
   }
 
-  .theme-overlay-visible {
+  #theme-customizer-overlay {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  #theme-customizer-overlay.theme-overlay-visible {
     opacity: 1 !important;
     pointer-events: auto !important;
   }
@@ -346,11 +357,15 @@ class ThemeCustomizer {
   }
 
   openPanel() {
+    console.log('Opening panel...');
     this.isOpen = true;
     this.panel?.classList.add('theme-panel-open');
     this.overlay?.classList.add('theme-overlay-visible');
     this.toggle?.setAttribute('aria-expanded', 'true');
     this.panel?.setAttribute('aria-hidden', 'false');
+    
+    console.log('Panel classes:', this.panel?.className);
+    console.log('Panel style:', this.panel?.style.transform);
     
     // Focus management
     this.panel?.focus();
