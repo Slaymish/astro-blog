@@ -467,6 +467,12 @@ class ThemeCustomizer {
     }
     localStorage.setItem('theme', theme);
     this.updateThemeButtons();
+    
+    // Refresh colors to update tag colors for the new theme
+    const hue = parseInt(this.hueSlider?.value || '142');
+    const saturation = parseInt(this.saturationSlider?.value || '70');
+    const harmony = this.harmonySelect?.value || 'analogous';
+    this.updateColors(hue, saturation, harmony);
   }
 
   updateThemeButtons() {
@@ -547,6 +553,20 @@ class ThemeCustomizer {
     if (colors.tertiary !== undefined) {
       root.style.setProperty('--color-accent2-300', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 75%)`);
       root.style.setProperty('--color-accent2-500', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 55%)`);
+    }
+    
+    // Update tag colors to use the primary color with appropriate opacity and contrast
+    const isDark = document.documentElement.classList.contains('dark');
+    if (isDark) {
+      // Dark theme: use semi-transparent primary color for background, lighter shade for text
+      root.style.setProperty('--color-tag-bg', `hsla(${colors.primary}, ${saturation}%, 55%, 0.15)`);
+      root.style.setProperty('--color-tag-bg-hover', `hsla(${colors.primary}, ${saturation}%, 55%, 0.25)`);
+      root.style.setProperty('--color-tag-text', `hsl(${colors.primary}, ${saturation}%, 75%)`);
+    } else {
+      // Light theme: use very light background, dark text
+      root.style.setProperty('--color-tag-bg', `hsl(${colors.primary}, ${Math.max(30, saturation - 20)}%, 90%)`);
+      root.style.setProperty('--color-tag-bg-hover', `hsl(${colors.primary}, ${Math.max(30, saturation - 20)}%, 85%)`);
+      root.style.setProperty('--color-tag-text', `hsl(${colors.primary}, ${saturation}%, 30%)`);
     }
   }
 
@@ -664,6 +684,9 @@ class ThemeCustomizer {
     if (this.hueSlider) this.hueSlider.value = hue;
     if (this.saturationSlider) this.saturationSlider.value = saturation;
     if (this.harmonySelect) this.harmonySelect.value = harmony;
+    
+    // Ensure colors are updated after loading preferences
+    this.updateColors(parseInt(hue), parseInt(saturation), harmony);
   }
 }
 
