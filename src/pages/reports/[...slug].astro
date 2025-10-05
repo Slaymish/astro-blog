@@ -122,14 +122,15 @@ const publishedTime = new Date(data.pubDate).toISOString();
             }
             
             return (
-              <span
+              <a
                 role="listitem"
-                class="text-sm px-3 py-1 rounded-full"
+                href={`/tags/${tag.toLowerCase()}`}
+                class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
                 style={`background-color: ${bgColor}; color: ${textColor};`}
                 itemprop="keywords"
               >
                 {tag}
-              </span>
+              </a>
             );
           })}
         </div>

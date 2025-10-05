@@ -1,136 +1,203 @@
 ---
 import Layout from "../../components/Layout.astro";
-import { supabase } from "../../utils/database";
-import type { PostWithTags } from "../../../supabase/types";
+import { getCollection } from 'astro:content';
 
-export const prerender = false;
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  const reports = await getCollection('reports');
+  
+  // Collect all unique tags from both posts and reports
+  const allTags = new Set<string>();
+  
+  posts.forEach(post => {
+    post.data.tags?.forEach(tag => allTags.add(tag.toLowerCase()));
+  });
+  
+  reports.forEach(report => {
+    report.data.tags?.forEach(tag => allTags.add(tag.toLowerCase()));
+  });
+  
+  return Array.from(allTags).map(tag => ({
+    params: { tag },
+  }));
+}
 
 const { tag } = Astro.params;
 
-let posts: PostWithTags[] | null = null;
-let tagInfo: { name: string; slug: string } | null = null;
-let error: string | null = null;
+// Get all posts and reports
+const allPosts = await getCollection('posts');
+const allReports = await getCollection('reports');
 
-if (supabase && tag) {
-  // First, get the tag info
-  const { data: tagData, error: tagError } = await supabase
-    .from("tags")
-    .select("name, slug")
-    .eq("slug", tag)
-    .single();
+// Filter by tag (case-insensitive)
+const posts = allPosts.filter(post => 
+  post.data.tags?.some(t => t.toLowerCase() === tag?.toLowerCase())
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-  if (tagError || !tagData) {
-    error = "Tag not found";
-  } else {
-    tagInfo = tagData;
-    
-    // Get posts with this tag
-    const { data: postsData, error: postsError } = await supabase
-      .from("posts")
-      .select(`
-        *,
-        post_tags!inner(
-          tags!inner(
-            id,
-            name,
-            slug
-          )
-        )
-      `)
-      .eq("post_tags.tags.slug", tag)
-      .order("created_at", { ascending: false });
+const reports = allReports.filter(report => 
+  report.data.tags?.some(t => t.toLowerCase() === tag?.toLowerCase())
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-    if (postsError) {
-      error = postsError.message;
-    } else {
-      // Transform the data to match PostWithTags type
-      posts = postsData?.map((post: any) => ({
-        ...post,
-        post_tags: post.post_tags.map((pt: any) => ({ tags: pt.tags }))
-      })) || null;
-    }
-  }
-}
+const totalItems = posts.length + reports.length;
 
-if (!supabase) {
-  error = "Database not connected";
-}
+// Get the display name for the tag (use the original casing from the first occurrence)
+const displayTag = tag || '';
 ---
 
-<Layout title={tagInfo ? `Posts tagged "${tagInfo.name}"` : "Tag not found"}>
-  {error ? (
-    <div class="text-center py-12">
-      <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-primary);">Tag Not Found</h1>
-      <p class="mb-8" style="color: var(--color-text-muted);">{error}</p>
-      <a href="/" style="color: var(--color-link);" class="underline">
-        Back to Home
+<Layout title={`Content tagged "${displayTag}"`}>
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-12">
+      <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-primary);">
+        Content tagged "{displayTag}"
+      </h1>
+      <p class="mb-4" style="color: var(--color-text-muted);">
+        {totalItems} {totalItems === 1 ? 'item' : 'items'} found
+      </p>
+      <a href="/" style="color: var(--color-link);" class="hover:underline">
+        ← Back to home
       </a>
     </div>
-  ) : (
-    <>
-      <div class="mb-8">
-        <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-primary);">
-          Posts tagged "{tagInfo?.name}"
-        </h1>
-        <a href="/" style="color: var(--color-link);" class="underline">
-          ← Back to all posts
-        </a>
-      </div>
 
-      {posts && posts.length > 0 ? (
+    {reports.length > 0 && (
+      <section class="mb-12">
+        <h2 class="text-3xl font-bold mb-6" style="color: var(--color-primary-500);">
+          Reports ({reports.length})
+        </h2>
         <div class="space-y-8">
-          {posts.map((post) => (
-            <article class="pb-8" style="border-bottom: 1px solid var(--color-border-secondary);">
-              <h2 class="text-2xl font-bold mb-2">
-                <a href={`/posts/${post.slug}`} style="color: var(--color-text-primary);" class="hover:underline">
-                  {post.title}
+          {reports.map((report) => (
+            <article 
+              class="pb-8 card-hover" 
+              style="border-bottom: 1px solid var(--color-border-secondary);"
+            >
+              <h3 class="text-2xl font-bold mb-2">
+                <a 
+                  href={`/reports/${report.id.replace(/\.(md|mdx)$/, '')}`}
+                  style="color: var(--color-text-primary);" 
+                  class="hover:underline transition-colors"
+                >
+                  {report.data.title}
                 </a>
-              </h2>
+              </h3>
               <p class="mb-4" style="color: var(--color-text-muted);">
-                {new Date(post.created_at).toLocaleDateString()}
+                {new Date(report.data.pubDate).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric"
+                })}
               </p>
-              <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);">
-                {post.content.substring(0, 200)}...
-              </div>
-              {post.post_tags && post.post_tags.length > 0 && (
-                        <div class="flex flex-wrap gap-2 mb-8">
-          {post.post_tags.map((postTag, index) => {
-            // Cycle through different tag colors for visual variety
-            const colorVariant = index % 3;
-            let bgColor = 'var(--color-tag-bg)';
-            let textColor = 'var(--color-tag-text)';
-            
-            if (colorVariant === 1) {
-              bgColor = 'var(--color-tag-accent1-bg)';
-              textColor = 'var(--color-tag-accent1-text)';
-            } else if (colorVariant === 2) {
-              bgColor = 'var(--color-tag-accent2-bg)';
-              textColor = 'var(--color-tag-accent2-text)';
-            }
-            
-            return (
-              <a
-                href={`/tags/${postTag.tags.slug}`}
-                class="text-sm px-2 py-1 rounded hover:opacity-80 transition-all"
-                style={`background-color: ${bgColor}; color: ${textColor};`}
-              >
-                {postTag.tags.name}
-              </a>
-            );
-          })}
-        </div>
+              {report.data.description && (
+                <p class="mb-4" style="color: var(--color-text-secondary);">
+                  {report.data.description}
+                </p>
+              )}
+              {report.data.tags && report.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-2">
+                  {report.data.tags.map((t, index) => {
+                    const colorVariant = index % 3;
+                    let bgColor = 'var(--color-tag-bg)';
+                    let textColor = 'var(--color-tag-text)';
+                    
+                    if (colorVariant === 1) {
+                      bgColor = 'var(--color-tag-accent1-bg)';
+                      textColor = 'var(--color-tag-accent1-text)';
+                    } else if (colorVariant === 2) {
+                      bgColor = 'var(--color-tag-accent2-bg)';
+                      textColor = 'var(--color-tag-accent2-text)';
+                    }
+                    
+                    return (
+                      <a
+                        href={`/tags/${t.toLowerCase()}`}
+                        class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
+                        style={`background-color: ${bgColor}; color: ${textColor};`}
+                      >
+                        {t}
+                      </a>
+                    );
+                  })}
+                </div>
               )}
             </article>
           ))}
         </div>
-      ) : (
-        <div class="text-center py-12">
-          <h2 class="text-2xl font-bold mb-4" style="color: var(--color-text-primary);">No posts found</h2>
-          <p style="color: var(--color-text-muted);">
-            There are no posts tagged with "{tagInfo?.name}" yet.
-          </p>
+      </section>
+    )}
+
+    {posts.length > 0 && (
+      <section>
+        <h2 class="text-3xl font-bold mb-6" style="color: var(--color-primary-500);">
+          Posts ({posts.length})
+        </h2>
+        <div class="space-y-8">
+          {posts.map((post) => (
+            <article 
+              class="pb-8 card-hover" 
+              style="border-bottom: 1px solid var(--color-border-secondary);"
+            >
+              <h3 class="text-2xl font-bold mb-2">
+                <a 
+                  href={`/posts/${post.id.replace(/\.(md|mdx)$/, '')}`}
+                  style="color: var(--color-text-primary);" 
+                  class="hover:underline transition-colors"
+                >
+                  {post.data.title}
+                </a>
+              </h3>
+              <p class="mb-4" style="color: var(--color-text-muted);">
+                {new Date(post.data.pubDate).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric"
+                })}
+              </p>
+              {post.data.description && (
+                <p class="mb-4" style="color: var(--color-text-secondary);">
+                  {post.data.description}
+                </p>
+              )}
+              {post.data.tags && post.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-2">
+                  {post.data.tags.map((t, index) => {
+                    const colorVariant = index % 3;
+                    let bgColor = 'var(--color-tag-bg)';
+                    let textColor = 'var(--color-tag-text)';
+                    
+                    if (colorVariant === 1) {
+                      bgColor = 'var(--color-tag-accent1-bg)';
+                      textColor = 'var(--color-tag-accent1-text)';
+                    } else if (colorVariant === 2) {
+                      bgColor = 'var(--color-tag-accent2-bg)';
+                      textColor = 'var(--color-tag-accent2-text)';
+                    }
+                    
+                    return (
+                      <a
+                        href={`/tags/${t.toLowerCase()}`}
+                        class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
+                        style={`background-color: ${bgColor}; color: ${textColor};`}
+                      >
+                        {t}
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
+            </article>
+          ))}
         </div>
-      )}
-    </>
-  )}
+      </section>
+    )}
+
+    {totalItems === 0 && (
+      <div class="text-center py-12">
+        <h2 class="text-2xl font-bold mb-4" style="color: var(--color-text-primary);">
+          No content found
+        </h2>
+        <p style="color: var(--color-text-muted);">
+          There is no content tagged with "{displayTag}" yet.
+        </p>
+      </div>
+    )}
+  </div>
 </Layout>

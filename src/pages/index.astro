@@ -145,6 +145,37 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
                       {report.data.description}
                     </div>
                   )}
+                  
+                  {report.data.tags && report.data.tags.length > 0 && (
+                    <div class="flex flex-wrap gap-2" role="list" aria-label="Report tags">
+                      {report.data.tags.map((tag, tagIndex) => {
+                        // Cycle through different tag colors for visual variety
+                        const colorVariant = tagIndex % 3;
+                        let bgColor = 'var(--color-tag-bg)';
+                        let textColor = 'var(--color-tag-text)';
+                        
+                        if (colorVariant === 1) {
+                          bgColor = 'var(--color-tag-accent1-bg)';
+                          textColor = 'var(--color-tag-accent1-text)';
+                        } else if (colorVariant === 2) {
+                          bgColor = 'var(--color-tag-accent2-bg)';
+                          textColor = 'var(--color-tag-accent2-text)';
+                        }
+                        
+                        return (
+                          <a
+                            role="listitem"
+                            href={`/tags/${tag.toLowerCase()}`}
+                            class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
+                            style={`background-color: ${bgColor}; color: ${textColor};`}
+                            itemprop="keywords"
+                          >
+                            {tag}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  )}
                 </article>
               ))}
             </div>
@@ -215,8 +246,8 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
                         return (
                           <a
                             role="listitem"
-                            href={`/tags/${postTag.tags.slug}`}
-                            class="text-sm px-2 py-1 rounded hover:opacity-80 transition-all"
+                            href={`/tags/${postTag.tags.name.toLowerCase()}`}
+                            class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
                             style={`background-color: ${bgColor}; color: ${textColor};`}
                             itemprop="keywords"
                           >
