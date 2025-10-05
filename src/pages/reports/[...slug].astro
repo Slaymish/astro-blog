@@ -2,6 +2,7 @@
 import { getCollection, getEntry, render } from 'astro:content';
 import Layout from '../../components/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
+import PDFViewer from '../../components/PDFViewer.astro';
 import { calculateReadingTime } from '../../utils/reading-time';
 
 export const prerender = true;
@@ -137,23 +138,7 @@ const publishedTime = new Date(data.pubDate).toISOString();
 
     {data.pdfPath && (
       <div class="pdf-section mb-8">
-        <div class="pdf-container" style="border: 1px solid var(--color-border-primary); border-radius: 8px; overflow: hidden;">
-          <iframe 
-            src={data.pdfPath} 
-            width="100%" 
-            height="800px" 
-            style="border: none; display: block;"
-            title={`PDF: ${data.title}`}
-          />
-        </div>
-        <a 
-          href={data.pdfPath} 
-          download 
-          class="download-btn"
-          style="display: inline-block; padding: 0.75rem 1.5rem; background: var(--color-primary-500); color: white; text-decoration: none; border-radius: 6px; margin-top: 1rem; transition: background-color 0.2s ease; font-weight: 500;"
-        >
-          Download PDF Report
-        </a>
+        <PDFViewer pdfPath={data.pdfPath} title={data.title} />
       </div>
     )}
 
@@ -175,9 +160,3 @@ const publishedTime = new Date(data.pubDate).toISOString();
     </footer>
   </article>
 </Layout>
-
-<style>
-  .download-btn:hover {
-    background: var(--color-primary-600) !important;
-  }
-</style>
