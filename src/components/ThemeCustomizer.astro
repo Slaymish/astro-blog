@@ -462,8 +462,10 @@ class ThemeCustomizer {
     const root = document.documentElement;
     if (theme === 'dark') {
       root.classList.add('dark');
+      root.classList.remove('light');
     } else {
       root.classList.remove('dark');
+      root.classList.add('light');
     }
     localStorage.setItem('theme', theme);
     this.updateThemeButtons();
@@ -538,60 +540,93 @@ class ThemeCustomizer {
     // Calculate colors based on harmony type
     let colors = this.calculateHarmonyColors(hue, harmony);
     
+    // Store the colors we're setting for restoration on page load
+    const customColors: Record<string, string> = {};
+    
     // Update primary color scale
-    root.style.setProperty('--color-primary-300', `hsl(${colors.primary}, ${saturation}%, 75%)`);
-    root.style.setProperty('--color-primary-400', `hsl(${colors.primary}, ${saturation}%, 65%)`);
-    root.style.setProperty('--color-primary-500', `hsl(${colors.primary}, ${saturation}%, 55%)`);
-    root.style.setProperty('--color-primary-600', `hsl(${colors.primary}, ${saturation}%, 45%)`);
+    customColors['--color-primary-300'] = `hsl(${colors.primary}, ${saturation}%, 75%)`;
+    customColors['--color-primary-400'] = `hsl(${colors.primary}, ${saturation}%, 65%)`;
+    customColors['--color-primary-500'] = `hsl(${colors.primary}, ${saturation}%, 55%)`;
+    customColors['--color-primary-600'] = `hsl(${colors.primary}, ${saturation}%, 45%)`;
+    
+    root.style.setProperty('--color-primary-300', customColors['--color-primary-300']);
+    root.style.setProperty('--color-primary-400', customColors['--color-primary-400']);
+    root.style.setProperty('--color-primary-500', customColors['--color-primary-500']);
+    root.style.setProperty('--color-primary-600', customColors['--color-primary-600']);
     
     // Update secondary colors for accents and backgrounds
     if (colors.secondary !== undefined) {
-      root.style.setProperty('--color-accent-300', `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 75%)`);
-      root.style.setProperty('--color-accent-500', `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 55%)`);
+      customColors['--color-accent-300'] = `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 75%)`;
+      customColors['--color-accent-500'] = `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 55%)`;
+      root.style.setProperty('--color-accent-300', customColors['--color-accent-300']);
+      root.style.setProperty('--color-accent-500', customColors['--color-accent-500']);
     }
     
     if (colors.tertiary !== undefined) {
-      root.style.setProperty('--color-accent2-300', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 75%)`);
-      root.style.setProperty('--color-accent2-500', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 55%)`);
+      customColors['--color-accent2-300'] = `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 75%)`;
+      customColors['--color-accent2-500'] = `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 55%)`;
+      root.style.setProperty('--color-accent2-300', customColors['--color-accent2-300']);
+      root.style.setProperty('--color-accent2-500', customColors['--color-accent2-500']);
     }
     
     // Update tag colors to use the primary color with appropriate opacity and contrast
     const isDark = document.documentElement.classList.contains('dark');
     if (isDark) {
       // Dark theme: use semi-transparent colors for background, lighter shades for text
-      root.style.setProperty('--color-tag-bg', `hsla(${colors.primary}, ${saturation}%, 55%, 0.15)`);
-      root.style.setProperty('--color-tag-bg-hover', `hsla(${colors.primary}, ${saturation}%, 55%, 0.25)`);
-      root.style.setProperty('--color-tag-text', `hsl(${colors.primary}, ${saturation}%, 75%)`);
+      customColors['--color-tag-bg'] = `hsla(${colors.primary}, ${saturation}%, 55%, 0.15)`;
+      customColors['--color-tag-bg-hover'] = `hsla(${colors.primary}, ${saturation}%, 55%, 0.25)`;
+      customColors['--color-tag-text'] = `hsl(${colors.primary}, ${saturation}%, 75%)`;
+      
+      root.style.setProperty('--color-tag-bg', customColors['--color-tag-bg']);
+      root.style.setProperty('--color-tag-bg-hover', customColors['--color-tag-bg-hover']);
+      root.style.setProperty('--color-tag-text', customColors['--color-tag-text']);
       
       // Create accent tag colors for variety
       if (colors.secondary !== undefined) {
-        root.style.setProperty('--color-tag-accent1-bg', `hsla(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 55%, 0.15)`);
-        root.style.setProperty('--color-tag-accent1-text', `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 75%)`);
+        customColors['--color-tag-accent1-bg'] = `hsla(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 55%, 0.15)`;
+        customColors['--color-tag-accent1-text'] = `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 75%)`;
+        root.style.setProperty('--color-tag-accent1-bg', customColors['--color-tag-accent1-bg']);
+        root.style.setProperty('--color-tag-accent1-text', customColors['--color-tag-accent1-text']);
       }
       if (colors.tertiary !== undefined) {
-        root.style.setProperty('--color-tag-accent2-bg', `hsla(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 55%, 0.15)`);
-        root.style.setProperty('--color-tag-accent2-text', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 75%)`);
+        customColors['--color-tag-accent2-bg'] = `hsla(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 55%, 0.15)`;
+        customColors['--color-tag-accent2-text'] = `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 75%)`;
+        root.style.setProperty('--color-tag-accent2-bg', customColors['--color-tag-accent2-bg']);
+        root.style.setProperty('--color-tag-accent2-text', customColors['--color-tag-accent2-text']);
       }
     } else {
       // Light theme: use very light background, dark text
-      root.style.setProperty('--color-tag-bg', `hsl(${colors.primary}, ${Math.max(30, saturation - 20)}%, 90%)`);
-      root.style.setProperty('--color-tag-bg-hover', `hsl(${colors.primary}, ${Math.max(30, saturation - 20)}%, 85%)`);
-      root.style.setProperty('--color-tag-text', `hsl(${colors.primary}, ${saturation}%, 30%)`);
+      customColors['--color-tag-bg'] = `hsl(${colors.primary}, ${Math.max(30, saturation - 20)}%, 90%)`;
+      customColors['--color-tag-bg-hover'] = `hsl(${colors.primary}, ${Math.max(30, saturation - 20)}%, 85%)`;
+      customColors['--color-tag-text'] = `hsl(${colors.primary}, ${saturation}%, 30%)`;
+      
+      root.style.setProperty('--color-tag-bg', customColors['--color-tag-bg']);
+      root.style.setProperty('--color-tag-bg-hover', customColors['--color-tag-bg-hover']);
+      root.style.setProperty('--color-tag-text', customColors['--color-tag-text']);
       
       // Create accent tag colors for variety
       if (colors.secondary !== undefined) {
-        root.style.setProperty('--color-tag-accent1-bg', `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 90%)`);
-        root.style.setProperty('--color-tag-accent1-text', `hsl(${colors.secondary}, ${saturation}%, 30%)`);
+        customColors['--color-tag-accent1-bg'] = `hsl(${colors.secondary}, ${Math.max(30, saturation - 20)}%, 90%)`;
+        customColors['--color-tag-accent1-text'] = `hsl(${colors.secondary}, ${saturation}%, 30%)`;
+        root.style.setProperty('--color-tag-accent1-bg', customColors['--color-tag-accent1-bg']);
+        root.style.setProperty('--color-tag-accent1-text', customColors['--color-tag-accent1-text']);
       }
       if (colors.tertiary !== undefined) {
-        root.style.setProperty('--color-tag-accent2-bg', `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 90%)`);
-        root.style.setProperty('--color-tag-accent2-text', `hsl(${colors.tertiary}, ${saturation}%, 30%)`);
+        customColors['--color-tag-accent2-bg'] = `hsl(${colors.tertiary}, ${Math.max(30, saturation - 20)}%, 90%)`;
+        customColors['--color-tag-accent2-text'] = `hsl(${colors.tertiary}, ${saturation}%, 30%)`;
+        root.style.setProperty('--color-tag-accent2-bg', customColors['--color-tag-accent2-bg']);
+        root.style.setProperty('--color-tag-accent2-text', customColors['--color-tag-accent2-text']);
       }
     }
     
     // Update link colors to use accent colors for variety
-    root.style.setProperty('--color-link', `hsl(${colors.secondary || colors.primary}, ${saturation}%, 55%)`);
-    root.style.setProperty('--color-link-hover', `hsl(${colors.tertiary || colors.primary}, ${saturation}%, 45%)`);
+    customColors['--color-link'] = `hsl(${colors.secondary || colors.primary}, ${saturation}%, 55%)`;
+    customColors['--color-link-hover'] = `hsl(${colors.tertiary || colors.primary}, ${saturation}%, 45%)`;
+    root.style.setProperty('--color-link', customColors['--color-link']);
+    root.style.setProperty('--color-link-hover', customColors['--color-link-hover']);
+    
+    // Save all custom colors to localStorage for restoration on page load
+    localStorage.setItem('customColors', JSON.stringify(customColors));
   }
 
   calculateHarmonyColors(hue: number, harmony: string) {

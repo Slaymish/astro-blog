@@ -39,21 +39,48 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- Theme initialization script (must be early to prevent FOUC) -->
+    <!-- Critical theme initialization script (must be FIRST to prevent FOUC) -->
     <script is:inline>
       (function() {
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-        
-        if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
+        try {
+          const savedTheme = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+          
+          // Apply theme class immediately
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.add('light');
+          }
+          
+          // Also restore any saved custom colors immediately
+          const savedColors = localStorage.getItem('customColors');
+          if (savedColors) {
+            try {
+              const colors = JSON.parse(savedColors);
+              const root = document.documentElement;
+              Object.entries(colors).forEach(([key, value]) => {
+                root.style.setProperty(key, value);
+              });
+            } catch (e) {
+              // Silently fail if colors can't be parsed
+            }
+          }
+        } catch (e) {
+          // Fail silently if localStorage is not available
+          // Default to system preference
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.add('light');
+          }
         }
       })();
     </script>
+    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Basic Meta Tags -->
     <title>{fullTitle}</title>
@@ -104,7 +131,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
         "sameAs": [
           "https://github.com/Slaymish",
           "https://linkedin.com/in/hamish-burke",
-          "https://instagram.com/hamish.burke"
+          "https://instagram.com/hamishbuuuurke"
         ]
       },
       "publisher": {
@@ -144,7 +171,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
       "sameAs": [
         "https://github.com/Slaymish",
         "https://linkedin.com/in/hamish-burke",
-        "https://instagram.com/hamish.burke"
+        "https://instagram.com/hamishbuuuurke"
       ],
       "knowsAbout": [
         "Software Engineering",
