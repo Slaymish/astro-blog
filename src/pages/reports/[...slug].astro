@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import Layout from '../../components/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { calculateReadingTime } from '../../utils/reading-time';
@@ -22,7 +22,9 @@ if (!report) {
 }
 
 const data = report.data as any;
-const { Content } = await report.render();
+
+// Render the content
+const { Content } = await render(report);
 
 // Calculate reading time from the markdown body
 const readingTime = calculateReadingTime(report.body || '');

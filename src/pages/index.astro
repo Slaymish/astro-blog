@@ -98,7 +98,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
                   
                   <div class="mb-4" style="color: var(--color-text-muted);">
                     <time 
-                      datetime={report.data.pubDate}
+                      datetime={new Date(report.data.pubDate).toISOString()}
                       itemprop="datePublished"
                     >
                       {new Date(report.data.pubDate).toLocaleDateString("en-US", {
