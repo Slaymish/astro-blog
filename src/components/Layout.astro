@@ -39,7 +39,38 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Critical theme initialization script (must be FIRST to prevent FOUC) -->
+    <!-- Critical inline styles to prevent FOUC - must be first! -->
+    <style>
+      /* Critical theme colors - prevent flash of unstyled content */
+      :root {
+        --color-bg-primary: #ffffff;
+        --color-bg-secondary: #f8fafc;
+        --color-text-primary: #0f172a;
+        --color-text-secondary: #334155;
+      }
+      
+      .dark {
+        --color-bg-primary: #171717;
+        --color-bg-secondary: #262626;
+        --color-text-primary: #ffffff;
+        --color-text-secondary: #d4d4d8;
+      }
+      
+      /* Apply immediately */
+      html {
+        background-color: var(--color-bg-secondary);
+        color: var(--color-text-primary);
+      }
+      
+      body {
+        background-color: var(--color-bg-secondary);
+        color: var(--color-text-primary);
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    
+    <!-- Critical theme initialization script (must be VERY early to prevent FOUC) -->
     <script is:inline>
       (function() {
         try {
