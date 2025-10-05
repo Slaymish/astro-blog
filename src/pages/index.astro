@@ -317,12 +317,41 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
 
   .card-hover {
     transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .card-hover::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--color-primary-500);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+  }
+
+  .card-hover:hover::before {
+    transform: scaleY(1);
   }
 
   .card-hover:hover {
-    transform: translateX(8px);
     padding-left: 1rem;
-    border-left: 3px solid var(--color-primary-500);
+  }
+
+  /* Disable text underline on card hover */
+  .card-hover a {
+    border-bottom: none !important;
+  }
+
+  .card-hover a::after {
+    display: none;
+  }
+
+  .card-hover a:hover {
+    color: var(--color-primary-500) !important;
+    border-bottom: none !important;
   }
 
   .posts-section {
@@ -388,9 +417,12 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
       font-size: 0.9375rem;
     }
 
+    .card-hover:hover::before {
+      width: 2px;
+    }
+
     .card-hover:hover {
-      transform: translateX(4px);
-      padding-left: 0.5rem;
+      padding-left: 0.75rem;
     }
 
     section {
@@ -404,10 +436,12 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
       justify-content: center;
     }
 
+    .card-hover:hover::before {
+      display: none;
+    }
+
     .card-hover:hover {
-      transform: none;
       padding-left: 0;
-      border-left: none;
     }
   }
 </style>
