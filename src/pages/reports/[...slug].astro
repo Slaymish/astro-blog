@@ -1,6 +1,9 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../components/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { calculateReadingTime } from '../../utils/reading-time';
+
 export const prerender = true;
 
 export async function getStaticPaths() {
@@ -19,54 +22,160 @@ if (!report) {
 }
 
 const data = report.data as any;
-const html = report.rendered?.html || '';
+const { Content } = await report.render();
+
+// Calculate reading time from the markdown body
+const readingTime = calculateReadingTime(report.body || '');
+
+// Extract description from content (first 160 characters, cleaned)
+const textContent = (report.body || '').replace(/[#*`\[\]]/g, '').trim();
+const description = data.description || (textContent.length > 160 
+  ? textContent.substring(0, 157) + '...' 
+  : textContent);
+
+// Format dates for meta tags
+const publishedTime = new Date(data.pubDate).toISOString();
 ---
 
-<Layout title={data.title}>
-  <main>
-    <article>
-      <h1>{data.title}</h1>
-      <div class="meta">
-        <time>{new Date(data.pubDate).toLocaleDateString()}</time>
+<Layout 
+  title={data.title}
+  description={description}
+  article={true}
+  publishedTime={publishedTime}
+  tags={data.tags || []}
+  canonicalURL={`${Astro.url.origin}/reports/${slug}`}
+>
+  <Breadcrumb items={[
+    { name: "Reports", url: "/" },
+    { name: data.title, url: `/reports/${slug}` }
+  ]} />
+  
+  <article 
+    class="max-w-4xl mx-auto"
+    itemscope 
+    itemtype="http://schema.org/ScholarlyArticle"
+  >
+    <header class="mb-8">
+      <h1 
+        class="text-4xl font-bold mb-4" 
+        style="color: var(--color-text-primary);"
+        itemprop="headline"
+      >
+        {data.title}
+      </h1>
+      
+      <div class="flex items-center gap-4 mb-4" style="color: var(--color-text-muted);">
+        <time 
+          datetime={data.pubDate}
+          itemprop="datePublished"
+        >
+          {new Date(data.pubDate).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+          })}
+        </time>
+        
+        {report.body && (
+          <>
+            <span>•</span>
+            <time 
+              itemprop="timeRequired" 
+              datetime={`PT${readingTime.minutes}M`}
+              title={`${readingTime.words} words`}
+            >
+              {readingTime.text}
+            </time>
+          </>
+        )}
+        
+        <!-- Hidden author info for schema -->
+        <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
+          <span itemprop="name">Hamish Burke</span>
+          <span itemprop="url">https://hamishburke.dev</span>
+        </span>
+        
+        <!-- Hidden publisher info for schema -->
+        <span itemprop="publisher" itemscope itemtype="http://schema.org/Person" style="display: none;">
+          <span itemprop="name">Hamish Burke</span>
+          <span itemprop="url">https://hamishburke.dev</span>
+        </span>
       </div>
 
-      {data.pdfPath && (
-        <div class="pdf-container">
-          <iframe src={data.pdfPath} width="100%" height="800px" style="border:none;" />
+      {data.tags && data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-8" role="list" aria-label="Report tags">
+          {data.tags.map((tag: string, index: number) => {
+            // Cycle through different tag colors for visual variety
+            const colorVariant = index % 3;
+            let bgColor = 'var(--color-tag-bg)';
+            let textColor = 'var(--color-tag-text)';
+            
+            if (colorVariant === 1) {
+              bgColor = 'var(--color-tag-accent1-bg)';
+              textColor = 'var(--color-tag-accent1-text)';
+            } else if (colorVariant === 2) {
+              bgColor = 'var(--color-tag-accent2-bg)';
+              textColor = 'var(--color-tag-accent2-text)';
+            }
+            
+            return (
+              <span
+                role="listitem"
+                class="text-sm px-3 py-1 rounded-full"
+                style={`background-color: ${bgColor}; color: ${textColor};`}
+                itemprop="keywords"
+              >
+                {tag}
+              </span>
+            );
+          })}
         </div>
       )}
+    </header>
 
-      {data.pdfPath && (
-        <a href={data.pdfPath} download class="download-btn">
+    {data.pdfPath && (
+      <div class="pdf-section mb-8">
+        <div class="pdf-container" style="border: 1px solid var(--color-border-primary); border-radius: 8px; overflow: hidden;">
+          <iframe 
+            src={data.pdfPath} 
+            width="100%" 
+            height="800px" 
+            style="border: none; display: block;"
+            title={`PDF: ${data.title}`}
+          />
+        </div>
+        <a 
+          href={data.pdfPath} 
+          download 
+          class="download-btn"
+          style="display: inline-block; padding: 0.75rem 1.5rem; background: var(--color-primary-500); color: white; text-decoration: none; border-radius: 6px; margin-top: 1rem; transition: background-color 0.2s ease; font-weight: 500;"
+        >
           Download PDF Report
         </a>
-      )}
+      </div>
+    )}
 
-      {html && (
-        <div class="prose prose-invert max-w-none" set:html={html} />
-      )}
-    </article>
-  </main>
+    {report.body && (
+      <div 
+        class="prose prose-invert max-w-none" 
+        itemprop="articleBody"
+      >
+        <Content />
+      </div>
+    )}
+    
+    <footer class="mt-12 pt-8" style="border-top: 1px solid var(--color-border-secondary);">
+      <nav aria-label="Report navigation">
+        <a href="/" style="color: var(--color-link);" class="hover:underline">
+          ← Back to home
+        </a>
+      </nav>
+    </footer>
+  </article>
 </Layout>
 
 <style>
-  .pdf-container {
-    max-width: 100%;
-    margin: 2rem 0;
-  }
-  
-  .download-btn {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background: var(--color-primary-500);
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    margin: 1rem 0;
-    transition: background-color 0.2s ease;
-  }
-  
   .download-btn:hover {
-    background: var(--color-primary-600);
+    background: var(--color-primary-600) !important;
   }
 </style>

@@ -70,10 +70,62 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     supabase ? (
       posts ? (
         <>
-          <section aria-labelledby="recent-posts-heading">
-            <h1 id="recent-posts-heading" class="mb-12 fade-in text-4xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
-              Recent Posts
+          <section aria-labelledby="reports-heading" class="mb-12">
+            <h1 id="reports-heading" class="mb-8 fade-in text-4xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
+              Reports
             </h1>
+            <div class="space-y-8" role="list">
+              {sortedReports.map((report, index) => (
+                <article 
+                  role="listitem"
+                  class={`pb-8 slide-in`}
+                  style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
+                  itemscope 
+                  itemtype="http://schema.org/ScholarlyArticle"
+                >
+                  <header>
+                    <h2 class="text-2xl font-bold mb-2">
+                      <a 
+                        href={`/reports/${report.id.replace(/\.(md|mdx)$/, '')}`}
+                        style="color: var(--color-text-primary);" 
+                        class="hover:underline"
+                        itemprop="headline"
+                      >
+                        {report.data.title}
+                      </a>
+                    </h2>
+                  </header>
+                  
+                  <div class="mb-4" style="color: var(--color-text-muted);">
+                    <time 
+                      datetime={report.data.pubDate}
+                      itemprop="datePublished"
+                    >
+                      {new Date(report.data.pubDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                      })}
+                    </time>
+                    <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
+                      <span itemprop="name">Hamish Burke</span>
+                    </span>
+                  </div>
+                  
+                  {report.data.description && (
+                    <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
+                      {report.data.description}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section aria-labelledby="recent-posts-heading" class="posts-section">
+            <h2 id="recent-posts-heading" class="mb-8 text-3xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
+              Recent Posts
+            </h2>
             <div class="space-y-8" role="list">
               {posts?.map((post, index) => (
                 <article 
@@ -101,7 +153,11 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
                       datetime={post.created_at}
                       itemprop="datePublished"
                     >
-                      {new Date(post.created_at).toLocaleDateString()}
+                      {new Date(post.created_at).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                      })}
                     </time>
                     <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
                       <span itemprop="name">Hamish Burke</span>
@@ -146,21 +202,6 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
               ))}
             </div>
           </section>
-
-          <section class="reports-section">
-            <h2>Reports</h2>
-            <div class="reports-grid">
-              {sortedReports.map((report) => (
-                <div class="report-card">
-                  <h3>
-                    <a href={`/reports/${report.id.replace(/\.(md|mdx)$/, '')}`}>{report.data.title}</a>
-                  </h3>
-                  <time class="report-date">{new Date(report.data.pubDate).toLocaleDateString()}</time>
-                  {report.data.description && <p class="report-description">{report.data.description}</p>}
-                </div>
-              ))}
-            </div>
-          </section>
         </>
       ) : (
         <div class="text-center py-12">
@@ -182,65 +223,14 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
 </Layout>
 
 <style>
-  .reports-section {
+  .posts-section {
     margin-top: 3rem;
     padding-top: 2rem;
     border-top: 1px solid var(--color-border-secondary);
   }
   
-  .reports-section h2 {
+  .posts-section h2 {
     color: var(--color-primary-500);
     font-family: var(--font-heading);
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-  }
-  
-  .reports-grid {
-    display: grid;
-    gap: 1.5rem;
-    margin: 2rem 0;
-  }
-  
-  .report-card {
-    padding: 1.5rem;
-    border: 1px solid var(--color-border-primary);
-    border-radius: 8px;
-    background: var(--color-bg-secondary);
-    transition: all 0.2s ease;
-  }
-  
-  .report-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: var(--color-primary-300);
-  }
-  
-  .dark .report-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-  
-  .report-card h3 {
-    margin: 0 0 0.5rem 0;
-  }
-  
-  .report-card h3 a {
-    text-decoration: none;
-    color: var(--color-text-primary);
-    transition: color 0.2s ease;
-  }
-  
-  .report-card h3 a:hover {
-    color: var(--color-primary-500);
-  }
-  
-  .report-date {
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-    margin: 0.5rem 0;
-  }
-  
-  .report-description {
-    margin: 1rem 0 0 0;
-    color: var(--color-text-secondary);
   }
 </style>
