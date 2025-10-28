@@ -40,6 +40,8 @@ const currentYear = new Date().getFullYear();
     <p class="text-sm" style="color: var(--color-text-muted);">
       Built with <a href="https://astro.build/" class="footer-link-inline" style="color: var(--color-accent-500);">Astro</a> 
       and <a href="https://supabase.com/" class="footer-link-inline" style="color: var(--color-accent2-500);">Supabase</a>
+      <span style="color: var(--color-border-secondary);"> · </span>
+      <a href="/studio" class="footer-link-studio" aria-label="Studio - Philosophy section">Studio</a>
     </p>
   </div>
 </footer>
@@ -69,6 +71,25 @@ const currentYear = new Date().getFullYear();
 
   .footer-link-inline:hover {
     text-decoration-thickness: 2px;
+  }
+
+  .footer-link-studio {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    font-size: 0.875rem;
+  }
+
+  .footer-link-studio:hover {
+    opacity: 1;
+  }
+
+  .footer-link-studio:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: 2px;
+    opacity: 1;
   }
 
   .footer-icon {

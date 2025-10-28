@@ -32,4 +32,20 @@ const reports = defineCollection({
   })
 });
 
-export const collections = { posts, reports };
+const studio = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+    abstract: z.string(),
+    palette: z.enum(['noir', 'sepia', 'forest', 'ocean', 'ember']).default('noir'),
+    motion: z.enum(['subtle', 'moderate', 'expressive']).default('subtle'),
+    audio: z.string().optional(),
+    published: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    tags: z.array(z.string()).default([]),
+    status: z.enum(['draft', 'published']).default('draft'),
+  })
+});
+
+export const collections = { posts, reports, studio };

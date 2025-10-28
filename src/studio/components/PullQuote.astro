@@ -1,0 +1,110 @@
+---
+/**
+ * Pull Quote Component
+ * Visually prominent quote or callout
+ */
+
+interface Props {
+  align?: 'left' | 'center' | 'right';
+  size?: 'normal' | 'large';
+}
+
+const { align = 'center', size = 'normal' } = Astro.props;
+---
+
+<aside class={`pull-quote pull-quote-${align} pull-quote-${size}`} role="complementary">
+  <div class="pull-quote-content">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .pull-quote {
+    margin: var(--studio-space-12) 0;
+    padding: var(--studio-space-8) var(--studio-space-6);
+    position: relative;
+  }
+
+  .pull-quote::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      var(--studio-bg-secondary) 0%,
+      transparent 100%
+    );
+    opacity: 0.5;
+    border-radius: 4px;
+    z-index: -1;
+  }
+
+  .pull-quote-content {
+    font-family: var(--studio-font-serif);
+    font-style: italic;
+    color: var(--studio-text-primary);
+    position: relative;
+  }
+
+  /* Size variants */
+  .pull-quote-normal .pull-quote-content {
+    font-size: var(--studio-text-xl);
+    line-height: var(--studio-leading-relaxed);
+  }
+
+  .pull-quote-large .pull-quote-content {
+    font-size: var(--studio-text-2xl);
+    line-height: var(--studio-leading-snug);
+  }
+
+  /* Alignment */
+  .pull-quote-left {
+    text-align: left;
+  }
+
+  .pull-quote-center {
+    text-align: center;
+  }
+
+  .pull-quote-right {
+    text-align: right;
+  }
+
+  /* Decorative quotation marks */
+  .pull-quote-center .pull-quote-content::before {
+    content: '"';
+    display: block;
+    font-size: var(--studio-text-5xl);
+    line-height: 1;
+    color: var(--studio-accent-dim);
+    margin-bottom: var(--studio-space-4);
+  }
+
+  /* Hover effect */
+  .pull-quote {
+    transition: transform var(--studio-duration-normal) var(--studio-ease-out);
+  }
+
+  .pull-quote:hover::before {
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    .pull-quote-large .pull-quote-content {
+      font-size: var(--studio-text-xl);
+    }
+
+    .pull-quote {
+      padding: var(--studio-space-6) var(--studio-space-4);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pull-quote {
+      transition: none;
+    }
+  }
+</style>

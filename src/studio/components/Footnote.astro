@@ -1,0 +1,162 @@
+---
+/**
+ * Footnote Component
+ * Inline-expanding footnotes
+ */
+
+interface Props {
+  id?: string;
+  number?: number;
+}
+
+const { id, number } = Astro.props;
+const footnoteId = id || `fn-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<span class="footnote-wrapper">
+  <sup class="footnote-ref">
+    <button 
+      type="button"
+      class="footnote-trigger" 
+      aria-expanded="false"
+      aria-controls={`${footnoteId}-content`}
+      data-footnote-id={footnoteId}
+    >
+      [{number || '†'}]
+    </button>
+  </sup>
+  <span 
+    class="footnote-content" 
+    id={`${footnoteId}-content`}
+    hidden
+    role="note"
+  >
+    <slot />
+  </span>
+</span>
+
+<script>
+  // Client-side interaction for footnotes
+  document.addEventListener('DOMContentLoaded', () => {
+    const triggers = document.querySelectorAll('.footnote-trigger');
+    
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        const button = e.currentTarget as HTMLButtonElement;
+        const footnoteId = button.dataset.footnoteId;
+        const content = document.getElementById(`${footnoteId}-content`);
+        
+        if (!content) return;
+        
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        
+        // Close all other footnotes
+        document.querySelectorAll('.footnote-content').forEach(el => {
+          if (el !== content) {
+            el.setAttribute('hidden', '');
+            el.classList.remove('is-visible');
+          }
+        });
+        
+        document.querySelectorAll('.footnote-trigger').forEach(el => {
+          if (el !== button) {
+            el.setAttribute('aria-expanded', 'false');
+          }
+        });
+        
+        // Toggle current footnote
+        if (isExpanded) {
+          content.setAttribute('hidden', '');
+          content.classList.remove('is-visible');
+          button.setAttribute('aria-expanded', 'false');
+        } else {
+          content.removeAttribute('hidden');
+          // Trigger reflow for animation
+          void content.offsetWidth;
+          content.classList.add('is-visible');
+          button.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+    
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.footnote-wrapper')) {
+        document.querySelectorAll('.footnote-content').forEach(el => {
+          el.setAttribute('hidden', '');
+          el.classList.remove('is-visible');
+        });
+        document.querySelectorAll('.footnote-trigger').forEach(el => {
+          el.setAttribute('aria-expanded', 'false');
+        });
+      }
+    });
+  });
+</script>
+
+<style>
+  .footnote-wrapper {
+    position: relative;
+    display: inline;
+  }
+
+  .footnote-ref {
+    line-height: 0;
+  }
+
+  .footnote-trigger {
+    font-family: var(--studio-font-mono);
+    font-size: var(--studio-text-xs);
+    color: var(--studio-accent);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 0.125rem;
+    transition: all var(--studio-duration-fast) var(--studio-ease-out);
+    vertical-align: super;
+  }
+
+  .footnote-trigger:hover {
+    color: var(--studio-text-primary);
+    background-color: var(--studio-bg-tertiary);
+  }
+
+  .footnote-trigger[aria-expanded="true"] {
+    color: var(--studio-text-primary);
+  }
+
+  .footnote-content {
+    display: block;
+    margin-top: var(--studio-space-3);
+    margin-bottom: var(--studio-space-6);
+    padding: var(--studio-space-4);
+    background-color: var(--studio-bg-secondary);
+    border-left: 3px solid var(--studio-accent-dim);
+    border-radius: 3px;
+    font-family: var(--studio-font-sans);
+    font-size: var(--studio-text-sm);
+    line-height: var(--studio-leading-normal);
+    color: var(--studio-text-secondary);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all var(--studio-duration-normal) var(--studio-ease-out);
+  }
+
+  .footnote-content.is-visible {
+    opacity: 1;
+    max-height: 500px;
+  }
+
+  .footnote-content[hidden] {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footnote-content {
+      transition: none;
+    }
+  }
+</style>

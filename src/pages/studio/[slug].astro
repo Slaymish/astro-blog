@@ -1,0 +1,261 @@
+---
+/**
+ * Essay Template
+ * Dynamic page for Studio essays with MDX support
+ */
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+import StudioLayout from '../../studio/StudioLayout.astro';
+import AudioPlayer from '../../studio/components/AudioPlayer.astro';
+
+export async function getStaticPaths() {
+  const essays = await getCollection('studio');
+  return essays.map(essay => ({
+    params: { slug: essay.slug },
+    props: { essay },
+  }));
+}
+
+interface Props {
+  essay: CollectionEntry<'studio'>;
+}
+
+const { essay } = Astro.props;
+
+// Render MDX for type: 'content' collections
+const { Content } = await essay.render();
+
+// Format date
+const publishedDate = essay.data.published.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+
+const updatedDate = essay.data.updated?.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+---
+
+<StudioLayout 
+  title={essay.data.title}
+  subtitle={essay.data.subtitle}
+  palette={essay.data.palette}
+  motion={essay.data.motion}
+>
+  <article class="essay">
+    <!-- Header -->
+    <header class="essay-header">
+      <h1 class="essay-title">{essay.data.title}</h1>
+      {essay.data.subtitle && (
+        <p class="essay-subtitle">{essay.data.subtitle}</p>
+      )}
+      
+      <div class="essay-meta">
+        <time datetime={essay.data.published.toISOString()} class="essay-date">
+          {publishedDate}
+        </time>
+        {updatedDate && (
+          <>
+            <span class="essay-meta-sep">·</span>
+            <span class="essay-updated">Updated {updatedDate}</span>
+          </>
+        )}
+        {essay.data.tags.length > 0 && (
+          <>
+            <span class="essay-meta-sep">·</span>
+            <div class="essay-tags">
+              {essay.data.tags.map(tag => (
+                <span class="essay-tag">{tag}</span>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {essay.data.abstract && (
+        <p class="essay-abstract">{essay.data.abstract}</p>
+      )}
+    </header>
+
+    <!-- Content -->
+    <div class="essay-content studio-prose">
+      <Content />
+    </div>
+
+    <!-- Footer -->
+    <footer class="essay-footer">
+      <div class="essay-back">
+        <a href="/studio" class="essay-back-link">← Back to essays</a>
+      </div>
+    </footer>
+  </article>
+
+  <!-- Audio player (only if audio specified) -->
+  {essay.data.audio && (
+    <AudioPlayer src={essay.data.audio} title="Essay ambience" />
+  )}
+
+  <style>
+    .essay {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .essay-header {
+      margin-bottom: var(--studio-space-16);
+      padding-bottom: var(--studio-space-8);
+      border-bottom: 1px solid var(--studio-border);
+      opacity: 0;
+      animation: fadeIn var(--studio-duration-slow) var(--studio-ease-out) forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .essay-title {
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-4xl);
+      font-weight: 600;
+      letter-spacing: var(--studio-tracking-tight);
+      line-height: var(--studio-leading-tight);
+      color: var(--studio-text-primary);
+      margin-bottom: var(--studio-space-4);
+      max-width: none;
+    }
+
+    .essay-subtitle {
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-xl);
+      font-weight: 400;
+      color: var(--studio-text-muted);
+      margin-bottom: var(--studio-space-6);
+      letter-spacing: var(--studio-tracking-normal);
+    }
+
+    .essay-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--studio-space-3);
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-xs);
+      letter-spacing: var(--studio-tracking-wide);
+      text-transform: uppercase;
+      color: var(--studio-text-muted);
+      margin-bottom: var(--studio-space-6);
+    }
+
+    .essay-date {
+      color: var(--studio-text-secondary);
+    }
+
+    .essay-updated {
+      color: var(--studio-text-muted);
+      font-style: italic;
+    }
+
+    .essay-meta-sep {
+      color: var(--studio-border);
+    }
+
+    .essay-tags {
+      display: flex;
+      gap: var(--studio-space-2);
+      flex-wrap: wrap;
+    }
+
+    .essay-tag {
+      font-family: var(--studio-font-mono);
+      font-size: var(--studio-text-xs);
+      color: var(--studio-accent-dim);
+      background-color: var(--studio-bg-tertiary);
+      padding: var(--studio-space-1) var(--studio-space-2);
+      border-radius: 3px;
+      text-transform: none;
+    }
+
+    .essay-abstract {
+      font-size: var(--studio-text-lg);
+      line-height: var(--studio-leading-relaxed);
+      color: var(--studio-text-secondary);
+      font-style: italic;
+      margin-top: var(--studio-space-6);
+      padding-top: var(--studio-space-6);
+      border-top: 1px solid var(--studio-border);
+    }
+
+    /* Content */
+    .essay-content {
+      opacity: 0;
+      animation: fadeIn var(--studio-duration-slow) var(--studio-ease-out) 0.2s forwards;
+      position: relative;
+    }
+
+    /* Add space for margin notes on large screens */
+    @media (min-width: 1024px) {
+      .essay-content {
+        padding-right: 250px;
+      }
+    }
+
+    /* Footer */
+    .essay-footer {
+      margin-top: var(--studio-space-16);
+      padding-top: var(--studio-space-8);
+      border-top: 1px solid var(--studio-border);
+    }
+
+    .essay-back-link {
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-sm);
+      color: var(--studio-text-muted);
+      text-decoration: none;
+      letter-spacing: var(--studio-tracking-wide);
+      transition: color var(--studio-duration-normal) var(--studio-ease-out);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--studio-space-2);
+      border: none;
+    }
+
+    .essay-back-link:hover {
+      color: var(--studio-text-primary);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .essay-title {
+        font-size: var(--studio-text-3xl);
+      }
+
+      .essay-subtitle {
+        font-size: var(--studio-text-lg);
+      }
+
+      .essay-abstract {
+        font-size: var(--studio-text-base);
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .essay-header,
+      .essay-content {
+        animation: none;
+        opacity: 1;
+      }
+    }
+  </style>
+</StudioLayout>

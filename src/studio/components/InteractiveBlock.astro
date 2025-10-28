@@ -1,0 +1,73 @@
+---
+/**
+ * Interactive Block Component
+ * Wrapper for custom interactive visualizations
+ */
+
+interface Props {
+  type?: 'default' | 'bordered' | 'centered';
+  caption?: string;
+}
+
+const { type = 'default', caption } = Astro.props;
+---
+
+<figure class={`interactive-block interactive-block-${type}`}>
+  <div class="interactive-content">
+    <slot />
+  </div>
+  {caption && (
+    <figcaption class="interactive-caption">
+      {caption}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .interactive-block {
+    margin: var(--studio-space-12) 0;
+    max-width: 100%;
+  }
+
+  .interactive-content {
+    position: relative;
+    min-height: 200px;
+  }
+
+  /* Default variant */
+  .interactive-block-default .interactive-content {
+    padding: var(--studio-space-6);
+  }
+
+  /* Bordered variant */
+  .interactive-block-bordered .interactive-content {
+    padding: var(--studio-space-8);
+    border: 1px solid var(--studio-border);
+    border-radius: 4px;
+    background-color: var(--studio-bg-secondary);
+  }
+
+  /* Centered variant */
+  .interactive-block-centered .interactive-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--studio-space-12);
+  }
+
+  .interactive-caption {
+    margin-top: var(--studio-space-4);
+    font-family: var(--studio-font-sans);
+    font-size: var(--studio-text-sm);
+    color: var(--studio-text-muted);
+    text-align: center;
+    font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    .interactive-block-bordered .interactive-content,
+    .interactive-block-centered .interactive-content {
+      padding: var(--studio-space-6);
+    }
+  }
+</style>

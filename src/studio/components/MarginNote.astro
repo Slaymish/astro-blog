@@ -1,0 +1,97 @@
+---
+/**
+ * Margin Note Component
+ * Side notes that appear in the margin on larger screens
+ * Inline on mobile
+ */
+
+interface Props {
+  id?: string;
+}
+
+const { id } = Astro.props;
+const noteId = id || `note-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<span class="margin-note-wrapper">
+  <sup class="margin-note-ref">
+    <a href={`#${noteId}`} class="margin-note-trigger" aria-describedby={noteId}>†</a>
+  </sup>
+  <span class="margin-note" id={noteId} role="note">
+    <slot />
+  </span>
+</span>
+
+<style>
+  .margin-note-wrapper {
+    position: relative;
+  }
+
+  .margin-note-ref {
+    line-height: 0;
+  }
+
+  .margin-note-trigger {
+    font-family: var(--studio-font-serif);
+    font-size: var(--studio-text-sm);
+    color: var(--studio-accent);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0 0.125rem;
+    transition: color var(--studio-duration-fast) var(--studio-ease-out);
+  }
+
+  .margin-note-trigger:hover {
+    color: var(--studio-text-primary);
+  }
+
+  .margin-note {
+    display: block;
+    position: absolute;
+    left: calc(100% + 3rem);
+    width: 200px;
+    font-family: var(--studio-font-sans);
+    font-size: var(--studio-text-sm);
+    line-height: var(--studio-leading-normal);
+    color: var(--studio-text-muted);
+    padding: var(--studio-space-3);
+    background-color: var(--studio-bg-secondary);
+    border-left: 2px solid var(--studio-accent-dim);
+    border-radius: 3px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all var(--studio-duration-normal) var(--studio-ease-out);
+    pointer-events: none;
+  }
+
+  .margin-note-trigger:hover + .margin-note,
+  .margin-note-trigger:focus + .margin-note,
+  .margin-note:hover {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  /* Mobile: show inline */
+  @media (max-width: 1024px) {
+    .margin-note {
+      position: static;
+      width: auto;
+      margin-top: var(--studio-space-2);
+      margin-bottom: var(--studio-space-4);
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+
+    .margin-note-trigger {
+      pointer-events: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .margin-note {
+      transition: none;
+    }
+  }
+</style>

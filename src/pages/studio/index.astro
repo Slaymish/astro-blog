@@ -1,0 +1,278 @@
+---
+/**
+ * Studio Landing Page
+ * Zero JavaScript - static only
+ */
+
+import { getCollection } from 'astro:content';
+import StudioLayout from '../../studio/StudioLayout.astro';
+
+// Get published essays, sorted by date
+const allEssays = await getCollection('studio', ({ data }) => {
+  return data.status === 'published';
+});
+
+const essays = allEssays.sort((a, b) => 
+  b.data.published.valueOf() - a.data.published.valueOf()
+);
+---
+
+<StudioLayout title="Studio" palette="noir" motion="subtle">
+  <div class="studio-landing">
+    <!-- Manifesto -->
+    <section class="manifesto">
+      <h1 class="manifesto-title">Studio</h1>
+      <div class="manifesto-body">
+        <p>
+          A space for slow thinking. Each essay is a conceptual territory—
+          explored through argument, illustration, and interaction.
+        </p>
+        <p>
+          Motion clarifies structure. Type serves thought. 
+          Nothing here is decoration.
+        </p>
+        <p>
+          This is philosophy as practice: rigorous, visual, built to be inhabited.
+        </p>
+      </div>
+    </section>
+
+    <!-- Essay list -->
+    <section class="essay-list">
+      <h2 class="essay-list-title">Essays</h2>
+      
+      {essays.length === 0 ? (
+        <p class="essay-list-empty">No essays yet. Check back soon.</p>
+      ) : (
+        <ul class="essays" role="list">
+          {essays.map((essay) => (
+            <li class="essay-item">
+              <a href={`/studio/${essay.slug}`} class="essay-link">
+                <div class="essay-header">
+                  <h3 class="essay-title">{essay.data.title}</h3>
+                  {essay.data.subtitle && (
+                    <p class="essay-subtitle">{essay.data.subtitle}</p>
+                  )}
+                </div>
+                <p class="essay-abstract">{essay.data.abstract}</p>
+                <div class="essay-meta">
+                  <time 
+                    datetime={essay.data.published.toISOString()}
+                    class="essay-date"
+                  >
+                    {essay.data.published.toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long',
+                      day: 'numeric' 
+                    })}
+                  </time>
+                  {essay.data.tags.length > 0 && (
+                    <div class="essay-tags">
+                      {essay.data.tags.map(tag => (
+                        <span class="essay-tag">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  </div>
+
+  <style>
+    .studio-landing {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Manifesto */
+    .manifesto {
+      margin-bottom: var(--studio-space-24);
+      opacity: 0;
+      animation: fadeIn var(--studio-duration-slow) var(--studio-ease-out) forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .manifesto-title {
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-5xl);
+      font-weight: 300;
+      letter-spacing: var(--studio-tracking-tight);
+      color: var(--studio-text-primary);
+      margin-bottom: var(--studio-space-8);
+    }
+
+    .manifesto-body {
+      font-size: var(--studio-text-xl);
+      line-height: var(--studio-leading-relaxed);
+      color: var(--studio-text-secondary);
+    }
+
+    .manifesto-body p {
+      margin-bottom: var(--studio-space-6);
+    }
+
+    .manifesto-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Essay list */
+    .essay-list {
+      border-top: 1px solid var(--studio-border);
+      padding-top: var(--studio-space-8);
+    }
+
+    .essay-list-title {
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-sm);
+      font-weight: 600;
+      letter-spacing: var(--studio-tracking-wider);
+      text-transform: uppercase;
+      color: var(--studio-text-muted);
+      margin-bottom: var(--studio-space-8);
+    }
+
+    .essay-list-empty {
+      font-size: var(--studio-text-base);
+      color: var(--studio-text-muted);
+      font-style: italic;
+    }
+
+    .essays {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .essay-item {
+      margin-bottom: var(--studio-space-12);
+      opacity: 0;
+      animation: fadeIn var(--studio-duration-slow) var(--studio-ease-out) forwards;
+    }
+
+    .essay-item:nth-child(1) { animation-delay: 100ms; }
+    .essay-item:nth-child(2) { animation-delay: 200ms; }
+    .essay-item:nth-child(3) { animation-delay: 300ms; }
+    .essay-item:nth-child(4) { animation-delay: 400ms; }
+    .essay-item:nth-child(5) { animation-delay: 500ms; }
+
+    .essay-link {
+      display: block;
+      padding: var(--studio-space-6);
+      border: 1px solid transparent;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all var(--studio-duration-normal) var(--studio-ease-out);
+    }
+
+    .essay-link:hover {
+      border-color: var(--studio-border);
+      background-color: var(--studio-bg-secondary);
+      transform: translateX(4px);
+    }
+
+    .essay-link:focus-visible {
+      outline: 2px solid var(--studio-accent);
+      outline-offset: 2px;
+      border-color: var(--studio-accent-dim);
+    }
+
+    .essay-header {
+      margin-bottom: var(--studio-space-4);
+    }
+
+    .essay-title {
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-2xl);
+      font-weight: 600;
+      letter-spacing: var(--studio-tracking-tight);
+      color: var(--studio-text-primary);
+      margin-bottom: var(--studio-space-2);
+    }
+
+    .essay-subtitle {
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-base);
+      color: var(--studio-text-muted);
+      letter-spacing: var(--studio-tracking-normal);
+    }
+
+    .essay-abstract {
+      font-size: var(--studio-text-base);
+      line-height: var(--studio-leading-relaxed);
+      color: var(--studio-text-secondary);
+      margin-bottom: var(--studio-space-4);
+      max-width: none;
+    }
+
+    .essay-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--studio-space-4);
+      flex-wrap: wrap;
+    }
+
+    .essay-date {
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-xs);
+      letter-spacing: var(--studio-tracking-wide);
+      text-transform: uppercase;
+      color: var(--studio-text-muted);
+    }
+
+    .essay-tags {
+      display: flex;
+      gap: var(--studio-space-2);
+      flex-wrap: wrap;
+    }
+
+    .essay-tag {
+      font-family: var(--studio-font-mono);
+      font-size: var(--studio-text-xs);
+      color: var(--studio-accent-dim);
+      background-color: var(--studio-bg-tertiary);
+      padding: var(--studio-space-1) var(--studio-space-2);
+      border-radius: 3px;
+    }
+
+    @media (max-width: 768px) {
+      .manifesto-title {
+        font-size: var(--studio-text-4xl);
+      }
+
+      .manifesto-body {
+        font-size: var(--studio-text-lg);
+      }
+
+      .essay-title {
+        font-size: var(--studio-text-xl);
+      }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .manifesto,
+      .essay-item {
+        animation: none;
+        opacity: 1;
+      }
+
+      .essay-link:hover {
+        transform: none;
+      }
+    }
+  </style>
+</StudioLayout>
