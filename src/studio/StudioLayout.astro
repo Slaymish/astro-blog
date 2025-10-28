@@ -5,6 +5,9 @@
  * Zero dependency on main site styles
  */
 
+// Import the design system CSS
+import './design.css';
+
 interface Props {
   title: string;
   subtitle?: string;
@@ -29,9 +32,6 @@ const {
   
   <!-- Preload critical fonts -->
   <link rel="preload" as="font" type="font/woff2" crossorigin>
-  
-  <!-- Studio design system -->
-  <link rel="stylesheet" href="/src/studio/design.css">
   
   <!-- Metadata -->
   <meta name="description" content={subtitle || title}>
