@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "astro dev --config astro.config.dev.ts",
     "start": "astro dev",
-    "build": "npm run sync:posts && astro check && astro build",
+    "build": "npm run sync:posts && npm run sync:studio && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "sync:posts": "tsx scripts/sync-posts.ts",
+    "sync:studio": "tsx scripts/sync-studio.ts",
+    "sync:all": "npm run sync:posts && npm run sync:studio",
     "convert:webp": "node scripts/convert-png-to-webp.js",
     "update:references": "node scripts/update-references.js",
     "convert:all": "npm run convert:webp && npm run update:references"

@@ -36,6 +36,103 @@ export type Database = {
         };
         Relationships: [];
       };
+      studio_essays: {
+        Row: {
+          id: number;
+          title: string;
+          subtitle: string | null;
+          abstract: string;
+          slug: string;
+          content: string;
+          palette: string;
+          motion: string;
+          audio: string | null;
+          status: string;
+          published: string | null;
+          updated: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          title: string;
+          subtitle?: string | null;
+          abstract: string;
+          slug: string;
+          content: string;
+          palette?: string;
+          motion?: string;
+          audio?: string | null;
+          status?: string;
+          published?: string | null;
+          updated?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: number;
+          title?: string;
+          subtitle?: string | null;
+          abstract?: string;
+          slug?: string;
+          content?: string;
+          palette?: string;
+          motion?: string;
+          audio?: string | null;
+          status?: string;
+          published?: string | null;
+          updated?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      studio_tags: {
+        Row: {
+          id: number;
+          name: string;
+          slug: string;
+        };
+        Insert: {
+          id?: number;
+          name: string;
+          slug: string;
+        };
+        Update: {
+          id?: number;
+          name?: string;
+          slug?: string;
+        };
+        Relationships: [];
+      };
+      studio_essay_tags: {
+        Row: {
+          essay_id: number;
+          tag_id: number;
+        };
+        Insert: {
+          essay_id: number;
+          tag_id: number;
+        };
+        Update: {
+          essay_id?: number;
+          tag_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "studio_essay_tags_essay_id_fkey";
+            columns: ["essay_id"];
+            referencedRelation: "studio_essays";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "studio_essay_tags_tag_id_fkey";
+            columns: ["tag_id"];
+            referencedRelation: "studio_tags";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       tags: {
         Row: {
           id: number;
