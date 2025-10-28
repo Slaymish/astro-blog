@@ -139,7 +139,7 @@ const { pdfPath, title } = Astro.props;
 <!-- Load PDF.js from CDN FIRST -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" is:inline></script>
 
-<script define:vars={{ pdfPath, title }}>
+<script is:inline define:vars={{ pdfPath, title }}>
   // Wait for PDF.js to be loaded
   function initPDFViewer() {
     if (typeof window.pdfjsLib === 'undefined') {

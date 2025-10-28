@@ -9,8 +9,9 @@ import { createSlug } from '../src/utils/slug.js';
 
 async function syncStudioEssays() {
   if (!supabase) {
-    console.error('❌ Supabase client not initialized. Check your environment variables.');
-    process.exit(1);
+    console.warn('⚠️  Supabase client not initialized. Skipping studio sync.');
+    console.warn('This is fine for local builds that use content collections.');
+    process.exit(0); // Exit successfully instead of failing
   }
 
   try {
