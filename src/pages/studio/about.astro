@@ -3,7 +3,6 @@
  * Studio About Page
  * Explains the method and purpose
  */
-
 import StudioLayout from '../../studio/StudioLayout.astro';
 ---
 
@@ -18,105 +17,41 @@ import StudioLayout from '../../studio/StudioLayout.astro';
       <section>
         <h2>What This Is</h2>
         <p>
-          Studio is a space for slow thinking. Each essay is a conceptual territory—
-          explored through argument, illustration, and interaction.
+          Everything here serves the idea. Form, motion, and type exist only to make thought clear.
         </p>
         <p>
-          Unlike typical blog posts, these essays use motion and interaction to 
-          clarify structure. Margin notes provide tangential thoughts without 
-          disrupting the main argument. Footnotes expand inline rather than 
-          breaking your reading flow. Pull quotes emphasize key ideas.
-        </p>
-        <p>
-          This is philosophy as practice: rigorous, visual, built to be inhabited.
-        </p>
-      </section>
-
-      <section>
-        <h2>Design Principles</h2>
-        
-        <h3>1. Motion Serves Meaning</h3>
-        <p>
-          Every animation has a purpose: to reveal structure, guide attention, 
-          or illustrate change. Nothing is decorative. If motion doesn't clarify 
-          the argument, it's removed.
-        </p>
-
-        <h3>2. Typography First</h3>
-        <p>
-          Type is the primary interface. The design prioritizes readability: 
-          generous line spacing, literary scale, high contrast. Serif for body 
-          text, sans-serif for UI elements.
-        </p>
-
-        <h3>3. Progressive Enhancement</h3>
-        <p>
-          The landing page ships zero JavaScript. Essay pages load minimal JS 
-          only for interactive features. Everything degrades gracefully. 
-          Reduced-motion preferences are respected.
-        </p>
-
-        <h3>4. Aesthetic Restraint</h3>
-        <p>
-          Dark by default. Low contrast, high legibility. Each essay can define 
-          its own palette, but the core remains consistent. Nothing flashy. 
-          Nothing that distracts from the ideas.
-        </p>
-      </section>
-
-      <section>
-        <h2>Technical Stack</h2>
-        <p>
-          Built with <a href="https://astro.build">Astro</a> for static generation. 
-          Essays are written in MDX, allowing custom components alongside prose. 
-          The design system uses CSS custom properties in an isolated layer—no 
-          global styles leak in.
-        </p>
-        <p>
-          Each essay defines its own frontmatter: palette, motion profile, 
-          optional ambient audio. The template handles the rest.
+          Notes stay in the margin. Footnotes open in place. Pull quotes bring the core into view.
         </p>
       </section>
 
       <section>
         <h2>Writing for Studio</h2>
         <p>
-          Essays here are conceptual, not personal. They explore ideas through 
-          argument and illustration. The writing is clear, the structure 
-          deliberate. Every sentence earns its place.
+          Essays are conceptual rather than personal. They build ideas through argument and illustration. The writing is clear, the structure deliberate, each sentence necessary.
         </p>
         <p>
-          Topics range from design to philosophy to technical systems—anything 
-          that benefits from slow, careful thinking. The common thread is rigor 
-          and visual clarity.
+          Topics may move between design, philosophy, and technical systems. The common thread is precision and visual clarity.
         </p>
       </section>
 
       <section>
         <h2>Interaction Vocabulary</h2>
-        <p>
-          Studio essays use a small set of interactive patterns:
-        </p>
+        <p>Studio essays use a small set of interactive patterns:</p>
         <ul>
           <li>
-            <strong>Margin Notes:</strong> Appear on hover (desktop) or inline 
-            (mobile). For tangential thoughts that don't belong in the main flow.
+            <strong>Margin notes:</strong> appear on hover (desktop) or inline (mobile). For side thoughts that do not belong in the main flow.
           </li>
           <li>
-            <strong>Footnotes:</strong> Expand inline when clicked. Preserve 
-            reading flow while providing deeper context.
+            <strong>Footnotes:</strong> expand inline on click. Preserve reading flow while adding context.
           </li>
           <li>
-            <strong>Pull Quotes:</strong> Emphasize key ideas. Used sparingly 
-            to mark conceptual milestones.
+            <strong>Pull quotes:</strong> mark key ideas. Used sparingly to signal milestones.
           </li>
           <li>
-            <strong>Interactive Blocks:</strong> Custom visualizations that 
-            illustrate concepts. Only when static text isn't enough.
+            <strong>Interactive blocks:</strong> custom visuals that illustrate concepts. Only when static text is not enough.
           </li>
           <li>
-            <strong>Ambient Audio:</strong> Optional. Muted by default. Creates 
-            atmosphere without demanding attention.
+            <strong>Ambient audio:</strong> optional and muted by default. Builds atmosphere without demanding attention.
           </li>
         </ul>
       </section>
@@ -124,31 +59,22 @@ import StudioLayout from '../../studio/StudioLayout.astro';
       <section>
         <h2>On Separation</h2>
         <p>
-          Studio is deliberately separate from the main site. It has its own 
-          layout, design system, and aesthetic. The only connection is a small 
-          footer link.
-        </p>
-        <p>
-          This separation is intentional. The main site serves one purpose; 
-          Studio serves another. They don't need to look related. The shift in 
-          aesthetic signals a shift in mode: from portfolio to laboratory, 
-          from showcase to workshop.
+          Studio is separate from the main site. It has its own layout, design system, and aesthetic. The only connection is a small link in the footer.
         </p>
       </section>
 
       <section>
         <h2>Get in Touch</h2>
         <p>
-          Questions, suggestions, or critiques? Find me on the 
-          <a href="/">main site</a>. Studio is an ongoing experiment. It will 
-          evolve as I learn what works.
+          Questions, suggestions, or critiques? Find me on the
+          <a href="/" rel="home">main site</a>. Studio is an ongoing experiment. It will evolve as I learn what works.
         </p>
       </section>
     </div>
 
     <footer class="about-footer">
       <div class="about-back">
-        <a href="/studio" class="about-back-link">← Back to essays</a>
+        <a href="/studio" class="about-back-link" aria-label="Back to Studio essays">← Back to essays</a>
       </div>
     </footer>
   </article>
@@ -168,14 +94,8 @@ import StudioLayout from '../../studio/StudioLayout.astro';
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .about-title {
@@ -231,21 +151,12 @@ import StudioLayout from '../../studio/StudioLayout.astro';
     }
 
     @media (max-width: 768px) {
-      .about-title {
-        font-size: var(--studio-text-3xl);
-      }
-
-      .about-subtitle {
-        font-size: var(--studio-text-lg);
-      }
+      .about-title { font-size: var(--studio-text-3xl); }
+      .about-subtitle { font-size: var(--studio-text-lg); }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .about-header,
-      .about-content {
-        animation: none;
-        opacity: 1;
-      }
+      .about-header, .about-content { animation: none; opacity: 1; }
     }
   </style>
 </StudioLayout>
