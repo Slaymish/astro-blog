@@ -37,6 +37,16 @@ const {
   <meta name="description" content={subtitle || title}>
   <meta name="robots" content="index, follow">
   
+  <!-- Inline critical CSS to prevent FOUC -->
+  <style is:inline>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #0a0a0a;
+      color: #e8e8e8;
+    }
+  </style>
+  
   <!-- No favicon inheritance - studio is separate -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>">
 </head>
