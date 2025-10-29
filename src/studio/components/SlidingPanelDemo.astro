@@ -1,0 +1,124 @@
+---
+/**
+ * SlidingPanelDemo
+ * Minimal demo showing a panel sliding in from the left
+ */
+
+interface Props {
+  startOpen?: boolean;
+  label?: string;
+}
+
+const { startOpen = false, label = 'Toggle panel' } = Astro.props;
+const demoId = `panel-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class="panel-demo" id={demoId} data-open={startOpen ? 'true' : 'false'}>
+  <div class="panel-viewport">
+    <div class="panel" aria-hidden={startOpen ? 'false' : 'true'}>
+      <div class="panel-content">Origin → I slid in from the left</div>
+    </div>
+  </div>
+  <button type="button" class="panel-toggle" aria-controls={demoId} aria-expanded={startOpen ? 'true' : 'false'}>
+    {label}
+  </button>
+
+  <script>
+    (function () {
+      const id = "{demoId}";
+      function init() {
+        const root = document.getElementById(id);
+        if (!root) return;
+        const panel = root.querySelector('.panel');
+        const toggle = root.querySelector('.panel-toggle') as HTMLButtonElement | null;
+        if (!panel || !toggle) return;
+
+        const r = root as HTMLDivElement;
+        const t = toggle as HTMLButtonElement;
+        const p = panel as HTMLElement;
+
+        function setState(open: boolean) {
+          r.dataset.open = open ? 'true' : 'false';
+          t.setAttribute('aria-expanded', open ? 'true' : 'false');
+          p.setAttribute('aria-hidden', open ? 'false' : 'true');
+        }
+
+        t.addEventListener('click', () => {
+          const nowOpen = r.dataset.open !== 'true';
+          setState(nowOpen);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once: true });
+      } else {
+        init();
+      }
+    })();
+  </script>
+</div>
+
+<style>
+  .panel-demo {
+    display: grid;
+    gap: var(--studio-space-4);
+    place-items: center;
+  }
+
+  .panel-viewport {
+    width: min(560px, 100%);
+    height: 140px;
+    border: 1px solid var(--studio-border);
+    background: var(--studio-bg-tertiary);
+    overflow: hidden;
+    position: relative;
+    border-radius: 6px;
+  }
+
+  .panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, var(--studio-bg-secondary), transparent 80%);
+    transform: translateX(-100%);
+    transition: transform var(--studio-motion-duration) var(--studio-motion-ease);
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+
+  .panel-content {
+    color: var(--studio-text-secondary);
+    font-family: var(--studio-font-sans);
+    font-size: var(--studio-text-sm);
+  }
+
+  .panel-demo[data-open="true"] .panel {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .panel-toggle {
+    background: none;
+    border: 1px solid var(--studio-border);
+    color: var(--studio-text-secondary);
+    font-family: var(--studio-font-sans);
+    font-size: var(--studio-text-sm);
+    padding: var(--studio-space-2) var(--studio-space-3);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color var(--studio-duration-fast) var(--studio-ease-out),
+                color var(--studio-duration-fast) var(--studio-ease-out);
+  }
+
+  .panel-toggle:hover {
+    color: var(--studio-text-primary);
+    border-color: var(--studio-accent-dim);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel { transition: none; transform: none; }
+  }
+</style>

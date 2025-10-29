@@ -37,63 +37,72 @@ const footnoteId = id || `fn-${Math.random().toString(36).slice(2, 11)}`;
 
 <script>
   // Client-side interaction for footnotes
-  document.addEventListener('DOMContentLoaded', () => {
-    const triggers = document.querySelectorAll('.footnote-trigger');
-    
-    triggers.forEach(trigger => {
-      trigger.addEventListener('click', (e) => {
+  (function () {
+    function closeAll(exceptId?: string) {
+      document.querySelectorAll('.footnote-content').forEach((el) => {
+        const shouldSkip = exceptId && el.id === `${exceptId}-content`;
+        if (!shouldSkip) {
+          el.setAttribute('hidden', '');
+          el.classList.remove('is-visible');
+        }
+      });
+      document.querySelectorAll('.footnote-trigger').forEach((el) => {
+        const button = el as HTMLButtonElement;
+        const shouldSkip = exceptId && button.dataset.footnoteId === exceptId;
+        if (!shouldSkip) button.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function initFootnotes() {
+      // Event delegation for clicks on any footnote trigger
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement | null;
+        const button = target?.closest('.footnote-trigger') as HTMLButtonElement | null;
+        if (!button) return;
         e.preventDefault();
-        const button = e.currentTarget as HTMLButtonElement;
+
         const footnoteId = button.dataset.footnoteId;
+        if (!footnoteId) return;
         const content = document.getElementById(`${footnoteId}-content`);
-        
         if (!content) return;
-        
+
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        
-        // Close all other footnotes
-        document.querySelectorAll('.footnote-content').forEach(el => {
-          if (el !== content) {
-            el.setAttribute('hidden', '');
-            el.classList.remove('is-visible');
-          }
-        });
-        
-        document.querySelectorAll('.footnote-trigger').forEach(el => {
-          if (el !== button) {
-            el.setAttribute('aria-expanded', 'false');
-          }
-        });
-        
-        // Toggle current footnote
+
         if (isExpanded) {
           content.setAttribute('hidden', '');
           content.classList.remove('is-visible');
           button.setAttribute('aria-expanded', 'false');
         } else {
+          // Close others first
+          closeAll(footnoteId);
+          // Open current
           content.removeAttribute('hidden');
-          // Trigger reflow for animation
-          void content.offsetWidth;
+          void content.offsetWidth; // reflow for transition
           content.classList.add('is-visible');
           button.setAttribute('aria-expanded', 'true');
         }
       });
-    });
-    
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('.footnote-wrapper')) {
-        document.querySelectorAll('.footnote-content').forEach(el => {
-          el.setAttribute('hidden', '');
-          el.classList.remove('is-visible');
-        });
-        document.querySelectorAll('.footnote-trigger').forEach(el => {
-          el.setAttribute('aria-expanded', 'false');
-        });
-      }
-    });
-  });
+
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (!target.closest('.footnote-wrapper')) {
+          closeAll();
+        }
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAll();
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFootnotes, { once: true });
+    } else {
+      initFootnotes();
+    }
+  })();
 </script>
 
 <style>
@@ -143,6 +152,7 @@ const footnoteId = id || `fn-${Math.random().toString(36).slice(2, 11)}`;
     max-height: 0;
     overflow: hidden;
     transition: all var(--studio-duration-normal) var(--studio-ease-out);
+    z-index: 30;
   }
 
   .footnote-content.is-visible {

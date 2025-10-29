@@ -13,6 +13,8 @@ import MarginNote from '../../studio/components/MarginNote.astro';
 import Footnote from '../../studio/components/Footnote.astro';
 import PullQuote from '../../studio/components/PullQuote.astro';
 import InteractiveBlock from '../../studio/components/InteractiveBlock.astro';
+import RevealOnScroll from '../../studio/components/RevealOnScroll.astro';
+import SlidingPanelDemo from '../../studio/components/SlidingPanelDemo.astro';
 
 ## On Motion and Meaning
 
@@ -26,9 +28,12 @@ Motion is thought made visible.
 When a panel slides in from the left, its origin is clear. When it fades in, the relation is lost.<Footnote number={1}>A fade communicates appearance, not connection. It hides spatial context.</Footnote>
 
 <InteractiveBlock type="bordered" caption="Sliding motion shows relation">
-  <div style="padding: 2rem; text-align: center; color: var(--studio-text-secondary);">
-    [Demo: panel slides in → shows origin]
-  </div>
+  <RevealOnScroll effect="slide-left" distance="32px">
+    <SlidingPanelDemo label="Replay slide" />
+  </RevealOnScroll>
+  <p style={{ marginTop: '1rem', color: 'var(--studio-text-muted)', fontFamily: 'var(--studio-font-sans)', fontSize: 'var(--studio-text-xs)', textAlign: 'center' }}>
+    Click the button to replay the motion.
+  </p>
 </InteractiveBlock>
 
 Attention follows movement.<MarginNote>Evolution hard-wired this; moving things meant food or threat.</MarginNote>  
@@ -48,9 +53,11 @@ Footnotes open inline.
 Interactive blocks illustrate ideas only when words fall short.
 
 <InteractiveBlock type="centered" caption="Concepts unfold through interaction">
-  <div style="padding: 3rem; text-align: center; color: var(--studio-text-primary);">
-    ◆
-  </div>
+  <RevealOnScroll effect="rise" distance="24px">
+    <div style="padding: 3rem; text-align: center; color: var(--studio-text-primary);">
+      ◆
+    </div>
+  </RevealOnScroll>
 </InteractiveBlock>
 
 Motion is never decoration.  

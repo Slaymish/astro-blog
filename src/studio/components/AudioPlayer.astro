@@ -40,35 +40,46 @@ const { src, title = 'Ambient audio' } = Astro.props;
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const players = document.querySelectorAll('.audio-player');
-    
-    players.forEach(playerEl => {
-      const audio = playerEl.querySelector('.audio-element') as HTMLAudioElement;
-      const toggle = playerEl.querySelector('.audio-toggle') as HTMLButtonElement;
-      const visualizer = playerEl.querySelector('.audio-visualizer') as HTMLElement;
-      
-      if (!audio || !toggle) return;
-      
-      toggle.addEventListener('click', () => {
-        if (audio.paused) {
-          audio.play();
-          toggle.dataset.state = 'playing';
-          visualizer?.classList.add('is-active');
-        } else {
-          audio.pause();
+  (function () {
+    function initPlayers() {
+      const players = document.querySelectorAll('.audio-player');
+
+      players.forEach((playerEl) => {
+        const audio = playerEl.querySelector('.audio-element') as HTMLAudioElement;
+        const toggle = playerEl.querySelector('.audio-toggle') as HTMLButtonElement;
+        const visualizer = playerEl.querySelector('.audio-visualizer') as HTMLElement;
+
+        if (!audio || !toggle) return;
+
+        toggle.addEventListener('click', () => {
+          if (audio.paused) {
+            audio.play();
+            toggle.dataset.state = 'playing';
+            toggle.setAttribute('aria-pressed', 'true');
+            visualizer?.classList.add('is-active');
+          } else {
+            audio.pause();
+            toggle.dataset.state = 'paused';
+            toggle.setAttribute('aria-pressed', 'false');
+            visualizer?.classList.remove('is-active');
+          }
+        });
+
+        // Handle audio end
+        audio.addEventListener('ended', () => {
           toggle.dataset.state = 'paused';
+          toggle.setAttribute('aria-pressed', 'false');
           visualizer?.classList.remove('is-active');
-        }
+        });
       });
-      
-      // Handle audio end
-      audio.addEventListener('ended', () => {
-        toggle.dataset.state = 'paused';
-        visualizer?.classList.remove('is-active');
-      });
-    });
-  });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPlayers, { once: true });
+    } else {
+      initPlayers();
+    }
+  })();
 </script>
 
 <style>

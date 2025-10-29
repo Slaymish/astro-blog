@@ -25,6 +25,7 @@ const noteId = id || `note-${Math.random().toString(36).slice(2, 11)}`;
 <style>
   .margin-note-wrapper {
     position: relative;
+    overflow: visible;
   }
 
   .margin-note-ref {
@@ -62,6 +63,7 @@ const noteId = id || `note-${Math.random().toString(36).slice(2, 11)}`;
     transform: translateX(-10px);
     transition: all var(--studio-duration-normal) var(--studio-ease-out);
     pointer-events: none;
+    z-index: 20;
   }
 
   .margin-note-trigger:hover + .margin-note,
