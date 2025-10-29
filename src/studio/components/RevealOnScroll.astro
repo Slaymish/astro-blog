@@ -58,10 +58,12 @@ const uid = `ros-${Math.random().toString(36).slice(2, 9)}`;
         const threshold = Number(el.dataset.threshold || 0.15);
         const rootMargin = el.dataset.rootMargin || '0px 0px -10% 0px';
 
+        let revealedOnce = false;
         const observer = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               el.classList.add('is-visible');
+              revealedOnce = true;
               if (once) observer.unobserve(el);
             } else if (!once) {
               el.classList.remove('is-visible');
@@ -70,6 +72,21 @@ const uid = `ros-${Math.random().toString(36).slice(2, 9)}`;
         }, { threshold, rootMargin });
 
         observer.observe(el);
+
+        // Immediate check in case it's already in view at load
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        if (rect.top < vh * 0.95 && rect.bottom > 0) {
+          el.classList.add('is-visible');
+        }
+
+        // Fallback: reveal after a short delay if observer didn't trigger (edge cases)
+        setTimeout(() => {
+          if (!revealedOnce && !once) return; // if not once, keep waiting for scroll
+          if (!el.classList.contains('is-visible')) {
+            el.classList.add('is-visible');
+          }
+        }, 800);
       }
 
       if (document.readyState === 'loading') {

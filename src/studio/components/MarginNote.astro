@@ -25,6 +25,7 @@ const noteId = id || `note-${Math.random().toString(36).slice(2, 11)}`;
 <style>
   .margin-note-wrapper {
     position: relative;
+    display: inline-block;
     overflow: visible;
   }
 
@@ -66,9 +67,11 @@ const noteId = id || `note-${Math.random().toString(36).slice(2, 11)}`;
     z-index: 20;
   }
 
-  .margin-note-trigger:hover + .margin-note,
-  .margin-note-trigger:focus + .margin-note,
-  .margin-note:hover {
+  /* Show note when hovering the reference or the note itself */
+  .margin-note-ref:hover ~ .margin-note,
+  .margin-note-ref:focus-within ~ .margin-note,
+  .margin-note:hover,
+  .margin-note:focus-within {
     opacity: 1;
     transform: translateX(0);
     pointer-events: auto;
