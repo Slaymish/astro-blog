@@ -15,7 +15,7 @@ const noteId = id || `note-${Math.random().toString(36).slice(2, 11)}`;
 
 <span class="margin-note-wrapper">
   <sup class="margin-note-ref">
-    <a href={`#${noteId}`} class="margin-note-trigger" aria-describedby={noteId}>†</a>
+    <button class="margin-note-trigger" aria-describedby={noteId} type="button">†</button>
   </sup>
   <span class="margin-note" id={noteId} role="note">
     <slot />
@@ -41,6 +41,9 @@ const noteId = id || `note-${Math.random().toString(36).slice(2, 11)}`;
     font-weight: 600;
     padding: 0 0.125rem;
     transition: color var(--studio-duration-fast) var(--studio-ease-out);
+    background: none;
+    border: none;
+    cursor: pointer;
   }
 
   .margin-note-trigger:hover {
