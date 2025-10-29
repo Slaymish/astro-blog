@@ -24,7 +24,7 @@ const {
 const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
 ---
 
-<span class="def-popover-wrapper" data-trigger={trigger} data-placement-prop={placement} id={`${popId}-wrapper`}>
+<div class="def-popover-wrapper" data-trigger={trigger} data-placement-prop={placement} id={`${popId}-wrapper`}>
   <button 
     type="button" 
     class="def-trigger" 
@@ -34,7 +34,7 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
     <span class="def-term">{term}</span>
   </button>
   
-  <span 
+  <div 
     class="def-panel" 
     id={`${popId}-panel`} 
     role="note"
@@ -46,10 +46,10 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
     <div class="def-content">
       <slot />
     </div>
-  </span>
+  </div>
 
   <!-- Interaction handled by /studio/studio-interactions.js -->
-</span>
+</div>
 
 <style>
   .def-popover-wrapper {
