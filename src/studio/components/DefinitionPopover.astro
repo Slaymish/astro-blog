@@ -31,7 +31,7 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
 ---
 
 
-<div class="def-popover-wrapper" data-trigger={trigger} data-placement-prop={placement} id={`${popId}-wrapper`}>
+<span class="def-popover-wrapper" data-trigger={trigger} data-placement-prop={placement} id={`${popId}-wrapper`}>
   <button 
     type="button" 
     class="def-trigger" 
@@ -41,7 +41,7 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
     <span class="def-term"><slot /></span>
   </button>
   
-  <div 
+  <span 
     class="def-panel" 
     id={`${popId}-panel`} 
     role="note"
@@ -50,13 +50,13 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
   >
     <strong class="def-title" id={`${popId}-title`}><slot /></strong>
     {subtitle && (<em class="def-subtitle">{subtitle}</em>)}
-    <div class="def-content">
+    <span class="def-content">
       <!-- Definition content should be provided as children -->
-    </div>
-  </div>
+    </span>
+  </span>
 
   <!-- Interaction handled by /studio/studio-interactions.js -->
-</div>
+</span>
 
 <style>
   .def-panel {
@@ -184,6 +184,7 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
   .def-content {
     font-family: var(--studio-font-serif);
     line-height: var(--studio-leading-relaxed);
+    display: block;
   }
 
   @media (max-width: 1024px) {
