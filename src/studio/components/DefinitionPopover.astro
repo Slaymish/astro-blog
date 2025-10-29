@@ -11,16 +11,16 @@
  * 
  */
 
+
 interface Props {
-  term: string;
   subtitle?: string;              // Optional short gloss appearing in the header
   id?: string;
   trigger?: 'click' | 'hover';    // default: click
   placement?: 'auto' | 'side' | 'below'; // default: auto
 }
 
+
 const {
-  term,
   subtitle,
   id,
   trigger = 'click',
@@ -30,6 +30,7 @@ const {
 const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
 ---
 
+
 <div class="def-popover-wrapper" data-trigger={trigger} data-placement-prop={placement} id={`${popId}-wrapper`}>
   <button 
     type="button" 
@@ -37,7 +38,7 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
     aria-expanded="false"
     aria-controls={`${popId}-panel`}
   >
-    <span class="def-term">{term}</span>
+    <span class="def-term"><slot /></span>
   </button>
   
   <div 
@@ -47,10 +48,10 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
     aria-labelledby={`${popId}-title`}
     hidden
   >
-    <strong class="def-title" id={`${popId}-title`}>{term}</strong>
+    <strong class="def-title" id={`${popId}-title`}><slot /></strong>
     {subtitle && (<em class="def-subtitle">{subtitle}</em>)}
     <div class="def-content">
-      <slot />
+      <!-- Definition content should be provided as children -->
     </div>
   </div>
 
@@ -58,6 +59,13 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
 </div>
 
 <style>
+  .def-panel {
+    font-size: 1rem;
+    font-weight: 500;
+    vertical-align: baseline;
+    line-height: 1.2;
+  }
+
   .def-popover-wrapper {
     position: relative;
     display: inline;
