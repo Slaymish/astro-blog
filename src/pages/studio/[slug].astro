@@ -1,7 +1,7 @@
 ---
 /**
- * Essay Template
- * Dynamic page for Studio essays with MDX support
+ * Aphorism Template
+ * Dynamic page for Studio aphorisms with MDX support
  */
 
 import { getCollection, type CollectionEntry } from 'astro:content';
@@ -9,27 +9,27 @@ import StudioLayout from '../../studio/StudioLayout.astro';
 import AudioPlayer from '../../studio/components/AudioPlayer.astro';
 
 // In SSR (Netlify adapter), getStaticPaths is ignored for dynamic routes.
-// Resolve the essay at request time using the slug param.
+// Resolve the aphorism at request time using the slug param.
 export const prerender = false;
 const { slug } = Astro.params;
-const allEssays = await getCollection('studio');
-const essay = allEssays.find((e) => e.slug === slug) as CollectionEntry<'studio'> | undefined;
+const allAphorisms = await getCollection('studio');
+const aphorism = allAphorisms.find((a) => a.slug === slug) as CollectionEntry<'studio'> | undefined;
 
-if (!essay) {
+if (!aphorism) {
   return new Response('Not found', { status: 404 });
 }
 
 // Render MDX for type: 'content' collections
-const { Content } = await essay.render();
+const { Content } = await aphorism.render();
 
 // Format date
-const publishedDate = essay.data.published.toLocaleDateString('en-US', {
+const publishedDate = aphorism.data.published.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric'
 });
 
-const updatedDate = essay.data.updated?.toLocaleDateString('en-US', {
+const updatedDate = aphorism.data.updated?.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric'
@@ -37,72 +37,72 @@ const updatedDate = essay.data.updated?.toLocaleDateString('en-US', {
 ---
 
 <StudioLayout 
-  title={essay.data.title}
-  subtitle={essay.data.subtitle}
-  palette={essay.data.palette}
-  motion={essay.data.motion}
+  title={aphorism.data.title}
+  subtitle={aphorism.data.subtitle}
+  palette={aphorism.data.palette}
+  motion={aphorism.data.motion}
 >
-  <article class="essay">
+  <article class="aphorism">
     <!-- Header -->
-    <header class="essay-header">
-      <h1 class="essay-title">{essay.data.title}</h1>
-      {essay.data.subtitle && (
-        <p class="essay-subtitle">{essay.data.subtitle}</p>
+    <header class="aphorism-header">
+      <h1 class="aphorism-title">{aphorism.data.title}</h1>
+      {aphorism.data.subtitle && (
+        <p class="aphorism-subtitle">{aphorism.data.subtitle}</p>
       )}
       
-      <div class="essay-meta">
-        <time datetime={essay.data.published.toISOString()} class="essay-date">
+      <div class="aphorism-meta">
+        <time datetime={aphorism.data.published.toISOString()} class="aphorism-date">
           {publishedDate}
         </time>
         {updatedDate && (
           <>
-            <span class="essay-meta-sep">·</span>
-            <span class="essay-updated">Updated {updatedDate}</span>
+            <span class="aphorism-meta-sep">·</span>
+            <span class="aphorism-updated">Updated {updatedDate}</span>
           </>
         )}
-        {essay.data.tags.length > 0 && (
+        {aphorism.data.tags.length > 0 && (
           <>
-            <span class="essay-meta-sep">·</span>
-            <div class="essay-tags">
-              {essay.data.tags.map(tag => (
-                <span class="essay-tag">{tag}</span>
+            <span class="aphorism-meta-sep">·</span>
+            <div class="aphorism-tags">
+              {aphorism.data.tags.map(tag => (
+                <span class="aphorism-tag">{tag}</span>
               ))}
             </div>
           </>
         )}
       </div>
 
-      {essay.data.abstract && (
-        <p class="essay-abstract">{essay.data.abstract}</p>
+      {aphorism.data.text && (
+        <p class="aphorism-text-display">{aphorism.data.text}</p>
       )}
     </header>
 
     <!-- Content -->
-    <div class="essay-content studio-prose">
+    <div class="aphorism-content studio-prose">
       <Content />
     </div>
 
     <!-- Footer -->
-    <footer class="essay-footer">
-      <div class="essay-back">
-        <a href="/studio" class="essay-back-link">← Back to essays</a>
+    <footer class="aphorism-footer">
+      <div class="aphorism-back">
+        <a href="/studio" class="aphorism-back-link">← Back to aphorisms</a>
       </div>
     </footer>
   </article>
 
   <!-- Audio player (only if audio specified) -->
-  {essay.data.audio && (
-    <AudioPlayer src={essay.data.audio} title="Essay ambience" />
+  {aphorism.data.audio && (
+    <AudioPlayer src={aphorism.data.audio} title="Aphorism ambience" />
   )}
 
   <style>
-    .essay {
+    .aphorism {
       max-width: 720px;
       margin: 0 auto;
     }
 
     /* Header */
-    .essay-header {
+    .aphorism-header {
       margin-bottom: var(--studio-space-16);
       padding-bottom: var(--studio-space-8);
       border-bottom: 1px solid var(--studio-border);
@@ -121,7 +121,7 @@ const updatedDate = essay.data.updated?.toLocaleDateString('en-US', {
       }
     }
 
-    .essay-title {
+    .aphorism-title {
       font-family: var(--studio-font-sans);
       font-size: var(--studio-text-4xl);
       font-weight: 600;
@@ -132,7 +132,7 @@ const updatedDate = essay.data.updated?.toLocaleDateString('en-US', {
       max-width: none;
     }
 
-    .essay-subtitle {
+    .aphorism-subtitle {
       font-family: var(--studio-font-sans);
       font-size: var(--studio-text-xl);
       font-weight: 400;
@@ -141,7 +141,7 @@ const updatedDate = essay.data.updated?.toLocaleDateString('en-US', {
       letter-spacing: var(--studio-tracking-normal);
     }
 
-    .essay-meta {
+    .aphorism-meta {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
@@ -154,26 +154,26 @@ const updatedDate = essay.data.updated?.toLocaleDateString('en-US', {
       margin-bottom: var(--studio-space-6);
     }
 
-    .essay-date {
+    .aphorism-date {
       color: var(--studio-text-secondary);
     }
 
-    .essay-updated {
+    .aphorism-updated {
       color: var(--studio-text-muted);
       font-style: italic;
     }
 
-    .essay-meta-sep {
+    .aphorism-meta-sep {
       color: var(--studio-border);
     }
 
-    .essay-tags {
+    .aphorism-tags {
       display: flex;
       gap: var(--studio-space-2);
       flex-wrap: wrap;
     }
 
-    .essay-tag {
+    .aphorism-tag {
       font-family: var(--studio-font-mono);
       font-size: var(--studio-text-xs);
       color: var(--studio-accent-dim);
@@ -183,38 +183,39 @@ const updatedDate = essay.data.updated?.toLocaleDateString('en-US', {
       text-transform: none;
     }
 
-    .essay-abstract {
-      font-size: var(--studio-text-lg);
+    .aphorism-text-display {
+      font-size: var(--studio-text-2xl);
       line-height: var(--studio-leading-relaxed);
-      color: var(--studio-text-secondary);
+      color: var(--studio-text-primary);
       font-style: italic;
       margin-top: var(--studio-space-6);
       padding-top: var(--studio-space-6);
       border-top: 1px solid var(--studio-border);
+      text-align: center;
     }
 
     /* Content */
-    .essay-content {
+    .aphorism-content {
       opacity: 0;
       animation: fadeIn var(--studio-duration-slow) var(--studio-ease-out) 0.2s forwards;
       position: relative;
     }
 
-    /* Add space for margin notes on large screens */
+    /* Reduced padding for margin notes on aphorisms (simpler than essays) */
     @media (min-width: 1024px) {
-      .essay-content {
-        padding-right: 250px;
+      .aphorism-content {
+        padding-right: 150px;
       }
     }
 
     /* Footer */
-    .essay-footer {
+    .aphorism-footer {
       margin-top: var(--studio-space-16);
       padding-top: var(--studio-space-8);
       border-top: 1px solid var(--studio-border);
     }
 
-    .essay-back-link {
+    .aphorism-back-link {
       font-family: var(--studio-font-sans);
       font-size: var(--studio-text-sm);
       color: var(--studio-text-muted);
@@ -227,29 +228,29 @@ const updatedDate = essay.data.updated?.toLocaleDateString('en-US', {
       border: none;
     }
 
-    .essay-back-link:hover {
+    .aphorism-back-link:hover {
       color: var(--studio-text-primary);
     }
 
     /* Mobile responsive */
     @media (max-width: 768px) {
-      .essay-title {
+      .aphorism-title {
         font-size: var(--studio-text-3xl);
       }
 
-      .essay-subtitle {
+      .aphorism-subtitle {
         font-size: var(--studio-text-lg);
       }
 
-      .essay-abstract {
-        font-size: var(--studio-text-base);
+      .aphorism-text-display {
+        font-size: var(--studio-text-xl);
       }
     }
 
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
-      .essay-header,
-      .essay-content {
+      .aphorism-header,
+      .aphorism-content {
         animation: none;
         opacity: 1;
       }

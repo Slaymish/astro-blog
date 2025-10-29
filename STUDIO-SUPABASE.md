@@ -1,48 +1,50 @@
 # Studio Supabase Integration
 
-This document explains how studio essays are synced to Supabase.
+This document explains how studio aphorisms are synced to Supabase.
 
 ## Database Schema
 
 ### Tables Created
 
-1. **studio_essays** - Main table for studio essays
+1. **studio_aphorisms** - Main table for studio aphorisms
    - `id` - Primary key
-   - `title` - Essay title
-   - `subtitle` - Optional subtitle
-   - `abstract` - Brief abstract (required)
+   - `title` - Aphorism title
+   - `subtitle` - Optional subtitle or categorization
+   - `text` - Optional: short aphorism text (for very brief aphorisms)
+   - `abstract` - Optional: brief context or expansion (nullable)
    - `slug` - URL-friendly identifier (unique)
    - `content` - Full MDX content
    - `palette` - Color scheme (noir, sepia, forest, ocean, ember)
-   - `motion` - Animation profile (minimal, moderate, expressive)
+   - `motion` - Animation profile (subtle, moderate, expressive)
    - `audio` - Optional ambient audio filename
-   - `status` - Publication status (draft, published, archived)
+   - `status` - Publication status (draft, published)
    - `published` - Publication date
    - `updated` - Last updated date
    - `created_at` - Record creation timestamp
    - `updated_at` - Record update timestamp
 
-2. **studio_tags** - Tags for categorizing essays
+2. **studio_tags** - Tags for categorizing aphorisms
    - `id` - Primary key
    - `name` - Display name
    - `slug` - URL-friendly identifier (unique)
 
-3. **studio_essay_tags** - Join table for many-to-many relationship
-   - `essay_id` - Foreign key to studio_essays
+3. **studio_aphorism_tags** - Join table for many-to-many relationship
+   - `aphorism_id` - Foreign key to studio_aphorisms
    - `tag_id` - Foreign key to studio_tags
 
 ## Setup
 
-### 1. Run the Migration
+### 1. Run the Migrations
 
-First, apply the migration to create the tables in your Supabase database:
+First, apply the migrations to create and update the tables in your Supabase database:
 
 ```bash
 # Using Supabase CLI
 supabase db push
 
 # Or apply the SQL directly in your Supabase dashboard
-# Copy contents of: supabase/migrations/20251029_studio_essays.sql
+# 1. Copy contents of: supabase/migrations/20251029_studio_essays.sql
+# 2. Copy contents of: supabase/migrations/20251030_rename_essays_to_aphorisms.sql
 ```
 
 ### 2. Environment Variables
@@ -54,15 +56,15 @@ SUPABASE_DATABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_anon_key
 ```
 
-### 3. Sync Essays
+### 3. Sync Aphorisms
 
-Run the sync script to upload your studio essays:
+Run the sync script to upload your studio aphorisms:
 
 ```bash
-# Sync only studio essays
+# Sync only studio aphorisms
 npm run sync:studio
 
-# Sync both blog posts and studio essays
+# Sync both blog posts and studio aphorisms
 npm run sync:all
 ```
 
@@ -72,14 +74,14 @@ The `sync-studio.ts` script:
 
 1. **Reads MDX Files** - Scans `src/content/studio/` for `.mdx` files
 2. **Parses Frontmatter** - Extracts metadata from YAML frontmatter
-3. **Filters by Status** - Only syncs essays with `status: "published"`
-4. **Upserts Essays** - Creates or updates essays in Supabase (matching by slug)
-5. **Syncs Tags** - Creates tags and links them to essays
-6. **Cleanup** - Removes essays from Supabase that no longer exist locally
+3. **Filters by Status** - Only syncs aphorisms with `status: "published"`
+4. **Upserts Aphorisms** - Creates or updates aphorisms in Supabase (matching by slug)
+5. **Syncs Tags** - Creates tags and links them to aphorisms
+6. **Cleanup** - Removes aphorisms from Supabase that no longer exist locally
 
 ## Deployment
 
-The build process automatically syncs essays before building:
+The build process automatically syncs aphorisms before building:
 
 ```bash
 npm run build
@@ -87,50 +89,51 @@ npm run build
 
 This runs: `sync:posts` → `sync:studio` → `astro check` → `astro build`
 
-## Querying Essays from Supabase
+## Querying Aphorisms from Supabase
 
-If you want to fetch essays from Supabase instead of the local content collection:
+If you want to fetch aphorisms from Supabase instead of the local content collection:
 
 ```typescript
 import { supabase } from '@/utils/database';
 
-// Get all published essays
-const { data: essays } = await supabase
-  .from('studio_essays')
+// Get all published aphorisms
+const { data: aphorisms } = await supabase
+  .from('studio_aphorisms')
   .select('*')
   .eq('status', 'published')
   .order('published', { ascending: false });
 
-// Get essay by slug
-const { data: essay } = await supabase
-  .from('studio_essays')
+// Get aphorism by slug
+const { data: aphorism } = await supabase
+  .from('studio_aphorisms')
   .select('*')
-  .eq('slug', 'demo-essay')
+  .eq('slug', 'demo-aphorism')
   .single();
 
-// Get essays with tags
-const { data: essay } = await supabase
-  .from('studio_essays')
+// Get aphorisms with tags
+const { data: aphorism } = await supabase
+  .from('studio_aphorisms')
   .select(`
     *,
-    studio_essay_tags (
+    studio_aphorism_tags (
       studio_tags (
         name,
         slug
       )
     )
   `)
-  .eq('slug', 'demo-essay')
+  .eq('slug', 'demo-aphorism')
   .single();
 ```
 
 ## Notes
 
-- **Separate from Blog Posts** - Studio essays use their own tables, completely independent from the blog posts system
-- **Draft Protection** - Essays with `status: "draft"` or `status: "archived"` won't be synced
-- **Slug Uniqueness** - Each essay must have a unique slug
+- **Separate from Blog Posts** - Studio aphorisms use their own tables, completely independent from the blog posts system
+- **Draft Protection** - Aphorisms with `status: "draft"` won't be synced
+- **Slug Uniqueness** - Each aphorism must have a unique slug
 - **Content Backup** - Full MDX content is stored in Supabase as a backup
-- **Automatic Cleanup** - Deleted local essays are automatically removed from Supabase
+- **Automatic Cleanup** - Deleted local aphorisms are automatically removed from Supabase
+- **Aphoristic Format** - Content is designed to be short, self-contained, and impactful
 
 ## Troubleshooting
 
@@ -138,11 +141,12 @@ const { data: essay } = await supabase
 - The `supabase/types.ts` file has been updated with the new table definitions
 - Restart your TypeScript server or VS Code if you see type errors
 
-**Essays not syncing:**
-- Verify `status: "published"` in essay frontmatter
+**Aphorisms not syncing:**
+- Verify `status: "published"` in aphorism frontmatter
 - Check environment variables are set
 - Run with verbose logging: `tsx scripts/sync-studio.ts`
 
 **Migration errors:**
 - Ensure you're connected to the correct Supabase project
+- Run both migrations in order: `20251029_studio_essays.sql` then `20251030_rename_essays_to_aphorisms.sql`
 - Check that table names don't conflict with existing tables

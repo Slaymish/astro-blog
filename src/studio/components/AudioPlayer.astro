@@ -1,7 +1,7 @@
 ---
 /**
  * Audio Player Component
- * Ambient audio for essays - muted by default
+ * Ambient audio for aphorisms - muted by default
  */
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
   initialVolume?: number; // 0.0 - 1.0
 }
 
-const { src, title = 'Essay ambience', initialVolume = 0.6 } = Astro.props;
+const { src, title = 'Aphorism ambience', initialVolume = 0.6 } = Astro.props;
 ---
 
 <div class="audio-player" data-initial-volume={String(initialVolume)}>

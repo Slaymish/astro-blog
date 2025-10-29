@@ -1,21 +1,25 @@
 # Studio Visual Style Guide
 
+## Philosophy
+
+Studio is designed for **aphorisms** - short, self-contained thoughts. The design prioritizes clarity, focus, and impact over elaborate layout systems. Components exist but should be used sparingly.
+
 ## Typography
 
 ### Font Families
 ```css
-Body Text (Essays):  Serif (Iowan Old Style, Palatino, URW Palladio)
-UI Elements:         Sans-serif (System UI stack)
-Code/Technical:      Monospace (Cascadia Code, Source Code Pro, Menlo)
+Body Text (Aphorisms): Serif (Iowan Old Style, Palatino, URW Palladio)
+UI Elements:           Sans-serif (System UI stack)
+Code/Technical:        Monospace (Cascadia Code, Source Code Pro, Menlo)
 ```
 
 ### Type Scale (Literary)
 ```
-Base:   18px (1.125rem) - Essay body text
+Base:   18px (1.125rem) - Aphorism body text
 Small:  14px (0.875rem) - Metadata, captions
-Large:  20px (1.25rem)  - Pull quotes
+Large:  20px (1.25rem)  - Emphasized text
 2XL:    24px (1.5rem)   - Section headings
-4XL:    36px (2.25rem)  - Essay titles
+4XL:    36px (2.25rem)  - Aphorism titles
 5XL:    48px (3rem)     - Landing page title
 ```
 
@@ -24,7 +28,7 @@ Large:  20px (1.25rem)  - Pull quotes
 Tight:    1.25  - Headings
 Snug:     1.375 - Sub-headings
 Normal:   1.5   - UI elements
-Relaxed:  1.625 - Essay body (primary)
+Relaxed:  1.625 - Aphorism body (primary)
 Loose:    1.75  - Pull quotes
 ```
 
@@ -51,7 +55,7 @@ Text Primary:         #e8dcc8 (cream)
 Text Secondary:       #c8bca8
 Accent:               #d4c4a8 (sand)
 
-Use for: History, memory, retrospective essays
+Use for: History, memory, retrospective aphorisms
 ```
 
 ### Forest
@@ -84,7 +88,7 @@ Text Primary:         #e8d8d4 (warm white)
 Text Secondary:       #c8b8b4
 Accent:               #d8a8a4 (rose)
 
-Use for: Energy, urgency, counterarguments
+Use for: Energy, urgency, sharp insights
 ```
 
 ## Spacing Scale
@@ -124,20 +128,38 @@ Smooth:     cubic-bezier(0.25, 0.46, 0.45, 0.94)  - Natural flow
 
 ### Motion Profiles
 
-**Subtle (Default)**
+**Subtle (Default for aphorisms)**
 - Duration: 300ms
 - Easing: Ease-out
-- Use for: Most interactions
+- Use for: Most aphorisms - keep it minimal
 
 **Moderate**
 - Duration: 500ms
 - Easing: Smooth
-- Use for: Essays with more visual emphasis
+- Use for: Aphorisms with slightly more visual emphasis
 
 **Expressive**
 - Duration: 800ms
 - Easing: Elastic
-- Use for: Playful or conceptually-important motion
+- Use for: Rare use - only when motion is part of the concept
+
+## Aphorism Design Principles
+
+**Brevity First**
+- Aphorisms should be concise - typically 1-3 short paragraphs
+- Use the `text` field in frontmatter for ultra-short aphorisms (one sentence)
+- Avoid lengthy exposition - aim for distilled insight
+
+**Minimal Components**
+- Most aphorisms should use plain prose without components
+- Components exist but should be used sparingly
+- If every aphorism uses all components, none stand out
+
+**When to Use Components**
+- **Never**: DialecticTabs, ClaimCounter (too essay-like)
+- **Rarely**: MarginNote, Footnote (only if essential context)
+- **Sometimes**: PullQuote (to emphasize the core insight)
+- **As needed**: AudioPlayer (ambient sound if it enhances the thought)
 
 ## Component Anatomy
 
@@ -191,9 +213,9 @@ Caption:      Sans-serif italic, 14px, muted, centered
 
 ### Container Width
 ```
-Max Width:     720px (essays)
+Max Width:     720px (aphorisms)
                800px (landing page)
-               1200px (with margin notes)
+               1000px (with margin notes - reduced for aphorisms)
 ```
 
 ### Page Margins
@@ -204,10 +226,10 @@ Mobile:        16px horizontal, 48px top, 64px bottom
 
 ### Content Margins
 ```
-Essay Header:  Bottom: 64px, Border: 1px
-Essay Footer:  Top: 64px, Border: 1px
-Sections:      64px vertical spacing
-Paragraphs:    24px bottom
+Aphorism Header:  Bottom: 64px, Border: 1px
+Aphorism Footer:  Top: 64px, Border: 1px
+Sections:         48px vertical spacing (reduced for aphorisms)
+Paragraphs:       24px bottom
 ```
 
 ## Header & Navigation

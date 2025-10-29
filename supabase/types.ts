@@ -36,12 +36,13 @@ export type Database = {
         };
         Relationships: [];
       };
-      studio_essays: {
+      studio_aphorisms: {
         Row: {
           id: number;
           title: string;
           subtitle: string | null;
-          abstract: string;
+          abstract: string | null;
+          text: string | null;
           slug: string;
           content: string;
           palette: string;
@@ -57,7 +58,8 @@ export type Database = {
           id?: number;
           title: string;
           subtitle?: string | null;
-          abstract: string;
+          abstract?: string | null;
+          text?: string | null;
           slug: string;
           content: string;
           palette?: string;
@@ -73,7 +75,8 @@ export type Database = {
           id?: number;
           title?: string;
           subtitle?: string | null;
-          abstract?: string;
+          abstract?: string | null;
+          text?: string | null;
           slug?: string;
           content?: string;
           palette?: string;
@@ -105,28 +108,28 @@ export type Database = {
         };
         Relationships: [];
       };
-      studio_essay_tags: {
+      studio_aphorism_tags: {
         Row: {
-          essay_id: number;
+          aphorism_id: number;
           tag_id: number;
         };
         Insert: {
-          essay_id: number;
+          aphorism_id: number;
           tag_id: number;
         };
         Update: {
-          essay_id?: number;
+          aphorism_id?: number;
           tag_id?: number;
         };
         Relationships: [
           {
-            foreignKeyName: "studio_essay_tags_essay_id_fkey";
-            columns: ["essay_id"];
-            referencedRelation: "studio_essays";
+            foreignKeyName: "studio_aphorism_tags_aphorism_id_fkey";
+            columns: ["aphorism_id"];
+            referencedRelation: "studio_aphorisms";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "studio_essay_tags_tag_id_fkey";
+            foreignKeyName: "studio_aphorism_tags_tag_id_fkey";
             columns: ["tag_id"];
             referencedRelation: "studio_tags";
             referencedColumns: ["id"];
@@ -268,5 +271,11 @@ export type Enums<
 export type PostWithTags = Tables<"posts"> & {
   post_tags: Array<{
     tags: Tables<"tags">;
+  }>;
+};
+
+export type AphorismWithTags = Tables<"studio_aphorisms"> & {
+  studio_aphorism_tags: Array<{
+    studio_tags: Tables<"studio_tags">;
   }>;
 };

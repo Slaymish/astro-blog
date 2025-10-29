@@ -7,14 +7,16 @@
 interface Props {
   align?: 'left' | 'center' | 'right';
   size?: 'normal' | 'large';
+  author?: string;
 }
 
-const { align = 'center', size = 'normal' } = Astro.props;
+const { align = 'center', size = 'normal', author } = Astro.props;
 ---
 
 <aside class={`pull-quote pull-quote-${align} pull-quote-${size}`} role="complementary">
   <div class="pull-quote-content">
     <slot />
+    {author && <footer class="pull-quote-author">— {author}</footer>}
   </div>
 </aside>
 
@@ -23,6 +25,13 @@ const { align = 'center', size = 'normal' } = Astro.props;
     margin: var(--studio-space-12) 0;
     padding: var(--studio-space-8) var(--studio-space-6);
     position: relative;
+  }
+
+  .pull-quote-author {
+    margin-top: var(--studio-space-4);
+    font-size: var(--studio-text-sm);
+    color: var(--studio-text-secondary);
+    text-align: right;
   }
 
   .pull-quote::before {

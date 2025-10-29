@@ -27,39 +27,36 @@ import StudioLayout from '../../studio/StudioLayout.astro';
       <section>
         <h2>Writing for Studio</h2>
         <p>
-          Essays are conceptual rather than personal. They build ideas through argument and illustration. The writing is clear, the structure deliberate, each sentence necessary.
+          Aphorisms are short, self-contained thoughts. They aim for clarity and impact over length. Each one should stand alone.
         </p>
         <p>
-          Topics may move between design, philosophy, and technical systems. The common thread is precision and visual clarity.
+          Topics may move between design, philosophy, and technical systems. The common thread is precision and compression - saying what matters, nothing more.
         </p>
       </section>
 
       <section>
         <h2>Interaction Vocabulary</h2>
-        <p>Studio essays use a small set of simple, focused components:</p>
+        <p>Studio aphorisms keep components minimal. Most use plain prose. When needed, these are available:</p>
         <ul>
           <li>
-            <strong>MarginNote</strong>: shows side notes in the margin on desktop, inline on mobile. Good for quick asides.
+            <strong>PullQuote</strong>: surfaces a key line. Use sparingly to emphasize the core insight.
           </li>
           <li>
-            <strong>Footnote</strong>: expands inline on click. Adds context without sending the reader away.
+            <strong>AudioPlayer</strong>: optional ambient sound. Off by default. Sits at the bottom right.
           </li>
           <li>
-            <strong>PullQuote</strong>: surfaces a key line. Align left, center, or right; normal or large size.
+            <strong>MarginNote</strong>: brief side notes (use rarely - aphorisms should be self-contained).
           </li>
           <li>
-            <strong>DefinitionPopover</strong>: click a term to see a short definition. Places itself to the side when there is room, or below on smaller screens. Closes on outside click or Escape. A small caret points back to the term.
+            <strong>Footnote</strong>: expands inline. Only if absolutely necessary for context.
           </li>
           <li>
-            <strong>ClaimCounter</strong>: two buttons that toggle between a claim and a counterexample. Keeps the comparison tight.
-          </li>
-          <li>
-            <strong>DialecticTabs</strong>: three tabs for thesis, antithesis, and synthesis. Arrow keys move between them.
-          </li>
-          <li>
-            <strong>AudioPlayer</strong>: optional and off by default. Sits at the bottom right. Play or pause with one click. A volume slider lets you set the level.
+            <strong>DefinitionPopover</strong>: click a term to see a short definition. Closes on outside click or Escape.
           </li>
         </ul>
+        <p>
+          More elaborate components exist but aren't meant for aphorisms. Keep it simple.
+        </p>
       </section>
 
       <section>
@@ -90,7 +87,7 @@ import StudioLayout from '../../studio/StudioLayout.astro';
 
     <footer class="about-footer">
       <div class="about-back">
-        <a href="/studio" class="about-back-link" aria-label="Back to Studio essays">← Back to essays</a>
+        <a href="/studio" class="about-back-link" aria-label="Back to Studio aphorisms">← Back to aphorisms</a>
       </div>
     </footer>
   </article>

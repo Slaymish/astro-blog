@@ -7,7 +7,7 @@ import yaml from 'js-yaml';
 import { supabase } from '../src/utils/database.js';
 import { createSlug } from '../src/utils/slug.js';
 
-async function syncStudioEssays() {
+async function syncStudioAphorisms() {
   if (!supabase) {
     console.warn('⚠️  Supabase client not initialized. Skipping studio sync.');
     console.warn('This is fine for local builds that use content collections.');
@@ -18,32 +18,32 @@ async function syncStudioEssays() {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const studioDir = path.resolve(__dirname, '../src/content/studio');
 
-    console.log('🔄 Fetching studio essays from content directory...');
-    const essayFiles = await getEssayFiles(studioDir);
+    console.log('🔄 Fetching studio aphorisms from content directory...');
+    const aphorismFiles = await getAphorismFiles(studioDir);
 
-    if (essayFiles.length === 0) {
-      console.log('📝 No studio essays found in content directory.');
+    if (aphorismFiles.length === 0) {
+      console.log('📝 No studio aphorisms found in content directory.');
       return;
     }
 
-    console.log(`📚 Found ${essayFiles.length} essays to sync`);
+    console.log(`📚 Found ${aphorismFiles.length} aphorisms to sync`);
 
-    // Track slugs of local essays for cleanup
-    const localEssaySlugs = new Set<string>();
+    // Track slugs of local aphorisms for cleanup
+    const localAphorismSlugs = new Set<string>();
 
-    for (const filePath of essayFiles) {
+    for (const filePath of aphorismFiles) {
       const raw = await fs.readFile(filePath, 'utf-8');
       const { data, content } = parseFrontmatter(raw);
 
       // Skip drafts unless explicitly published
       if (data.status !== 'published') {
-        console.log(`⏭️  Skipping ${data.status || 'draft'} essay: ${data.title}`);
+        console.log(`⏭️  Skipping ${data.status || 'draft'} aphorism: ${data.title}`);
         continue;
       }
 
       const title = String(data.title);
       const subtitle = data.subtitle ? String(data.subtitle) : null;
-      const abstract = String(data.abstract);
+      const text = data.text ? String(data.text) : null;
       const palette = data.palette ? String(data.palette) : 'noir';
       const motion = data.motion ? String(data.motion) : 'moderate';
       const audio = data.audio ? String(data.audio) : null;
@@ -53,18 +53,18 @@ async function syncStudioEssays() {
       const tags = Array.isArray(data.tags) ? data.tags.map(String) : [];
       const slug = data.slug ? String(data.slug) : createSlug(title);
 
-      // Track this essay's slug
-      localEssaySlugs.add(slug);
+      // Track this aphorism's slug
+      localAphorismSlugs.add(slug);
 
       console.log(`🔄 Syncing: ${title}`);
 
-      const { data: essayData, error: essayError } = await supabase
-        .from('studio_essays')
+      const { data: aphorismData, error: aphorismError } = await supabase
+        .from('studio_aphorisms')
         .upsert(
           {
             title,
             subtitle,
-            abstract,
+            text,
             slug,
             content,
             palette,
@@ -80,8 +80,8 @@ async function syncStudioEssays() {
         .select()
         .single();
 
-      if (essayError) {
-        console.error(`❌ Error syncing essay "${title}":`, essayError);
+      if (aphorismError) {
+        console.error(`❌ Error syncing aphorism "${title}":`, aphorismError);
         continue;
       }
 
@@ -109,17 +109,17 @@ async function syncStudioEssays() {
           }
 
           const { error: linkError } = await supabase
-            .from('studio_essay_tags')
+            .from('studio_aphorism_tags')
             .upsert(
               {
-                essay_id: essayData.id,
+                aphorism_id: aphorismData.id,
                 tag_id: tagData.id,
               },
-              { onConflict: 'essay_id,tag_id' }
+              { onConflict: 'aphorism_id,tag_id' }
             );
 
           if (linkError) {
-            console.error(`❌ Error linking tag "${tagName}" to essay:`, linkError);
+            console.error(`❌ Error linking tag "${tagName}" to aphorism:`, linkError);
           }
         }
       }
@@ -127,47 +127,47 @@ async function syncStudioEssays() {
       console.log(`✅ Successfully synced: ${title}`);
     }
 
-    // Clean up essays that no longer exist locally
-    console.log('🧹 Cleaning up deleted essays from Supabase...');
-    const { data: existingEssays, error: fetchError } = await supabase
-      .from('studio_essays')
+    // Clean up aphorisms that no longer exist locally
+    console.log('🧹 Cleaning up deleted aphorisms from Supabase...');
+    const { data: existingAphorisms, error: fetchError } = await supabase
+      .from('studio_aphorisms')
       .select('id, slug, title');
 
     if (fetchError) {
-      console.error('❌ Error fetching existing essays:', fetchError);
-    } else if (existingEssays) {
-      for (const essay of existingEssays) {
-        if (!localEssaySlugs.has(essay.slug)) {
-          console.log(`🗑️  Deleting removed essay: ${essay.title}`);
+      console.error('❌ Error fetching existing aphorisms:', fetchError);
+    } else if (existingAphorisms) {
+      for (const aphorism of existingAphorisms) {
+        if (!localAphorismSlugs.has(aphorism.slug)) {
+          console.log(`🗑️  Deleting removed aphorism: ${aphorism.title}`);
           
-          // Delete essay_tags relationships first
+          // Delete aphorism_tags relationships first
           const { error: tagDeleteError } = await supabase
-            .from('studio_essay_tags')
+            .from('studio_aphorism_tags')
             .delete()
-            .eq('essay_id', essay.id);
+            .eq('aphorism_id', aphorism.id);
 
           if (tagDeleteError) {
-            console.error(`❌ Error deleting tags for essay "${essay.title}":`, tagDeleteError);
+            console.error(`❌ Error deleting tags for aphorism "${aphorism.title}":`, tagDeleteError);
           }
 
-          // Delete the essay
-          const { error: essayDeleteError } = await supabase
-            .from('studio_essays')
+          // Delete the aphorism
+          const { error: aphorismDeleteError } = await supabase
+            .from('studio_aphorisms')
             .delete()
-            .eq('id', essay.id);
+            .eq('id', aphorism.id);
 
-          if (essayDeleteError) {
-            console.error(`❌ Error deleting essay "${essay.title}":`, essayDeleteError);
+          if (aphorismDeleteError) {
+            console.error(`❌ Error deleting aphorism "${aphorism.title}":`, aphorismDeleteError);
           } else {
-            console.log(`✅ Successfully deleted: ${essay.title}`);
+            console.log(`✅ Successfully deleted: ${aphorism.title}`);
           }
         }
       }
     }
 
-    console.log('🎉 Studio essay sync completed successfully!');
+    console.log('🎉 Studio aphorism sync completed successfully!');
   } catch (error) {
-    console.error('❌ Error during studio essay sync:', error);
+    console.error('❌ Error during studio aphorism sync:', error);
     process.exit(1);
   }
 }
@@ -192,14 +192,14 @@ function parseFrontmatter(raw: string) {
   return { data, content };
 }
 
-async function getEssayFiles(dir: string): Promise<string[]> {
+async function getAphorismFiles(dir: string): Promise<string[]> {
   let files: string[] = [];
   try {
     const entries = await fs.readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        files = files.concat(await getEssayFiles(fullPath));
+        files = files.concat(await getAphorismFiles(fullPath));
       } else if (entry.isFile() && fullPath.endsWith('.mdx')) {
         files.push(fullPath);
       }
@@ -211,4 +211,4 @@ async function getEssayFiles(dir: string): Promise<string[]> {
 }
 
 // Run the sync
-syncStudioEssays();
+syncStudioAphorisms();

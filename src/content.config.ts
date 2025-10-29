@@ -37,7 +37,7 @@ const studio = defineCollection({
     schema: z.object({
         title: z.string(),
         subtitle: z.string().optional(),
-        abstract: z.string(),
+        text: z.string().optional(), // Short aphorism text (when content is minimal)
         palette: z.enum(['noir', 'sepia', 'forest', 'ocean', 'ember']).default('noir'),
         motion: z.enum(['subtle', 'moderate', 'expressive']).default('subtle'),
         audio: z.string().optional(),
