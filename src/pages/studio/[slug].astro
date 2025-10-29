@@ -10,6 +10,7 @@ import AudioPlayer from '../../studio/components/AudioPlayer.astro';
 
 // In SSR (Netlify adapter), getStaticPaths is ignored for dynamic routes.
 // Resolve the essay at request time using the slug param.
+export const prerender = false;
 const { slug } = Astro.params;
 const allEssays = await getCollection('studio');
 const essay = allEssays.find((e) => e.slug === slug) as CollectionEntry<'studio'> | undefined;

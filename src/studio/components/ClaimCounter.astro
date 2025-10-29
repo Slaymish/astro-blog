@@ -38,42 +38,7 @@ const id = `cc-${Math.random().toString(36).slice(2, 9)}`;
     </div>
   </div>
 
-  <script>
-    (function () {
-      const rootId = "{id}";
-      function init() {
-        const root = document.getElementById(rootId);
-        if (!root) return;
-        const buttons = Array.from(root.querySelectorAll('.cc-btn')) as HTMLButtonElement[];
-        const panels = Array.from(root.querySelectorAll('.cc-panel')) as HTMLElement[];
-
-        function setSide(side: 'left' | 'right') {
-          const r = root as HTMLDivElement;
-          r.dataset.active = side;
-          buttons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.side === side ? 'true' : 'false'));
-          panels.forEach((p) => {
-            const isActive = p.dataset.side === side;
-            if (isActive) p.removeAttribute('hidden');
-            else p.setAttribute('hidden', '');
-          });
-        }
-
-        root.addEventListener('click', (e) => {
-          const btn = (e.target as HTMLElement).closest('.cc-btn') as HTMLButtonElement | null;
-          if (!btn) return;
-          e.preventDefault();
-          const side = btn.dataset.side === 'right' ? 'right' : 'left';
-          setSide(side);
-        });
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init, { once: true });
-      } else {
-        init();
-      }
-    })();
-  </script>
+  <!-- Interaction handled by /studio/studio-interactions.js -->
 
   <style>
     .cc {

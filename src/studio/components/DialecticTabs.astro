@@ -51,63 +51,7 @@ const L = {
     </div>
   </div>
 
-  <script>
-    (function () {
-      const rootId = "{id}";
-      function init() {
-        const root = document.getElementById(rootId);
-        if (!root) return;
-        const tabs = Array.from(root.querySelectorAll('.dialectic-tab')) as HTMLButtonElement[];
-        const panels = Array.from(root.querySelectorAll('.dialectic-panel')) as HTMLElement[];
-
-        function setActive(name: 'thesis' | 'antithesis' | 'synthesis') {
-          const r = root as HTMLDivElement;
-          r.dataset.active = name;
-          tabs.forEach((t) => t.setAttribute('aria-selected', t.id.endsWith(name) ? 'true' : 'false'));
-          panels.forEach((p) => {
-            const isActive = p.id.endsWith(name);
-            if (isActive) {
-              p.removeAttribute('hidden');
-            } else {
-              p.setAttribute('hidden', '');
-            }
-          });
-        }
-
-        root.addEventListener('click', (e) => {
-          const btn = (e.target as HTMLElement).closest('.dialectic-tab') as HTMLButtonElement | null;
-          if (!btn) return;
-          e.preventDefault();
-          if (btn.id.endsWith('thesis')) setActive('thesis');
-          else if (btn.id.endsWith('antithesis')) setActive('antithesis');
-          else if (btn.id.endsWith('synthesis')) setActive('synthesis');
-        });
-
-        // Arrow-key navigation
-        root.addEventListener('keydown', (e) => {
-          const current = document.activeElement as HTMLButtonElement;
-          if (!current?.classList.contains('dialectic-tab')) return;
-          const idx = tabs.indexOf(current);
-          if (idx === -1) return;
-          if (e.key === 'ArrowRight') {
-            e.preventDefault();
-            const next = tabs[(idx + 1) % tabs.length];
-            next.focus(); next.click();
-          } else if (e.key === 'ArrowLeft') {
-            e.preventDefault();
-            const prev = tabs[(idx - 1 + tabs.length) % tabs.length];
-            prev.focus(); prev.click();
-          }
-        });
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init, { once: true });
-      } else {
-        init();
-      }
-    })();
-  </script>
+  <!-- Interaction handled by /studio/studio-interactions.js -->
 
   <style>
     .dialectic {
