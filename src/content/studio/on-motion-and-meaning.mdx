@@ -12,14 +12,16 @@ status: "published"
 import MarginNote from '../../studio/components/MarginNote.astro';
 import Footnote from '../../studio/components/Footnote.astro';
 import PullQuote from '../../studio/components/PullQuote.astro';
-import InteractiveBlock from '../../studio/components/InteractiveBlock.astro';
-import RevealOnScroll from '../../studio/components/RevealOnScroll.astro';
-import SlidingPanelDemo from '../../studio/components/SlidingPanelDemo.astro';
+import DialecticTabs from '../../studio/components/DialecticTabs.astro';
+import ClaimCounter from '../../studio/components/ClaimCounter.astro';
+import DefinitionPopover from '../../studio/components/DefinitionPopover.astro';
 
 ## On Motion and Meaning
 
 Most interfaces are still. Text appears instantly; things simply *are* without ever *becoming*.<MarginNote>Early web pages were the opposite—too much movement, too little meaning.</MarginNote>  
-Motion, when used well, restores cause and effect. It makes structure visible.
+Motion, when used well, restores cause and effect. It makes <DefinitionPopover term="structure" subtitle="Arrangement of relations">
+  Not mere layout, but the pattern that gives parts their meaning within a whole.
+</DefinitionPopover> visible.
 
 <PullQuote align="center" size="large">
 Motion is thought made visible.
@@ -27,14 +29,15 @@ Motion is thought made visible.
 
 When a panel slides in from the left, its origin is clear. When it fades in, the relation is lost.<Footnote number={1}>A fade communicates appearance, not connection. It hides spatial context.</Footnote>
 
-<InteractiveBlock type="bordered" caption="Sliding motion shows relation">
-  <RevealOnScroll effect="slide-left" distance="32px">
-    <SlidingPanelDemo label="Replay slide" />
-  </RevealOnScroll>
-  <p style={{ marginTop: '1rem', color: 'var(--studio-text-muted)', fontFamily: 'var(--studio-font-sans)', fontSize: 'var(--studio-text-xs)', textAlign: 'center' }}>
-    Click the button to replay the motion.
-  </p>
-</InteractiveBlock>
+<ClaimCounter leftLabel="Cause" rightLabel="Effect">
+  <div slot="left">
+    Spatial motion suggests origin. A slide from the left implies an off-canvas source—an antecedent in the argument.
+  </div>
+  <div slot="right">
+    Revealing the consequence clarifies relation. By showing where it comes from, the interface teaches how to read itself.
+  </div>
+  
+</ClaimCounter>
 
 Attention follows movement.<MarginNote>Evolution hard-wired this; moving things meant food or threat.</MarginNote>  
 A single shift on screen can guide the eye more reliably than any arrow.
@@ -50,15 +53,19 @@ Animation is punctuation. Use it to make structure legible.
 Each Studio essay applies these principles.  
 Margin notes hold side thoughts.  
 Footnotes open inline.  
-Interactive blocks illustrate ideas only when words fall short.
+And key terms open briefly, in place, when needed — not as detours but as clarifications.
 
-<InteractiveBlock type="centered" caption="Concepts unfold through interaction">
-  <RevealOnScroll effect="rise" distance="24px">
-    <div style="padding: 3rem; text-align: center; color: var(--studio-text-primary);">
-      ◆
-    </div>
-  </RevealOnScroll>
-</InteractiveBlock>
+<DialecticTabs>
+  <div slot="thesis">
+    Motion clarifies structure. It makes transitions legible by mapping change onto space and time.
+  </div>
+  <div slot="antithesis">
+    Motion obscures structure. It can distract, delay, and decorate—seducing the eye away from form.
+  </div>
+  <div slot="synthesis">
+    Motion clarifies when it is proportionate to the concept. It should expose relations, not perform them.
+  </div>
+</DialecticTabs>
 
 Motion is never decoration.  
 It clarifies, directs, and connects—nothing more.

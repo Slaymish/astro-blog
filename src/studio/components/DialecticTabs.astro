@@ -1,0 +1,155 @@
+---
+/**
+ * DialecticTabs
+ * A purposeful component for philosophical writing: structure arguments as Thesis → Antithesis → Synthesis
+ */
+
+interface Props {
+  labels?: {
+    thesis?: string;
+    antithesis?: string;
+    synthesis?: string;
+  };
+  initial?: 'thesis' | 'antithesis' | 'synthesis';
+}
+
+const {
+  labels = {},
+  initial = 'thesis',
+} = Astro.props;
+
+const id = `dial-${Math.random().toString(36).slice(2, 9)}`;
+const L = {
+  thesis: labels.thesis ?? 'Thesis',
+  antithesis: labels.antithesis ?? 'Antithesis',
+  synthesis: labels.synthesis ?? 'Synthesis',
+};
+---
+
+<section class="dialectic" id={id} data-active={initial}>
+  <div class="dialectic-tabs" role="tablist" aria-label="Dialectic View">
+    <button class="dialectic-tab" role="tab" id={`${id}-tab-thesis`} aria-controls={`${id}-panel-thesis`} aria-selected={initial === 'thesis' ? 'true' : 'false'}>
+      {L.thesis}
+    </button>
+    <button class="dialectic-tab" role="tab" id={`${id}-tab-antithesis`} aria-controls={`${id}-panel-antithesis`} aria-selected={initial === 'antithesis' ? 'true' : 'false'}>
+      {L.antithesis}
+    </button>
+    <button class="dialectic-tab" role="tab" id={`${id}-tab-synthesis`} aria-controls={`${id}-panel-synthesis`} aria-selected={initial === 'synthesis' ? 'true' : 'false'}>
+      {L.synthesis}
+    </button>
+  </div>
+
+  <div class="dialectic-panels">
+    <div class="dialectic-panel" id={`${id}-panel-thesis`} role="tabpanel" aria-labelledby={`${id}-tab-thesis`} hidden={initial !== 'thesis'}>
+      <slot name="thesis" />
+    </div>
+    <div class="dialectic-panel" id={`${id}-panel-antithesis`} role="tabpanel" aria-labelledby={`${id}-tab-antithesis`} hidden={initial !== 'antithesis'}>
+      <slot name="antithesis" />
+    </div>
+    <div class="dialectic-panel" id={`${id}-panel-synthesis`} role="tabpanel" aria-labelledby={`${id}-tab-synthesis`} hidden={initial !== 'synthesis'}>
+      <slot name="synthesis" />
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const rootId = "{id}";
+      function init() {
+        const root = document.getElementById(rootId);
+        if (!root) return;
+        const tabs = Array.from(root.querySelectorAll('.dialectic-tab')) as HTMLButtonElement[];
+        const panels = Array.from(root.querySelectorAll('.dialectic-panel')) as HTMLElement[];
+
+        function setActive(name: 'thesis' | 'antithesis' | 'synthesis') {
+          const r = root as HTMLDivElement;
+          r.dataset.active = name;
+          tabs.forEach((t) => t.setAttribute('aria-selected', t.id.endsWith(name) ? 'true' : 'false'));
+          panels.forEach((p) => {
+            const isActive = p.id.endsWith(name);
+            if (isActive) {
+              p.removeAttribute('hidden');
+            } else {
+              p.setAttribute('hidden', '');
+            }
+          });
+        }
+
+        root.addEventListener('click', (e) => {
+          const btn = (e.target as HTMLElement).closest('.dialectic-tab') as HTMLButtonElement | null;
+          if (!btn) return;
+          e.preventDefault();
+          if (btn.id.endsWith('thesis')) setActive('thesis');
+          else if (btn.id.endsWith('antithesis')) setActive('antithesis');
+          else if (btn.id.endsWith('synthesis')) setActive('synthesis');
+        });
+
+        // Arrow-key navigation
+        root.addEventListener('keydown', (e) => {
+          const current = document.activeElement as HTMLButtonElement;
+          if (!current?.classList.contains('dialectic-tab')) return;
+          const idx = tabs.indexOf(current);
+          if (idx === -1) return;
+          if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            const next = tabs[(idx + 1) % tabs.length];
+            next.focus(); next.click();
+          } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            const prev = tabs[(idx - 1 + tabs.length) % tabs.length];
+            prev.focus(); prev.click();
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once: true });
+      } else {
+        init();
+      }
+    })();
+  </script>
+
+  <style>
+    .dialectic {
+      border: 1px solid var(--studio-border);
+      border-radius: 6px;
+      background: var(--studio-bg-secondary);
+    }
+
+    .dialectic-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-bottom: 1px solid var(--studio-border);
+    }
+
+    .dialectic-tab {
+      background: none;
+      border: none;
+      color: var(--studio-text-muted);
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-sm);
+      letter-spacing: var(--studio-tracking-wide);
+      padding: var(--studio-space-3) var(--studio-space-4);
+      cursor: pointer;
+      border-right: 1px solid var(--studio-border);
+      transition: color var(--studio-duration-fast) var(--studio-ease-out),
+                  background-color var(--studio-duration-fast) var(--studio-ease-out);
+    }
+    .dialectic-tab:last-child { border-right: none; }
+    .dialectic-tab[aria-selected="true"] {
+      color: var(--studio-text-primary);
+      background: var(--studio-bg-tertiary);
+    }
+
+    .dialectic-panels {
+      padding: var(--studio-space-5) var(--studio-space-6);
+    }
+
+    .dialectic-panel {
+      color: var(--studio-text-secondary);
+      font-family: var(--studio-font-serif);
+      line-height: var(--studio-leading-relaxed);
+    }
+  </style>
+</section>

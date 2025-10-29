@@ -1,0 +1,110 @@
+---
+/**
+ * ClaimCounter
+ * Toggle between a Claim and a Counterargument (or Example vs Counterexample)
+ */
+
+interface Props {
+  leftLabel?: string;     // default: Claim
+  rightLabel?: string;    // default: Counterargument
+  initial?: 'left' | 'right';
+}
+
+const {
+  leftLabel = 'Claim',
+  rightLabel = 'Counterargument',
+  initial = 'left',
+} = Astro.props;
+
+const id = `cc-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<section class="cc" id={id} data-active={initial}>
+  <div class="cc-toggle" role="group" aria-label="Claim vs Counterargument">
+    <button class="cc-btn" data-side="left" aria-pressed={initial === 'left' ? 'true' : 'false'}>
+      {leftLabel}
+    </button>
+    <button class="cc-btn" data-side="right" aria-pressed={initial === 'right' ? 'true' : 'false'}>
+      {rightLabel}
+    </button>
+  </div>
+
+  <div class="cc-panels">
+    <div class="cc-panel" data-side="left" hidden={initial !== 'left'}>
+      <slot name="left" />
+    </div>
+    <div class="cc-panel" data-side="right" hidden={initial !== 'right'}>
+      <slot name="right" />
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const rootId = "{id}";
+      function init() {
+        const root = document.getElementById(rootId);
+        if (!root) return;
+        const buttons = Array.from(root.querySelectorAll('.cc-btn')) as HTMLButtonElement[];
+        const panels = Array.from(root.querySelectorAll('.cc-panel')) as HTMLElement[];
+
+        function setSide(side: 'left' | 'right') {
+          const r = root as HTMLDivElement;
+          r.dataset.active = side;
+          buttons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.side === side ? 'true' : 'false'));
+          panels.forEach((p) => {
+            const isActive = p.dataset.side === side;
+            if (isActive) p.removeAttribute('hidden');
+            else p.setAttribute('hidden', '');
+          });
+        }
+
+        root.addEventListener('click', (e) => {
+          const btn = (e.target as HTMLElement).closest('.cc-btn') as HTMLButtonElement | null;
+          if (!btn) return;
+          e.preventDefault();
+          const side = btn.dataset.side === 'right' ? 'right' : 'left';
+          setSide(side);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once: true });
+      } else {
+        init();
+      }
+    })();
+  </script>
+
+  <style>
+    .cc {
+      border: 1px solid var(--studio-border);
+      border-radius: 6px;
+      background: var(--studio-bg-secondary);
+    }
+    .cc-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--studio-border);
+    }
+    .cc-btn {
+      background: none;
+      border: none;
+      color: var(--studio-text-muted);
+      font-family: var(--studio-font-sans);
+      font-size: var(--studio-text-sm);
+      letter-spacing: var(--studio-tracking-wide);
+      padding: var(--studio-space-3) var(--studio-space-4);
+      cursor: pointer;
+      border-right: 1px solid var(--studio-border);
+      transition: color var(--studio-duration-fast) var(--studio-ease-out),
+                  background-color var(--studio-duration-fast) var(--studio-ease-out);
+    }
+    .cc-btn:last-child { border-right: none; }
+    .cc-btn[aria-pressed="true"] {
+      color: var(--studio-text-primary);
+      background: var(--studio-bg-tertiary);
+    }
+    .cc-panels { padding: var(--studio-space-5) var(--studio-space-6); }
+    .cc-panel { color: var(--studio-text-secondary); }
+  </style>
+</section>
