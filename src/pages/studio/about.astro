@@ -7,169 +7,20 @@ import StudioLayout from '../../studio/StudioLayout.astro';
 ---
 
 <StudioLayout title="About Studio" palette="noir" motion="subtle">
-  <article class="about">
-    <header class="about-header">
-      <h1 class="about-title">About Studio</h1>
-      <p class="about-subtitle">On method and purpose</p>
+  <article style="max-width: 600px; margin: 0 auto; padding: 2rem 0;">
+    <header>
+      <h1 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem;">About Studio</h1>
     </header>
-
-    <div class="about-content studio-prose">
-      <section>
-        <h2>What This Is</h2>
-        <p>
-          Everything here serves the idea. Form, motion, and type exist only to make thought clear.
-        </p>
-        <p>
-          Notes stay in the margin. Footnotes open in place. Pull quotes bring the core into view.
-        </p>
-      </section>
-
-      <section>
-        <h2>Writing for Studio</h2>
-        <p>
-          Aphorisms are short, self-contained thoughts. They aim for clarity and impact over length. Each one should stand alone.
-        </p>
-        <p>
-          Topics may move between design, philosophy, and technical systems. The common thread is precision and compression - saying what matters, nothing more.
-        </p>
-      </section>
-
-      <section>
-        <h2>Interaction Vocabulary</h2>
-        <p>Studio aphorisms keep components minimal. Most use plain prose. When needed, these are available:</p>
-        <ul>
-          <li>
-            <strong>PullQuote</strong>: surfaces a key line. Use sparingly to emphasize the core insight.
-          </li>
-          <li>
-            <strong>AudioPlayer</strong>: optional ambient sound. Off by default. Sits at the bottom right.
-          </li>
-          <li>
-            <strong>MarginNote</strong>: brief side notes (use rarely - aphorisms should be self-contained).
-          </li>
-          <li>
-            <strong>Footnote</strong>: expands inline. Only if absolutely necessary for context.
-          </li>
-          <li>
-            <strong>DefinitionPopover</strong>: click a term to see a short definition. Closes on outside click or Escape.
-          </li>
-        </ul>
-        <p>
-          More elaborate components exist but aren't meant for aphorisms. Keep it simple.
-        </p>
-      </section>
-
-      <section>
-        <h2>Accessibility and motion</h2>
-        <ul>
-          <li>Tabs are keyboard accessible; Left and Right switch between them.</li>
-          <li>Popovers and footnotes close on Escape and outside click.</li>
-          <li>Focus styles are visible and consistent.</li>
-          <li>Prefers reduced motion is respected; animations calm down when requested.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2>On Separation</h2>
-        <p>
-          Studio is separate from the main site. It has its own layout, design system, and aesthetic. The only connection is a small link in the footer.
-        </p>
-      </section>
-
-      <section>
-        <h2>Get in Touch</h2>
-        <p>
-          Questions, suggestions, or critiques? Find me on the
-          <a href="/" rel="home">main site</a>. Studio is an ongoing experiment. It will evolve as I learn what works.
-        </p>
-      </section>
+    <div style="margin-bottom: 2rem; color: var(--studio-text-muted);">
+      <p>
+        Studio is a space for short, self-contained writing experiments. It’s separate from the main site, with its own design and focus. Aphorisms here are concise and minimal.
+      </p>
+      <p>
+        Questions or feedback? <a href="/" rel="home">Find me on the main site</a>.
+      </p>
     </div>
-
-    <footer class="about-footer">
-      <div class="about-back">
-        <a href="/studio" class="about-back-link" aria-label="Back to Studio aphorisms">← Back to aphorisms</a>
-      </div>
+    <footer>
+      <a href="/studio" aria-label="Back to Studio aphorisms" style="color: var(--studio-text-muted); text-decoration: none;">← Back to aphorisms</a>
     </footer>
   </article>
-
-  <style>
-    .about {
-      max-width: 720px;
-      margin: 0 auto;
-    }
-
-    .about-header {
-      margin-bottom: var(--studio-space-16);
-      padding-bottom: var(--studio-space-8);
-      border-bottom: 1px solid var(--studio-border);
-      opacity: 0;
-      animation: fadeIn var(--studio-duration-slow) var(--studio-ease-out) forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .about-title {
-      font-family: var(--studio-font-sans);
-      font-size: var(--studio-text-4xl);
-      font-weight: 600;
-      letter-spacing: var(--studio-tracking-tight);
-      line-height: var(--studio-leading-tight);
-      color: var(--studio-text-primary);
-      margin-bottom: var(--studio-space-4);
-    }
-
-    .about-subtitle {
-      font-size: var(--studio-text-xl);
-      color: var(--studio-text-muted);
-      font-style: italic;
-    }
-
-    .about-content {
-      opacity: 0;
-      animation: fadeIn var(--studio-duration-slow) var(--studio-ease-out) 0.2s forwards;
-    }
-
-    .about-content section {
-      margin-bottom: var(--studio-space-16);
-    }
-
-    .about-content section:last-of-type {
-      margin-bottom: var(--studio-space-12);
-    }
-
-    .about-footer {
-      margin-top: var(--studio-space-16);
-      padding-top: var(--studio-space-8);
-      border-top: 1px solid var(--studio-border);
-    }
-
-    .about-back-link {
-      font-family: var(--studio-font-sans);
-      font-size: var(--studio-text-sm);
-      color: var(--studio-text-muted);
-      text-decoration: none;
-      letter-spacing: var(--studio-tracking-wide);
-      transition: color var(--studio-duration-normal) var(--studio-ease-out);
-      display: inline-flex;
-      align-items: center;
-      gap: var(--studio-space-2);
-      border: none;
-    }
-
-    .about-back-link:hover {
-      color: var(--studio-text-primary);
-    }
-
-    @media (max-width: 768px) {
-      .about-title { font-size: var(--studio-text-3xl); }
-      .about-subtitle { font-size: var(--studio-text-lg); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .about-header, .about-content { animation: none; opacity: 1; }
-    }
-  </style>
 </StudioLayout>
