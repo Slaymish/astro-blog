@@ -54,7 +54,7 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
 <style>
   .def-popover-wrapper {
     position: relative;
-    display: inline-block;
+    display: inline;
   }
 
   .def-trigger {
@@ -62,7 +62,7 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
     border: none;
     color: var(--studio-text-primary);
     font: inherit;
-    padding: 0 0.125rem;
+    padding: 0;
     cursor: pointer;
     border-bottom: 1px dotted var(--studio-accent-dim);
     transition: color var(--studio-duration-fast) var(--studio-ease-out),
@@ -108,6 +108,48 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
   }
   .def-popover-wrapper[data-placement="side"] .def-panel.is-visible {
     transform: translateX(0);
+  }
+
+  /* Caret arrow (uses ::before for border and ::after for fill) */
+  .def-panel::before,
+  .def-panel::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  /* Below placement: arrow pointing up */
+  .def-popover-wrapper[data-placement="below"] .def-panel::before {
+    top: -8px;
+    left: var(--caret-left, 16px);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid var(--studio-border);
+  }
+  .def-popover-wrapper[data-placement="below"] .def-panel::after {
+    top: -7px;
+    left: var(--caret-left, 16px);
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid var(--studio-bg-secondary);
+  }
+
+  /* Side placement: arrow pointing left */
+  .def-popover-wrapper[data-placement="side"] .def-panel::before {
+    left: -8px;
+    top: var(--caret-top, 12px);
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid var(--studio-border);
+  }
+  .def-popover-wrapper[data-placement="side"] .def-panel::after {
+    left: -7px;
+    top: var(--caret-top, 12px);
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-right: 7px solid var(--studio-bg-secondary);
   }
 
   .def-title {

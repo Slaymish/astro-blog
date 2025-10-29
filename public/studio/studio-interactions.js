@@ -91,6 +91,7 @@
       void panel.offsetWidth;
       panel.classList.add('is-visible');
       trigger.setAttribute('aria-expanded', 'true');
+      updateCaret();
     }
 
     function closePanel() {
@@ -144,6 +145,25 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') closePanel();
     });
+
+    function updateCaret() {
+      if (panel.hasAttribute('hidden')) return;
+      const placement = root.getAttribute('data-placement');
+      const tRect = trigger.getBoundingClientRect();
+      const pRect = panel.getBoundingClientRect();
+      if (placement === 'below') {
+        let left = (tRect.left + tRect.width / 2) - pRect.left;
+        left = Math.max(10, Math.min(left, pRect.width - 10));
+        panel.style.setProperty('--caret-left', left + 'px');
+      } else if (placement === 'side') {
+        let top = (tRect.top + tRect.height / 2) - pRect.top;
+        top = Math.max(10, Math.min(top, pRect.height - 10));
+        panel.style.setProperty('--caret-top', top + 'px');
+      }
+    }
+
+    // Reposition caret on resize
+    window.addEventListener('resize', updateCaret, { passive: true });
   }
 
   function initFootnotes() {
