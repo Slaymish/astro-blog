@@ -36,23 +36,39 @@ import StudioLayout from '../../studio/StudioLayout.astro';
 
       <section>
         <h2>Interaction Vocabulary</h2>
-        <p>Studio essays use a small set of interactive patterns:</p>
+        <p>Studio essays use a small set of simple, focused components:</p>
         <ul>
           <li>
-            <strong>Margin notes:</strong> appear on hover (desktop) or inline (mobile). For side thoughts that do not belong in the main flow.
+            <strong>MarginNote</strong>: shows side notes in the margin on desktop, inline on mobile. Good for quick asides.
           </li>
           <li>
-            <strong>Footnotes:</strong> expand inline on click. Preserve reading flow while adding context.
+            <strong>Footnote</strong>: expands inline on click. Adds context without sending the reader away.
           </li>
           <li>
-            <strong>Pull quotes:</strong> mark key ideas. Used sparingly to signal milestones.
+            <strong>PullQuote</strong>: surfaces a key line. Align left, center, or right; normal or large size.
           </li>
           <li>
-            <strong>Interactive blocks:</strong> custom visuals that illustrate concepts. Only when static text is not enough.
+            <strong>DefinitionPopover</strong>: click a term to see a short definition. Places itself to the side when there is room, or below on smaller screens. Closes on outside click or Escape. A small caret points back to the term.
           </li>
           <li>
-            <strong>Ambient audio:</strong> optional and muted by default. Builds atmosphere without demanding attention.
+            <strong>ClaimCounter</strong>: two buttons that toggle between a claim and a counterexample. Keeps the comparison tight.
           </li>
+          <li>
+            <strong>DialecticTabs</strong>: three tabs for thesis, antithesis, and synthesis. Arrow keys move between them.
+          </li>
+          <li>
+            <strong>AudioPlayer</strong>: optional and off by default. Sits at the bottom right. Play or pause with one click. A volume slider lets you set the level.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Accessibility and motion</h2>
+        <ul>
+          <li>Tabs are keyboard accessible; Left and Right switch between them.</li>
+          <li>Popovers and footnotes close on Escape and outside click.</li>
+          <li>Focus styles are visible and consistent.</li>
+          <li>Prefers reduced motion is respected; animations calm down when requested.</li>
         </ul>
       </section>
 
