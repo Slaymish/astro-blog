@@ -8,19 +8,15 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import StudioLayout from '../../studio/StudioLayout.astro';
 import AudioPlayer from '../../studio/components/AudioPlayer.astro';
 
-export async function getStaticPaths() {
-  const essays = await getCollection('studio');
-  return essays.map(essay => ({
-    params: { slug: essay.slug },
-    props: { essay },
-  }));
-}
+// In SSR (Netlify adapter), getStaticPaths is ignored for dynamic routes.
+// Resolve the essay at request time using the slug param.
+const { slug } = Astro.params;
+const allEssays = await getCollection('studio');
+const essay = allEssays.find((e) => e.slug === slug) as CollectionEntry<'studio'> | undefined;
 
-interface Props {
-  essay: CollectionEntry<'studio'>;
+if (!essay) {
+  return new Response('Not found', { status: 404 });
 }
-
-const { essay } = Astro.props;
 
 // Render MDX for type: 'content' collections
 const { Content } = await essay.render();
