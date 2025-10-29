@@ -76,6 +76,7 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
 
   .def-panel {
     position: absolute;
+    display: block;
     min-width: 260px;
     max-width: 360px;
     background: var(--studio-bg-secondary);
@@ -93,8 +94,6 @@ const popId = id || `def-${Math.random().toString(36).slice(2, 10)}`;
     pointer-events: none;
   }
 
-  /* default hidden still occupies flow as absolute; allow transitions */
-  .def-panel[hidden] { display: block; }
   .def-panel.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
   /* Placement logic */
