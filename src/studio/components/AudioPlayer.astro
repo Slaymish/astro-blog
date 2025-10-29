@@ -7,12 +7,13 @@
 interface Props {
   src: string;
   title?: string;
+  initialVolume?: number; // 0.0 - 1.0
 }
 
-const { src, title = 'Ambient audio' } = Astro.props;
+const { src, title = 'Essay ambience', initialVolume = 0.6 } = Astro.props;
 ---
 
-<div class="audio-player">
+<div class="audio-player" data-initial-volume={String(initialVolume)}>
   <audio 
     class="audio-element" 
     src={src} 
@@ -32,6 +33,20 @@ const { src, title = 'Ambient audio' } = Astro.props;
     <span class="audio-label">{title}</span>
   </button>
   
+  <label class="audio-volume-wrap" aria-label="Volume">
+    <input 
+      type="range" 
+      class="audio-volume" 
+      min="0" 
+      max="1" 
+      step="0.01" 
+      value={String(initialVolume)}
+      aria-valuemin="0" 
+      aria-valuemax="1"
+      aria-valuenow={String(initialVolume)}
+    />
+  </label>
+  
   <div class="audio-visualizer" aria-hidden="true">
     <span class="audio-bar"></span>
     <span class="audio-bar"></span>
@@ -45,31 +60,52 @@ const { src, title = 'Ambient audio' } = Astro.props;
       const players = document.querySelectorAll('.audio-player');
 
       players.forEach((playerEl) => {
-        const audio = playerEl.querySelector('.audio-element') as HTMLAudioElement;
-        const toggle = playerEl.querySelector('.audio-toggle') as HTMLButtonElement;
-        const visualizer = playerEl.querySelector('.audio-visualizer') as HTMLElement;
+        const audio = playerEl.querySelector('.audio-element');
+        const toggle = playerEl.querySelector('.audio-toggle');
+        const visualizer = playerEl.querySelector('.audio-visualizer');
+        const volume = playerEl.querySelector('.audio-volume');
+        if (!(audio instanceof HTMLAudioElement) || !(toggle instanceof HTMLButtonElement)) return;
 
-        if (!audio || !toggle) return;
+        // Set initial volume from data attribute or input value
+  const initial = parseFloat(playerEl.getAttribute('data-initial-volume') || (volume instanceof HTMLInputElement ? volume.value : '') || '0.6');
+        if (!Number.isNaN(initial)) {
+          audio.volume = Math.min(1, Math.max(0, initial));
+          if (volume instanceof HTMLInputElement) {
+            volume.value = String(audio.volume);
+            volume.setAttribute('aria-valuenow', String(audio.volume));
+          }
+        }
 
         toggle.addEventListener('click', () => {
           if (audio.paused) {
             audio.play();
             toggle.dataset.state = 'playing';
             toggle.setAttribute('aria-pressed', 'true');
-            visualizer?.classList.add('is-active');
+            if (visualizer) visualizer.classList.add('is-active');
           } else {
             audio.pause();
             toggle.dataset.state = 'paused';
             toggle.setAttribute('aria-pressed', 'false');
-            visualizer?.classList.remove('is-active');
+            if (visualizer) visualizer.classList.remove('is-active');
           }
         });
+
+        // Volume input
+        if (volume instanceof HTMLInputElement) {
+          volume.addEventListener('input', () => {
+            const v = parseFloat(volume.value);
+            if (!Number.isNaN(v)) {
+              audio.volume = Math.min(1, Math.max(0, v));
+              volume.setAttribute('aria-valuenow', String(audio.volume));
+            }
+          });
+        }
 
         // Handle audio end
         audio.addEventListener('ended', () => {
           toggle.dataset.state = 'paused';
           toggle.setAttribute('aria-pressed', 'false');
-          visualizer?.classList.remove('is-active');
+          if (visualizer) visualizer.classList.remove('is-active');
         });
       });
     }
@@ -163,6 +199,42 @@ const { src, title = 'Ambient audio' } = Astro.props;
     letter-spacing: var(--studio-tracking-wide);
   }
 
+  .audio-volume-wrap {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+  }
+
+  .audio-volume {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 110px;
+    height: 4px;
+    background: var(--studio-bg-tertiary);
+    border-radius: 999px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .audio-volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--studio-accent);
+    border: 1px solid var(--studio-border);
+    margin-top: -4px; /* center over track */
+  }
+
+  .audio-volume::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--studio-accent);
+    border: 1px solid var(--studio-border);
+  }
+
   .audio-visualizer {
     display: flex;
     align-items: center;
@@ -213,6 +285,10 @@ const { src, title = 'Ambient audio' } = Astro.props;
 
     .audio-label {
       display: none;
+    }
+
+    .audio-volume {
+      width: 80px;
     }
   }
 
