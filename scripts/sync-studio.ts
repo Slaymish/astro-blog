@@ -88,38 +88,32 @@ async function syncStudioAphorisms() {
       if (tags.length > 0) {
         console.log(`🏷️  Processing ${tags.length} tags for: ${title}`);
 
-        for (const tagName of tags) {
-          const tagSlug = createSlug(tagName);
+        // Batch upsert all tags at once
+        const tagRecords = tags.map((tagName: string) => ({
+          name: tagName,
+          slug: createSlug(tagName),
+        }));
 
-          const { data: tagData, error: tagError } = await supabase
-            .from('studio_tags')
-            .upsert(
-              {
-                name: tagName,
-                slug: tagSlug,
-              },
-              { onConflict: 'slug' }
-            )
-            .select()
-            .single();
+        const { data: tagDataArray, error: tagError } = await supabase
+          .from('studio_tags')
+          .upsert(tagRecords, { onConflict: 'slug' })
+          .select();
 
-          if (tagError) {
-            console.error(`❌ Error creating tag "${tagName}":`, tagError);
-            continue;
-          }
+        if (tagError) {
+          console.error(`❌ Error creating tags for "${title}":`, tagError);
+        } else if (tagDataArray) {
+          // Batch upsert all aphorism-tag links at once
+          const linkRecords = tagDataArray.map((tag: { id: number }) => ({
+            aphorism_id: aphorismData.id,
+            tag_id: tag.id,
+          }));
 
           const { error: linkError } = await supabase
             .from('studio_aphorism_tags')
-            .upsert(
-              {
-                aphorism_id: aphorismData.id,
-                tag_id: tagData.id,
-              },
-              { onConflict: 'aphorism_id,tag_id' }
-            );
+            .upsert(linkRecords, { onConflict: 'aphorism_id,tag_id' });
 
           if (linkError) {
-            console.error(`❌ Error linking tag "${tagName}" to aphorism:`, linkError);
+            console.error(`❌ Error linking tags to aphorism "${title}":`, linkError);
           }
         }
       }

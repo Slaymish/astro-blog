@@ -6,8 +6,8 @@ const updateFileReferences = (filePath) => {
     let content = fs.readFileSync(filePath, 'utf8');
     const originalContent = content;
     
-    // Update various PNG reference patterns
-    content = content.replace(/\.webp/g, '.webp');
+    // Update PNG reference patterns to WebP
+    content = content.replace(/\.png(?=['"\s\)])/g, '.webp');
     
     if (content !== originalContent) {
       fs.writeFileSync(filePath, content);
