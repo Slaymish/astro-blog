@@ -75,7 +75,8 @@ function extractTableOfContents(markdown: string, html?: string): TocItem[] {
         .replace(/-{2,}/g, '-')
         .replace(/^-|-$/g, '');
 
-      if (id) {
+      // Regex already constrains to h2-h4, but add explicit check for consistency
+      if (level >= 2 && level <= 4 && id) {
         toc.push({ id, text, level });
       }
     }

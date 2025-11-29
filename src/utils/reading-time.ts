@@ -4,6 +4,9 @@ interface ReadingTimeResult {
   text: string;
 }
 
+// Set for O(1) lookups of markdown syntax characters
+const MARKDOWN_CHARS = new Set(['#', '*', '`', '[', ']', '(', ')']);
+
 export function calculateReadingTime(content: string): ReadingTimeResult {
   // Single-pass word counting - more efficient than chained replace + split
   let words = 0;
@@ -28,8 +31,8 @@ export function calculateReadingTime(content: string): ReadingTimeResult {
     }
     if (inTag) continue;
     
-    // Skip markdown syntax characters
-    if (char === '#' || char === '*' || char === '`' || char === '[' || char === ']' || char === '(' || char === ')') {
+    // Skip markdown syntax characters using Set for O(1) lookup
+    if (MARKDOWN_CHARS.has(char)) {
       continue;
     }
     
