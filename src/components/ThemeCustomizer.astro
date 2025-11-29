@@ -489,16 +489,37 @@ class ThemeCustomizer {
   }
 
   setFontFamily(family: string) {
-    const fontMappings: Record<string, { heading: string; body: string }> = {
-      modern: { heading: 'Playfair Display', body: 'Inter' },
-      classic: { heading: 'Georgia', body: 'Arial' },
-      minimal: { heading: 'system-ui', body: 'system-ui' },
-      editorial: { heading: 'Crimson Text', body: 'Source Sans Pro' },
-      tech: { heading: 'Inter', body: 'JetBrains Mono' },
-      creative: { heading: 'Merriweather', body: 'Open Sans' }
+    const fontMappings: Record<string, { heading: string; body: string; googleFonts?: string }> = {
+      modern: { heading: 'Playfair Display', body: 'Inter' }, // Already loaded
+      classic: { heading: 'Georgia', body: 'Arial' }, // System fonts
+      minimal: { heading: 'system-ui', body: 'system-ui' }, // System fonts
+      editorial: { 
+        heading: 'Crimson Text', 
+        body: 'Source Sans Pro',
+        googleFonts: 'family=Crimson+Text:wght@400;600&family=Source+Sans+Pro:wght@400;600'
+      },
+      tech: { heading: 'Inter', body: 'JetBrains Mono' }, // Already loaded
+      creative: { 
+        heading: 'Merriweather', 
+        body: 'Open Sans',
+        googleFonts: 'family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600'
+      }
     };
 
     const fonts = fontMappings[family] || fontMappings.classic;
+    
+    // Dynamically load Google Fonts if needed
+    if (fonts.googleFonts) {
+      const linkId = `google-font-${family}`;
+      if (!document.getElementById(linkId)) {
+        const link = document.createElement('link');
+        link.id = linkId;
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?${fonts.googleFonts}&display=swap`;
+        document.head.appendChild(link);
+      }
+    }
+    
     document.documentElement.style.setProperty('--font-heading', fonts.heading);
     document.documentElement.style.setProperty('--font-body', fonts.body);
     

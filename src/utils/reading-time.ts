@@ -5,14 +5,52 @@ interface ReadingTimeResult {
 }
 
 export function calculateReadingTime(content: string): ReadingTimeResult {
-  // Remove markdown syntax and HTML tags
-  const cleanText = content
-    .replace(/[#*`\[\]()]/g, '') // Remove markdown syntax
-    .replace(/<[^>]*>/g, '') // Remove HTML tags
-    .replace(/\s+/g, ' ') // Normalize whitespace
-    .trim();
+  // Single-pass word counting - more efficient than chained replace + split
+  let words = 0;
+  let inWord = false;
+  let inTag = false;
+  
+  for (let i = 0; i < content.length; i++) {
+    const char = content[i];
+    
+    // Skip HTML tags
+    if (char === '<') {
+      inTag = true;
+      if (inWord) {
+        words++;
+        inWord = false;
+      }
+      continue;
+    }
+    if (char === '>') {
+      inTag = false;
+      continue;
+    }
+    if (inTag) continue;
+    
+    // Skip markdown syntax characters
+    if (char === '#' || char === '*' || char === '`' || char === '[' || char === ']' || char === '(' || char === ')') {
+      continue;
+    }
+    
+    // Check if character is whitespace
+    const isWhitespace = char === ' ' || char === '\n' || char === '\t' || char === '\r';
+    
+    if (isWhitespace) {
+      if (inWord) {
+        words++;
+        inWord = false;
+      }
+    } else {
+      inWord = true;
+    }
+  }
+  
+  // Count last word if content doesn't end with whitespace
+  if (inWord) {
+    words++;
+  }
 
-  const words = cleanText.split(' ').filter(word => word.length > 0).length;
   const wordsPerMinute = 200; // Average reading speed
   const minutes = Math.ceil(words / wordsPerMinute);
 

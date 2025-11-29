@@ -8,8 +8,10 @@ const convertPngToWebp = async (inputPath, outputPath) => {
       .webp({ quality: 85 })
       .toFile(outputPath);
     console.log(`Converted: ${inputPath} → ${outputPath}`);
+    return true;
   } catch (error) {
     console.error(`Error converting ${inputPath}:`, error);
+    return false;
   }
 };
 
@@ -22,7 +24,7 @@ const findPngFiles = (dir, pngFiles = []) => {
     
     if (stat.isDirectory() && !file.startsWith('.') && file !== 'node_modules') {
       findPngFiles(filePath, pngFiles);
-    } else if (file.toLowerCase().endsWith('.webp')) {
+    } else if (file.toLowerCase().endsWith('.png')) {
       pngFiles.push(filePath);
     }
   }
@@ -36,16 +38,22 @@ const main = async () => {
   
   console.log(`Found ${pngFiles.length} PNG files to convert`);
   
-  for (const pngFile of pngFiles) {
-    const webpFile = pngFile.replace(/\.webp$/i, '.webp');
-    await convertPngToWebp(pngFile, webpFile);
-    
-    // Optionally remove the original PNG file
-    // fs.unlinkSync(pngFile);
-    // console.log(`Removed: ${pngFile}`);
+  // Process files in parallel batches for better performance
+  const batchSize = 5;
+  let converted = 0;
+  
+  for (let i = 0; i < pngFiles.length; i += batchSize) {
+    const batch = pngFiles.slice(i, i + batchSize);
+    const results = await Promise.all(
+      batch.map(pngFile => {
+        const webpFile = pngFile.replace(/\.png$/i, '.webp');
+        return convertPngToWebp(pngFile, webpFile);
+      })
+    );
+    converted += results.filter(Boolean).length;
   }
   
-  console.log('Conversion complete!');
+  console.log(`Conversion complete! Successfully converted ${converted}/${pngFiles.length} files.`);
 };
 
 main().catch(console.error);
