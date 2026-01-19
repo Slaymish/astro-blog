@@ -64,6 +64,16 @@ const sortedReports = reports
     new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
   );
 
+const contentPosts = await getCollection('posts') as CollectionEntry<'posts'>[];
+const sortedContentPosts = contentPosts
+  .filter(p => !p.data.draft)
+  .sort((a, b) =>
+    new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+  );
+
+const hasSupabasePosts = !postsError && posts.length > 0;
+const hasContentPosts = sortedContentPosts.length > 0;
+
 const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, mathematics, and technology. Discover insights on programming, machine learning, algorithms, and philosophy.";
 ---
 
@@ -187,19 +197,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     <h2 id="recent-posts-heading" class="mb-8 text-3xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
       Recent Posts
     </h2>
-    {postsError ? (
-      <div class="text-center py-10 fade-in">
-        <h3 class="text-xl font-bold mb-3" style="color: var(--color-text-primary);">Posts temporarily unavailable</h3>
-        <p class="text-lg" style="color: var(--color-text-muted); max-width: 32rem; margin: 0 auto;">
-          {postsError} Please check back soon.
-        </p>
-      </div>
-    ) : posts.length === 0 ? (
-      <div class="text-center py-10 fade-in">
-        <h3 class="text-xl font-bold mb-3" style="color: var(--color-text-primary);">No posts yet</h3>
-        <p class="text-lg" style="color: var(--color-text-muted);">New writing is on the way.</p>
-      </div>
-    ) : (
+    {hasSupabasePosts ? (
       <div class="space-y-8" role="list">
         {posts.map((post, index) => (
           <article 
@@ -274,6 +272,89 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
             )}
           </article>
         ))}
+      </div>
+    ) : hasContentPosts ? (
+      <div class="space-y-8" role="list">
+        {sortedContentPosts.map((post, index) => (
+          <article 
+            role="listitem"
+            class={`pb-8 slide-in card-hover`}
+            style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
+            itemscope 
+            itemtype="http://schema.org/BlogPosting"
+          >
+            <header>
+              <h2 class="text-2xl font-bold mb-2">
+                <a 
+                  href={`/posts/${post.id.replace(/\.(md|mdx)$/, '')}`} 
+                  style="color: var(--color-text-primary);" 
+                  class="hover:underline transition-colors"
+                  itemprop="headline"
+                >
+                  {post.data.title}
+                </a>
+              </h2>
+            </header>
+            
+            <div class="mb-4" style="color: var(--color-text-muted);">
+              <time 
+                datetime={new Date(post.data.pubDate).toISOString()}
+                itemprop="datePublished"
+              >
+                {new Date(post.data.pubDate).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric"
+                })}
+              </time>
+              <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
+                <span itemprop="name">Hamish Burke</span>
+              </span>
+            </div>
+            
+            <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
+              {createPreview(post.body ?? "", 200)}
+            </div>
+            
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2" role="list" aria-label="Post tags">
+                {post.data.tags.map((tag, index) => {
+                  // Cycle through different tag colors for visual variety
+                  const colorVariant = index % 3;
+                  let bgColor = 'var(--color-tag-bg)';
+                  let textColor = 'var(--color-tag-text)';
+                  
+                  if (colorVariant === 1) {
+                    bgColor = 'var(--color-tag-accent1-bg)';
+                    textColor = 'var(--color-tag-accent1-text)';
+                  } else if (colorVariant === 2) {
+                    bgColor = 'var(--color-tag-accent2-bg)';
+                    textColor = 'var(--color-tag-accent2-text)';
+                  }
+                  
+                  return (
+                    <a
+                      role="listitem"
+                      href={`/tags/${createSlug(tag)}`}
+                      class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
+                      style={`background-color: ${bgColor}; color: ${textColor};`}
+                      itemprop="keywords"
+                    >
+                      {tag}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-10 fade-in">
+        <h3 class="text-xl font-bold mb-3" style="color: var(--color-text-primary);">No posts yet</h3>
+        <p class="text-lg" style="color: var(--color-text-muted);">
+          {postsError ? `${postsError} Please check back soon.` : "New writing is on the way."}
+        </p>
       </div>
     )}
   </section>

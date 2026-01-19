@@ -1,4 +1,5 @@
 ---
+import { getCollection, getEntry, render, type CollectionEntry } from "astro:content";
 import Layout from "../../components/Layout.astro";
 import Breadcrumb from "../../components/Breadcrumb.astro";
 import TableOfContents from "../../components/TableOfContents.astro";
@@ -34,11 +35,23 @@ const processor = unified()
   .use(rehypeStringify)
 
 
-export const prerender = false;
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.(md|mdx)$/, "") },
+  }));
+}
 
 const { slug } = Astro.params;
 
 let post: PostWithTags | null = null;
+let contentPost: CollectionEntry<"posts"> | null = null;
+let htmlContent = "";
+let markdownContent = "";
+let renderedContent: any = null;
+let postSlug = "";
 
 if (supabase && slug) {
   const { data } = await supabase
@@ -59,44 +72,80 @@ if (supabase && slug) {
   post = data as PostWithTags | null;
 }
 
-if (!post) {
-  return Astro.redirect("/404");
+if (!post && slug) {
+  contentPost = await getEntry("posts", slug);
 }
 
-const file = await processor.process(post.content)
-const htmlContent = String(file)
+if (!post) {
+  if (!contentPost) {
+    return Astro.redirect("/404");
+  }
+}
+
+if (post) {
+  const file = await processor.process(post.content);
+  htmlContent = String(file);
+  markdownContent = post.content;
+  postSlug = post.slug;
+} else if (contentPost) {
+  const { Content } = await render(contentPost);
+  renderedContent = Content;
+  markdownContent = contentPost.body ?? "";
+  postSlug = contentPost.id.replace(/\.(md|mdx)$/, "");
+}
 
 // Calculate reading time
-const readingTime = calculateReadingTime(post.content);
+const readingTime = calculateReadingTime(markdownContent);
 
 // Extract description from content (first 160 characters, cleaned)
-const textContent = post.content.replace(/[#*`\[\]]/g, '').trim();
+const textContent = markdownContent.replace(/[#*`\[\]]/g, '').trim();
 const description = textContent.length > 160 
   ? textContent.substring(0, 157) + '...' 
   : textContent;
 
 // Format dates for meta tags
-const publishedTime = new Date(post.created_at).toISOString();
-const modifiedTime = post.updated_at !== post.created_at 
-  ? new Date(post.updated_at).toISOString() 
+const publishedTime = post
+  ? new Date(post.created_at).toISOString()
+  : new Date(contentPost?.data.pubDate ?? Date.now()).toISOString();
+const modifiedTime = post && post.updated_at !== post.created_at
+  ? new Date(post.updated_at).toISOString()
   : publishedTime;
 
 // Get tag names
-const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
+const tagNames = post
+  ? post.post_tags?.map((pt: any) => pt.tags.name) || []
+  : contentPost?.data.tags || [];
+
+const tagLinks = post
+  ? post.post_tags?.map((pt: any) => ({
+      name: pt.tags.name,
+      slug: pt.tags.slug ?? createSlug(pt.tags.name),
+    })) || []
+  : (contentPost?.data.tags || []).map((tag) => ({
+      name: tag,
+      slug: createSlug(tag),
+    }));
+
+const postTitle = post?.title ?? contentPost?.data.title ?? "Untitled";
+const postDate = post?.created_at ?? contentPost?.data.pubDate ?? new Date();
+const postDateISO = new Date(postDate).toISOString();
+const postUpdatedISO = post?.updated_at ? new Date(post.updated_at).toISOString() : "";
+const showUpdated = Boolean(post && post.updated_at !== post.created_at);
+const RenderedContent = renderedContent;
 ---
 
 <Layout 
-  title={post.title}
+  title={postTitle}
   description={description}
   article={true}
   publishedTime={publishedTime}
   modifiedTime={modifiedTime}
   tags={tagNames}
-  canonicalURL={`${Astro.url.origin}/posts/${post.slug}`}
+  canonicalURL={`${Astro.url.origin}/posts/${postSlug}`}
 >
   <Breadcrumb items={[
     { name: "Posts", url: "/" },
-    { name: post.title, url: `/posts/${post.slug}` }
+    { name: postTitle, url: `/posts/${postSlug}` }
   ]} />
   
   <article 
@@ -110,15 +159,15 @@ const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
         style="color: var(--color-text-primary);"
         itemprop="headline"
       >
-        {post.title}
+        {postTitle}
       </h1>
       
       <div class="flex items-center gap-4 mb-4" style="color: var(--color-text-muted);">
         <time 
-          datetime={post.created_at}
+          datetime={postDateISO}
           itemprop="datePublished"
         >
-          {new Date(post.created_at).toLocaleDateString("en-US", {
+          {new Date(postDate).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric"
@@ -135,12 +184,12 @@ const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
           {readingTime.text}
         </time>
         
-        {post.updated_at !== post.created_at && (
+        {showUpdated && (
           <>
             <span>•</span>
             <span>
               Updated <time 
-                datetime={post.updated_at}
+                datetime={postUpdatedISO}
                 itemprop="dateModified"
               >
                 {new Date(post.updated_at).toLocaleDateString("en-US", {
@@ -165,9 +214,9 @@ const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
           <span itemprop="url">https://hamishburke.dev</span>
         </span>
       </div>
-      {post.post_tags && post.post_tags.length > 0 && (
+      {tagLinks.length > 0 && (
         <div class="flex flex-wrap gap-2 mb-8" role="list" aria-label="Article tags">
-          {post.post_tags.map((postTag, index) => {
+          {tagLinks.map((tag, index) => {
             // Cycle through different tag colors for visual variety
             const colorVariant = index % 3;
             let bgColor = 'var(--color-tag-bg)';
@@ -184,12 +233,12 @@ const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
             return (
               <a
                 role="listitem"
-                href={`/tags/${postTag.tags.slug ?? createSlug(postTag.tags.name)}`}
+                href={`/tags/${tag.slug}`}
                 class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
                 style={`background-color: ${bgColor}; color: ${textColor};`}
                 itemprop="keywords"
               >
-                {postTag.tags.name}
+                {tag.name}
               </a>
             );
           })}
@@ -197,19 +246,27 @@ const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
       )}
     </header>
     
-    <TableOfContents content={post.content} htmlContent={htmlContent} />
+    <TableOfContents content={markdownContent} htmlContent={htmlContent || undefined} />
     
-    <div 
-      class="prose prose-invert max-w-none" 
-      set:html={htmlContent}
-      itemprop="articleBody"
-    >
-    </div>
+    {RenderedContent ? (
+      <div class="prose prose-invert max-w-none" itemprop="articleBody">
+        <RenderedContent />
+      </div>
+    ) : (
+      <div 
+        class="prose prose-invert max-w-none" 
+        set:html={htmlContent}
+        itemprop="articleBody"
+      >
+      </div>
+    )}
     
-    <RelatedPosts 
-      currentPostId={post.id}
-      currentPostTags={tagNames}
-    />
+    {post && (
+      <RelatedPosts 
+        currentPostId={post.id}
+        currentPostTags={tagNames}
+      />
+    )}
     
     <footer class="mt-12 pt-8" style="border-top: 1px solid var(--color-border-secondary);">
       <nav aria-label="Post navigation">

@@ -43,4 +43,4 @@ With everything normalised in the database (I use Neon since it is cheap and doe
 
 If you want to have a look at the current iteration, it is live at https://health.hamishburke.dev. Feel free to sign in and try it.
 
-Or check out the code on GitHub: https://github.com/Slaymish/HealthAgent
+Or check out the code on GitHub: https://github.com/Slaymish/HealthAgent (if you find any bugs, please open an issue!).

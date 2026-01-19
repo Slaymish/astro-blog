@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { getCollection } from 'astro:content';
 import { supabase } from '../utils/database';
 
 export const GET: APIRoute = async () => {
@@ -13,6 +14,17 @@ export const GET: APIRoute = async () => {
       .order('created_at', { ascending: false });
     
     posts = data || [];
+  }
+
+  if (posts.length === 0) {
+    const contentPosts = await getCollection('posts');
+    posts = contentPosts
+      .filter(post => !post.data.draft)
+      .map(post => ({
+        slug: post.id.replace(/\.(md|mdx)$/, ''),
+        created_at: post.data.pubDate,
+        updated_at: post.data.pubDate,
+      }));
   }
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

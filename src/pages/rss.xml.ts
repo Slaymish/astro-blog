@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { getCollection } from 'astro:content';
 import { supabase } from '../utils/database';
 
 export const GET: APIRoute = async () => {
@@ -25,6 +26,21 @@ export const GET: APIRoute = async () => {
       .limit(50);
     
     posts = data || [];
+  }
+
+  if (posts.length === 0) {
+    const contentPosts = await getCollection('posts');
+    posts = contentPosts
+      .filter(post => !post.data.draft)
+      .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+      .slice(0, 50)
+      .map(post => ({
+        title: post.data.title,
+        slug: post.id.replace(/\.(md|mdx)$/, ''),
+        content: post.body ?? '',
+        created_at: post.data.pubDate,
+        post_tags: (post.data.tags || []).map(tag => ({ tags: { name: tag } })),
+      }));
   }
 
   const rssXml = `<?xml version="1.0" encoding="UTF-8"?>
