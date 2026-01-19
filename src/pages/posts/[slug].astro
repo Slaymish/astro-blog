@@ -42,7 +42,7 @@ export async function getStaticPaths() {
   return posts.flatMap((post) => {
     const fileSlug = post.id.replace(/\.(md|mdx)$/, "");
     const titleSlug = createSlug(post.data.title);
-    const slugs = new Set([fileSlug, post.slug, titleSlug].filter(Boolean));
+    const slugs = new Set([fileSlug, titleSlug].filter(Boolean));
     return Array.from(slugs).map((slug) => ({
       params: { slug },
     }));
@@ -84,7 +84,7 @@ if (!post && slug) {
     contentPosts.find((entry) => {
       const fileSlug = entry.id.replace(/\.(md|mdx)$/, "");
       const titleSlug = createSlug(entry.data.title);
-      return slug === fileSlug || slug === entry.slug || slug === titleSlug;
+      return slug === fileSlug || slug === titleSlug;
     }) ?? null;
 }
 
