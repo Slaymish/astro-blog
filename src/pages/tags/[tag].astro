@@ -1,6 +1,7 @@
 ---
 import Layout from "../../components/Layout.astro";
 import { getCollection } from 'astro:content';
+import { createSlug } from "../../utils/slug";
 
 export const prerender = true;
 
@@ -12,11 +13,11 @@ export async function getStaticPaths() {
   const allTags = new Set<string>();
   
   posts.forEach(post => {
-    post.data.tags?.forEach(tag => allTags.add(tag.toLowerCase()));
+    post.data.tags?.forEach(tag => allTags.add(createSlug(tag)));
   });
   
   reports.forEach(report => {
-    report.data.tags?.forEach(tag => allTags.add(tag.toLowerCase()));
+    report.data.tags?.forEach(tag => allTags.add(createSlug(tag)));
   });
   
   return Array.from(allTags).map(tag => ({
@@ -32,17 +33,22 @@ const allReports = await getCollection('reports');
 
 // Filter by tag (case-insensitive)
 const posts = allPosts.filter(post => 
-  post.data.tags?.some(t => t.toLowerCase() === tag?.toLowerCase())
+  post.data.tags?.some(t => createSlug(t) === tag)
 ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const reports = allReports.filter(report => 
-  report.data.tags?.some(t => t.toLowerCase() === tag?.toLowerCase())
+  report.data.tags?.some(t => createSlug(t) === tag)
 ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const totalItems = posts.length + reports.length;
 
 // Get the display name for the tag (use the original casing from the first occurrence)
-const displayTag = tag || '';
+const displayTag = (
+  posts.flatMap(post => post.data.tags ?? []).find(t => createSlug(t) === tag) ??
+  reports.flatMap(report => report.data.tags ?? []).find(t => createSlug(t) === tag) ??
+  tag ??
+  ''
+);
 ---
 
 <Layout title={`Content tagged "${displayTag}"`}>
@@ -108,7 +114,7 @@ const displayTag = tag || '';
                     
                     return (
                       <a
-                        href={`/tags/${t.toLowerCase()}`}
+                        href={`/tags/${createSlug(t)}`}
                         class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
                         style={`background-color: ${bgColor}; color: ${textColor};`}
                       >
@@ -173,7 +179,7 @@ const displayTag = tag || '';
                     
                     return (
                       <a
-                        href={`/tags/${t.toLowerCase()}`}
+                        href={`/tags/${createSlug(t)}`}
                         class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
                         style={`background-color: ${bgColor}; color: ${textColor};`}
                       >

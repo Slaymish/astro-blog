@@ -5,6 +5,7 @@ import TableOfContents from "../../components/TableOfContents.astro";
 import RelatedPosts from "../../components/RelatedPosts.astro";
 import { supabase } from "../../utils/database";
 import { calculateReadingTime } from "../../utils/reading-time";
+import { createSlug } from "../../utils/slug";
 import type { PostWithTags } from "../../../supabase/types";
 import rehypeFormat from 'rehype-format'
 import rehypeKatex from 'rehype-katex'
@@ -183,7 +184,7 @@ const tagNames = post.post_tags?.map((pt: any) => pt.tags.name) || [];
             return (
               <a
                 role="listitem"
-                href={`/tags/${postTag.tags.name.toLowerCase()}`}
+                href={`/tags/${postTag.tags.slug ?? createSlug(postTag.tags.name)}`}
                 class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
                 style={`background-color: ${bgColor}; color: ${textColor};`}
                 itemprop="keywords"

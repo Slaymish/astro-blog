@@ -3,6 +3,7 @@ import Layout from "../components/Layout.astro";
 import { supabase } from "../utils/database";
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { PostWithTags } from "../../supabase/types";
+import { createSlug } from "../utils/slug";
 
 export const prerender = true; // Enable prerendering for development
 
@@ -27,12 +28,12 @@ function createPreview(markdown: string, maxLength: number = 200): string {
     : cleanText;
 }
 
-let posts: PostWithTags[] | null = null;
-// let postsError;
+let posts: PostWithTags[] = [];
+let postsError: string | null = null;
 
 // Fetch posts data from Supabase if connection is set up
 if (supabase) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("posts")
     .select(`
       *,
@@ -45,8 +46,13 @@ if (supabase) {
       )
     `)
     .order("created_at", { ascending: false });
-  posts = data as PostWithTags[] | null;
-  // postsError = error;
+  if (error) {
+    postsError = error.message;
+  } else {
+    posts = (data as PostWithTags[] | null) ?? [];
+  }
+} else {
+  postsError = "Database connection unavailable.";
 }
 
 // explicitly type so TS knows slug, data.pubDate, pdfPath, render exist:
@@ -94,205 +100,183 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     </div>
   </section>
 
-  {
-    supabase ? (
-      posts ? (
-        <>
-          <section id="reports" aria-labelledby="reports-heading" class="mb-16 scroll-mt-24">
-            <h1 id="reports-heading" class="mb-8 fade-in text-4xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
-              Reports
-            </h1>
-            <div class="space-y-8" role="list">
-              {sortedReports.map((report, index) => (
-                <article 
-                  role="listitem"
-                  class={`pb-8 slide-in card-hover`}
-                  style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
-                  itemscope 
-                  itemtype="http://schema.org/ScholarlyArticle"
-                >
-                  <header>
-                    <h2 class="text-2xl font-bold mb-2">
-                      <a 
-                        href={`/reports/${report.id.replace(/\.(md|mdx)$/, '')}`}
-                        style="color: var(--color-text-primary);" 
-                        class="hover:underline transition-colors"
-                        itemprop="headline"
-                      >
-                        {report.data.title}
-                      </a>
-                    </h2>
-                  </header>
-                  
-                  <div class="mb-4" style="color: var(--color-text-muted);">
-                    <time 
-                      datetime={new Date(report.data.pubDate).toISOString()}
-                      itemprop="datePublished"
-                    >
-                      {new Date(report.data.pubDate).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                      })}
-                    </time>
-                    <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
-                      <span itemprop="name">Hamish Burke</span>
-                    </span>
-                  </div>
-                  
-                  {report.data.description && (
-                    <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
-                      {report.data.description}
-                    </div>
-                  )}
-                  
-                  {report.data.tags && report.data.tags.length > 0 && (
-                    <div class="flex flex-wrap gap-2" role="list" aria-label="Report tags">
-                      {report.data.tags.map((tag, tagIndex) => {
-                        // Cycle through different tag colors for visual variety
-                        const colorVariant = tagIndex % 3;
-                        let bgColor = 'var(--color-tag-bg)';
-                        let textColor = 'var(--color-tag-text)';
-                        
-                        if (colorVariant === 1) {
-                          bgColor = 'var(--color-tag-accent1-bg)';
-                          textColor = 'var(--color-tag-accent1-text)';
-                        } else if (colorVariant === 2) {
-                          bgColor = 'var(--color-tag-accent2-bg)';
-                          textColor = 'var(--color-tag-accent2-text)';
-                        }
-                        
-                        return (
-                          <a
-                            role="listitem"
-                            href={`/tags/${tag.toLowerCase()}`}
-                            class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-                            style={`background-color: ${bgColor}; color: ${textColor};`}
-                            itemprop="keywords"
-                          >
-                            {tag}
-                          </a>
-                        );
-                      })}
-                    </div>
-                  )}
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section id="posts" aria-labelledby="recent-posts-heading" class="posts-section scroll-mt-24">
-            <h2 id="recent-posts-heading" class="mb-8 text-3xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
-              Recent Posts
+  <section id="reports" aria-labelledby="reports-heading" class="mb-16 scroll-mt-24">
+    <h1 id="reports-heading" class="mb-8 fade-in text-4xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
+      Reports
+    </h1>
+    <div class="space-y-8" role="list">
+      {sortedReports.map((report, index) => (
+        <article 
+          role="listitem"
+          class={`pb-8 slide-in card-hover`}
+          style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
+          itemscope 
+          itemtype="http://schema.org/ScholarlyArticle"
+        >
+          <header>
+            <h2 class="text-2xl font-bold mb-2">
+              <a 
+                href={`/reports/${report.id.replace(/\.(md|mdx)$/, '')}`}
+                style="color: var(--color-text-primary);" 
+                class="hover:underline transition-colors"
+                itemprop="headline"
+              >
+                {report.data.title}
+              </a>
             </h2>
-            <div class="space-y-8" role="list">
-              {posts?.map((post, index) => (
-                <article 
-                  role="listitem"
-                  class={`pb-8 slide-in card-hover`}
-                  style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
-                  itemscope 
-                  itemtype="http://schema.org/BlogPosting"
-                >
-                  <header>
-                    <h2 class="text-2xl font-bold mb-2">
-                      <a 
-                        href={`/posts/${post.slug}`} 
-                        style="color: var(--color-text-primary);" 
-                        class="hover:underline transition-colors"
-                        itemprop="headline"
-                      >
-                        {post.title}
-                      </a>
-                    </h2>
-                  </header>
-                  
-                  <div class="mb-4" style="color: var(--color-text-muted);">
-                    <time 
-                      datetime={post.created_at}
-                      itemprop="datePublished"
-                    >
-                      {new Date(post.created_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                      })}
-                    </time>
-                    <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
-                      <span itemprop="name">Hamish Burke</span>
-                    </span>
-                  </div>
-                  
-                  <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
-                    {createPreview(post.content, 200)}
-                  </div>
-                  
-                  {post.post_tags && post.post_tags.length > 0 && (
-                    <div class="flex flex-wrap gap-2" role="list" aria-label="Post tags">
-                      {post.post_tags.map((postTag, index) => {
-                        // Cycle through different tag colors for visual variety
-                        const colorVariant = index % 3;
-                        let bgColor = 'var(--color-tag-bg)';
-                        let textColor = 'var(--color-tag-text)';
-                        
-                        if (colorVariant === 1) {
-                          bgColor = 'var(--color-tag-accent1-bg)';
-                          textColor = 'var(--color-tag-accent1-text)';
-                        } else if (colorVariant === 2) {
-                          bgColor = 'var(--color-tag-accent2-bg)';
-                          textColor = 'var(--color-tag-accent2-text)';
-                        }
-                        
-                        return (
-                          <a
-                            role="listitem"
-                            href={`/tags/${postTag.tags.name.toLowerCase()}`}
-                            class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-                            style={`background-color: ${bgColor}; color: ${textColor};`}
-                            itemprop="keywords"
-                          >
-                            {postTag.tags.name}
-                          </a>
-                        );
-                      })}
-                    </div>
-                  )}
-                </article>
-              ))}
-            </div>
-          </section>
-        </>
-      ) : (
-        <div class="text-center py-16 fade-in">
-          <div class="mb-6">
-            <svg class="animate-spin h-12 w-12 mx-auto" style="color: var(--color-primary-500);" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+          </header>
+          
+          <div class="mb-4" style="color: var(--color-text-muted);">
+            <time 
+              datetime={new Date(report.data.pubDate).toISOString()}
+              itemprop="datePublished"
+            >
+              {new Date(report.data.pubDate).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+              })}
+            </time>
+            <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
+              <span itemprop="name">Hamish Burke</span>
+            </span>
           </div>
-          <h2 class="text-2xl font-bold mb-4" style="color: var(--color-text-primary);">Loading content...</h2>
-          <p class="text-lg" style="color: var(--color-text-muted);">
-            Fetching the latest posts and reports for you.
-          </p>
-        </div>
-      )
-    ) : (
-      <div class="text-center py-16 fade-in">
-        <div class="mb-6">
-          <svg class="h-16 w-16 mx-auto" style="color: var(--color-text-muted);" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-          </svg>
-        </div>
-        <h2 class="text-2xl font-bold mb-4" style="color: var(--color-text-primary);">Database Connection Unavailable</h2>
-        <p class="text-lg mb-6" style="color: var(--color-text-muted); max-width: 32rem; margin-left: auto; margin-right: auto;">
-          The site is currently running in offline mode. Dynamic content from the database is temporarily unavailable. Please check back soon!
+          
+          {report.data.description && (
+            <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
+              {report.data.description}
+            </div>
+          )}
+          
+          {report.data.tags && report.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2" role="list" aria-label="Report tags">
+              {report.data.tags.map((tag, tagIndex) => {
+                // Cycle through different tag colors for visual variety
+                const colorVariant = tagIndex % 3;
+                let bgColor = 'var(--color-tag-bg)';
+                let textColor = 'var(--color-tag-text)';
+                
+                if (colorVariant === 1) {
+                  bgColor = 'var(--color-tag-accent1-bg)';
+                  textColor = 'var(--color-tag-accent1-text)';
+                } else if (colorVariant === 2) {
+                  bgColor = 'var(--color-tag-accent2-bg)';
+                  textColor = 'var(--color-tag-accent2-text)';
+                }
+                
+                return (
+                  <a
+                    role="listitem"
+                    href={`/tags/${createSlug(tag)}`}
+                    class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
+                    style={`background-color: ${bgColor}; color: ${textColor};`}
+                    itemprop="keywords"
+                  >
+                    {tag}
+                  </a>
+                );
+              })}
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="posts" aria-labelledby="recent-posts-heading" class="posts-section scroll-mt-24">
+    <h2 id="recent-posts-heading" class="mb-8 text-3xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
+      Recent Posts
+    </h2>
+    {postsError ? (
+      <div class="text-center py-10 fade-in">
+        <h3 class="text-xl font-bold mb-3" style="color: var(--color-text-primary);">Posts temporarily unavailable</h3>
+        <p class="text-lg" style="color: var(--color-text-muted); max-width: 32rem; margin: 0 auto;">
+          {postsError} Please check back soon.
         </p>
-        <a href="/" class="cta-button cta-secondary" style="border: 2px solid var(--color-primary-500); color: var(--color-primary-500);">
-          Refresh Page
-        </a>
       </div>
-    )
-  }
+    ) : posts.length === 0 ? (
+      <div class="text-center py-10 fade-in">
+        <h3 class="text-xl font-bold mb-3" style="color: var(--color-text-primary);">No posts yet</h3>
+        <p class="text-lg" style="color: var(--color-text-muted);">New writing is on the way.</p>
+      </div>
+    ) : (
+      <div class="space-y-8" role="list">
+        {posts.map((post, index) => (
+          <article 
+            role="listitem"
+            class={`pb-8 slide-in card-hover`}
+            style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
+            itemscope 
+            itemtype="http://schema.org/BlogPosting"
+          >
+            <header>
+              <h2 class="text-2xl font-bold mb-2">
+                <a 
+                  href={`/posts/${post.slug}`} 
+                  style="color: var(--color-text-primary);" 
+                  class="hover:underline transition-colors"
+                  itemprop="headline"
+                >
+                  {post.title}
+                </a>
+              </h2>
+            </header>
+            
+            <div class="mb-4" style="color: var(--color-text-muted);">
+              <time 
+                datetime={post.created_at}
+                itemprop="datePublished"
+              >
+                {new Date(post.created_at).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric"
+                })}
+              </time>
+              <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
+                <span itemprop="name">Hamish Burke</span>
+              </span>
+            </div>
+            
+            <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
+              {createPreview(post.content, 200)}
+            </div>
+            
+            {post.post_tags && post.post_tags.length > 0 && (
+              <div class="flex flex-wrap gap-2" role="list" aria-label="Post tags">
+                {post.post_tags.map((postTag, index) => {
+                  // Cycle through different tag colors for visual variety
+                  const colorVariant = index % 3;
+                  let bgColor = 'var(--color-tag-bg)';
+                  let textColor = 'var(--color-tag-text)';
+                  
+                  if (colorVariant === 1) {
+                    bgColor = 'var(--color-tag-accent1-bg)';
+                    textColor = 'var(--color-tag-accent1-text)';
+                  } else if (colorVariant === 2) {
+                    bgColor = 'var(--color-tag-accent2-bg)';
+                    textColor = 'var(--color-tag-accent2-text)';
+                  }
+                  
+                  return (
+                    <a
+                      role="listitem"
+                      href={`/tags/${postTag.tags.slug ?? createSlug(postTag.tags.name)}`}
+                      class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
+                      style={`background-color: ${bgColor}; color: ${textColor};`}
+                      itemprop="keywords"
+                    >
+                      {postTag.tags.name}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    )}
+  </section>
 </Layout>
 
 <style>
@@ -329,7 +313,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     background-color: var(--color-primary-500);
     color: white !important;
     transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0.0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 
   .cta-secondary:active {

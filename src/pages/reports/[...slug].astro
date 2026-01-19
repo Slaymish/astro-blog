@@ -4,6 +4,7 @@ import Layout from '../../components/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import PDFViewer from '../../components/PDFViewer.astro';
 import { calculateReadingTime } from '../../utils/reading-time';
+import { createSlug } from '../../utils/slug';
 
 export const prerender = true;
 
@@ -124,7 +125,7 @@ const publishedTime = new Date(data.pubDate).toISOString();
             return (
               <a
                 role="listitem"
-                href={`/tags/${tag.toLowerCase()}`}
+                href={`/tags/${createSlug(tag)}`}
                 class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
                 style={`background-color: ${bgColor}; color: ${textColor};`}
                 itemprop="keywords"
