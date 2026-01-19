@@ -216,6 +216,11 @@ const { src, title = 'Aphorism ambience', initialVolume = 0.6 } = Astro.props;
     cursor: pointer;
   }
 
+  .audio-volume:focus-visible {
+    outline: 2px solid var(--studio-accent);
+    outline-offset: 3px;
+  }
+
   .audio-volume::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;

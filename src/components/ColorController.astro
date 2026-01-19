@@ -511,7 +511,6 @@
 
   details summary {
     list-style: none;
-    outline: none;
   }
 
   details summary::before {
@@ -522,5 +521,11 @@
 
   details[open] summary::before {
     transform: rotate(90deg);
+  }
+
+  details summary:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 </style>

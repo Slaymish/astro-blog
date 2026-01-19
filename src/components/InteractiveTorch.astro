@@ -43,7 +43,7 @@ const catPositions = [
 ---
 
 <!-- Torch positioned as an inline element in header -->
-<div class="torch-header-container relative">
+<div class="torch-header-container relative" aria-hidden="true">
   <!-- Torch icon that can be picked up -->
   <div id="torch" class="torch w-12 h-16 cursor-grab transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
     <img src="/images/flashlight.webp" alt="Torch" class="torch-img" />
@@ -68,23 +68,23 @@ const catPositions = [
 </div>
 
 <!-- Cats positioned as document elements that scroll with the page -->
-<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[0].y}; left: ${catPositions[0].x}; z-index: 1001;`} data-cat-type="orange">
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[0].y}; left: ${catPositions[0].x}; z-index: 1001;`} data-cat-type="orange" aria-hidden="true">
   <img src="/images/cats/cat1.webp" alt="Orange cat" class="hidden-cat-img" />
 </div>
 
-<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[1].y}; left: ${catPositions[1].x}; z-index: 1001;`} data-cat-type="gray">
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[1].y}; left: ${catPositions[1].x}; z-index: 1001;`} data-cat-type="gray" aria-hidden="true">
   <img src="/images/cats/cat2.webp" alt="Gray cat" class="hidden-cat-img" />
 </div>
 
-<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[2].y}; left: ${catPositions[2].x}; z-index: 1001;`} data-cat-type="black">
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[2].y}; left: ${catPositions[2].x}; z-index: 1001;`} data-cat-type="black" aria-hidden="true">
   <img src="/images/cats/cat3.webp" alt="Black cat" class="hidden-cat-img" />
 </div>
 
-<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[3].y}; left: ${catPositions[3].x}; z-index: 1001;`} data-cat-type="white">
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[3].y}; left: ${catPositions[3].x}; z-index: 1001;`} data-cat-type="white" aria-hidden="true">
   <img src="/images/cats/cat4.webp" alt="White cat" class="hidden-cat-img" />
 </div>
 
-<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[4].y}; left: ${catPositions[4].x}; z-index: 1001;`} data-cat-type="brown">
+<div class="hidden-item" data-reveal-distance="80" style={`position: absolute; top: ${catPositions[4].y}; left: ${catPositions[4].x}; z-index: 1001;`} data-cat-type="brown" aria-hidden="true">
   <img src="/images/cats/cat5.webp" alt="Brown cat" class="hidden-cat-img" />
 </div>
 

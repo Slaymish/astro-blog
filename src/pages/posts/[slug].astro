@@ -113,16 +113,17 @@ const modifiedTime = post && post.updated_at !== post.created_at
   : publishedTime;
 
 // Get tag names
-const tagNames = post
+const contentTags = (contentPost?.data.tags ?? []) as string[];
+const tagNames: string[] = post
   ? post.post_tags?.map((pt: any) => pt.tags.name) || []
-  : contentPost?.data.tags || [];
+  : contentTags;
 
-const tagLinks = post
+const tagLinks: Array<{ name: string; slug: string }> = post
   ? post.post_tags?.map((pt: any) => ({
       name: pt.tags.name,
       slug: pt.tags.slug ?? createSlug(pt.tags.name),
     })) || []
-  : (contentPost?.data.tags || []).map((tag) => ({
+  : contentTags.map((tag: string) => ({
       name: tag,
       slug: createSlug(tag),
     }));
