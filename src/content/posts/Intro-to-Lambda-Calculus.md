@@ -1,7 +1,7 @@
 ---
 title: "Intro to Lambda Calculus"
 pubDate: 2025-03-30
-tags: ["math"]
+tags: ["math", "computer-science"]
 featured: false
 draft: false
 author: "Hamish Burke"

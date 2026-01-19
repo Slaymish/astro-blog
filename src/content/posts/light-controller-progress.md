@@ -1,7 +1,7 @@
 ---
 title: "Progress Update: ESP32 Controller for Smart Lighting"
 pubDate: 2025-05-30
-tags: ["tech","hardware"]
+tags: ["hardware", "embedded"]
 featured: false
 draft: false
 author: "Hamish Burke"
@@ -130,4 +130,3 @@ This split means I can dial the knob rapidly and only commit the final value to 
 ## Prototype Photo
 
 ![ESP32 smart lighting controller prototype on breadboard with ring-LED, encoder and joystick](/images/posts/controller-progress.jpg)
-

@@ -1,7 +1,7 @@
 ---
 title: "Using Latent Space for Reasoning: Why Meta's Recurrent-Depth Approach Could Outperform Chain-of-Thought"
 pubDate: 2025-03-29
-tags: ["AI","research","tech"]
+tags: ["ai", "machine-learning", "research"]
 featured: false
 draft: false
 author: "Hamish Burke"

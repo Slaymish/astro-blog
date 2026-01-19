@@ -1,7 +1,7 @@
 ---
 title: "Problems with AI"
 pubDate: 2025-03-31
-tags: ["AI","ethics"]
+tags: ["ai", "ethics"]
 featured: false
 draft: false
 author: "Hamish Burke"

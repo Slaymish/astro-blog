@@ -2,7 +2,7 @@
 title: "HealthAgent: Apple Health Data Ingestion and Insights"
 description: "A Next.js app that ingests Apple Health exports, normalizes them to Postgres, and produces daily/weekly insights with a lightweight GCP pipeline."
 pubDate: 2025-01-19
-tags: ["health", "apple-health", "nextjs", "postgres", "gcp", "cloud-run", "prisma", "fastify", "llm", "neon", "ai"]
+tags: ["health", "data-engineering", "web-app", "ai"]
 ---
 
 HealthAgent is my attempt to turn all the stats available in Apple Health into something I can actually read and act on. Instead of drowning in raw stats, I get a quick "what happened / what to do next" view.
