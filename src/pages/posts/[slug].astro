@@ -39,9 +39,14 @@ export const prerender = true;
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
-  return posts.map((post) => ({
-    params: { slug: post.id.replace(/\.(md|mdx)$/, "") },
-  }));
+  return posts.flatMap((post) => {
+    const fileSlug = post.id.replace(/\.(md|mdx)$/, "");
+    const titleSlug = createSlug(post.data.title);
+    const slugs = new Set([fileSlug, post.slug, titleSlug].filter(Boolean));
+    return Array.from(slugs).map((slug) => ({
+      params: { slug },
+    }));
+  });
 }
 
 const { slug } = Astro.params;
@@ -74,7 +79,13 @@ if (supabase && slug) {
 }
 
 if (!post && slug) {
-  contentPost = await getEntry("posts", slug);
+  const contentPosts = await getCollection("posts");
+  contentPost =
+    contentPosts.find((entry) => {
+      const fileSlug = entry.id.replace(/\.(md|mdx)$/, "");
+      const titleSlug = createSlug(entry.data.title);
+      return slug === fileSlug || slug === entry.slug || slug === titleSlug;
+    }) ?? null;
 }
 
 if (!post) {
