@@ -6,10 +6,21 @@ import InteractiveTorch from './InteractiveTorch.astro';
   <nav class="flex justify-between items-center" aria-label="Main navigation">
     <a
       href="/"
-      class="text-2xl font-bold hover:underline hover:underline-offset-4 transition-colors"
+      class="site-title text-2xl font-bold hover:underline hover:underline-offset-4 transition-colors"
       style="color: var(--color-text-primary); text-decoration-color: var(--color-accent-500);"
       aria-label="Hamish's Blog - Home"
-      ><span style="color: var(--color-primary-500);" aria-hidden="true">&#10022;</span> Hamish's Blog
+    >
+      <span class="site-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <rect width="100" height="100" rx="22" fill="#0b0b0b"/>
+          <path d="M34 18 C22 44, 26 62, 34 82" stroke="#f5f5f5" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M66 18 C78 44, 74 62, 66 82" stroke="#f5f5f5" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M38 20 C30 45, 31 61, 38 80" stroke="#f5f5f5" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.45"/>
+          <path d="M62 20 C70 45, 69 61, 62 80" stroke="#f5f5f5" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.45"/>
+          <rect x="46" y="42" width="8" height="16" rx="4" fill="#f5f5f5"/>
+        </svg>
+      </span>
+      <span>Hamish's Blog</span>
     </a>
     
     <!-- Desktop Navigation Links -->
@@ -177,6 +188,32 @@ import InteractiveTorch from './InteractiveTorch.astro';
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .site-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .site-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0 1px var(--color-border-primary), 0 6px 12px rgba(15, 23, 42, 0.12);
+  }
+
+  .site-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  :global(.dark) .site-icon {
+    box-shadow: 0 0 0 1px var(--color-border-secondary), 0 6px 12px rgba(0, 0, 0, 0.4);
   }
   
   /* Make sure torch aligns with social icons */
