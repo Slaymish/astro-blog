@@ -290,6 +290,24 @@
     color: var(--color-text-secondary);
   }
 
+  @media (max-width: 640px) {
+    .prose p {
+      font-size: 1rem;
+    }
+
+    .prose p:first-of-type {
+      font-size: 1.0625rem;
+    }
+
+    .prose li {
+      font-size: 1rem;
+    }
+
+    .prose blockquote {
+      font-size: 1.0625rem;
+    }
+  }
+
   /* Smooth animations for specific properties only */
   a, button, .social-icon, .cta-button {
     transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
