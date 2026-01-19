@@ -1,5 +1,5 @@
 ---
-title: "HealthAgent: Opinionated Apple Health Summaries"
+title: "HealthAgent: Apple Health Data Ingestion and Insights"
 description: "A Next.js app that ingests Apple Health exports, normalizes them to Postgres, and produces daily/weekly insights with a lightweight GCP pipeline."
 pubDate: 2025-01-19
 tags: ["health", "apple-health", "nextjs", "postgres", "gcp", "cloud-run", "prisma", "fastify", "llm", "neon", "ai"]

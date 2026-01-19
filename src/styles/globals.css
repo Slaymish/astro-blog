@@ -184,6 +184,15 @@
     margin-top: 1.5em;
     margin-bottom: 1.5em;
     padding-left: 2rem;
+    list-style-position: outside;
+  }
+
+  .prose ul {
+    list-style-type: disc;
+  }
+
+  .prose ol {
+    list-style-type: decimal;
   }
 
   .prose li {
