@@ -49,7 +49,7 @@ if (supabase) {
   if (error) {
     postsError = error.message;
   } else {
-    posts = (data as PostWithTags[] | null) ?? [];
+    posts = (data as unknown as PostWithTags[] | null) ?? [];
   }
 } else {
   postsError = "Database connection unavailable.";
