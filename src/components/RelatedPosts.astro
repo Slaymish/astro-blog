@@ -52,7 +52,7 @@ if (supabase && currentPostTags.length > 0) {
 ---
 
 {relatedPosts.length > 0 && (
-    <div class="bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-slate-200/50 dark:border-slate-700/50" itemscope itemtype="https://schema.org/Article">
+    <div class="bg-white/50 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg p-6 border border-slate-200/50 dark:border-slate-700/50" itemscope itemtype="https://schema.org/Article">
     <h2 class="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-200" itemprop="headline">Related Posts</h2>
     <div class="space-y-4" itemprop="articleBody">
       {relatedPosts.map((post: any) => (
