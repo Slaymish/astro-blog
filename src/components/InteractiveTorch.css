@@ -4,14 +4,18 @@
 .torch-game-container { /* Back to fixed positioning to match social buttons */ }
 
 /* Remove fixed positioning - now uses absolute from Astro file */
-.torch { 
+.torch {
   position: relative;
   display: inline-block;
   transition: all 0.2s ease;
   /* Remove absolute positioning */
+  /* Performance optimization */
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout style;
 }
 .torch:hover { /* ...existing hover rules... */ }
-.torch.dragging { 
+.torch.dragging {
   cursor: grabbing;
   transform: scale(1.1);
   /* Position will be set to fixed by JavaScript when dragging */
@@ -36,6 +40,10 @@
   z-index: 51;
   opacity: 0;
   transform: translate(-50%, -50%);
+  /* Performance optimization */
+  will-change: transform, opacity;
+  contain: layout style paint;
+  backface-visibility: hidden;
 }
 .torch-light.active {
   opacity: 1;

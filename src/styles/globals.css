@@ -7,6 +7,33 @@
     scroll-behavior: smooth;
   }
 
+  /* Performance optimization: enable GPU layer promotion for animated elements */
+  #particle-canvas {
+    will-change: transform;
+    contain: layout style paint;
+  }
+
+  /* Optimize layout rendering for fixed position elements */
+  #scroll-progress {
+    will-change: width;
+    contain: layout style paint;
+  }
+
+  /* Theme customizer panel */
+  #theme-customizer-panel {
+    contain: layout style paint;
+  }
+
+  /* SVG background shapes */
+  .floating-shapes {
+    contain: layout style paint;
+  }
+
+  /* Content sections for better rendering */
+  main {
+    contain: layout;
+  }
+
   /* Reduce motion for users who prefer it */
   @media (prefers-reduced-motion: reduce) {
     html {

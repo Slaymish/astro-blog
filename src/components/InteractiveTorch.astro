@@ -88,24 +88,24 @@ const catPositions = [
   <img src="/images/cats/cat5.webp" alt="Brown cat" class="hidden-cat-img" />
 </div>
 
-<script>
+<script is:inline>
   let isDragging = false;
   let dragOffset = { x: 0, y: 0 };
-  let torch: HTMLElement | null = null;
-  let torchLight: HTMLElement | null = null;
-  let torchInstructions: HTMLElement | null = null;
-  let catCounter: HTMLElement | null = null;
-  let foundCats: Set<string> = new Set();
-  let audioContext: AudioContext | null = null;
-  let resetText: HTMLElement | null = null;
+  let torch = null;
+  let torchLight = null;
+  let torchInstructions = null;
+  let catCounter = null;
+  let foundCats = new Set();
+  let audioContext = null;
+  let resetText = null;
   let rafPending = false; // throttle flag
-  let tooltipTimer: number;
-  let tooltip: HTMLElement | null = null;
+  let tooltipTimer;
+  let tooltip = null;
   let isInitialized = false;
 
   // Mobile detection function
-  function isMobileDevice(): boolean {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+  function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
            || window.innerWidth <= 640
            || ('ontouchstart' in window && window.innerWidth <= 768);
   }
@@ -113,14 +113,14 @@ const catPositions = [
   // Initialize audio context
   function initAudio() {
     if (!audioContext) {
-      audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
   }
 
   // Play meow sound using audio clips
-  function playMeow(catType: string) {
+  function playMeow(catType) {
     // Map cat types to audio files
-    let audioFile: string;
+    let audioFile;
     switch (catType) {
       case 'orange':
         audioFile = '/audio/Audio 1.mp3';
@@ -145,7 +145,7 @@ const catPositions = [
     try {
       const audio = new Audio(audioFile);
       audio.volume = 0.5; // Set volume to 50%
-      audio.play().catch(error => {
+      audio.play().catch(function(error) {
         console.warn('Could not play meow sound:', error);
       });
     } catch (error) {
@@ -156,33 +156,33 @@ const catPositions = [
   // Play victory sound when all cats are found
   function playVictorySound() {
     if (!audioContext) return;
-    
+
     // Victory melody: C5, E5, G5, C6
     const notes = [523.25, 659.25, 783.99, 1046.50];
     const durations = [0.2, 0.2, 0.2, 0.4];
-    
+
     let currentTime = audioContext.currentTime;
-    
-    notes.forEach((freq, index) => {
-      if (!audioContext) return; // Additional null check for TypeScript
-      
+
+    notes.forEach(function(freq, index) {
+      if (!audioContext) return;
+
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
+
       oscillator.frequency.setValueAtTime(freq, currentTime);
       oscillator.type = 'triangle';
-      
+
       // Volume envelope
       gainNode.gain.setValueAtTime(0, currentTime);
       gainNode.gain.linearRampToValueAtTime(0.3, currentTime + 0.01);
       gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + durations[index]);
-      
+
       oscillator.start(currentTime);
       oscillator.stop(currentTime + durations[index]);
-      
+
       currentTime += durations[index];
     });
   }
@@ -190,8 +190,8 @@ const catPositions = [
   // Update cat counter display
   function updateCatCounter() {
     if (catCounter) {
-      catCounter.textContent = `🐱 ${foundCats.size}/5`;
-      
+      catCounter.textContent = '🐱 ' + foundCats.size + '/5';
+
       if (foundCats.size === 5) {
         catCounter.classList.add('complete');
       } else {
@@ -200,11 +200,11 @@ const catPositions = [
     }
   }
 
-  function getDistance(x1: number, y1: number, x2: number, y2: number): number {
+  function getDistance(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
   }
 
-  function updateTorchPosition(x: number, y: number) {
+  function updateTorchPosition(x, y) {
     if (torch) {
       // Position the torch absolutely when dragging
       torch.style.position = 'fixed';
@@ -219,10 +219,10 @@ const catPositions = [
     }
   }
 
-  function checkForHiddenItems(torchX: number, torchY: number) {
+  function checkForHiddenItems(torchX, torchY) {
     const hiddenItems = document.querySelectorAll('.hidden-item:not(.revealed)');
     
-    hiddenItems.forEach((item) => {
+    hiddenItems.forEach(function(item) {
       const rect = item.getBoundingClientRect();
       const itemX = rect.left + rect.width / 2;
       const itemY = rect.top + rect.height / 2;
@@ -265,7 +265,7 @@ const catPositions = [
     
     // Hide all revealed cats
     const revealedItems = document.querySelectorAll('.hidden-item.revealed');
-    revealedItems.forEach(item => {
+    revealedItems.forEach(function(item) {
       item.classList.remove('revealed');
     });
     
@@ -317,7 +317,7 @@ const catPositions = [
   }
 
   // Initialize when DOM is loaded
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', function() {
     // Exit early on mobile devices
     if (isMobileDevice()) {
       console.log('Interactive torch disabled on mobile device');
@@ -336,12 +336,12 @@ const catPositions = [
 
     // Hide tooltip immediately if torch was already picked up
     if (torch && torch.getAttribute('data-picked-up') === 'true') {
-      tooltip?.classList.remove('show');
+      if (tooltip) tooltip.classList.remove('show');
     } else {
       // show tooltip after 2s if not picked up
-      tooltipTimer = window.setTimeout(() => {
+      tooltipTimer = window.setTimeout(function() {
         if (torch && torch.getAttribute('data-picked-up') === 'false') {
-          tooltip?.classList.add('show');
+          if (tooltip) tooltip.classList.add('show');
         }
       }, 2000);
     }
@@ -349,35 +349,35 @@ const catPositions = [
     if (!torch || !torchLight || !torchInstructions || !catCounter) return;
 
     // Mouse events for torch dragging
-    torch.addEventListener('mousedown', (e: MouseEvent) => {
+    torch.addEventListener('mousedown', function(e) {
       // hide tooltip on first grab
       clearTimeout(tooltipTimer);
-      tooltip?.classList.remove('show');
+      if (tooltip) tooltip.classList.remove('show');
 
       isDragging = true;
-      torch!.classList.add('dragging');
-      torch!.setAttribute('data-picked-up', 'true');
-      
+      torch.classList.add('dragging');
+      torch.setAttribute('data-picked-up', 'true');
+
       // Show light effect, instructions, and counter
-      torchLight!.classList.add('active');
-      torchInstructions!.classList.add('show');
-      catCounter!.classList.add('show');
+      torchLight.classList.add('active');
+      torchInstructions.classList.add('show');
+      catCounter.classList.add('show');
       updateCatCounter();
-      
-      const rect = torch!.getBoundingClientRect();
+
+      const rect = torch.getBoundingClientRect();
       dragOffset.x = e.clientX - rect.left - rect.width / 2;
       dragOffset.y = e.clientY - rect.top - rect.height / 2;
-      
+
       e.preventDefault();
     });
 
-    document.addEventListener('mousemove', (e: MouseEvent) => {
+    document.addEventListener('mousemove', function(e) {
       if (isDragging && torch) {
         const x = e.clientX - dragOffset.x;
         const y = e.clientY - dragOffset.y;
         if (!rafPending) {
           rafPending = true;
-          requestAnimationFrame(() => {
+          requestAnimationFrame(function() {
             handleMove(x,y);
             rafPending = false;
           });
@@ -386,7 +386,7 @@ const catPositions = [
       }
     });
 
-    document.addEventListener('mouseup', () => {
+    document.addEventListener('mouseup', function() {
       if (isDragging && torch && torchLight) {
         isDragging = false;
         torch.classList.remove('dragging');
@@ -395,37 +395,37 @@ const catPositions = [
     });
 
     // Touch events for mobile
-    torch.addEventListener('touchstart', (e: TouchEvent) => {
+    torch.addEventListener('touchstart', function(e) {
       clearTimeout(tooltipTimer);
-      tooltip?.classList.remove('show');
+      if (tooltip) tooltip.classList.remove('show');
 
       if (e.touches.length === 1) {
         isDragging = true;
-        torch!.classList.add('dragging');
-        torch!.setAttribute('data-picked-up', 'true');
-        
-        torchLight!.classList.add('active');
-        torchInstructions!.classList.add('show');
-        catCounter!.classList.add('show');
+        torch.classList.add('dragging');
+        torch.setAttribute('data-picked-up', 'true');
+
+        torchLight.classList.add('active');
+        torchInstructions.classList.add('show');
+        catCounter.classList.add('show');
         updateCatCounter();
-        
+
         const touch = e.touches[0];
-        const rect = torch!.getBoundingClientRect();
+        const rect = torch.getBoundingClientRect();
         dragOffset.x = touch.clientX - rect.left - rect.width / 2;
         dragOffset.y = touch.clientY - rect.top - rect.height / 2;
-        
+
         e.preventDefault();
       }
     });
 
-    document.addEventListener('touchmove', (e: TouchEvent) => {
+    document.addEventListener('touchmove', function(e) {
       if (isDragging && e.touches.length === 1) {
         const t = e.touches[0];
         const x = t.clientX - dragOffset.x;
         const y = t.clientY - dragOffset.y;
         if (!rafPending) {
           rafPending = true;
-          requestAnimationFrame(() => {
+          requestAnimationFrame(function() {
             handleMove(x,y);
             rafPending = false;
           });
@@ -434,7 +434,7 @@ const catPositions = [
       }
     });
 
-    document.addEventListener('touchend', () => {
+    document.addEventListener('touchend', function() {
       if (isDragging && torch && torchLight) {
         isDragging = false;
         torch.classList.remove('dragging');
@@ -443,7 +443,7 @@ const catPositions = [
     });
 
     // Keyboard events
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
+    document.addEventListener('keydown', function(e) {
       if (e.key.toLowerCase() === 'r' && torch && torch.getAttribute('data-picked-up') === 'true') {
         resetGame();
       }
@@ -452,9 +452,9 @@ const catPositions = [
 
   // Cleanup on page unload
   window.addEventListener('beforeunload', cleanup);
-  
+
   // Handle visibility change (tab switching)
-  document.addEventListener('visibilitychange', () => {
+  document.addEventListener('visibilitychange', function() {
     if (document.hidden && isDragging) {
       // Stop dragging if user switches tabs
       isDragging = false;
@@ -468,7 +468,7 @@ const catPositions = [
   });
 
   // consolidate move + hit checks
-  function handleMove(x: number, y: number) {
+  function handleMove(x, y) {
     updateTorchPosition(x, y);
     checkForHiddenItems(x, y);
   }

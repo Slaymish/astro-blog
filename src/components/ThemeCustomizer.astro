@@ -309,9 +309,11 @@ class ThemeCustomizer {
   saturationValue: HTMLElement | null;
   colorPreviews: (HTMLElement | null)[];
   updateScrollVisibility?: () => void;
+  _scrollHandler: (() => void) | null;
 
   constructor() {
     this.isOpen = false;
+    this._scrollHandler = null;
     this.toggle = document.getElementById('theme-customizer-toggle');
     this.panel = document.getElementById('theme-customizer-panel');
     this.overlay = document.getElementById('theme-customizer-overlay');
@@ -397,7 +399,7 @@ class ThemeCustomizer {
       }
 
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      
+
       if (scrollTop > scrollThreshold) {
         this.toggle?.classList.add('visible');
         this.toggle?.classList.remove('hidden');
@@ -409,7 +411,7 @@ class ThemeCustomizer {
         this.toggle?.setAttribute('tabindex', '-1');
         this.toggle?.setAttribute('aria-hidden', 'true');
       }
-      
+
       ticking = false;
     };
 
@@ -426,7 +428,8 @@ class ThemeCustomizer {
     // Listen for scroll events
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Store reference to update function for use in open/close methods
+    // Store references for cleanup
+    this._scrollHandler = handleScroll;
     this.updateScrollVisibility = updateVisibility;
   }
 
@@ -757,7 +760,7 @@ class ThemeCustomizer {
     const hue = localStorage.getItem('hue') || '297';
     const saturation = localStorage.getItem('saturation') || '70';
     const harmony = localStorage.getItem('harmony') || 'monochromatic';
-    
+
     // Apply loaded preferences
     this.setTheme(theme);
     this.setFontFamily(fontFamily);
@@ -765,21 +768,34 @@ class ThemeCustomizer {
     this.setHue(hue);
     this.setSaturation(saturation);
     this.setHarmony(harmony);
-    
+
     // Update UI controls
     if (this.fontFamilySelect) this.fontFamilySelect.value = fontFamily;
     if (this.fontSizeSlider) this.fontSizeSlider.value = fontSize;
     if (this.hueSlider) this.hueSlider.value = hue;
     if (this.saturationSlider) this.saturationSlider.value = saturation;
     if (this.harmonySelect) this.harmonySelect.value = harmony;
-    
+
     // Ensure colors are updated after loading preferences
     this.updateColors(parseInt(hue), parseInt(saturation), harmony);
+  }
+
+  destroy() {
+    // Clean up scroll event listener
+    if (this._scrollHandler) {
+      window.removeEventListener('scroll', this._scrollHandler);
+      this._scrollHandler = null;
+    }
   }
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  new ThemeCustomizer();
+  const customizer = new ThemeCustomizer();
+
+  // Cleanup on page navigation/unload
+  window.addEventListener('beforeunload', () => {
+    customizer.destroy();
+  });
 });
 </script>
