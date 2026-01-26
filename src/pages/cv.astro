@@ -109,24 +109,25 @@ import Layout from '../components/Layout.astro';
   /* === HEADER STYLING === */
   .cv-header {
     text-align: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 2px solid var(--color-primary-200);
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border-secondary);
   }
 
   .cv-header h1 {
     font-family: var(--font-heading);
-    font-size: 3rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
     color: var(--color-primary-500);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     font-weight: 700;
+    letter-spacing: -0.03em;
   }
 
   .cv-subtitle {
     font-size: 1.25rem;
     color: var(--color-text-secondary);
     margin: 0;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   /* === ACTION BUTTONS === */
@@ -134,18 +135,18 @@ import Layout from '../components/Layout.astro';
     display: flex;
     gap: 1rem;
     justify-content: center;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
     flex-wrap: wrap;
   }
 
   .download-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+    gap: 0.625rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 0.5rem;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 1rem;
     transition: all 0.2s ease;
     border: 2px solid transparent;
@@ -154,12 +155,13 @@ import Layout from '../components/Layout.astro';
   .download-btn.primary {
     background: var(--color-primary-500);
     color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   }
 
   .download-btn.primary:hover {
     background: var(--color-primary-600);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   }
 
   .download-btn.secondary {
@@ -169,23 +171,20 @@ import Layout from '../components/Layout.astro';
   }
 
   .download-btn.secondary:hover {
-    background: var(--color-primary-50);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .dark .download-btn.secondary:hover {
-    background: var(--color-primary-900);
+    background: var(--color-primary-500);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   }
 
   /* === PDF CONTAINER === */
   .pdf-container {
     max-width: 100%;
-    margin: 2rem 0;
+    margin: 2.5rem 0;
     border: 1px solid var(--color-border-primary);
-    border-radius: 12px;
+    border-radius: 0.75rem;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     background: var(--color-bg-secondary);
   }
 
@@ -215,25 +214,26 @@ import Layout from '../components/Layout.astro';
 
   /* === CV INFO SECTION === */
   .cv-info {
-    margin-top: 3rem;
+    margin-top: 4rem;
     padding: 2rem;
     background: var(--color-bg-secondary);
-    border-radius: 12px;
+    border-radius: 0.75rem;
     border: 1px solid var(--color-border-primary);
   }
 
   .cv-info h2 {
     color: var(--color-primary-500);
     font-family: var(--font-heading);
-    font-size: 1.75rem;
+    font-size: 2rem;
     margin-bottom: 1rem;
+    letter-spacing: -0.025em;
   }
 
   .cv-info > p {
     color: var(--color-text-secondary);
-    line-height: 1.7;
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
+    line-height: 1.75;
+    margin-bottom: 2.5rem;
+    font-size: 1.0625rem;
   }
 
   /* === HIGHLIGHTS GRID === */
@@ -241,72 +241,73 @@ import Layout from '../components/Layout.astro';
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
   }
 
   .highlight-item {
-    padding: 1.5rem;
+    padding: 1.75rem;
     background: var(--color-bg-primary);
     border: 1px solid var(--color-border-secondary);
-    border-radius: 8px;
+    border-radius: 0.5rem;
     text-align: center;
     transition: all 0.2s ease;
   }
 
   .highlight-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    border-color: var(--color-primary-300);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: var(--color-primary-400);
   }
 
   .dark .highlight-item:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   }
 
   .highlight-item h3 {
     color: var(--color-primary-500);
     font-family: var(--font-heading);
     font-size: 1.25rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.625rem;
   }
 
   .highlight-item p {
     color: var(--color-text-secondary);
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
   }
 
   /* === CV SECTIONS === */
   .cv-sections {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .cv-section {
-    padding: 1.5rem;
+    padding: 1.75rem;
     background: var(--color-bg-primary);
     border: 1px solid var(--color-border-secondary);
-    border-radius: 8px;
+    border-radius: 0.5rem;
     transition: all 0.2s ease;
   }
 
   .cv-section:hover {
-    border-color: var(--color-primary-300);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: var(--color-primary-400);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 
   .dark .cv-section:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   .cv-section h3 {
-    color: var(--color-primary-600);
+    color: var(--color-primary-500);
     font-family: var(--font-heading);
-    font-size: 1.25rem;
+    font-size: 1.375rem;
     margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--color-border-secondary);
   }
 
@@ -318,10 +319,10 @@ import Layout from '../components/Layout.astro';
 
   .cv-section li {
     color: var(--color-text-secondary);
-    margin-bottom: 0.75rem;
-    padding-left: 1rem;
+    margin-bottom: 0.875rem;
+    padding-left: 1.25rem;
     position: relative;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   .cv-section li:before {

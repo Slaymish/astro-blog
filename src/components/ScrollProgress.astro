@@ -10,23 +10,24 @@
     top: 0;
     left: 0;
     width: 0%;
-    height: 3px;
+    height: 2px;
     background: linear-gradient(90deg, var(--color-primary-500), var(--color-accent-500), var(--color-accent2-500));
     z-index: 1000;
     transition: width 0.1s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-  
+
   #scroll-progress::after {
     content: '';
     position: absolute;
     right: 0;
     top: 0;
-    width: 10px;
+    width: 8px;
     height: 100%;
-    background: var(--color-primary-300);
-    border-radius: 0 2px 2px 0;
-    box-shadow: 0 0 6px var(--color-primary-500);
+    background: var(--color-primary-400);
+    border-radius: 0 1px 1px 0;
+    box-shadow: 0 0 4px var(--color-primary-500);
+    opacity: 0.8;
   }
 </style>
 

@@ -83,25 +83,25 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
   canonicalURL={Astro.url.href}
 >
   <!-- Hero Section -->
-  <section class="mb-16 text-center fade-in px-4">
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight" style="font-family: var(--font-heading); color: var(--color-text-primary);">
+  <section class="mb-20 text-center fade-in">
+    <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight" style="font-family: var(--font-heading); color: var(--color-text-primary); letter-spacing: -0.03em;">
       Hi, I'm Hamish
     </h1>
-    <p class="text-lg sm:text-xl md:text-2xl mb-6 max-w-3xl mx-auto" style="color: var(--color-text-secondary); line-height: 1.6;">
-      Writing about <span style="color: var(--color-primary-500); font-weight: 600;">software</span>, 
-      <span style="color: var(--color-accent-500); font-weight: 600;">AI</span>, 
+    <p class="text-xl sm:text-2xl md:text-3xl mb-8 max-w-3xl mx-auto leading-relaxed" style="color: var(--color-text-secondary);">
+      Writing about <span style="color: var(--color-primary-500); font-weight: 600;">software</span>,
+      <span style="color: var(--color-accent-500); font-weight: 600;">AI</span>,
       and <span style="color: var(--color-accent2-500); font-weight: 600;">whatever I'm working on</span>
     </p>
-    <div class="flex justify-center gap-3 sm:gap-4 flex-wrap">
-      <a 
-        href="#reports" 
+    <div class="flex justify-center gap-4 flex-wrap">
+      <a
+        href="#reports"
         class="cta-button cta-primary"
         style="background-color: var(--color-primary-500); color: white;"
       >
         View Reports
       </a>
-      <a 
-        href="#posts" 
+      <a
+        href="#posts"
         class="cta-button cta-secondary"
         style="border: 2px solid var(--color-primary-500); color: var(--color-primary-500);"
       >
@@ -110,24 +110,24 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     </div>
   </section>
 
-  <section id="reports" aria-labelledby="reports-heading" class="mb-16 scroll-mt-24">
-    <h1 id="reports-heading" class="mb-8 fade-in text-4xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
+  <section id="reports" aria-labelledby="reports-heading" class="mb-20 scroll-mt-24">
+    <h1 id="reports-heading" class="mb-10 fade-in text-4xl md:text-5xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500); letter-spacing: -0.025em;">
       Reports
     </h1>
     <div class="space-y-8" role="list">
       {sortedReports.map((report, index) => (
-        <article 
+        <article
           role="listitem"
-          class={`pb-8 slide-in card-hover`}
+          class={`pb-10 slide-in card-hover`}
           style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
-          itemscope 
+          itemscope
           itemtype="http://schema.org/ScholarlyArticle"
         >
           <header>
-            <h2 class="text-2xl font-bold mb-2">
-              <a 
+            <h2 class="text-2xl md:text-3xl font-bold mb-3" style="letter-spacing: -0.025em;">
+              <a
                 href={`/reports/${report.id.replace(/\.(md|mdx)$/, '')}`}
-                style="color: var(--color-text-primary);" 
+                style="color: var(--color-text-primary);"
                 class="hover:underline transition-colors"
                 itemprop="headline"
               >
@@ -135,9 +135,9 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
               </a>
             </h2>
           </header>
-          
-          <div class="mb-4" style="color: var(--color-text-muted);">
-            <time 
+
+          <div class="mb-4 text-sm" style="color: var(--color-text-muted);">
+            <time
               datetime={new Date(report.data.pubDate).toISOString()}
               itemprop="datePublished"
             >
@@ -151,7 +151,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
               <span itemprop="name">Hamish Burke</span>
             </span>
           </div>
-          
+
           {report.data.description && (
             <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
               {report.data.description}
@@ -194,7 +194,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
   </section>
 
   <section id="posts" aria-labelledby="recent-posts-heading" class="posts-section scroll-mt-24">
-    <h2 id="recent-posts-heading" class="mb-8 text-3xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500);">
+    <h2 id="recent-posts-heading" class="mb-10 text-4xl md:text-5xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500); letter-spacing: -0.025em;">
       Recent Posts
     </h2>
     {hasSupabasePosts ? (
@@ -367,19 +367,19 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     border-radius: 0.5rem;
     font-weight: 600;
     font-size: 1rem;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     display: inline-block;
     text-decoration: none;
   }
 
   .cta-primary {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   }
 
   .cta-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    filter: brightness(1.05);
   }
 
   .cta-primary:active {
@@ -393,8 +393,8 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
   .cta-secondary:hover {
     background-color: var(--color-primary-500);
     color: white !important;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   }
 
   .cta-secondary:active {
@@ -412,7 +412,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
   }
 
   .card-hover {
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     position: relative;
   }
 
@@ -433,7 +433,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
   }
 
   .card-hover:hover {
-    padding-left: 1rem;
+    padding-left: 0.75rem;
   }
 
   /* Disable text underline on card hover */
@@ -451,11 +451,11 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
   }
 
   .posts-section {
-    margin-top: 3rem;
-    padding-top: 2rem;
+    margin-top: 4rem;
+    padding-top: 3rem;
     border-top: 1px solid var(--color-border-secondary);
   }
-  
+
   .posts-section h2 {
     color: var(--color-primary-500);
     font-family: var(--font-heading);
@@ -517,7 +517,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     }
 
     .card-hover:hover {
-      padding-left: 0.75rem;
+      padding-left: 0.5rem;
     }
 
     section {

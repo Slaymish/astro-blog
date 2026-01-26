@@ -44,24 +44,24 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
       /* Critical theme colors - prevent flash of unstyled content */
       :root {
         --color-bg-primary: #ffffff;
-        --color-bg-secondary: #f8fafc;
-        --color-text-primary: #0f172a;
-        --color-text-secondary: #334155;
+        --color-bg-secondary: #fafbfc;
+        --color-text-primary: #1a1a2e;
+        --color-text-secondary: #374151;
       }
-      
+
       .dark {
-        --color-bg-primary: #171717;
-        --color-bg-secondary: #262626;
-        --color-text-primary: #ffffff;
-        --color-text-secondary: #d4d4d8;
+        --color-bg-primary: #0f0f0f;
+        --color-bg-secondary: #1a1a1a;
+        --color-text-primary: #fafafa;
+        --color-text-secondary: #d1d5db;
       }
-      
+
       /* Apply immediately */
       html {
         background-color: var(--color-bg-secondary);
         color: var(--color-text-primary);
       }
-      
+
       body {
         background-color: var(--color-bg-secondary);
         color: var(--color-text-primary);
@@ -294,17 +294,41 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     
     <!-- KaTeX CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+
+    <style is:global>
+      .page-wrapper {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      @media (min-width: 640px) {
+        .page-wrapper {
+          padding: 0 2rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .page-wrapper {
+          padding: 0 3rem;
+        }
+      }
+    </style>
   </head>
-  <body class="px-1 antialiased sm:px-12 md:px-16" style="background-color: var(--color-bg-secondary); color: var(--color-text-primary);">
+  <body class="antialiased" style="background-color: var(--color-bg-secondary); color: var(--color-text-primary); min-height: 100vh; display: flex; flex-direction: column;">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <ScrollProgress />
     <AnimatedBackground />
     <ParticleBackground />
     <ThemeCustomizer />
-    <Header />
-    <main id="main-content" class="w-full max-w-4xl mx-auto grow px-4 py-8 sm:px-6 md:px-0" tabindex="-1">
-      <slot />
-    </main>
-    <Footer />
+
+    <div class="page-wrapper">
+      <Header />
+      <main id="main-content" class="w-full max-w-4xl mx-auto grow px-5 py-12 sm:px-6 md:py-16 lg:py-20" tabindex="-1">
+        <slot />
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>

@@ -41,16 +41,16 @@
 
   /* === LIGHT THEME COLORS (DEFAULT) === */
   --color-bg-primary: #ffffff;     /* Main background */
-  --color-bg-secondary: #f8fafc;   /* Secondary background */
-  --color-bg-tertiary: #f1f5f9;    /* Elevated elements */
+  --color-bg-secondary: #fafbfc;   /* Secondary background - warmer, more refined */
+  --color-bg-tertiary: #f4f6f8;    /* Elevated elements */
 
-  --color-text-primary: #0f172a;    /* Main headings and important text */
-  --color-text-secondary: #334155;  /* Body text */
-  --color-text-muted: #64748b;      /* Secondary text */
-  --color-text-subtle: #94a3b8;     /* Least important text */
+  --color-text-primary: #1a1a2e;    /* Main headings and important text - slightly darker */
+  --color-text-secondary: #374151;  /* Body text - more readable */
+  --color-text-muted: #6b7280;      /* Secondary text */
+  --color-text-subtle: #9ca3af;     /* Least important text */
 
-  --color-border-primary: #e2e8f0;   /* Main borders */
-  --color-border-secondary: #f1f5f9; /* Subtle borders */
+  --color-border-primary: #e5e7eb;   /* Main borders */
+  --color-border-secondary: #f3f4f6; /* Subtle borders */
 
   /* === DYNAMIC COMPONENT COLORS === */
   /* These are calculated and updated by the color controller */
@@ -66,19 +66,19 @@
 /* === DARK THEME === */
 .dark {
   /* === BACKGROUND COLORS === */
-  --color-bg-primary: #171717;    /* Darkest background (neutral-900) */
-  --color-bg-secondary: #262626;  /* Main background (neutral-800) */
-  --color-bg-tertiary: #404040;   /* Elevated elements (neutral-700) */
+  --color-bg-primary: #0f0f0f;    /* Darkest background - nearly black */
+  --color-bg-secondary: #1a1a1a;  /* Main background - refined dark */
+  --color-bg-tertiary: #2a2a2a;   /* Elevated elements */
 
   /* === TEXT COLORS === */
-  --color-text-primary: #ffffff;    /* Main headings and important text */
-  --color-text-secondary: #d4d4d8;  /* Body text (zinc-300) */
-  --color-text-muted: #a1a1aa;      /* Secondary text (zinc-400) */
-  --color-text-subtle: #71717a;     /* Least important text (zinc-500) */
+  --color-text-primary: #fafafa;    /* Main headings - nearly white */
+  --color-text-secondary: #d1d5db;  /* Body text (zinc-300) */
+  --color-text-muted: #9ca3af;      /* Secondary text (zinc-400) */
+  --color-text-subtle: #6b7280;     /* Least important text (zinc-500) */
 
   /* === BORDER COLORS === */
-  --color-border-primary: #525252;   /* Main borders (neutral-600) */
-  --color-border-secondary: #404040;  /* Subtle borders (neutral-700) */
+  --color-border-primary: #3f3f46;   /* Main borders (neutral-700) */
+  --color-border-secondary: #27272a;  /* Subtle borders (neutral-800) */
 
   /* === DYNAMIC COMPONENT COLORS === */
   --color-tag-bg: hsla(142, 70%, 55%, 0.15);      /* Tag background (dynamic) */
