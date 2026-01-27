@@ -1,6 +1,6 @@
 # Hamish's Blog
 
-A personal blog built with Astro and Supabase where I write about technology, programming, and ideas that interest me.
+A personal blog built with Astro and Sanity where I write about technology, programming, and ideas that interest me.
 
 ## About
 
@@ -14,7 +14,7 @@ This blog is my space to document thoughts on:
 ## Tech Stack
 
 - **Astro** - Static site generator with server-side rendering
-- **Supabase** - PostgreSQL database for storing posts and tags
+- **Sanity** - Headless CMS for storing posts, books, and projects
 - **Tailwind CSS** - Utility-first CSS framework
 - **TypeScript** - Type-safe JavaScript
 - **Netlify** - Hosting and deployment
@@ -24,7 +24,7 @@ This blog is my space to document thoughts on:
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) v18.14+
-- [Supabase account](https://supabase.com/)
+- [Sanity account](https://www.sanity.io/)
 
 ### Setup
 
@@ -33,14 +33,15 @@ This blog is my space to document thoughts on:
    ```bash
    npm install
    ```
-3. Copy `.env.example` to `.env` and add your Supabase credentials
-4. Sync posts to database:
-   ```bash
-   npm run sync:posts
-   ```
+3. Create a new Sanity project (use the defaults) and grab the Project ID + dataset name
+4. Copy `.env.example` to `.env` and add your Sanity credentials
 5. Start development server:
    ```bash
    npm run dev
+   ```
+6. Start Sanity Studio (separate app):
+   ```bash
+   npm run studio:dev
    ```
 
 ### Available Commands
@@ -50,23 +51,12 @@ This blog is my space to document thoughts on:
 | `npm run dev` | Start local dev server at `localhost:4321` |
 | `npm run build` | Build production site to `./dist/` |
 | `npm run preview` | Preview build locally |
-| `npm run sync:posts` | Sync markdown posts to Supabase database |
+| `npm run studio:dev` | Start Sanity Studio locally |
+| `npm run studio:build` | Build Sanity Studio for deployment |
 
 ## Writing Posts
 
-Posts are written in Markdown and stored in `src/content/posts/`. Each post should have frontmatter with:
-
-```yaml
----
-title: "Post Title"
-pubDate: 2025-01-01
-tags: ["tag1", "tag2"]
-author: "Hamish Burke"
-draft: false
----
-```
-
-Images should be placed in `public/images/posts/` and referenced as `/images/posts/image.jpg`.
+Posts are managed in Sanity Studio. Run the Studio with `npm run studio:dev` (served by the Studio app).
 
 ## License
 

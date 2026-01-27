@@ -1,54 +1,64 @@
 ---
 import Layout from "../../components/layout/Layout.astro";
-import { getCollection } from 'astro:content';
+import { fetchSanity } from "../../lib/sanity";
 import { createSlug } from "../../utils/slug";
 
 export const prerender = true;
 
+type TagPath = { tag: string };
+
+type PostDoc = {
+  title: string;
+  slug: string;
+  publishedAt: string;
+  excerpt?: string;
+  tags?: string[];
+};
+
+type ReportDoc = {
+  title: string;
+  slug: string;
+  publishedAt: string;
+  description?: string;
+  tags?: string[];
+};
+
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
-  const reports = await getCollection('reports');
-  
-  // Collect all unique tags from both posts and reports
-  const allTags = new Set<string>();
-  
-  posts.forEach(post => {
-    post.data.tags?.forEach(tag => allTags.add(createSlug(tag)));
-  });
-  
-  reports.forEach(report => {
-    report.data.tags?.forEach(tag => allTags.add(createSlug(tag)));
-  });
-  
-  return Array.from(allTags).map(tag => ({
-    params: { tag },
+  const tags = await fetchSanity<string[]>(`
+    array::unique(*[_type in ["post", "report"]].tags[])
+  `);
+
+  return tags.map((tag) => ({
+    params: { tag: createSlug(tag) },
+    props: { tagLabel: tag }
   }));
 }
 
-const { tag } = Astro.params;
+const { tag } = Astro.params as TagPath;
+const { tagLabel } = Astro.props as { tagLabel: string };
 
-// Get all posts and reports
-const allPosts = await getCollection('posts');
-const allReports = await getCollection('reports');
+const posts = await fetchSanity<PostDoc[]>(`
+  *[_type == "post" && $tag in tags] | order(publishedAt desc){
+    title,
+    "slug": slug.current,
+    publishedAt,
+    excerpt,
+    tags
+  }
+`, { tag: tagLabel });
 
-// Filter by tag (case-insensitive)
-const posts = allPosts.filter(post => 
-  post.data.tags?.some(t => createSlug(t) === tag)
-).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const reports = allReports.filter(report => 
-  report.data.tags?.some(t => createSlug(t) === tag)
-).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const reports = await fetchSanity<ReportDoc[]>(`
+  *[_type == "report" && $tag in tags] | order(publishedAt desc){
+    title,
+    "slug": slug.current,
+    publishedAt,
+    description,
+    tags
+  }
+`, { tag: tagLabel });
 
 const totalItems = posts.length + reports.length;
-
-// Get the display name for the tag (use the original casing from the first occurrence)
-const displayTag = (
-  posts.flatMap(post => post.data.tags ?? []).find(t => createSlug(t) === tag) ??
-  reports.flatMap(report => report.data.tags ?? []).find(t => createSlug(t) === tag) ??
-  tag ??
-  ''
-);
+const displayTag = tagLabel || tag || '';
 ---
 
 <Layout title={`Content tagged "${displayTag}"`}>
@@ -78,28 +88,28 @@ const displayTag = (
             >
               <h3 class="text-2xl font-bold mb-2">
                 <a 
-                  href={`/reports/${report.id.replace(/\.(md|mdx)$/, '')}`}
+                  href={`/reports/${report.slug}`}
                   style="color: var(--color-text-primary);" 
                   class="hover:underline transition-colors"
                 >
-                  {report.data.title}
+                  {report.title}
                 </a>
               </h3>
               <p class="mb-4" style="color: var(--color-text-muted);">
-                {new Date(report.data.pubDate).toLocaleDateString("en-US", {
+                {new Date(report.publishedAt).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric"
                 })}
               </p>
-              {report.data.description && (
+              {report.description && (
                 <p class="mb-4" style="color: var(--color-text-secondary);">
-                  {report.data.description}
+                  {report.description}
                 </p>
               )}
-              {report.data.tags && report.data.tags.length > 0 && (
+              {report.tags && report.tags.length > 0 && (
                 <div class="flex flex-wrap gap-2">
-                  {report.data.tags.map((t, index) => {
+                  {report.tags.map((t, index) => {
                     const colorVariant = index % 3;
                     let bgColor = 'var(--color-tag-bg)';
                     let textColor = 'var(--color-tag-text)';
@@ -143,28 +153,28 @@ const displayTag = (
             >
               <h3 class="text-2xl font-bold mb-2">
                 <a 
-                  href={`/posts/${post.id.replace(/\.(md|mdx)$/, '')}`}
+                  href={`/posts/${post.slug}`}
                   style="color: var(--color-text-primary);" 
                   class="hover:underline transition-colors"
                 >
-                  {post.data.title}
+                  {post.title}
                 </a>
               </h3>
               <p class="mb-4" style="color: var(--color-text-muted);">
-                {new Date(post.data.pubDate).toLocaleDateString("en-US", {
+                {new Date(post.publishedAt).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric"
                 })}
               </p>
-              {post.data.description && (
+              {post.excerpt && (
                 <p class="mb-4" style="color: var(--color-text-secondary);">
-                  {post.data.description}
+                  {post.excerpt}
                 </p>
               )}
-              {post.data.tags && post.data.tags.length > 0 && (
+              {post.tags && post.tags.length > 0 && (
                 <div class="flex flex-wrap gap-2">
-                  {post.data.tags.map((t, index) => {
+                  {post.tags.map((t, index) => {
                     const colorVariant = index % 3;
                     let bgColor = 'var(--color-tag-bg)';
                     let textColor = 'var(--color-tag-text)';

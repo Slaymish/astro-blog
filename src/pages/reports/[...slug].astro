@@ -1,57 +1,74 @@
 ---
-import { getCollection, getEntry, render } from 'astro:content';
 import Layout from '../../components/layout/Layout.astro';
 import Breadcrumb from '../../components/features/Breadcrumb.astro';
 import PDFViewer from '../../components/features/PDFViewer.astro';
 import { calculateReadingTime } from '../../utils/reading-time';
 import { createSlug } from '../../utils/slug';
+import { fetchSanity } from '../../lib/sanity';
+import { portableTextToHtml, portableTextToPlainText } from '../../lib/portableText';
 
 export const prerender = true;
 
+type ReportDoc = {
+  title: string;
+  slug: string;
+  publishedAt: string;
+  description?: string;
+  tags?: string[];
+  pdfUrl?: string;
+  body?: any;
+};
+
 export async function getStaticPaths() {
-  const reports = await getCollection('reports');
-  return reports.map(r => {
-    const slug = r.id.replace(/\.(md|mdx)$/, '');
-    return { params: { slug } };
-  });
+  const reports = await fetchSanity<Array<{ slug: string }>>(`
+    *[_type == "report" && defined(slug.current)]{ "slug": slug.current }
+  `);
+
+  return reports.map(r => ({
+    params: { slug: r.slug }
+  }));
 }
 
 const slug = Astro.params.slug as string;
 
-const report = await getEntry('reports', slug);
+const report = await fetchSanity<ReportDoc | null>(`
+  *[_type == "report" && slug.current == $slug][0]{
+    title,
+    "slug": slug.current,
+    publishedAt,
+    description,
+    tags,
+    "pdfUrl": pdfFile.asset->url,
+    body
+  }
+`, { slug });
+
 if (!report) {
   throw new Error(`Report not found: ${slug}`);
 }
 
-const data = report.data as any;
+const htmlContent = portableTextToHtml(report.body);
+const plainText = portableTextToPlainText(report.body);
+const readingTime = calculateReadingTime(plainText);
 
-// Render the content
-const { Content } = await render(report);
+const description = report.description || (plainText.length > 160 
+  ? plainText.substring(0, 157) + '...' 
+  : plainText);
 
-// Calculate reading time from the markdown body
-const readingTime = calculateReadingTime(report.body || '');
-
-// Extract description from content (first 160 characters, cleaned)
-const textContent = (report.body || '').replace(/[#*`\[\]]/g, '').trim();
-const description = data.description || (textContent.length > 160 
-  ? textContent.substring(0, 157) + '...' 
-  : textContent);
-
-// Format dates for meta tags
-const publishedTime = new Date(data.pubDate).toISOString();
+const publishedTime = new Date(report.publishedAt).toISOString();
 ---
 
 <Layout 
-  title={data.title}
+  title={report.title}
   description={description}
   article={true}
   publishedTime={publishedTime}
-  tags={data.tags || []}
-  canonicalURL={`${Astro.url.origin}/reports/${slug}`}
+  tags={report.tags || []}
+  canonicalURL={`${Astro.url.origin}/reports/${report.slug}`}
 >
   <Breadcrumb items={[
     { name: "Reports", url: "/" },
-    { name: data.title, url: `/reports/${slug}` }
+    { name: report.title, url: `/reports/${report.slug}` }
   ]} />
   
   <article 
@@ -65,22 +82,22 @@ const publishedTime = new Date(data.pubDate).toISOString();
         style="color: var(--color-text-primary);"
         itemprop="headline"
       >
-        {data.title}
+        {report.title}
       </h1>
       
       <div class="flex items-center gap-4 mb-4" style="color: var(--color-text-muted);">
         <time 
-          datetime={data.pubDate}
+          datetime={report.publishedAt}
           itemprop="datePublished"
         >
-          {new Date(data.pubDate).toLocaleDateString("en-US", {
+          {new Date(report.publishedAt).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric"
           })}
         </time>
         
-        {report.body && (
+        {plainText && (
           <>
             <span>•</span>
             <time 
@@ -93,23 +110,20 @@ const publishedTime = new Date(data.pubDate).toISOString();
           </>
         )}
         
-        <!-- Hidden author info for schema -->
         <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
           <span itemprop="name">Hamish Burke</span>
           <span itemprop="url">https://hamishburke.dev</span>
         </span>
         
-        <!-- Hidden publisher info for schema -->
         <span itemprop="publisher" itemscope itemtype="http://schema.org/Person" style="display: none;">
           <span itemprop="name">Hamish Burke</span>
           <span itemprop="url">https://hamishburke.dev</span>
         </span>
       </div>
 
-      {data.tags && data.tags.length > 0 && (
+      {report.tags && report.tags.length > 0 && (
         <div class="flex flex-wrap gap-2 mb-8" role="list" aria-label="Report tags">
-          {data.tags.map((tag: string, index: number) => {
-            // Cycle through different tag colors for visual variety
+          {report.tags.map((tag: string, index: number) => {
             const colorVariant = index % 3;
             let bgColor = 'var(--color-tag-bg)';
             let textColor = 'var(--color-tag-text)';
@@ -138,19 +152,18 @@ const publishedTime = new Date(data.pubDate).toISOString();
       )}
     </header>
 
-    {data.pdfPath && (
+    {report.pdfUrl && (
       <div class="pdf-section mb-8">
-        <PDFViewer pdfPath={data.pdfPath} title={data.title} />
+        <PDFViewer pdfPath={report.pdfUrl} title={report.title} />
       </div>
     )}
 
-    {report.body && (
+    {htmlContent && (
       <div 
         class="prose prose-invert max-w-none" 
         itemprop="articleBody"
-      >
-        <Content />
-      </div>
+        set:html={htmlContent}
+      ></div>
     )}
     
     <footer class="mt-12 pt-8" style="border-top: 1px solid var(--color-border-secondary);">

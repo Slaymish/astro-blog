@@ -15,7 +15,7 @@
      COLOR PALETTE
      ============================================ */
 
-  /* Base colors - Light theme */
+  /* Base colors */
   --color-white: #ffffff;
   --color-black: #000000;
 
@@ -32,38 +32,24 @@
   --color-gray-900: #111827;
   --color-gray-950: #0a0a0a;
 
-  /* Primary brand color (emerald) */
-  --color-primary-50: #ecfdf5;
-  --color-primary-100: #d1fae5;
-  --color-primary-200: #a7f3d0;
-  --color-primary-300: #6ee7b7;
-  --color-primary-400: #34d399;
-  --color-primary-500: #10b981;
-  --color-primary-600: #059669;
-  --color-primary-700: #047857;
-  --color-primary-800: #065f46;
-  --color-primary-900: #064e3b;
-  --color-primary-950: #022c22;
+  /* Accent color presets (default: emerald) */
+  --accent-blue: #2563eb;
+  --accent-green: #059669;
+  --accent-orange: #ea580c;
+  --accent-pink: #db2777;
+  --accent-purple: #7c3aed;
 
   /* Semantic colors - Light theme */
-  --color-bg-primary: var(--color-white);
-  --color-bg-secondary: var(--color-gray-50);
-  --color-bg-tertiary: var(--color-gray-100);
-  --color-text-primary: var(--color-gray-900);
-  --color-text-secondary: var(--color-gray-700);
-  --color-text-muted: var(--color-gray-500);
-  --color-border-primary: var(--color-gray-200);
-  --color-border-secondary: var(--color-gray-100);
-  --color-link: var(--color-primary-600);
-  --color-link-hover: var(--color-primary-700);
-
-  /* Tag colors */
-  --color-tag-bg: var(--color-gray-100);
-  --color-tag-text: var(--color-gray-700);
-  --color-tag-accent1-bg: var(--color-primary-50);
-  --color-tag-accent1-text: var(--color-primary-700);
-  --color-tag-accent2-bg: var(--color-gray-100);
-  --color-tag-accent2-text: var(--color-gray-600);
+  --bg: #ffffff;
+  --surface: #f1f3f5;
+  --surface-2: #e5e7eb;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --border: #d1d5db;
+  --border-strong: #9ca3af;
+  --accent: #f652a0;
+  --accent-contrast: #ffffff;
+  --focus: #f652a0;
 
   /* ============================================
      SPACING SCALE
@@ -109,7 +95,7 @@
      TYPOGRAPHY
      ============================================ */
 
-  /* Font families */
+  /* Font families - simplified to 1-2 fonts max */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   --font-serif: 'Playfair Display', Georgia, Cambria, 'Times New Roman', Times, serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
@@ -119,20 +105,16 @@
   --font-heading: var(--font-serif);
   --font-code: var(--font-mono);
 
-  /* Font sizes */
-  --font-size-xs: 0.75rem;     /* 12px */
-  --font-size-sm: 0.875rem;    /* 14px */
-  --font-size-base: 1rem;      /* 16px */
-  --font-size-lg: 1.125rem;    /* 18px */
-  --font-size-xl: 1.25rem;     /* 20px */
-  --font-size-2xl: 1.5rem;     /* 24px */
-  --font-size-3xl: 1.875rem;   /* 30px */
-  --font-size-4xl: 2.25rem;    /* 36px */
-  --font-size-5xl: 3rem;       /* 48px */
-  --font-size-6xl: 3.75rem;    /* 60px */
-  --font-size-7xl: 4.5rem;     /* 72px */
-  --font-size-8xl: 6rem;       /* 96px */
-  --font-size-9xl: 8rem;       /* 128px */
+  /* Font sizes - simplified to match UPDATE.md spec */
+  --font-size-xs: 0.8125rem;   /* 13px - small/meta */
+  --font-size-sm: 0.875rem;    /* 14px - small/meta */
+  --font-size-base: 1rem;      /* 16px - body */
+  --font-size-lg: 1.125rem;    /* 18px - body */
+  --font-size-xl: 1.25rem;     /* 20px - H3 */
+  --font-size-2xl: 1.5rem;     /* 24px - H2 */
+  --font-size-3xl: 1.75rem;    /* 28px - H2 */
+  --font-size-4xl: 2.5rem;     /* 40px - H1 desktop */
+  --font-size-5xl: 3rem;       /* 48px - H1 desktop */
 
   /* Font weights */
   --font-weight-thin: 100;
@@ -167,13 +149,12 @@
      ============================================ */
 
   --radius-none: 0;
-  --radius-sm: 0.125rem;      /* 2px */
-  --radius-base: 0.25rem;     /* 4px */
-  --radius-md: 0.375rem;      /* 6px */
-  --radius-lg: 0.5rem;        /* 8px */
-  --radius-xl: 0.75rem;       /* 12px */
-  --radius-2xl: 1rem;         /* 16px */
-  --radius-3xl: 1.5rem;       /* 24px */
+  --radius-sm: 0.5rem;        /* 8px - small UI */
+  --radius-base: 0.625rem;    /* 10px - buttons/chips */
+  --radius-md: 0.75rem;       /* 12px - cards */
+  --radius-lg: 0.75rem;       /* 12px */
+  --radius-xl: 1rem;          /* 16px */
+  --radius-2xl: 1.5rem;       /* 24px */
   --radius-full: 9999px;
 
   /* ============================================
@@ -233,8 +214,50 @@
   --container-xl: 1280px;
   --container-2xl: 1536px;
 
-  /* Content max-width */
-  --content-max-width: var(--container-lg);
+  /* Content max-widths (UPDATE.md spec) */
+  --content-max-width: 1150px;     /* 1100-1200px */
+  --reading-width: 750px;          /* 720-780px reading width */
+  --toc-width: 270px;              /* 240-300px TOC */
+
+  /* Responsive padding (UPDATE.md spec) */
+  --padding-mobile: 1.5rem;        /* 24px mobile */
+  --padding-tablet: 2rem;          /* 32px tablet */
+  --padding-desktop: 2.5rem;       /* 40px desktop */
+
+  /* ============================================
+     GRID & TILES
+     ============================================ */
+
+  /* Grid system */
+  --grid-columns: 12;
+  --grid-gap: 0.75rem;
+  --grid-row-height: 18px;
+
+  /* Tile styling */
+  --tile-border: 1px solid var(--border);
+  --tile-border-hover: 1px solid var(--accent);
+  --tile-radius: 0.375rem;
+  --tile-padding: 1.5rem;
+  --tile-bg: var(--surface);
+  --tile-bg-hover: var(--surface-2);
+
+  /* Tile sizes */
+  --tile-span-small: 3; /* 3 columns = 25% */
+  --tile-span-medium: 4; /* 4 columns = 33% */
+  --tile-span-large: 6; /* 6 columns = 50% */
+  --tile-span-wide: 8; /* 8 columns = 66% */
+
+  /* Tile heights (row spans for masonry-style grid) */
+  --tile-row-span-small: 12;
+  --tile-row-span-medium: 16;
+  --tile-row-span-large: 20;
+  --tile-row-span-wide: 22;
+
+  /* Tile minimum heights */
+  --tile-min-height-small: 9.5rem;
+  --tile-min-height-medium: 12.5rem;
+  --tile-min-height-large: 15rem;
+  --tile-min-height-wide: 17rem;
 }
 
 /* ============================================
@@ -243,24 +266,16 @@
 
 .dark {
   /* Semantic colors - Dark theme */
-  --color-bg-primary: var(--color-gray-950);
-  --color-bg-secondary: var(--color-gray-900);
-  --color-bg-tertiary: var(--color-gray-800);
-  --color-text-primary: var(--color-gray-50);
-  --color-text-secondary: var(--color-gray-300);
-  --color-text-muted: var(--color-gray-500);
-  --color-border-primary: var(--color-gray-800);
-  --color-border-secondary: var(--color-gray-700);
-  --color-link: var(--color-primary-400);
-  --color-link-hover: var(--color-primary-300);
-
-  /* Tag colors - Dark theme */
-  --color-tag-bg: var(--color-gray-800);
-  --color-tag-text: var(--color-gray-300);
-  --color-tag-accent1-bg: var(--color-primary-900);
-  --color-tag-accent1-text: var(--color-primary-300);
-  --color-tag-accent2-bg: var(--color-gray-800);
-  --color-tag-accent2-text: var(--color-gray-400);
+  --bg: #0a0a0a;
+  --surface: #111827;
+  --surface-2: #1f2937;
+  --text: #fafbfc;
+  --text-muted: #6b7280;
+  --border: #374151;
+  --border-strong: #4b5563;
+  --accent: #f652a0;
+  --accent-contrast: #ffffff;
+  --focus: #f652a0;
 
   /* Adjust shadows for dark mode */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);

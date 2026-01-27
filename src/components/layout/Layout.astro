@@ -2,18 +2,11 @@
 // Design System
 import "../../design-system/tokens.css";
 import "../../design-system/base.css";
+import "../../styles/globals.css";
 
 // Layout Components
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
-
-// Interactive Components
-import ParticleBackground from "../interactive/ParticleBackground.astro";
-import AnimatedBackground from "../interactive/AnimatedBackground.astro";
-import ScrollProgress from "../interactive/ScrollProgress.astro";
-
-// Theme
-import ThemeProvider from "../../theme/ThemeProvider.astro";
 
 interface Props {
   title: string;
@@ -50,28 +43,40 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <!-- Critical inline styles to prevent FOUC - must be first! -->
     <style>
       :root {
-        --color-bg-primary: #ffffff;
-        --color-bg-secondary: #fafbfc;
-        --color-text-primary: #1a1a2e;
-        --color-text-secondary: #374151;
+        --bg: #ffffff;
+        --surface: #f1f3f5;
+        --surface-2: #e5e7eb;
+        --text: #111827;
+        --text-muted: #6b7280;
+        --border: #d1d5db;
+        --border-strong: #9ca3af;
+        --accent: #f652a0;
+        --accent-contrast: #ffffff;
+        --focus: #f652a0;
       }
 
       .dark {
-        --color-bg-primary: #0f0f0f;
-        --color-bg-secondary: #1a1a1a;
-        --color-text-primary: #fafafa;
-        --color-text-secondary: #d1d5db;
+        --bg: #0a0a0a;
+        --surface: #111827;
+        --surface-2: #1f2937;
+        --text: #fafbfc;
+        --text-muted: #6b7280;
+        --border: #374151;
+        --border-strong: #4b5563;
+        --accent: #f652a0;
+        --accent-contrast: #ffffff;
+        --focus: #f652a0;
       }
 
       /* Apply immediately */
       html {
-        background-color: var(--color-bg-secondary);
-        color: var(--color-text-primary);
+        background-color: var(--bg);
+        color: var(--text);
       }
 
       body {
-        background-color: var(--color-bg-secondary);
-        color: var(--color-text-primary);
+        background-color: var(--bg);
+        color: var(--text);
         margin: 0;
         padding: 0;
       }
@@ -81,16 +86,19 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <script is:inline>
       (function() {
         try {
-          const savedTheme = localStorage.getItem('theme');
+          const savedAccent = localStorage.getItem('accent');
+          if (savedAccent) {
+            document.documentElement.style.setProperty('--accent', savedAccent);
+            document.documentElement.style.setProperty('--focus', savedAccent);
+          }
+
+          const savedTheme = localStorage.getItem('theme') || 'system';
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+          const effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
 
           // Apply theme class immediately
-          if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.add('light');
-          }
+          document.documentElement.classList.add(effectiveTheme);
+          document.documentElement.setAttribute('data-theme', savedTheme);
         } catch (e) {
           // Fail silently if localStorage is not available
           // Default to system preference
@@ -277,7 +285,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
     
     <!-- Favicon and Icons -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/hamish_logo_colourable.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -301,27 +309,35 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
-        padding: 0 1rem;
+        padding: 0 var(--padding-mobile);
         box-sizing: border-box;
       }
 
-      @media (min-width: 640px) {
+      @media (min-width: 768px) {
         .page-wrapper {
-          padding: 0 1.5rem;
+          padding: 0 var(--padding-tablet);
         }
+      }
+
+      @media (min-width: 1024px) {
+        .page-wrapper {
+          padding: 0 var(--padding-desktop);
+        }
+      }
+
+      main {
+        width: 100%;
+        max-width: var(--content-max-width);
+        margin: 0 auto;
       }
     </style>
   </head>
-  <body class="antialiased" style="background-color: var(--color-bg-secondary); color: var(--color-text-primary); min-height: 100vh; display: flex; flex-direction: column;">
+  <body class="antialiased" style="background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column;">
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <ScrollProgress />
-    <AnimatedBackground />
-    <ParticleBackground />
-    <ThemeProvider />
 
     <div class="page-wrapper">
       <Header />
-      <main id="main-content" class="w-full max-w-3xl mx-auto grow py-8 sm:py-12 md:py-16" tabindex="-1">
+      <main id="main-content" class="grow py-8 sm:py-12 md:py-16" tabindex="-1">
         <slot />
       </main>
       <Footer />

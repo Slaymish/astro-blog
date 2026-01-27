@@ -1,0 +1,237 @@
+---
+import Layout from "../../components/layout/Layout.astro";
+import GridTile from "../../components/ui/GridTile.astro";
+import { fetchSanity } from "../../lib/sanity";
+
+export const prerender = true;
+
+type ProjectDoc = {
+  title: string;
+  description?: string;
+  slug: string;
+  date: string;
+  featured?: boolean;
+  technologies?: string[];
+};
+
+const projects = await fetchSanity<ProjectDoc[]>(`
+  *[_type == "project"] | order(date desc){
+    title,
+    description,
+    "slug": slug.current,
+    date,
+    featured,
+    technologies
+  }
+`);
+
+const featuredProjects = projects.filter(p => p.featured);
+const otherProjects = projects.filter(p => !p.featured);
+
+const allTechnologies = [...new Set(
+  projects.flatMap(p => p.technologies || [])
+)].sort();
+
+const featuredTiles = featuredProjects.map((project) => ({
+  title: project.title,
+  description: project.description,
+  href: `/projects/${project.slug}`,
+  size: 'large' as const,
+  tags: project.technologies || [],
+  date: new Date(project.date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short'
+  })
+}));
+
+const otherTiles = otherProjects.map((project) => ({
+  title: project.title,
+  description: project.description,
+  href: `/projects/${project.slug}`,
+  size: 'medium' as const,
+  tags: project.technologies || [],
+  date: new Date(project.date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short'
+  })
+}));
+---
+
+<Layout
+  title="Projects"
+  description="A collection of projects I've worked on, featuring web applications, tools, and experiments."
+>
+  <div class="projects-page">
+    <header class="page-header">
+      <h1>Projects</h1>
+      <p>Things I've built, experiments I've tried, and work in progress.</p>
+    </header>
+
+    {allTechnologies.length > 0 && (
+      <div class="tech-filter">
+        <span class="filter-label">Filter by technology:</span>
+        <div class="tech-tags">
+          <button class="tech-tag active" data-tech="all">All</button>
+          {allTechnologies.map(tech => (
+            <button class="tech-tag" data-tech={tech}>{tech}</button>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {featuredTiles.length > 0 && (
+      <section class="projects-section">
+        <h2 class="section-title">Featured</h2>
+        <div class="bento-grid" id="featured-grid">
+          {featuredTiles.map(tile => <GridTile {...tile} />)}
+        </div>
+      </section>
+    )}
+
+    {otherTiles.length > 0 && (
+      <section class="projects-section">
+        <h2 class="section-title">All Projects</h2>
+        <div class="bento-grid" id="projects-grid">
+          {otherTiles.map(tile => <GridTile {...tile} />)}
+        </div>
+      </section>
+    )}
+
+    {projects.length === 0 && (
+      <div class="empty-state">
+        <p>No projects yet. Check back soon!</p>
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .projects-page {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+  }
+
+  .page-header {
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.03em;
+    color: var(--color-text-primary);
+  }
+
+  .page-header p {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .tech-filter {
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-primary);
+  }
+
+  .filter-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+  }
+
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tech-tag {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border-primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tech-tag:hover {
+    border-color: var(--color-link);
+    color: var(--color-link);
+  }
+
+  .tech-tag.active {
+    background: var(--color-link);
+    border-color: var(--color-link);
+    color: white;
+  }
+
+  .projects-section {
+    margin-bottom: 4rem;
+  }
+
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-primary);
+    letter-spacing: -0.025em;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .projects-page {
+      padding: 0;
+    }
+
+    .page-header h1 {
+      font-size: 2.5rem;
+    }
+  }
+</style>
+
+<script>
+  // Simple filter functionality
+  const techButtons = document.querySelectorAll('.tech-tag[data-tech]');
+  const allTiles = document.querySelectorAll('.tile');
+
+  techButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const tech = button.getAttribute('data-tech');
+
+      if (!tech) return;
+
+      // Update active state
+      techButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      // Filter tiles
+      allTiles.forEach(tile => {
+        const htmlTile = tile as HTMLElement;
+        if (tech === 'all') {
+          htmlTile.style.display = 'flex';
+        } else {
+          const tags = tile.querySelectorAll('.tile-tag');
+          const hasTech = Array.from(tags).some(
+            tag => tag.textContent?.toLowerCase() === tech.toLowerCase()
+          );
+          htmlTile.style.display = hasTech ? 'flex' : 'none';
+        }
+      });
+    });
+  });
+</script>

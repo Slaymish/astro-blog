@@ -1,542 +1,371 @@
 ---
 import Layout from "../components/layout/Layout.astro";
-import { supabase } from "../utils/database";
-import { getCollection, type CollectionEntry } from 'astro:content';
-import type { PostWithTags } from "../../supabase/types";
-import { createSlug } from "../utils/slug";
+import GridTile from "../components/ui/GridTile.astro";
+import { fetchSanity } from "../lib/sanity";
 
-export const prerender = true; // Enable prerendering for development
+export const prerender = true;
 
-// Function to create a clean text preview from markdown
-function createPreview(markdown: string, maxLength: number = 200): string {
-  // Remove markdown syntax
-  const cleanText = markdown
-    .replace(/^---[\s\S]*?---/, '') // Remove frontmatter
-    .replace(/#{1,6}\s+/g, '') // Remove headings
-    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
-    .replace(/\*(.*?)\*/g, '$1') // Remove italic
-    .replace(/`(.*?)`/g, '$1') // Remove inline code
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to text
-    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1') // Remove images
-    .replace(/>\s*/g, '') // Remove blockquotes
-    .replace(/\n+/g, ' ') // Replace line breaks with spaces
-    .replace(/\s+/g, ' ') // Normalize whitespace
-    .trim();
+type ProjectDoc = {
+  title: string;
+  description?: string;
+  slug: string;
+  date: string;
+  technologies?: string[];
+};
 
-  return cleanText.length > maxLength 
-    ? cleanText.substring(0, maxLength - 3) + '...'
-    : cleanText;
-}
+type PostDoc = {
+  title: string;
+  excerpt?: string;
+  slug: string;
+  publishedAt: string;
+  tags?: string[];
+};
 
-let posts: PostWithTags[] = [];
-let postsError: string | null = null;
-
-// Fetch posts data from Supabase if connection is set up
-if (supabase) {
-  const { data, error } = await supabase
-    .from("posts")
-    .select(`
-      *,
-      post_tags(
-        tags(
-          id,
-          name,
-          slug
-        )
-      )
-    `)
-    .order("created_at", { ascending: false });
-  if (error) {
-    postsError = error.message;
-  } else {
-    posts = (data as unknown as PostWithTags[] | null) ?? [];
+const projects = await fetchSanity<ProjectDoc[]>(`
+  *[_type == "project"] | order(date desc)[0...8]{
+    title,
+    description,
+    "slug": slug.current,
+    date,
+    technologies
   }
-} else {
-  postsError = "Database connection unavailable.";
-}
+`);
 
-// explicitly type so TS knows slug, data.pubDate, pdfPath, render exist:
-const reports = await getCollection('reports') as CollectionEntry<'reports'>[];
+const displayPosts = await fetchSanity<PostDoc[]>(`
+  *[_type == "post"] | order(publishedAt desc)[0...6]{
+    title,
+    excerpt,
+    "slug": slug.current,
+    publishedAt,
+    tags
+  }
+`);
 
-const sortedReports = reports
-  .filter(r => !r.data.draft)
-  .sort((a, b) =>
-    new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
-  );
+const homeDescription = "Welcome to my personal site - a collection of projects, writing, and thoughts.";
 
-const contentPosts = await getCollection('posts') as CollectionEntry<'posts'>[];
-const sortedContentPosts = contentPosts
-  .filter(p => !p.data.draft)
-  .sort((a, b) =>
-    new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
-  );
+// Pre-compute project tiles data
+const projectSizeCycle: Array<'small' | 'medium' | 'large' | 'wide'> = [
+  'wide',
+  'medium',
+  'small',
+  'large',
+  'medium',
+  'small',
+  'wide',
+  'medium'
+];
 
-const hasSupabasePosts = !postsError && posts.length > 0;
-const hasContentPosts = sortedContentPosts.length > 0;
+const projectTiles = projects.map((project, index) => {
+  const dateStr = new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+  return {
+    title: project.title,
+    description: project.description,
+    href: `/projects/${project.slug}`,
+    size: projectSizeCycle[index % projectSizeCycle.length],
+    tags: project.technologies || [],
+    date: dateStr
+  };
+});
 
-const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, mathematics, and technology. Discover insights on programming, machine learning, algorithms, and philosophy.";
+// Pre-compute post tiles data
+const postSizeCycle: Array<'small' | 'medium' | 'large' | 'wide'> = [
+  'small',
+  'medium',
+  'small',
+  'wide',
+  'medium',
+  'small'
+];
+
+const postTiles = displayPosts.map((post, index) => {
+  const dateStr = new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+
+  return {
+    title: post.title,
+    description: post.excerpt || '',
+    href: `/posts/${post.slug}`,
+    size: postSizeCycle[index % postSizeCycle.length],
+    tags: post.tags || [],
+    date: dateStr
+  };
+});
 ---
 
-<Layout 
-  title="Hamish's Blog" 
+<Layout
+  title="Hamish"
   description={homeDescription}
   canonicalURL={Astro.url.href}
 >
-  <!-- Hero Section -->
-  <section class="mb-20 text-center fade-in">
-    <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight" style="font-family: var(--font-heading); color: var(--color-text-primary); letter-spacing: -0.03em;">
-      Hi, I'm Hamish
-    </h1>
-    <p class="text-xl sm:text-2xl md:text-3xl mb-10 max-w-3xl mx-auto leading-relaxed" style="color: var(--color-text-secondary);">
-      Writing about <span style="color: var(--color-primary-500); font-weight: 600;">software</span>,
-      <span style="color: var(--color-accent-500); font-weight: 600;">AI</span>,
-      and <span style="color: var(--color-accent2-500); font-weight: 600;">whatever I'm working on</span>
-    </p>
-    <div class="flex justify-center gap-6 flex-wrap">
-      <a
-        href="#reports"
-        class="cta-button cta-primary"
-        style="background-color: var(--color-primary-500); color: white;"
-      >
-        View Reports
-      </a>
-      <a
-        href="#posts"
-        class="cta-button cta-secondary"
-        style="border: 2px solid var(--color-primary-500); color: var(--color-primary-500);"
-      >
-        Read Posts
-      </a>
+  <!-- Masthead Hero Section -->
+  <section class="masthead">
+    <div class="masthead-content">
+      <h1>Hi, I'm Hamish</h1>
+      <p class="masthead-text">
+        I build things with code and write about technology, software engineering, and whatever I'm learning.
+      </p>
+
+      <div class="masthead-actions">
+        <a href="mailto:hamishapps@gmail.com" class="primary-button">
+          hamishapps@gmail.com
+        </a>
+      </div>
     </div>
   </section>
 
-  <section id="reports" aria-labelledby="reports-heading" class="mb-24 scroll-mt-24">
-    <h1 id="reports-heading" class="mb-10 fade-in text-4xl md:text-5xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500); letter-spacing: -0.025em;">
-      Reports
-    </h1>
-    <div class="space-y-12" role="list">
-      {sortedReports.map((report, index) => (
-        <article
-          role="listitem"
-          class={`pb-10 slide-in card-hover`}
-          style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
-          itemscope
-          itemtype="http://schema.org/ScholarlyArticle"
-        >
-          <header>
-            <h2 class="text-2xl md:text-3xl font-bold mb-3" style="letter-spacing: -0.025em;">
-              <a
-                href={`/reports/${report.id.replace(/\.(md|mdx)$/, '')}`}
-                style="color: var(--color-text-primary);"
-                class="hover:underline transition-colors"
-                itemprop="headline"
-              >
-                {report.data.title}
-              </a>
-            </h2>
-          </header>
-
-          <div class="mb-5 text-sm" style="color: var(--color-text-muted);">
-            <time
-              datetime={new Date(report.data.pubDate).toISOString()}
-              itemprop="datePublished"
-            >
-              {new Date(report.data.pubDate).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-              })}
-            </time>
-            <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
-              <span itemprop="name">Hamish Burke</span>
-            </span>
-          </div>
-
-          {report.data.description && (
-            <div class="prose prose-invert max-w-none mb-5" style="color: var(--color-text-secondary);" itemprop="description">
-              {report.data.description}
-            </div>
-          )}
-          
-          {report.data.tags && report.data.tags.length > 0 && (
-            <div class="flex flex-wrap gap-4" role="list" aria-label="Report tags">
-              {report.data.tags.map((tag, tagIndex) => {
-                // Cycle through different tag colors for visual variety
-                const colorVariant = tagIndex % 3;
-                let bgColor = 'var(--color-tag-bg)';
-                let textColor = 'var(--color-tag-text)';
-                
-                if (colorVariant === 1) {
-                  bgColor = 'var(--color-tag-accent1-bg)';
-                  textColor = 'var(--color-tag-accent1-text)';
-                } else if (colorVariant === 2) {
-                  bgColor = 'var(--color-tag-accent2-bg)';
-                  textColor = 'var(--color-tag-accent2-text)';
-                }
-                
-                return (
-                  <a
-                    role="listitem"
-                    href={`/tags/${createSlug(tag)}`}
-                    class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-                    style={`background-color: ${bgColor}; color: ${textColor};`}
-                    itemprop="keywords"
-                  >
-                    {tag}
-                  </a>
-                );
-              })}
-            </div>
-          )}
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section id="posts" aria-labelledby="recent-posts-heading" class="posts-section scroll-mt-24">
-    <h2 id="recent-posts-heading" class="mb-10 text-4xl md:text-5xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500); letter-spacing: -0.025em;">
-      Recent Posts
-    </h2>
-    {hasSupabasePosts ? (
-      <div class="space-y-12" role="list">
-        {posts.map((post, index) => (
-          <article 
-            role="listitem"
-            class={`pb-8 slide-in card-hover`}
-            style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
-            itemscope 
-            itemtype="http://schema.org/BlogPosting"
-          >
-            <header>
-              <h2 class="text-2xl font-bold mb-2">
-                <a 
-                  href={`/posts/${post.slug}`} 
-                  style="color: var(--color-text-primary);" 
-                  class="hover:underline transition-colors"
-                  itemprop="headline"
-                >
-                  {post.title}
-                </a>
-              </h2>
-            </header>
-            
-            <div class="mb-5" style="color: var(--color-text-muted);">
-              <time 
-                datetime={post.created_at}
-                itemprop="datePublished"
-              >
-                {new Date(post.created_at).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric"
-                })}
-              </time>
-              <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
-                <span itemprop="name">Hamish Burke</span>
-              </span>
-            </div>
-            
-            <div class="prose prose-invert max-w-none mb-5" style="color: var(--color-text-secondary);" itemprop="description">
-              {createPreview(post.content, 200)}
-            </div>
-            
-            {post.post_tags && post.post_tags.length > 0 && (
-              <div class="flex flex-wrap gap-4" role="list" aria-label="Post tags">
-                {post.post_tags.map((postTag, index) => {
-                  // Cycle through different tag colors for visual variety
-                  const colorVariant = index % 3;
-                  let bgColor = 'var(--color-tag-bg)';
-                  let textColor = 'var(--color-tag-text)';
-                  
-                  if (colorVariant === 1) {
-                    bgColor = 'var(--color-tag-accent1-bg)';
-                    textColor = 'var(--color-tag-accent1-text)';
-                  } else if (colorVariant === 2) {
-                    bgColor = 'var(--color-tag-accent2-bg)';
-                    textColor = 'var(--color-tag-accent2-text)';
-                  }
-                  
-                  return (
-                    <a
-                      role="listitem"
-                      href={`/tags/${postTag.tags.slug ?? createSlug(postTag.tags.name)}`}
-                      class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-                      style={`background-color: ${bgColor}; color: ${textColor};`}
-                      itemprop="keywords"
-                    >
-                      {postTag.tags.name}
-                    </a>
-                  );
-                })}
-              </div>
-            )}
-          </article>
-        ))}
-      </div>
-    ) : hasContentPosts ? (
-      <div class="space-y-12" role="list">
-        {sortedContentPosts.map((post, index) => (
-          <article 
-            role="listitem"
-            class={`pb-8 slide-in card-hover`}
-            style={`border-bottom: 1px solid var(--color-border-secondary); animation-delay: ${index * 0.1}s;`}
-            itemscope 
-            itemtype="http://schema.org/BlogPosting"
-          >
-            <header>
-              <h2 class="text-2xl font-bold mb-2">
-                <a 
-                  href={`/posts/${post.id.replace(/\.(md|mdx)$/, '')}`} 
-                  style="color: var(--color-text-primary);" 
-                  class="hover:underline transition-colors"
-                  itemprop="headline"
-                >
-                  {post.data.title}
-                </a>
-              </h2>
-            </header>
-            
-            <div class="mb-5" style="color: var(--color-text-muted);">
-              <time 
-                datetime={new Date(post.data.pubDate).toISOString()}
-                itemprop="datePublished"
-              >
-                {new Date(post.data.pubDate).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric"
-                })}
-              </time>
-              <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
-                <span itemprop="name">Hamish Burke</span>
-              </span>
-            </div>
-            
-            <div class="prose prose-invert max-w-none mb-5" style="color: var(--color-text-secondary);" itemprop="description">
-              {createPreview(post.body ?? "", 200)}
-            </div>
-            
-            {post.data.tags && post.data.tags.length > 0 && (
-              <div class="flex flex-wrap gap-4" role="list" aria-label="Post tags">
-                {post.data.tags.map((tag, index) => {
-                  // Cycle through different tag colors for visual variety
-                  const colorVariant = index % 3;
-                  let bgColor = 'var(--color-tag-bg)';
-                  let textColor = 'var(--color-tag-text)';
-                  
-                  if (colorVariant === 1) {
-                    bgColor = 'var(--color-tag-accent1-bg)';
-                    textColor = 'var(--color-tag-accent1-text)';
-                  } else if (colorVariant === 2) {
-                    bgColor = 'var(--color-tag-accent2-bg)';
-                    textColor = 'var(--color-tag-accent2-text)';
-                  }
-                  
-                  return (
-                    <a
-                      role="listitem"
-                      href={`/tags/${createSlug(tag)}`}
-                      class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-                      style={`background-color: ${bgColor}; color: ${textColor};`}
-                      itemprop="keywords"
-                    >
-                      {tag}
-                    </a>
-                  );
-                })}
-              </div>
-            )}
-          </article>
-        ))}
-      </div>
-    ) : (
-      <div class="text-center py-10 fade-in">
-        <h3 class="text-xl font-bold mb-3" style="color: var(--color-text-primary);">No posts yet</h3>
-        <p class="text-lg" style="color: var(--color-text-muted);">
-          {postsError ? `${postsError} Please check back soon.` : "New writing is on the way."}
+  <!-- Mixed-span Bento Grid -->
+  <section class="grid-section">
+    <div class="bento-grid">
+      <!-- Large anchor tile: Personal Dashboard -->
+      <div class="tile tile-wide featured-tile">
+        <div class="tile-title">
+          <span>Personal Dashboard</span>
+          <span class="tile-arrow">→</span>
+        </div>
+        <p class="tile-description">
+          A collection of personal tools including HealthAgent, FinanceAgent, and more.
         </p>
+        <div class="tile-links">
+          <a href="#healthagent">HealthAgent</a>
+          <a href="#financeagent">FinanceAgent</a>
+        </div>
       </div>
-    )}
+
+      <!-- Key projects -->
+      {projectTiles.slice(0, 3).map(tile => <GridTile {...tile} />)}
+
+      <!-- Small tiles: Writing and hobbies -->
+      {postTiles.slice(0, 2).map(tile => <GridTile {...tile} />)}
+
+      <!-- Hobby/info tiles -->
+      <div
+        class="tile tile-small tile-image"
+        style={`--tile-image: url('/images/tiles/bouldering.jpg')`}
+      >
+        <div class="tile-title">
+          <span>Bouldering</span>
+        </div>
+        <div class="hobby-list">
+          <div><span class="label">Currently:</span> V3/4 projects</div>
+          <div><span class="label">Next:</span> V4</div>
+        </div>
+      </div>
+
+      <div
+        class="tile tile-small tile-image"
+        style={`--tile-image: url('/images/tiles/piano.jpg')`}
+      >
+        <div class="tile-title">
+          <span>Piano</span>
+        </div>
+        <div class="hobby-list">
+          <div><span class="label">Currently:</span>Merry Go Round of Life (by Joe Hisaishi)</div>
+          <div><span class="label">Next:</span> Talk to me (by Cavetown)</div>
+        </div>
+      </div>
+
+      <!-- More projects and writing -->
+      {projectTiles.slice(3, 6).map(tile => <GridTile {...tile} />)}
+      {postTiles.slice(2, 5).map(tile => <GridTile {...tile} />)}
+
+      <!-- Info tiles -->
+      <a href="/about" class="tile tile-medium">
+        <div class="tile-title">
+          <span>About</span>
+          <span class="tile-arrow">→</span>
+        </div>
+        <p class="tile-description">More about me and my background</p>
+      </a>
+
+      <a href="https://github.com/Slaymish" target="_blank" rel="noopener noreferrer" class="tile tile-medium">
+        <div class="tile-title">
+          <span>GitHub</span>
+          <span class="tile-arrow">↗</span>
+        </div>
+        <p class="tile-description">Check out my code and contributions</p>
+      </a>
+    </div>
+
+    <!-- View more links -->
+    <div class="view-more">
+      <a href="/projects">View all projects →</a>
+      <a href="/writing">View all writing →</a>
+    </div>
   </section>
 </Layout>
 
 <style>
-  /* Hero Section Styles */
-  .cta-button {
-    padding: 0.875rem 2rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
+  .masthead {
+    padding: 3rem 0 4rem;
+    text-align: center;
+  }
+
+  .masthead-content {
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+
+  .masthead h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 8vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+
+  .masthead-text {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .masthead-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .primary-button {
     font-size: 1rem;
-    transition: all 0.2s ease;
-    display: inline-block;
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-base);
     text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.15s ease;
   }
 
-  .cta-primary {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  .primary-button:hover {
+    background-color: color-mix(in srgb, var(--accent) 85%, black);
   }
 
-  .cta-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-    filter: brightness(1.05);
-  }
-
-  .cta-primary:active {
-    transform: translateY(0);
-  }
-
-  .cta-secondary {
-    background-color: transparent;
-  }
-
-  .cta-secondary:hover {
-    background-color: var(--color-primary-500);
-    color: white !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-  }
-
-  .cta-secondary:active {
-    transform: translateY(0);
-  }
-
-  .cta-button:focus-visible {
-    outline: 3px solid var(--color-primary-500);
-    outline-offset: 3px;
-  }
-
-  /* Section Styles */
-  .scroll-mt-24 {
-    scroll-margin-top: 6rem;
-  }
-
-  .card-hover {
-    transition: all 0.2s ease;
-    position: relative;
-  }
-
-  .card-hover::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: var(--color-primary-500);
-    transform: scaleY(0);
-    transition: transform 0.3s ease;
-  }
-
-  .card-hover:hover::before {
-    transform: scaleY(1);
-  }
-
-  .card-hover:hover {
-    padding-left: 0.75rem;
-  }
-
-  /* Disable text underline on card hover */
-  .card-hover a {
-    border-bottom: none !important;
-  }
-
-  .card-hover a::after {
+  .primary-button::after {
     display: none;
   }
 
-  .card-hover a:hover {
-    color: var(--color-primary-500) !important;
-    border-bottom: none !important;
+  .secondary-links {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
   }
 
-  .posts-section {
-    margin-top: 4rem;
-    padding-top: 3rem;
-    border-top: 1px solid var(--color-border-secondary);
+  .secondary-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
   }
 
-  .posts-section h2 {
-    color: var(--color-primary-500);
-    font-family: var(--font-heading);
+  .secondary-links a:hover {
+    color: var(--accent);
   }
 
-  /* Animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .secondary-links span {
+    color: var(--border);
   }
 
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  .grid-section {
+    margin-bottom: 2rem;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding: 0 var(--padding-mobile);
   }
 
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  .featured-tile {
+    cursor: default;
   }
 
-  .fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+  .featured-tile .tile-arrow {
+    display: none;
   }
 
-  .slide-in {
-    animation: slideIn 0.6s ease-out forwards;
+  .tile-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: auto;
   }
 
-  .animate-spin {
-    animation: spin 1s linear infinite;
+  .tile-links a {
+    font-size: 0.875rem;
+    color: var(--accent);
+    text-decoration: none;
   }
 
-  /* Responsive adjustments */
+  .tile-links a:hover {
+    text-decoration: underline;
+  }
+
+  .tile-links a::after {
+    display: none;
+  }
+
+  .hobby-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .hobby-list .label {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .view-more {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .view-more a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    transition: color 0.15s ease;
+  }
+
+  .view-more a:hover {
+    color: var(--accent);
+  }
+
+  .view-more a::after {
+    display: none;
+  }
+
   @media (max-width: 768px) {
-    .cta-button {
-      padding: 0.75rem 1.5rem;
-      font-size: 0.9375rem;
+    .masthead {
+      padding: 2rem 0 3rem;
     }
 
-    .card-hover:hover::before {
-      width: 2px;
+    .masthead h1 {
+      font-size: 2.5rem;
     }
 
-    .card-hover:hover {
-      padding-left: 0.5rem;
+    .masthead-text {
+      font-size: 1rem;
     }
 
-    section {
-      scroll-margin-top: 4rem;
+    .view-more {
+      flex-direction: column;
+      gap: 1rem;
     }
   }
 
-  @media (max-width: 640px) {
-    .cta-button {
-      width: 100%;
-      justify-content: center;
+  @media (min-width: 768px) {
+    .grid-section {
+      padding: 0 var(--padding-tablet);
     }
+  }
 
-    .card-hover:hover::before {
-      display: none;
-    }
-
-    .card-hover:hover {
-      padding-left: 0;
+  @media (min-width: 1024px) {
+    .grid-section {
+      padding: 0 var(--padding-desktop);
     }
   }
 </style>

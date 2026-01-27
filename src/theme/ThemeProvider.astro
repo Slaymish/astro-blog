@@ -2,8 +2,8 @@
 /**
  * THEME PROVIDER
  *
- * Simplified theme toggle component.
- * Manages light/dark theme switching with localStorage persistence.
+ * Theme toggle component for inline header placement.
+ * Manages system/light/dark theme switching with localStorage persistence.
  */
 
 interface Props {
@@ -17,11 +17,11 @@ const { class: className = '' } = Astro.props;
   <button
     class="theme-toggle-button"
     aria-label="Toggle theme"
-    title="Toggle between light and dark theme"
+    title="Toggle theme"
     id="theme-toggle-button"
   >
     <span class="theme-icon theme-icon-light">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5"></circle>
         <line x1="12" y1="1" x2="12" y2="3"></line>
         <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -34,8 +34,15 @@ const { class: className = '' } = Astro.props;
       </svg>
     </span>
     <span class="theme-icon theme-icon-dark">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </span>
+    <span class="theme-icon theme-icon-system">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
       </svg>
     </span>
   </button>
@@ -43,46 +50,41 @@ const { class: className = '' } = Astro.props;
 
 <style>
   .theme-toggle {
-    position: fixed;
-    bottom: var(--spacing-4);
-    right: var(--spacing-4);
-    z-index: var(--z-fixed);
+    display: flex;
+    align-items: center;
   }
 
   .theme-toggle-button {
-    background-color: var(--color-bg-primary);
-    border: 1px solid var(--color-border-primary);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
     border-radius: var(--radius-full);
-    padding: var(--spacing-3);
+    padding: 0.5rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--shadow-md);
-    transition: all var(--transition-base) var(--easing-ease);
-    color: var(--color-text-primary);
+    color: var(--text);
+    transition: all 0.15s ease;
   }
 
   .theme-toggle-button:hover {
-    transform: scale(1.1);
-    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
+    background-color: var(--surface-2);
   }
 
-  .theme-toggle-button:active {
-    transform: scale(0.95);
+  .theme-toggle-button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
   }
 
   .theme-icon {
     display: none;
-    transition: opacity var(--transition-base) var(--easing-ease);
+    transition: opacity 0.15s ease;
   }
 
+  /* Show light icon by default */
   .theme-icon-light {
     display: block;
-  }
-
-  .theme-icon-dark {
-    display: none;
   }
 
   /* Show dark icon when in dark mode */
@@ -94,40 +96,72 @@ const { class: className = '' } = Astro.props;
     display: block;
   }
 
-  @media (max-width: 640px) {
-    .theme-toggle {
-      bottom: var(--spacing-3);
-      right: var(--spacing-3);
-    }
+  /* Show system icon when in system mode */
+  :global([data-theme="system"]) .theme-icon-light {
+    display: none;
+  }
 
-    .theme-toggle-button {
-      padding: var(--spacing-2-5);
-    }
+  :global([data-theme="system"]) .theme-icon-system {
+    display: block;
   }
 </style>
 
 <script>
-  // Simple theme toggle functionality
+  // Theme toggle functionality with system mode
   const button = document.getElementById('theme-toggle-button');
   const html = document.documentElement;
 
-  // Get current theme from DOM class
-  function getCurrentTheme() {
-    return html.classList.contains('dark') ? 'dark' : 'light';
+  type ThemeMode = 'system' | 'light' | 'dark';
+
+  // Get current theme mode from localStorage
+  function getThemeMode(): ThemeMode {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'system' || stored === 'light' || stored === 'dark') {
+      return stored;
+    }
+    return 'system'; // default
   }
 
-  // Set theme
-  function setTheme(theme: 'light' | 'dark') {
+  // Get effective theme (resolved from system preference)
+  function getEffectiveTheme(): 'light' | 'dark' {
+    const mode = getThemeMode();
+    if (mode === 'system') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return mode;
+  }
+
+  // Set theme mode and apply to DOM
+  function setTheme(mode: ThemeMode) {
+    localStorage.setItem('theme', mode);
+    html.setAttribute('data-theme', mode);
+
+    const effectiveTheme = mode === 'system'
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : mode;
+
     html.classList.remove('light', 'dark');
-    html.classList.add(theme);
-    localStorage.setItem('theme', theme);
+    html.classList.add(effectiveTheme);
   }
 
-  // Toggle theme
+  // Toggle through modes: system -> light -> dark -> system
   function toggleTheme() {
-    const current = getCurrentTheme();
-    setTheme(current === 'light' ? 'dark' : 'light');
+    const currentMode = getThemeMode();
+    const nextMode: ThemeMode = currentMode === 'system' ? 'light' : currentMode === 'light' ? 'dark' : 'system';
+    setTheme(nextMode);
   }
+
+  // Listen for system theme changes
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  mediaQuery.addEventListener('change', () => {
+    const mode = getThemeMode();
+    if (mode === 'system') {
+      setTheme('system');
+    }
+  });
+
+  // Initialize theme on load
+  setTheme(getThemeMode());
 
   // Attach event listener
   button?.addEventListener('click', toggleTheme);

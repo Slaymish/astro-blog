@@ -1,53 +1,29 @@
 ---
-import { supabase } from "../../utils/database";
-import type { PostWithTags } from "../../../supabase/types";
+import { fetchSanity } from "../../lib/sanity";
 
 interface Props {
-  currentPostId: number;
+  currentPostSlug: string;
   currentPostTags: string[];
   limit?: number;
 }
 
-const { currentPostId, currentPostTags, limit = 3 } = Astro.props;
+const { currentPostSlug, currentPostTags, limit = 3 } = Astro.props;
 
-let relatedPosts: PostWithTags[] = [];
+let relatedPosts: Array<{ title: string; slug: string; publishedAt: string }> = [];
 
-if (supabase && currentPostTags.length > 0) {
-  // Find posts that share tags with the current post
-  const { data } = await supabase
-    .from('posts')
-    .select(`
-      id,
-      title,
-      slug,
-      created_at,
-      post_tags!inner (
-        tags (
-          name,
-          slug
-        )
-      )
-    `)
-    .neq('id', currentPostId)
-    .limit(limit * 2); // Get more than needed to filter
-
-  if (data) {
-    // Score posts by shared tags
-    const scoredPosts = data
-      .map((post: any) => {
-        const postTags = post.post_tags?.map((pt: any) => pt.tags.name) || [];
-        const sharedTags = postTags.filter((tag: string) => currentPostTags.includes(tag));
-        return {
-          ...post,
-          score: sharedTags.length
-        };
-      })
-      .filter((post: any) => post.score > 0)
-      .sort((a: any, b: any) => b.score - a.score)
-      .slice(0, limit);
-
-    relatedPosts = scoredPosts;
-  }
+if (currentPostTags.length > 0) {
+  relatedPosts = await fetchSanity(`
+    *[_type == "post" && slug.current != $slug && count(tags[@ in $tags]) > 0]
+      | order(publishedAt desc)[0...$limit]{
+        title,
+        "slug": slug.current,
+        publishedAt
+      }
+  `, {
+    slug: currentPostSlug,
+    tags: currentPostTags,
+    limit
+  });
 }
 ---
 
@@ -67,11 +43,11 @@ if (supabase && currentPostTags.length > 0) {
             </a>
           </h3>
           <time 
-            datetime={new Date(post.created_at).toISOString()} 
+            datetime={new Date(post.publishedAt).toISOString()} 
             class="text-sm text-slate-600 dark:text-slate-400 block mt-1"
             itemprop="datePublished"
           >
-            {new Date(post.created_at).toLocaleDateString()}
+            {new Date(post.publishedAt).toLocaleDateString()}
           </time>
         </article>
       ))}

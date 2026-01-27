@@ -1,0 +1,90 @@
+---
+/**
+ * GRID TILE COMPONENT
+ *
+ * Reusable tile component for the bento grid layout.
+ * Supports different sizes and includes hover effects with arrow indicator.
+ */
+
+export interface TileProps {
+  title: string;
+  description: string;
+  href: string;
+  size?: 'small' | 'medium' | 'large' | 'wide';
+  tags?: string[];
+  date?: string;
+  external?: boolean;
+}
+
+const {
+  title,
+  description,
+  href,
+  size = 'medium',
+  tags = [],
+  date = '',
+  external = false
+} = Astro.props;
+
+const sizeClass = `tile-${size}`;
+---
+
+<article class={`tile ${sizeClass}`}>
+  <a
+    href={href}
+    class="tile-link"
+    target={external ? '_blank' : undefined}
+    rel={external ? 'noopener noreferrer' : undefined}
+  >
+    <div class="tile-title">
+      <span>{title}</span>
+      <span class="tile-arrow">
+        {external ? (
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        )}
+      </span>
+    </div>
+
+    {description && (
+      <p class="tile-description">{description}</p>
+    )}
+
+    <div class="tile-meta">
+      {tags && tags.length > 0 && (
+        <div class="tile-tags">
+          {tags.map((tag: string) => (
+            <span class="tile-tag">{tag}</span>
+          ))}
+        </div>
+      )}
+
+      {date && (
+        <time datetime={date}>{date}</time>
+      )}
+    </div>
+  </a>
+</article>
+
+<style>
+  .tile {
+    /* Styles are inherited from globals.css */
+  }
+
+  .tile-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .tile-link::after {
+    display: none;
+  }
+</style>

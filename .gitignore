@@ -26,6 +26,8 @@ pnpm-debug.log*
 # Local Netlify folder
 .netlify
 
-# Supabase
-supabase/.temp
+.studio-production/
+# Sanity Studio output (standalone app)
+studio-production/
+
 .github/copilot-instructions.md

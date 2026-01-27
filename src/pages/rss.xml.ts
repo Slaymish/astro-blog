@@ -1,47 +1,19 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
-import { supabase } from '../utils/database';
+import { fetchSanity } from '../lib/sanity';
+import { portableTextToPlainText } from '../lib/portableText';
 
 export const GET: APIRoute = async () => {
   const siteURL = 'https://hamishburke.dev'; // Update this to your actual domain
 
-  let posts: any[] = [];
-  
-  if (supabase) {
-    const { data } = await supabase
-      .from('posts')
-      .select(`
-        title,
-        slug,
-        content,
-        created_at,
-        updated_at,
-        post_tags (
-          tags (
-            name
-          )
-        )
-      `)
-      .order('created_at', { ascending: false })
-      .limit(50);
-    
-    posts = data || [];
-  }
-
-  if (posts.length === 0) {
-    const contentPosts = await getCollection('posts');
-    posts = contentPosts
-      .filter(post => !post.data.draft)
-      .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
-      .slice(0, 50)
-      .map(post => ({
-        title: post.data.title,
-        slug: post.id.replace(/\.(md|mdx)$/, ''),
-        content: post.body ?? '',
-        created_at: post.data.pubDate,
-        post_tags: (post.data.tags || []).map(tag => ({ tags: { name: tag } })),
-      }));
-  }
+  const posts = await fetchSanity<Array<{ title: string; slug: string; publishedAt: string; body?: any; tags?: string[] }>>(`
+    *[_type == "post"] | order(publishedAt desc)[0...50]{
+      title,
+      "slug": slug.current,
+      publishedAt,
+      tags,
+      body
+    }
+  `);
 
   const rssXml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -56,8 +28,8 @@ export const GET: APIRoute = async () => {
     <atom:link href="${siteURL}/rss.xml" rel="self" type="application/rss+xml"/>
     
     ${posts.map(post => {
-      const cleanContent = post.content.replace(/[#*`\[\]]/g, '').substring(0, 300);
-      const categories = post.post_tags?.map((pt: any) => pt.tags.name) || [];
+      const cleanContent = portableTextToPlainText(post.body).substring(0, 300);
+      const categories = post.tags || [];
       
       return `
     <item>
@@ -65,7 +37,7 @@ export const GET: APIRoute = async () => {
       <link>${siteURL}/posts/${post.slug}</link>
       <guid>${siteURL}/posts/${post.slug}</guid>
       <description><![CDATA[${cleanContent}...]]></description>
-      <pubDate>${new Date(post.created_at).toUTCString()}</pubDate>
+      <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
       <author>hamish@your-domain.com (Hamish Burke)</author>
       ${categories.map((cat: string) => `<category>${cat}</category>`).join('')}
     </item>`;

@@ -1,0 +1,223 @@
+---
+import Layout from "../../components/layout/Layout.astro";
+import { fetchSanity, urlFor } from "../../lib/sanity";
+
+export const prerender = true;
+
+type ReadingStatus = 'reading' | 'read' | 'to-read';
+
+type ReadingItem = {
+  title: string;
+  author: string;
+  status: ReadingStatus;
+  coverImage?: any;
+  link?: string;
+};
+
+const readingItems = await fetchSanity<ReadingItem[]>(`
+  *[_type == "book"] | order(status asc, title asc){
+    title,
+    author,
+    status,
+    coverImage,
+    link
+  }
+`);
+
+const statusLabel: Record<ReadingStatus, string> = {
+  reading: 'Reading',
+  read: 'Read',
+  'to-read': 'To read'
+};
+---
+
+<Layout
+  title="Reading"
+  description="What I'm reading, what I've read, and what I hope to read next."
+>
+  <div class="reading-page">
+    <header class="reading-header">
+      <h1>reading.</h1>
+      <p>
+        What I'm reading, what I've read, and what I hope to read next.
+        Recommendations are always welcome.
+      </p>
+    </header>
+
+    <section class="reading-grid" aria-label="Reading list">
+      {readingItems.map((item) => (
+        <article class="reading-card">
+          <div class="reading-card-meta">
+            <span>Reading · Books</span>
+            <span aria-hidden="true">↗</span>
+          </div>
+
+          <div class="reading-card-body">
+            <div class="book-cover" data-has-cover={item.coverImage ? 'true' : 'false'}>
+              {item.coverImage ? (
+                <img
+                  src={urlFor(item.coverImage).width(240).height(320).fit('crop').url()}
+                  alt={`Cover of ${item.title}`}
+                  loading="lazy"
+                />
+              ) : (
+                <div class="book-cover-placeholder" aria-hidden="true"></div>
+              )}
+            </div>
+
+            <div class="reading-card-details">
+              <span class="status-chip" data-status={item.status}>
+                {statusLabel[item.status]}
+              </span>
+              <h2>{item.title}</h2>
+              <p>{item.author}</p>
+            </div>
+          </div>
+        </article>
+      ))}
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .reading-page {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+  }
+
+  .reading-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .reading-header h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 7vw, 4.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+  }
+
+  .reading-header p {
+    max-width: 40rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .reading-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .reading-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    display: grid;
+    gap: 0.75rem;
+    min-height: 16rem;
+  }
+
+  .reading-card-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .reading-card-body {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0.9rem;
+    align-items: start;
+  }
+
+  .book-cover {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: var(--surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+  }
+
+  .book-cover-placeholder {
+    width: 70%;
+    height: 70%;
+    border-radius: 0.35rem;
+    background: linear-gradient(135deg, rgba(246, 82, 160, 0.2), rgba(99, 102, 241, 0.15));
+  }
+
+  .reading-card-details h2 {
+    font-size: 1rem;
+    margin: 0.6rem 0 0.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .reading-card-details p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .status-chip[data-status='reading'] {
+    background: #fde68a;
+    color: #92400e;
+  }
+
+  .status-chip[data-status='read'] {
+    background: #bbf7d0;
+    color: #166534;
+  }
+
+  .status-chip[data-status='to-read'] {
+    background: #fecdd3;
+    color: #9f1239;
+  }
+
+  :global(.dark) .status-chip[data-status='reading'] {
+    background: #92400e;
+    color: #fde68a;
+  }
+
+  :global(.dark) .status-chip[data-status='read'] {
+    background: #166534;
+    color: #bbf7d0;
+  }
+
+  :global(.dark) .status-chip[data-status='to-read'] {
+    background: #9f1239;
+    color: #fecdd3;
+  }
+
+  @media (max-width: 640px) {
+    .reading-card-body {
+      grid-template-columns: 72px 1fr;
+    }
+  }
+</style>

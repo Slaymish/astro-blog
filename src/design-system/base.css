@@ -14,8 +14,8 @@ html {
 }
 
 body {
-  background-color: var(--color-bg-secondary);
-  color: var(--color-text-primary);
+  background-color: var(--bg);
+  color: var(--text);
   font-family: var(--font-body);
   font-weight: var(--font-weight-normal);
   font-size: var(--font-size-base);
@@ -29,13 +29,19 @@ body {
   padding: 0;
 }
 
+/* Card styling for visibility */
+.tile {
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
 /* ============================================
    ACCESSIBILITY
    ============================================ */
 
 /* Focus styles */
 *:focus {
-  outline: 2px solid var(--color-primary-500);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
@@ -50,9 +56,9 @@ body {
   top: var(--spacing-3);
   left: var(--spacing-3);
   padding: var(--spacing-2) var(--spacing-3);
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border-primary);
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   transform: translateY(-200%);
   transition: transform var(--transition-base) var(--easing-ease);
@@ -118,7 +124,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-tight);
   letter-spacing: var(--letter-spacing-normal);
-  color: var(--color-text-primary);
+  color: var(--text);
   margin-top: var(--spacing-11);
   margin-bottom: var(--spacing-5);
 }
@@ -151,7 +157,7 @@ h5 {
 
 h6 {
   font-size: var(--font-size-base);
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: var(--letter-spacing-wide);
@@ -167,7 +173,7 @@ p {
 
 /* Links */
 a {
-  color: var(--color-link);
+  color: var(--accent);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: color var(--transition-base) var(--easing-ease);
@@ -176,7 +182,8 @@ a {
 }
 
 a:hover {
-  color: var(--color-link-hover);
+  color: var(--accent);
+  opacity: 0.8;
   text-decoration: none;
 }
 
@@ -187,7 +194,7 @@ a::after {
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--color-primary-500);
+  background: var(--accent);
   transition: width var(--transition-slow) var(--easing-ease);
 }
 
@@ -200,7 +207,7 @@ a:hover::after {
    ============================================ */
 
 img {
-  border: 1px solid var(--color-border-primary);
+  border: 1px solid var(--border);
   border-radius: var(--radius-base);
   max-width: 100%;
   height: auto;
@@ -248,21 +255,21 @@ a, button, .social-icon, .cta-button {
 .gradient-text {
   background: linear-gradient(
     45deg,
-    var(--color-primary-500),
-    var(--color-primary-300),
-    var(--color-primary-600)
+    var(--accent),
+    color-mix(in srgb, var(--accent) 80%, white),
+    color-mix(in srgb, var(--accent) 70%, black)
   );
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
-  color: var(--color-primary-500);
+  color: var(--accent);
   -webkit-text-fill-color: transparent;
   animation: gradient-shift 3s ease infinite;
 }
 
 @supports not (-webkit-background-clip: text) {
   .gradient-text {
-    color: var(--color-primary-500);
+    color: var(--accent);
     -webkit-text-fill-color: unset;
   }
 }

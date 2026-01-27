@@ -1,0 +1,198 @@
+---
+import Layout from "../../components/layout/Layout.astro";
+import { fetchSanity } from "../../lib/sanity";
+import { portableTextToHtml } from "../../lib/portableText";
+
+export const prerender = true;
+
+type ProjectDoc = {
+  title: string;
+  description?: string;
+  slug: string;
+  technologies?: string[];
+  link?: string;
+  github?: string;
+  body?: any;
+};
+
+export async function getStaticPaths() {
+  const projects = await fetchSanity<Array<{ slug: string }>>(`
+    *[_type == "project" && defined(slug.current)]{ "slug": slug.current }
+  `);
+
+  return projects.map(project => ({
+    params: { slug: project.slug }
+  }));
+}
+
+const { slug } = Astro.params;
+
+const project = await fetchSanity<ProjectDoc | null>(`
+  *[_type == "project" && slug.current == $slug][0]{
+    title,
+    description,
+    "slug": slug.current,
+    technologies,
+    link,
+    github,
+    body
+  }
+`, { slug });
+
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+const projectTitle = project.title;
+const projectDescription = project.description;
+const technologies = project.technologies || [];
+const link = project.link;
+const github = project.github;
+const htmlContent = portableTextToHtml(project.body);
+---
+
+<Layout
+  title={`${projectTitle} | Project`}
+  description={projectDescription}
+>
+  <article class="project-page">
+    <header class="project-header">
+      <a href="/projects" class="back-link">← Back to Projects</a>
+      <h1>{projectTitle}</h1>
+      <p class="project-description">{projectDescription}</p>
+
+      <div class="project-meta">
+        <div class="project-technologies">
+          {technologies.map((tech) => (
+            <span class="tech-tag">{tech}</span>
+          ))}
+        </div>
+
+        <div class="project-links">
+          {link && (
+            <a href={link} target="_blank" rel="noopener noreferrer" class="project-link">
+              Live Demo →
+            </a>
+          )}
+          {github && (
+            <a href={github} target="_blank" rel="noopener noreferrer" class="project-link">
+              GitHub →
+            </a>
+          )}
+        </div>
+      </div>
+    </header>
+
+    {htmlContent && (
+      <div class="project-content" set:html={htmlContent}></div>
+    )}
+  </article>
+</Layout>
+
+<style>
+  .project-page {
+    max-width: var(--container-lg);
+    margin: 0 auto;
+  }
+
+  .project-header {
+    margin-bottom: 3rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: var(--color-link);
+  }
+
+  .back-link::after {
+    display: none;
+  }
+
+  .project-header h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.03em;
+    color: var(--color-text-primary);
+  }
+
+  .project-description {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .project-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border-secondary);
+  }
+
+  .project-technologies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tech-tag {
+    background: var(--color-tag-bg);
+    color: var(--color-tag-text);
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .project-link:hover {
+    border-color: var(--color-link);
+    color: var(--color-link);
+  }
+
+  .project-link::after {
+    display: none;
+  }
+
+  .project-content {
+    color: var(--color-text-primary);
+    line-height: 1.75;
+  }
+
+  @media (min-width: 768px) {
+    .project-meta {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  }
+</style>

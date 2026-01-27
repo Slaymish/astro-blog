@@ -1,295 +1,285 @@
 ---
-import { getCollection, getEntry, render } from "astro:content";
 import Layout from "../../components/layout/Layout.astro";
 import Breadcrumb from "../../components/features/Breadcrumb.astro";
 import TableOfContents from "../../components/features/TableOfContents.astro";
 import RelatedPosts from "../../components/features/RelatedPosts.astro";
-import { supabase } from "../../utils/database";
 import { calculateReadingTime } from "../../utils/reading-time";
 import { createSlug } from "../../utils/slug";
-import type { PostWithTags } from "../../../supabase/types";
-import rehypeFormat from 'rehype-format'
-import rehypeKatex from 'rehype-katex'
-import rehypeRaw from 'rehype-raw'
-import rehypeSlug from 'rehype-slug'
-import rehypeStringify from 'rehype-stringify'
-import remarkDirective from 'remark-directive'
-import remarkFrontmatter from 'remark-frontmatter'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
-import {unified} from 'unified'
-
-const processor = unified()
-  .use(remarkParse)
-  .use(remarkDirective)
-  .use(remarkFrontmatter)
-  .use(remarkGfm)
-  .use(remarkMath)
-  .use(remarkRehype, {allowDangerousHtml: true})
-  .use(rehypeRaw)
-  .use(rehypeSlug)
-  .use(rehypeKatex)
-  .use(rehypeFormat)
-  .use(rehypeStringify)
-
+import { fetchSanity } from "../../lib/sanity";
+import { portableTextToHtml, portableTextToPlainText } from "../../lib/portableText";
 
 export const prerender = true;
 
+type PostDoc = {
+  title: string;
+  slug: string;
+  publishedAt: string;
+  updatedAt?: string;
+  tags?: string[];
+  excerpt?: string;
+  body?: any;
+};
+
 export async function getStaticPaths() {
-  const posts = await getCollection("posts");
-  return posts.flatMap((post) => {
-    const fileSlug = post.id.replace(/\.(md|mdx)$/, "");
-    const titleSlug = createSlug(post.data.title);
-    const slugs = new Set([fileSlug, titleSlug].filter(Boolean));
-    return Array.from(slugs).map((slug) => ({
-      params: { slug },
-    }));
-  });
+  const posts = await fetchSanity<Array<{ slug: string }>>(`
+    *[_type == "post" && defined(slug.current)]{ "slug": slug.current }
+  `);
+
+  return posts.map((post) => ({
+    params: { slug: post.slug }
+  }));
 }
 
 const { slug } = Astro.params;
 
-let post: PostWithTags | null = null;
-type ContentPost = Awaited<ReturnType<typeof getEntry>>;
-let contentPost: ContentPost | null = null;
-let htmlContent = "";
-let markdownContent = "";
-let renderedContent: any = null;
-let postSlug = "";
-
-if (supabase && slug) {
-  const { data } = await supabase
-    .from("posts")
-    .select(`
-      *,
-      post_tags(
-        tags(
-          id,
-          name,
-          slug
-        )
-      )
-    `)
-    .eq("slug", slug)
-    .single();
-  
-  post = data as PostWithTags | null;
-}
-
-if (!post && slug) {
-  const contentPosts = await getCollection("posts");
-  contentPost =
-    contentPosts.find((entry) => {
-      const fileSlug = entry.id.replace(/\.(md|mdx)$/, "");
-      const titleSlug = createSlug(entry.data.title);
-      return slug === fileSlug || slug === titleSlug;
-    }) ?? null;
-}
+const post = await fetchSanity<PostDoc | null>(`
+  *[_type == "post" && slug.current == $slug][0]{
+    title,
+    "slug": slug.current,
+    publishedAt,
+    updatedAt,
+    tags,
+    excerpt,
+    body
+  }
+`, { slug });
 
 if (!post) {
-  if (!contentPost) {
-    return Astro.redirect("/404");
-  }
+  return Astro.redirect("/404");
 }
 
-if (post) {
-  const file = await processor.process(post.content);
-  htmlContent = String(file);
-  markdownContent = post.content;
-  postSlug = post.slug;
-} else if (contentPost) {
-  const { Content } = await render(contentPost);
-  renderedContent = Content;
-  markdownContent = contentPost.body ?? "";
-  postSlug = contentPost.id.replace(/\.(md|mdx)$/, "");
-}
+const htmlContent = portableTextToHtml(post.body);
+const plainText = portableTextToPlainText(post.body);
+const markdownContent = plainText;
 
-// Calculate reading time
-const readingTime = calculateReadingTime(markdownContent);
+const readingTime = calculateReadingTime(plainText);
 
-// Extract description from content (first 160 characters, cleaned)
-const textContent = markdownContent.replace(/[#*`\[\]]/g, '').trim();
-const description = textContent.length > 160 
-  ? textContent.substring(0, 157) + '...' 
-  : textContent;
+const description = post.excerpt
+  ? post.excerpt
+  : plainText.length > 160
+    ? plainText.substring(0, 157) + '...'
+    : plainText;
 
-// Format dates for meta tags
-const publishedTime = post
-  ? new Date(post.created_at).toISOString()
-  : new Date(contentPost?.data.pubDate ?? Date.now()).toISOString();
-const modifiedTime = post && post.updated_at !== post.created_at
-  ? new Date(post.updated_at).toISOString()
-  : publishedTime;
+const publishedTime = new Date(post.publishedAt).toISOString();
+const modifiedTime = post.updatedAt ? new Date(post.updatedAt).toISOString() : publishedTime;
 
-// Get tag names
-const contentTags = (contentPost?.data.tags ?? []) as string[];
-const tagNames: string[] = post
-  ? post.post_tags?.map((pt: any) => pt.tags.name) || []
-  : contentTags;
+const contentTags = (post.tags ?? []) as string[];
+const tagLinks: Array<{ name: string; slug: string }> = contentTags.map((tag: string) => ({
+  name: tag,
+  slug: createSlug(tag),
+}));
 
-const tagLinks: Array<{ name: string; slug: string }> = post
-  ? post.post_tags?.map((pt: any) => ({
-      name: pt.tags.name,
-      slug: pt.tags.slug ?? createSlug(pt.tags.name),
-    })) || []
-  : contentTags.map((tag: string) => ({
-      name: tag,
-      slug: createSlug(tag),
-    }));
-
-const postTitle = post?.title ?? contentPost?.data.title ?? "Untitled";
-const postDate = post?.created_at ?? contentPost?.data.pubDate ?? new Date();
+const postTitle = post.title ?? "Untitled";
+const postDate = post.publishedAt ?? new Date().toISOString();
 const postDateISO = new Date(postDate).toISOString();
-const postUpdatedISO = post?.updated_at ? new Date(post.updated_at).toISOString() : "";
-const postUpdatedLabel = post?.updated_at
-  ? new Date(post.updated_at).toLocaleDateString("en-US", {
+const showUpdated = post.updatedAt && post.updatedAt !== post.publishedAt;
+const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOString() : '';
+const postUpdatedLabel = showUpdated
+  ? new Date(post.updatedAt as string).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric"
     })
-  : "";
-const showUpdated = Boolean(post && post.updated_at !== post.created_at);
-const RenderedContent = renderedContent;
+  : '';
 ---
 
-<Layout 
+<Layout
   title={postTitle}
   description={description}
   article={true}
   publishedTime={publishedTime}
   modifiedTime={modifiedTime}
-  tags={tagNames}
-  canonicalURL={`${Astro.url.origin}/posts/${postSlug}`}
+  tags={tagLinks.map(tag => tag.name)}
+  canonicalURL={`${Astro.url.origin}/posts/${post.slug}`}
 >
-  <Breadcrumb items={[
-    { name: "Posts", url: "/" },
-    { name: postTitle, url: `/posts/${postSlug}` }
-  ]} />
-  
-  <article 
-    class="max-w-4xl mx-auto"
-    itemscope 
-    itemtype="http://schema.org/BlogPosting"
-  >
-    <header class="mb-8">
-      <h1 
-        class="text-4xl font-bold mb-4" 
-        style="color: var(--color-text-primary);"
-        itemprop="headline"
-      >
-        {postTitle}
-      </h1>
-      
-      <div class="flex items-center gap-4 mb-4" style="color: var(--color-text-muted);">
-        <time 
-          datetime={postDateISO}
-          itemprop="datePublished"
-        >
-          {new Date(postDate).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-          })}
-        </time>
-        
-        <span>•</span>
-        
-        <time 
-          itemprop="timeRequired" 
-          datetime={`PT${readingTime.minutes}M`}
-          title={`${readingTime.words} words`}
-        >
-          {readingTime.text}
-        </time>
-        
-        {showUpdated && (
-          <>
-            <span>•</span>
-            <span>
-              Updated <time 
-                datetime={postUpdatedISO}
-                itemprop="dateModified"
-              >
-                {postUpdatedLabel}
-              </time>
-            </span>
-          </>
-        )}
-        
-        <!-- Hidden author info for schema -->
-        <span itemprop="author" itemscope itemtype="http://schema.org/Person" style="display: none;">
-          <span itemprop="name">Hamish Burke</span>
-          <span itemprop="url">https://hamishburke.dev</span>
-        </span>
-        
-        <!-- Hidden publisher info for schema -->
-        <span itemprop="publisher" itemscope itemtype="http://schema.org/Person" style="display: none;">
-          <span itemprop="name">Hamish Burke</span>
-          <span itemprop="url">https://hamishburke.dev</span>
-        </span>
-      </div>
-      {tagLinks.length > 0 && (
-        <div class="flex flex-wrap gap-2 mb-8" role="list" aria-label="Article tags">
-          {tagLinks.map((tag, index) => {
-            // Cycle through different tag colors for visual variety
-            const colorVariant = index % 3;
-            let bgColor = 'var(--color-tag-bg)';
-            let textColor = 'var(--color-tag-text)';
-            
-            if (colorVariant === 1) {
-              bgColor = 'var(--color-tag-accent1-bg)';
-              textColor = 'var(--color-tag-accent1-text)';
-            } else if (colorVariant === 2) {
-              bgColor = 'var(--color-tag-accent2-bg)';
-              textColor = 'var(--color-tag-accent2-text)';
-            }
-            
-            return (
+  <div class="post-layout">
+    <article itemscope itemtype="http://schema.org/BlogPosting">
+      <header class="post-header">
+        <Breadcrumb items={[
+          { name: "Writing", url: "/writing" },
+          { name: postTitle, url: `/posts/${post.slug}` }
+        ]} />
+
+        <h1 itemprop="headline">{postTitle}</h1>
+
+        <div class="post-meta">
+          <time datetime={postDateISO} itemprop="datePublished">
+            {new Date(postDate).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric"
+            })}
+          </time>
+
+          <span>·</span>
+
+          <time itemprop="timeRequired" datetime={`PT${readingTime.minutes}M`} title={`${readingTime.words} words`}>
+            {readingTime.text}
+          </time>
+
+          {showUpdated && (
+            <>
+              <span>·</span>
+              <span>
+                Updated <time datetime={postUpdatedISO} itemprop="dateModified">
+                  {postUpdatedLabel}
+                </time>
+              </span>
+            </>
+          )}
+        </div>
+
+        {tagLinks.length > 0 && (
+          <div class="post-tags" role="list" aria-label="Article tags">
+            {tagLinks.map((tag) => (
               <a
                 role="listitem"
                 href={`/tags/${tag.slug}`}
-                class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-                style={`background-color: ${bgColor}; color: ${textColor};`}
+                class="tag-link"
                 itemprop="keywords"
               >
                 {tag.name}
               </a>
-            );
-          })}
-        </div>
-      )}
-    </header>
-    
-    <TableOfContents content={markdownContent} htmlContent={htmlContent || undefined} />
-    
-    {RenderedContent ? (
-      <div class="prose prose-invert max-w-none" itemprop="articleBody">
-        <RenderedContent />
-      </div>
-    ) : (
-      <div 
-        class="prose prose-invert max-w-none" 
-        set:html={htmlContent}
-        itemprop="articleBody"
-      >
-      </div>
-    )}
-    
-    {post && (
-      <RelatedPosts 
-        currentPostId={post.id}
-        currentPostTags={tagNames}
+            ))}
+          </div>
+        )}
+      </header>
+
+      <div class="prose" itemprop="articleBody" set:html={htmlContent}></div>
+
+      <RelatedPosts
+        currentPostSlug={post.slug}
+        currentPostTags={tagLinks.map(tag => tag.name)}
       />
-    )}
-    
-    <footer class="mt-12 pt-8" style="border-top: 1px solid var(--color-border-secondary);">
-      <nav aria-label="Post navigation">
-        <a href="/" style="color: var(--color-link);" class="hover:underline">
-          ← Back to all posts
-        </a>
-      </nav>
-    </footer>
-  </article>
+
+      <footer class="post-footer">
+        <nav aria-label="Post navigation">
+          <a href="/writing" class="back-link">
+            ← Back to writing
+          </a>
+        </nav>
+      </footer>
+    </article>
+
+    <aside class="post-sidebar">
+      <TableOfContents content={markdownContent} htmlContent={htmlContent || undefined} />
+    </aside>
+  </div>
 </Layout>
+
+<style>
+  .post-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    .post-layout {
+      grid-template-columns: minmax(0, 1fr) var(--toc-width);
+      grid-template-areas: "content sidebar";
+    }
+  }
+
+  article {
+    max-width: var(--reading-width);
+  }
+
+  @media (min-width: 1024px) {
+    article {
+      grid-area: content;
+    }
+  }
+
+  .post-header {
+    margin-bottom: 2rem;
+  }
+
+  .post-header h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--text);
+    letter-spacing: -0.025em;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag-link {
+    background-color: var(--surface-2);
+    color: var(--text-muted);
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+  }
+
+  .tag-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .tag-link::after {
+    display: none;
+  }
+
+  .post-sidebar {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .post-sidebar {
+      display: block;
+      grid-area: sidebar;
+      position: sticky;
+      top: 2rem;
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+    }
+  }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .back-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+
+  .back-link:hover {
+    color: var(--accent);
+  }
+
+  .back-link::after {
+    display: none;
+  }
+
+  /* Ensure prose doesn't exceed reading line length */
+  .prose {
+    max-width: 65ch;
+  }
+</style>

@@ -1,0 +1,189 @@
+---
+/**
+ * ACCENT PICKER COMPONENT
+ *
+ * Allows users to choose their preferred accent color.
+ * Persists choice to localStorage and updates CSS custom properties.
+ */
+
+const colors = [
+  { name: 'green', value: '#059669' },
+  { name: 'blue', value: '#2563eb' },
+  { name: 'purple', value: '#7c3aed' },
+  { name: 'orange', value: '#ea580c' },
+  { name: 'pink', value: '#f652a0' },
+];
+---
+
+<div class="accent-picker" id="accent-picker">
+  <button
+    class="accent-trigger"
+    aria-label="Choose accent color"
+    title="Choose accent color"
+    id="accent-trigger"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+      <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+      <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+      <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+    </svg>
+  </button>
+
+  <div class="accent-dropdown" id="accent-dropdown" hidden>
+    <div class="accent-colors">
+      {colors.map((color) => (
+        <button
+          class="accent-color"
+          style={`background-color: ${color.value};`}
+          data-accent={color.value}
+          aria-label={`Select ${color.name} accent color`}
+          title={`Select ${color.name} accent color`}
+        >
+          <span class="sr-only">{color.name}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .accent-picker {
+    position: relative;
+  }
+
+  .accent-trigger {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    transition: all 0.15s ease;
+  }
+
+  .accent-trigger:hover {
+    border-color: var(--accent);
+    background: var(--surface-2);
+  }
+
+  .accent-trigger:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .accent-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-dropdown);
+    min-width: 200px;
+  }
+
+  .accent-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .accent-color {
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-full);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    position: relative;
+  }
+
+  .accent-color:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-base);
+  }
+
+  .accent-color.active {
+    border-color: var(--text);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 640px) {
+    .accent-dropdown {
+      right: -1rem;
+    }
+  }
+</style>
+
+<script>
+  // Accent picker functionality
+  const trigger = document.getElementById('accent-trigger');
+  const dropdown = document.getElementById('accent-dropdown');
+  const colors = document.querySelectorAll('.accent-color');
+
+  // Load saved accent or default to first color
+  const savedAccent = localStorage.getItem('accent') || '#f652a0';
+
+  // Apply accent color
+  function applyAccent(colorValue: string) {
+    document.documentElement.style.setProperty('--accent', colorValue);
+    document.documentElement.style.setProperty('--focus', colorValue);
+
+    // Update active state
+    colors.forEach((c) => {
+      if (c.getAttribute('data-accent') === colorValue) {
+        c.classList.add('active');
+      } else {
+        c.classList.remove('active');
+      }
+    });
+
+    // Save to localStorage
+    localStorage.setItem('accent', colorValue);
+  }
+
+  // Toggle dropdown
+  trigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown?.toggleAttribute('hidden');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!dropdown?.contains(e.target as Node) && !trigger?.contains(e.target as Node)) {
+      dropdown?.setAttribute('hidden', '');
+    }
+  });
+
+  // Handle color selection
+  colors.forEach((colorBtn) => {
+    colorBtn.addEventListener('click', () => {
+      const colorValue = colorBtn.getAttribute('data-accent');
+      if (colorValue) {
+        applyAccent(colorValue);
+        dropdown?.setAttribute('hidden', '');
+      }
+    });
+  });
+
+  // Apply saved accent on load
+  applyAccent(savedAccent);
+</script>

@@ -4,17 +4,30 @@
  * Zero JavaScript - static only
  */
 
-import { getCollection } from 'astro:content';
 import StudioLayout from '../../studio/StudioLayout.astro';
+import { fetchSanity } from '../../lib/sanity';
 
-// Get published aphorisms, sorted by date
-const allAphorisms = await getCollection('studio', ({ data }) => {
-  return data.status === 'published';
-});
+export const prerender = true;
 
-const aphorisms = allAphorisms.sort((a, b) => 
-  b.data.published.valueOf() - a.data.published.valueOf()
-);
+type AphorismDoc = {
+  title: string;
+  subtitle?: string;
+  text?: string;
+  slug: string;
+  tags?: string[];
+  publishedAt?: string;
+};
+
+const aphorisms = await fetchSanity<AphorismDoc[]>(`
+  *[_type == "aphorism" && status == "published"] | order(publishedAt desc){
+    title,
+    subtitle,
+    text,
+    tags,
+    publishedAt,
+    "slug": slug.current
+  }
+`);
 ---
 
 <StudioLayout title="Studio" palette="noir" motion="subtle">
@@ -41,28 +54,30 @@ const aphorisms = allAphorisms.sort((a, b) =>
             <li class="aphorism-item">
               <a href={`/studio/${aphorism.slug}`} class="aphorism-link">
                 <div class="aphorism-header">
-                  <h3 class="aphorism-title">{aphorism.data.title}</h3>
-                  {aphorism.data.subtitle && (
-                    <p class="aphorism-subtitle">{aphorism.data.subtitle}</p>
+                  <h3 class="aphorism-title">{aphorism.title}</h3>
+                  {aphorism.subtitle && (
+                    <p class="aphorism-subtitle">{aphorism.subtitle}</p>
                   )}
                 </div>
-                {aphorism.data.text && (
-                  <p class="aphorism-text">{aphorism.data.text}</p>
+                {aphorism.text && (
+                  <p class="aphorism-text">{aphorism.text}</p>
                 )}
                 <div class="aphorism-meta">
-                  <time 
-                    datetime={aphorism.data.published.toISOString()}
-                    class="aphorism-date"
-                  >
-                    {aphorism.data.published.toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long',
-                      day: 'numeric' 
-                    })}
-                  </time>
-                  {aphorism.data.tags.length > 0 && (
+                  {aphorism.publishedAt && (
+                    <time 
+                      datetime={new Date(aphorism.publishedAt).toISOString()}
+                      class="aphorism-date"
+                    >
+                      {new Date(aphorism.publishedAt).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long',
+                        day: 'numeric' 
+                      })}
+                    </time>
+                  )}
+                  {aphorism.tags && aphorism.tags.length > 0 && (
                     <div class="aphorism-tags">
-                      {aphorism.data.tags.map(tag => (
+                      {aphorism.tags.map(tag => (
                         <span class="aphorism-tag">{tag}</span>
                       ))}
                     </div>
@@ -201,30 +216,22 @@ const aphorisms = allAphorisms.sort((a, b) =>
       font-family: var(--studio-font-sans);
       font-size: var(--studio-text-base);
       color: var(--studio-text-muted);
-      letter-spacing: var(--studio-tracking-normal);
+      margin-bottom: 0;
     }
 
     .aphorism-text {
-      font-size: var(--studio-text-base);
-      line-height: var(--studio-leading-relaxed);
       color: var(--studio-text-secondary);
+      font-size: var(--studio-text-base);
       margin-bottom: var(--studio-space-4);
-      max-width: none;
-      font-style: italic;
     }
 
     .aphorism-meta {
       display: flex;
-      align-items: center;
       gap: var(--studio-space-4);
+      align-items: center;
       flex-wrap: wrap;
-    }
-
-    .aphorism-date {
-      font-family: var(--studio-font-sans);
+      font-family: var(--studio-font-mono);
       font-size: var(--studio-text-xs);
-      letter-spacing: var(--studio-tracking-wide);
-      text-transform: uppercase;
       color: var(--studio-text-muted);
     }
 
@@ -235,39 +242,11 @@ const aphorisms = allAphorisms.sort((a, b) =>
     }
 
     .aphorism-tag {
-      font-family: var(--studio-font-mono);
       font-size: var(--studio-text-xs);
-      color: var(--studio-accent-dim);
+      color: var(--studio-text-muted);
       background-color: var(--studio-bg-tertiary);
       padding: var(--studio-space-1) var(--studio-space-2);
       border-radius: 3px;
-    }
-
-    @media (max-width: 768px) {
-      .manifesto-title {
-        font-size: var(--studio-text-4xl);
-      }
-
-      .manifesto-body {
-        font-size: var(--studio-text-lg);
-      }
-
-      .aphorism-title {
-        font-size: var(--studio-text-xl);
-      }
-    }
-
-    /* Respect reduced motion */
-    @media (prefers-reduced-motion: reduce) {
-      .manifesto,
-      .aphorism-item {
-        animation: none;
-        opacity: 1;
-      }
-
-      .aphorism-link:hover {
-        transform: none;
-      }
     }
   </style>
 </StudioLayout>
