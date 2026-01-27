@@ -51,6 +51,13 @@ export const post = defineType({
       name: 'body',
       title: 'Body',
       type: 'blockContent'
+    }),
+    defineField({
+      name: 'markdownBody',
+      title: 'Markdown Body',
+      type: 'text',
+      rows: 10,
+      description: 'Optional: paste markdown here if you prefer markdown over the rich text editor.'
     })
   ]
 });

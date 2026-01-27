@@ -1,17 +1,19 @@
 import type { APIRoute } from 'astro';
 import { fetchSanity } from '../lib/sanity';
 import { portableTextToPlainText } from '../lib/portableText';
+import { markdownToPlainText } from '../lib/markdown';
 
 export const GET: APIRoute = async () => {
   const siteURL = 'https://hamishburke.dev'; // Update this to your actual domain
 
-  const posts = await fetchSanity<Array<{ title: string; slug: string; publishedAt: string; body?: any; tags?: string[] }>>(`
+  const posts = await fetchSanity<Array<{ title: string; slug: string; publishedAt: string; body?: any; markdownBody?: string; tags?: string[] }>>(`
     *[_type == "post"] | order(publishedAt desc)[0...50]{
       title,
       "slug": slug.current,
       publishedAt,
       tags,
-      body
+      body,
+      markdownBody
     }
   `);
 
@@ -28,7 +30,10 @@ export const GET: APIRoute = async () => {
     <atom:link href="${siteURL}/rss.xml" rel="self" type="application/rss+xml"/>
     
     ${posts.map(post => {
-      const cleanContent = portableTextToPlainText(post.body).substring(0, 300);
+      const cleanContentSource = post.markdownBody
+        ? markdownToPlainText(post.markdownBody)
+        : portableTextToPlainText(post.body);
+      const cleanContent = cleanContentSource.substring(0, 300);
       const categories = post.tags || [];
       
       return `
