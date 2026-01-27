@@ -508,15 +508,15 @@
 
   .tile-image .tile-title,
   .tile-image .tile-description,
-  .tile-image .hobby-list,
-  .tile-image .hobby-list .label {
-    color: #ffffff;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  .tile-image .hobby-list {
+    color: var(--tile-image-text);
+    text-shadow: var(--tile-image-text-shadow);
   }
 
   .tile-image .hobby-list .label {
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
-    background: rgba(0, 0, 0, 0.55);
+    color: var(--tile-image-label-text);
+    text-shadow: var(--tile-image-label-shadow);
+    background: var(--tile-image-label-bg);
     padding: 0.08rem 0.45rem;
     border-radius: 999px;
     display: inline-block;

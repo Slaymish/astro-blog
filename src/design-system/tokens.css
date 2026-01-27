@@ -240,6 +240,11 @@
   --tile-padding: 1.5rem;
   --tile-bg: var(--surface);
   --tile-bg-hover: var(--surface-2);
+  --tile-image-text: #f8fafc;
+  --tile-image-label-text: #ffffff;
+  --tile-image-label-bg: rgba(0, 0, 0, 0.45);
+  --tile-image-text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  --tile-image-label-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 
   /* Tile sizes */
   --tile-span-small: 3; /* 3 columns = 25% */
@@ -276,6 +281,11 @@
   --accent: #f652a0;
   --accent-contrast: #ffffff;
   --focus: #f652a0;
+  --tile-image-text: #f3f4f6;
+  --tile-image-label-text: #ffffff;
+  --tile-image-label-bg: rgba(0, 0, 0, 0.7);
+  --tile-image-text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  --tile-image-label-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
 
   /* Adjust shadows for dark mode */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
