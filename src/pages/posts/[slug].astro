@@ -1,9 +1,9 @@
 ---
 import { getCollection, getEntry, render } from "astro:content";
-import Layout from "../../components/Layout.astro";
-import Breadcrumb from "../../components/Breadcrumb.astro";
-import TableOfContents from "../../components/TableOfContents.astro";
-import RelatedPosts from "../../components/RelatedPosts.astro";
+import Layout from "../../components/layout/Layout.astro";
+import Breadcrumb from "../../components/features/Breadcrumb.astro";
+import TableOfContents from "../../components/features/TableOfContents.astro";
+import RelatedPosts from "../../components/features/RelatedPosts.astro";
 import { supabase } from "../../utils/database";
 import { calculateReadingTime } from "../../utils/reading-time";
 import { createSlug } from "../../utils/slug";
