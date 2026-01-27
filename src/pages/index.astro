@@ -115,21 +115,6 @@ const postTiles = displayPosts.map((post, index) => {
   <!-- Mixed-span Bento Grid -->
   <section class="grid-section">
     <div class="bento-grid">
-      <!-- Large anchor tile: Personal Dashboard -->
-      <div class="tile tile-wide featured-tile">
-        <div class="tile-title">
-          <span>Personal Dashboard</span>
-          <span class="tile-arrow">→</span>
-        </div>
-        <p class="tile-description">
-          A collection of personal tools including HealthAgent, FinanceAgent, and more.
-        </p>
-        <div class="tile-links">
-          <a href="#healthagent">HealthAgent</a>
-          <a href="#financeagent">FinanceAgent</a>
-        </div>
-      </div>
-
       <!-- Key projects -->
       {projectTiles.slice(0, 3).map(tile => <GridTile {...tile} />)}
 
