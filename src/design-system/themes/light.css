@@ -1,0 +1,87 @@
+/**
+ * LIGHT THEME
+ *
+ * Light color scheme for your site.
+ * To create a new theme, copy this file and modify the color values.
+ */
+
+:root {
+  /* ============================================
+     BRAND COLORS
+     ============================================ */
+
+  --color-primary-50: #ecfdf5;
+  --color-primary-100: #d1fae5;
+  --color-primary-200: #a7f3d0;
+  --color-primary-300: hsl(167, 85%, 75%);
+  --color-primary-400: hsl(162, 78%, 65%);
+  --color-primary-500: hsl(142, 70%, 55%);
+  --color-primary-600: hsl(132, 70%, 45%);
+  --color-primary-700: #047857;
+  --color-primary-800: #065f46;
+  --color-primary-900: #064e3b;
+
+  /* ============================================
+     NEUTRAL COLORS
+     ============================================ */
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Gray scale (for reference) */
+  --color-gray-50: #fafbfc;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* ============================================
+     SEMANTIC COLORS - BACKGROUND
+     ============================================ */
+
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #fafbfc;
+  --color-bg-tertiary: #f4f6f8;
+  --color-bg-inverse: #1a1a2e;
+
+  /* ============================================
+     SEMANTIC COLORS - TEXT
+     ============================================ */
+
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #374151;
+  --color-text-muted: #6b7280;
+  --color-text-subtle: #9ca3af;
+  --color-text-inverse: #fafafa;
+
+  /* ============================================
+     SEMANTIC COLORS - BORDER
+     ============================================ */
+
+  --color-border-primary: #e5e7eb;
+  --color-border-secondary: #f3f4f6;
+
+  /* ============================================
+     COMPONENT COLORS
+     ============================================ */
+
+  /* Links */
+  --color-link: var(--color-primary-600);
+  --color-link-hover: var(--color-primary-500);
+
+  /* Tags */
+  --color-tag-bg: var(--color-primary-100);
+  --color-tag-bg-hover: var(--color-primary-200);
+  --color-tag-text: var(--color-primary-800);
+
+  /* Tag Variants */
+  --color-tag-accent1-bg: hsl(172, 45%, 90%);
+  --color-tag-accent1-text: hsl(172, 65%, 30%);
+  --color-tag-accent2-bg: hsl(112, 45%, 90%);
+  --color-tag-accent2-text: hsl(112, 65%, 30%);
+}

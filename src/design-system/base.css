@@ -1,0 +1,277 @@
+/**
+ * BASE STYLES
+ *
+ * Foundational styles that apply to all elements.
+ * Design-specific customization should use design tokens.
+ */
+
+/* ============================================
+   HTML & BODY
+   ============================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-relaxed);
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: var(--letter-spacing-wider);
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+/* Focus styles */
+*:focus {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: var(--spacing-3);
+  left: var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  transform: translateY(-200%);
+  transition: transform var(--transition-base) var(--easing-ease);
+  z-index: var(--z-tooltip);
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+#particle-canvas {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+#scroll-progress {
+  will-change: width;
+  contain: layout style paint;
+}
+
+#theme-customizer-panel {
+  contain: layout style paint;
+}
+
+.floating-shapes {
+  contain: layout style paint;
+}
+
+main {
+  contain: layout;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-text-primary);
+  margin-top: var(--spacing-11);
+  margin-bottom: var(--spacing-5);
+}
+
+h1 {
+  font-weight: var(--font-weight-bold);
+  font-size: clamp(var(--font-size-5xl), 5vw, var(--font-size-7xl));
+  letter-spacing: var(--letter-spacing-tight);
+  margin-top: 0;
+  margin-bottom: var(--spacing-7);
+}
+
+h2 {
+  font-size: clamp(var(--font-size-4xl), 4vw, var(--font-size-6xl));
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+h3 {
+  font-size: clamp(var(--font-size-3xl), 3vw, var(--font-size-4xl));
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+h4 {
+  font-size: var(--font-size-3xl);
+}
+
+h5 {
+  font-size: var(--font-size-2xl);
+}
+
+h6 {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wideish);
+  margin-bottom: var(--spacing-3);
+}
+
+/* Paragraphs */
+p {
+  margin-top: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+  line-height: var(--line-height-loose);
+  font-size: var(--font-size-lg);
+}
+
+/* Links */
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--transition-base) var(--easing-ease);
+  position: relative;
+  overflow: hidden;
+}
+
+a:hover {
+  color: var(--color-link-hover);
+  text-decoration: none;
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-primary-500);
+  transition: width var(--transition-slow) var(--easing-ease);
+}
+
+a:hover::after {
+  width: 100%;
+}
+
+/* ============================================
+   IMAGES
+   ============================================ */
+
+img {
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+  max-width: 100%;
+  height: auto;
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+th {
+  padding-top: var(--spacing-4);
+  padding-bottom: var(--spacing-4);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+}
+
+td {
+  padding-top: var(--spacing-4);
+  padding-bottom: var(--spacing-6);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+/* Smooth transitions for interactive elements */
+a, button, .social-icon, .cta-button {
+  transition: color var(--transition-base) var(--easing-ease),
+              background-color var(--transition-base) var(--easing-ease),
+              border-color var(--transition-base) var(--easing-ease),
+              transform var(--transition-base) var(--easing-ease);
+}
+
+/* Subtle floating animation */
+@keyframes gentle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Gradient text animation */
+.gradient-text {
+  background: linear-gradient(
+    45deg,
+    var(--color-primary-500),
+    var(--color-primary-300),
+    var(--color-primary-600)
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: var(--color-primary-500);
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s ease infinite;
+}
+
+@supports not (-webkit-background-clip: text) {
+  .gradient-text {
+    color: var(--color-primary-500);
+    -webkit-text-fill-color: unset;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}

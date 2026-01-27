@@ -1,5 +1,7 @@
 @import 'tailwindcss';
-@import './theme.css';
+
+/* Note: Design tokens and base styles are now imported via Layout.astro
+   from src/design-system/tokens.css and src/design-system/base.css */
 
 @layer base {
   /* Smooth scrolling */
@@ -16,11 +18,6 @@
   /* Optimize layout rendering for fixed position elements */
   #scroll-progress {
     will-change: width;
-    contain: layout style paint;
-  }
-
-  /* Theme customizer panel */
-  #theme-customizer-panel {
     contain: layout style paint;
   }
 
@@ -353,11 +350,7 @@
     transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   }
 
-  /* Subtle floating animation for the color controller */
-  #color-controller {
-    animation: gentle-float 6s ease-in-out infinite;
-  }
-
+  /* Subtle floating animation */
   @keyframes gentle-float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-3px); }

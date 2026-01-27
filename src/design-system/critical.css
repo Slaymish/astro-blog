@@ -1,0 +1,35 @@
+/**
+ * CRITICAL FOUC PREVENTION STYLES
+ *
+ * These styles MUST be inlined in the <head> to prevent flash of unstyled content.
+ * They are loaded before any other stylesheets.
+ *
+ * This file is meant to be inlined, not imported.
+ */
+
+:root {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #fafbfc;
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #374151;
+}
+
+.dark {
+  --color-bg-primary: #0f0f0f;
+  --color-bg-secondary: #1a1a1a;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #d1d5db;
+}
+
+/* Apply immediately */
+html {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+body {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  margin: 0;
+  padding: 0;
+}

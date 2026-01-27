@@ -1,0 +1,76 @@
+/**
+ * DARK THEME
+ *
+ * Dark color scheme for your site.
+ * Applied when .dark class is present on <html> element.
+ */
+
+.dark {
+  /* ============================================
+     BRAND COLORS
+     ============================================ */
+
+  /* Reuse light theme values or override for dark mode */
+  --color-primary-50: #ecfdf5;
+  --color-primary-100: #d1fae5;
+  --color-primary-200: #a7f3d0;
+  --color-primary-300: hsl(167, 85%, 75%);
+  --color-primary-400: hsl(162, 78%, 65%);
+  --color-primary-500: hsl(142, 70%, 55%);
+  --color-primary-600: hsl(132, 70%, 45%);
+  --color-primary-700: #047857;
+  --color-primary-800: #065f46;
+  --color-primary-900: #064e3b;
+
+  /* ============================================
+     NEUTRAL COLORS
+     ============================================ */
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* ============================================
+     SEMANTIC COLORS - BACKGROUND
+     ============================================ */
+
+  --color-bg-primary: #0f0f0f;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-tertiary: #2a2a2a;
+  --color-bg-inverse: #fafafa;
+
+  /* ============================================
+     SEMANTIC COLORS - TEXT
+     ============================================ */
+
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #d1d5db;
+  --color-text-muted: #9ca3af;
+  --color-text-subtle: #6b7280;
+  --color-text-inverse: #1a1a2e;
+
+  /* ============================================
+     SEMANTIC COLORS - BORDER
+     ============================================ */
+
+  --color-border-primary: #3f3f46;
+  --color-border-secondary: #27272a;
+
+  /* ============================================
+     COMPONENT COLORS
+     ============================================ */
+
+  /* Links */
+  --color-link: var(--color-primary-400);
+  --color-link-hover: var(--color-primary-300);
+
+  /* Tags */
+  --color-tag-bg: hsla(142, 70%, 55%, 0.15);
+  --color-tag-bg-hover: hsla(142, 70%, 55%, 0.25);
+  --color-tag-text: var(--color-primary-300);
+
+  /* Tag Variants */
+  --color-tag-accent1-bg: hsla(172, 45%, 55%, 0.15);
+  --color-tag-accent1-text: hsl(172, 45%, 75%);
+  --color-tag-accent2-bg: hsla(112, 45%, 55%, 0.15);
+  --color-tag-accent2-text: hsl(112, 45%, 75%);
+}

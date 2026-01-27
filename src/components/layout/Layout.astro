@@ -1,11 +1,19 @@
 ---
-import "../../src/styles/globals.css";
+// Design System
+import "../../design-system/tokens.css";
+import "../../design-system/base.css";
+
+// Layout Components
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
-import ParticleBackground from "./ParticleBackground.astro";
-import AnimatedBackground from "./AnimatedBackground.astro";
-import ScrollProgress from "./ScrollProgress.astro";
-import ThemeCustomizer from "./ThemeCustomizer.astro";
+
+// Interactive Components
+import ParticleBackground from "../interactive/ParticleBackground.astro";
+import AnimatedBackground from "../interactive/AnimatedBackground.astro";
+import ScrollProgress from "../interactive/ScrollProgress.astro";
+
+// Theme
+import ThemeProvider from "../../theme/ThemeProvider.astro";
 
 interface Props {
   title: string;
@@ -41,7 +49,6 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
   <head>
     <!-- Critical inline styles to prevent FOUC - must be first! -->
     <style>
-      /* Critical theme colors - prevent flash of unstyled content */
       :root {
         --color-bg-primary: #ffffff;
         --color-bg-secondary: #fafbfc;
@@ -69,7 +76,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
         padding: 0;
       }
     </style>
-    
+
     <!-- Critical theme initialization script (must be VERY early to prevent FOUC) -->
     <script is:inline>
       (function() {
@@ -77,26 +84,12 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
           const savedTheme = localStorage.getItem('theme');
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-          
+
           // Apply theme class immediately
           if (theme === 'dark') {
             document.documentElement.classList.add('dark');
           } else {
             document.documentElement.classList.add('light');
-          }
-          
-          // Also restore any saved custom colors immediately
-          const savedColors = localStorage.getItem('customColors');
-          if (savedColors) {
-            try {
-              const colors = JSON.parse(savedColors);
-              const root = document.documentElement;
-              Object.entries(colors).forEach(([key, value]) => {
-                root.style.setProperty(key, value);
-              });
-            } catch (e) {
-              // Silently fail if colors can't be parsed
-            }
           }
         } catch (e) {
           // Fail silently if localStorage is not available
@@ -321,7 +314,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <ScrollProgress />
     <AnimatedBackground />
     <ParticleBackground />
-    <ThemeCustomizer />
+    <ThemeProvider />
 
     <div class="page-wrapper">
       <Header />
