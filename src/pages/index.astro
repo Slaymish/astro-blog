@@ -87,12 +87,12 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight" style="font-family: var(--font-heading); color: var(--color-text-primary); letter-spacing: -0.03em;">
       Hi, I'm Hamish
     </h1>
-    <p class="text-xl sm:text-2xl md:text-3xl mb-8 max-w-3xl mx-auto leading-relaxed" style="color: var(--color-text-secondary);">
+    <p class="text-xl sm:text-2xl md:text-3xl mb-10 max-w-3xl mx-auto leading-relaxed" style="color: var(--color-text-secondary);">
       Writing about <span style="color: var(--color-primary-500); font-weight: 600;">software</span>,
       <span style="color: var(--color-accent-500); font-weight: 600;">AI</span>,
       and <span style="color: var(--color-accent2-500); font-weight: 600;">whatever I'm working on</span>
     </p>
-    <div class="flex justify-center gap-4 flex-wrap">
+    <div class="flex justify-center gap-6 flex-wrap">
       <a
         href="#reports"
         class="cta-button cta-primary"
@@ -110,11 +110,11 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
     </div>
   </section>
 
-  <section id="reports" aria-labelledby="reports-heading" class="mb-20 scroll-mt-24">
+  <section id="reports" aria-labelledby="reports-heading" class="mb-24 scroll-mt-24">
     <h1 id="reports-heading" class="mb-10 fade-in text-4xl md:text-5xl font-bold" style="font-family: var(--font-heading); color: var(--color-primary-500); letter-spacing: -0.025em;">
       Reports
     </h1>
-    <div class="space-y-8" role="list">
+    <div class="space-y-12" role="list">
       {sortedReports.map((report, index) => (
         <article
           role="listitem"
@@ -136,7 +136,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
             </h2>
           </header>
 
-          <div class="mb-4 text-sm" style="color: var(--color-text-muted);">
+          <div class="mb-5 text-sm" style="color: var(--color-text-muted);">
             <time
               datetime={new Date(report.data.pubDate).toISOString()}
               itemprop="datePublished"
@@ -153,13 +153,13 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
           </div>
 
           {report.data.description && (
-            <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
+            <div class="prose prose-invert max-w-none mb-5" style="color: var(--color-text-secondary);" itemprop="description">
               {report.data.description}
             </div>
           )}
           
           {report.data.tags && report.data.tags.length > 0 && (
-            <div class="flex flex-wrap gap-2" role="list" aria-label="Report tags">
+            <div class="flex flex-wrap gap-4" role="list" aria-label="Report tags">
               {report.data.tags.map((tag, tagIndex) => {
                 // Cycle through different tag colors for visual variety
                 const colorVariant = tagIndex % 3;
@@ -198,7 +198,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
       Recent Posts
     </h2>
     {hasSupabasePosts ? (
-      <div class="space-y-8" role="list">
+      <div class="space-y-12" role="list">
         {posts.map((post, index) => (
           <article 
             role="listitem"
@@ -220,7 +220,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
               </h2>
             </header>
             
-            <div class="mb-4" style="color: var(--color-text-muted);">
+            <div class="mb-5" style="color: var(--color-text-muted);">
               <time 
                 datetime={post.created_at}
                 itemprop="datePublished"
@@ -236,12 +236,12 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
               </span>
             </div>
             
-            <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
+            <div class="prose prose-invert max-w-none mb-5" style="color: var(--color-text-secondary);" itemprop="description">
               {createPreview(post.content, 200)}
             </div>
             
             {post.post_tags && post.post_tags.length > 0 && (
-              <div class="flex flex-wrap gap-2" role="list" aria-label="Post tags">
+              <div class="flex flex-wrap gap-4" role="list" aria-label="Post tags">
                 {post.post_tags.map((postTag, index) => {
                   // Cycle through different tag colors for visual variety
                   const colorVariant = index % 3;
@@ -274,7 +274,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
         ))}
       </div>
     ) : hasContentPosts ? (
-      <div class="space-y-8" role="list">
+      <div class="space-y-12" role="list">
         {sortedContentPosts.map((post, index) => (
           <article 
             role="listitem"
@@ -296,7 +296,7 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
               </h2>
             </header>
             
-            <div class="mb-4" style="color: var(--color-text-muted);">
+            <div class="mb-5" style="color: var(--color-text-muted);">
               <time 
                 datetime={new Date(post.data.pubDate).toISOString()}
                 itemprop="datePublished"
@@ -312,12 +312,12 @@ const homeDescription = "Welcome to Hamish's blog - exploring technology, AI, ma
               </span>
             </div>
             
-            <div class="prose prose-invert max-w-none mb-4" style="color: var(--color-text-secondary);" itemprop="description">
+            <div class="prose prose-invert max-w-none mb-5" style="color: var(--color-text-secondary);" itemprop="description">
               {createPreview(post.body ?? "", 200)}
             </div>
             
             {post.data.tags && post.data.tags.length > 0 && (
-              <div class="flex flex-wrap gap-2" role="list" aria-label="Post tags">
+              <div class="flex flex-wrap gap-4" role="list" aria-label="Post tags">
                 {post.data.tags.map((tag, index) => {
                   // Cycle through different tag colors for visual variety
                   const colorVariant = index % 3;

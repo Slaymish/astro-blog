@@ -18,12 +18,13 @@ body {
   color: var(--color-text-primary);
   font-family: var(--font-body);
   font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-base);
   line-height: var(--line-height-relaxed);
   font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: var(--letter-spacing-wider);
+  letter-spacing: var(--letter-spacing-normal);
   margin: 0;
   padding: 0;
 }
@@ -124,28 +125,28 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-weight: var(--font-weight-bold);
-  font-size: clamp(var(--font-size-5xl), 5vw, var(--font-size-7xl));
+  font-size: clamp(var(--font-size-4xl), 5vw, var(--font-size-6xl));
   letter-spacing: var(--letter-spacing-tight);
   margin-top: 0;
   margin-bottom: var(--spacing-7);
 }
 
 h2 {
-  font-size: clamp(var(--font-size-4xl), 4vw, var(--font-size-6xl));
+  font-size: clamp(var(--font-size-3xl), 4vw, var(--font-size-5xl));
   letter-spacing: var(--letter-spacing-normal);
 }
 
 h3 {
-  font-size: clamp(var(--font-size-3xl), 3vw, var(--font-size-4xl));
-  letter-spacing: var(--letter-spacing-wide);
+  font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-3xl));
+  letter-spacing: var(--letter-spacing-normal);
 }
 
 h4 {
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-2xl);
 }
 
 h5 {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
 }
 
 h6 {
@@ -153,7 +154,7 @@ h6 {
   color: var(--color-text-muted);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wideish);
+  letter-spacing: var(--letter-spacing-wide);
   margin-bottom: var(--spacing-3);
 }
 
@@ -162,7 +163,6 @@ p {
   margin-top: var(--spacing-6);
   margin-bottom: var(--spacing-6);
   line-height: var(--line-height-loose);
-  font-size: var(--font-size-lg);
 }
 
 /* Links */
@@ -201,7 +201,7 @@ a:hover::after {
 
 img {
   border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-base);
   max-width: 100%;
   height: auto;
 }

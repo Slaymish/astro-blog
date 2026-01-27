@@ -45,7 +45,7 @@ const catPositions = [
 <!-- Torch positioned as an inline element in header -->
 <div class="torch-header-container relative" aria-hidden="true">
   <!-- Torch icon that can be picked up -->
-  <div id="torch" class="torch w-12 h-16 cursor-grab transition-transform duration-300 opacity-90 filter drop-shadow-lg bg-transparent" data-picked-up="false">
+  <div id="torch" class="torch cursor-grab transition-transform duration-300 opacity-90" data-picked-up="false">
     <img src="/images/flashlight.webp" alt="Torch" class="torch-img" />
   </div>
   
@@ -208,8 +208,8 @@ const catPositions = [
     if (torch) {
       // Position the torch absolutely when dragging
       torch.style.position = 'fixed';
-      torch.style.left = (x - 24) + 'px'; // Center the torch on cursor
-      torch.style.top = (y - 32) + 'px';
+      torch.style.left = (x - 16) + 'px'; // Center the torch on cursor (w-8 = 32px / 2)
+      torch.style.top = (y - 20) + 'px'; // Center the torch on cursor (h-10 = 40px / 2)
       torch.style.zIndex = '1004'; // Above everything else
     }
     
@@ -448,6 +448,16 @@ const catPositions = [
         resetGame();
       }
     });
+
+    // Hide tooltip on scroll
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+      if (tooltip && tooltip.classList.contains('show')) {
+        tooltip.classList.add('hide-on-scroll');
+        clearTimeout(tooltipTimer);
+        // Don't show it again after scrolling
+      }
+    }, { passive: true });
   });
 
   // Cleanup on page unload

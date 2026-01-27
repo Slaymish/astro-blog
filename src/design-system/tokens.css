@@ -57,6 +57,14 @@
   --color-link: var(--color-primary-600);
   --color-link-hover: var(--color-primary-700);
 
+  /* Tag colors */
+  --color-tag-bg: var(--color-gray-100);
+  --color-tag-text: var(--color-gray-700);
+  --color-tag-accent1-bg: var(--color-primary-50);
+  --color-tag-accent1-text: var(--color-primary-700);
+  --color-tag-accent2-bg: var(--color-gray-100);
+  --color-tag-accent2-text: var(--color-gray-600);
+
   /* ============================================
      SPACING SCALE
      ============================================ */
@@ -245,6 +253,14 @@
   --color-border-secondary: var(--color-gray-700);
   --color-link: var(--color-primary-400);
   --color-link-hover: var(--color-primary-300);
+
+  /* Tag colors - Dark theme */
+  --color-tag-bg: var(--color-gray-800);
+  --color-tag-text: var(--color-gray-300);
+  --color-tag-accent1-bg: var(--color-primary-900);
+  --color-tag-accent1-text: var(--color-primary-300);
+  --color-tag-accent2-bg: var(--color-gray-800);
+  --color-tag-accent2-text: var(--color-gray-400);
 
   /* Adjust shadows for dark mode */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);

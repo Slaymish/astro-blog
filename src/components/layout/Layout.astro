@@ -289,22 +289,25 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
 
     <style is:global>
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+
+      html, body {
+        overflow-x: hidden;
+      }
+
       .page-wrapper {
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
         padding: 0 1rem;
+        box-sizing: border-box;
       }
 
       @media (min-width: 640px) {
         .page-wrapper {
-          padding: 0 2rem;
-        }
-      }
-
-      @media (min-width: 1024px) {
-        .page-wrapper {
-          padding: 0 3rem;
+          padding: 0 1.5rem;
         }
       }
     </style>
@@ -318,7 +321,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
 
     <div class="page-wrapper">
       <Header />
-      <main id="main-content" class="w-full max-w-4xl mx-auto grow px-5 py-12 sm:px-6 md:py-16 lg:py-20" tabindex="-1">
+      <main id="main-content" class="w-full max-w-3xl mx-auto grow py-8 sm:py-12 md:py-16" tabindex="-1">
         <slot />
       </main>
       <Footer />
