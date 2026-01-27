@@ -23,6 +23,11 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    define: {
+      'import.meta.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(process.env.SANITY_PROJECT_ID || ''),
+      'import.meta.env.PUBLIC_SANITY_DATASET': JSON.stringify(process.env.SANITY_DATASET || 'production'),
+      'import.meta.env.PUBLIC_SANITY_API_VERSION': JSON.stringify(process.env.SANITY_API_VERSION || '2024-01-01')
+    }
   },
 });
