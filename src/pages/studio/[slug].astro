@@ -59,6 +59,22 @@ if (!aphorism) {
 
 const htmlContent = portableTextToHtml(aphorism.body);
 
+const palette =
+  aphorism.palette === 'noir' ||
+  aphorism.palette === 'sepia' ||
+  aphorism.palette === 'forest' ||
+  aphorism.palette === 'ocean' ||
+  aphorism.palette === 'ember'
+    ? aphorism.palette
+    : 'noir';
+
+const motion =
+  aphorism.motion === 'subtle' ||
+  aphorism.motion === 'moderate' ||
+  aphorism.motion === 'expressive'
+    ? aphorism.motion
+    : 'subtle';
+
 const publishedDate = aphorism.publishedAt
   ? new Date(aphorism.publishedAt).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -79,8 +95,8 @@ const updatedDate = aphorism.updatedAt
 <StudioLayout 
   title={aphorism.title}
   subtitle={aphorism.subtitle}
-  palette={aphorism.palette}
-  motion={aphorism.motion}
+  palette={palette}
+  motion={motion}
 >
   <article class="aphorism">
     <!-- Header -->

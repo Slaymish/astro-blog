@@ -18,7 +18,7 @@ export const sanityClient = createClient({
 
 const builder = imageUrlBuilder(sanityClient);
 
-export const urlFor = (source: unknown) => builder.image(source);
+export const urlFor = (source: unknown) => builder.image(source as any);
 
 export async function fetchSanity<T>(query: string, params: Record<string, unknown> = {}) {
   return sanityClient.fetch<T>(query, params);

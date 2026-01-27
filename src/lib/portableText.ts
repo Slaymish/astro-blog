@@ -15,17 +15,17 @@ export function portableTextToHtml(content: PortableTextBlock[] | null | undefin
     components: {
       block: {
         h2: ({ children }) => {
-          const text = stripHtml(children);
+          const text = stripHtml(String(children ?? ''));
           const id = slugger.slug(text);
           return `<h2 id="${id}">${children}</h2>`;
         },
         h3: ({ children }) => {
-          const text = stripHtml(children);
+          const text = stripHtml(String(children ?? ''));
           const id = slugger.slug(text);
           return `<h3 id="${id}">${children}</h3>`;
         },
         h4: ({ children }) => {
-          const text = stripHtml(children);
+          const text = stripHtml(String(children ?? ''));
           const id = slugger.slug(text);
           return `<h4 id="${id}">${children}</h4>`;
         }
