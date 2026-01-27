@@ -1,3 +1,8 @@
 [build]
   publish = "dist"
   command = "npm run build"
+
+[build.environment]
+  SANITY_PROJECT_ID = "qnuj1c4o"
+  SANITY_DATASET = "production"
+  SANITY_API_VERSION = "2024-01-01"
