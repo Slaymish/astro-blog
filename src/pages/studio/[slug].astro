@@ -8,7 +8,7 @@ import AudioPlayer from '../../studio/components/AudioPlayer.astro';
 import { fetchSanity } from '../../lib/sanity';
 import { portableTextToHtml } from '../../lib/portableText';
 
-export const prerender = true;
+export const prerender = false;
 
 type AphorismDoc = {
   title: string;

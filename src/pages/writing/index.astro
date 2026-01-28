@@ -3,7 +3,7 @@ import Layout from "../../components/layout/Layout.astro";
 import GridTile from "../../components/ui/GridTile.astro";
 import { fetchSanity } from "../../lib/sanity";
 
-export const prerender = true;
+export const prerender = false;
 
 type PostDoc = {
   title: string;
@@ -13,7 +13,17 @@ type PostDoc = {
   tags?: string[];
 };
 
-const displayPosts = await fetchSanity<PostDoc[]>(`
+type ReportDoc = {
+  title: string;
+  description?: string;
+  publishedAt: string;
+  slug: string;
+  tags?: string[];
+};
+
+type ContentItem = PostDoc | ReportDoc;
+
+const posts = await fetchSanity<PostDoc[]>(`
   *[_type == "post"] | order(publishedAt desc){
     title,
     excerpt,
@@ -22,6 +32,22 @@ const displayPosts = await fetchSanity<PostDoc[]>(`
     tags
   }
 `);
+
+const reports = await fetchSanity<ReportDoc[]>(`
+  *[_type == "report"] | order(publishedAt desc){
+    title,
+    description,
+    publishedAt,
+    "slug": slug.current,
+    tags
+  }
+`);
+
+// Combine posts and reports, marking reports with a type
+const displayPosts: (ContentItem & { _type: 'post' | 'report' })[] = [
+  ...posts.map(p => ({ ...p, _type: 'post' as const })),
+  ...reports.map(r => ({ ...r, excerpt: r.description, _type: 'report' as const }))
+].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
 // Get all unique tags
 const allTags = [...new Set(
@@ -32,12 +58,13 @@ const allTags = [...new Set(
 const postTiles = displayPosts.map((post) => ({
   title: post.title || 'Untitled',
   description: post.excerpt || '',
-  href: `/posts/${post.slug}`,
+  href: post._type === 'report' ? `/reports/${post.slug}` : `/posts/${post.slug}`,
   size: 'medium' as const,
   tags: post.tags || [],
   date: post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
-    : ''
+    : '',
+  type: post._type
 }));
 ---
 
