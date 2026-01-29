@@ -49,11 +49,12 @@ const statusLabel: Record<ReadingStatus, string> = {
         <article class="reading-card">
           <div class="reading-card-meta">
             <span>Reading · Books</span>
-            <span aria-hidden="true">↗</span>
+            <span aria-hidden="true"><a href={item.link} target="_blank" rel="noopener noreferrer">↗</a></span>
           </div>
 
           <div class="reading-card-body">
             <div class="book-cover" data-has-cover={item.coverImage ? 'true' : 'false'}>
+              <a href={item.link} target="_blank" rel="noopener noreferrer">
               {item.coverImage ? (
                 <img
                   src={urlFor(item.coverImage).width(240).height(320).fit('crop').url()}
@@ -63,6 +64,7 @@ const statusLabel: Record<ReadingStatus, string> = {
               ) : (
                 <div class="book-cover-placeholder" aria-hidden="true"></div>
               )}
+              </a>
             </div>
 
             <div class="reading-card-details">
@@ -138,13 +140,27 @@ const statusLabel: Record<ReadingStatus, string> = {
 
   .book-cover {
     width: 100%;
-    aspect-ratio: 3 / 4;
-    border-radius: 0.5rem;
+    /* aspect-ratio: 3 / 4; */
+    border-radius: 0.2rem;
     overflow: hidden;
     background: var(--surface-2);
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.2s ease;
+  }
+
+  .book-cover a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .book-cover a::hover {
+    text-decoration: none;
+    color: inherit;
   }
 
   .book-cover img {
@@ -153,6 +169,13 @@ const statusLabel: Record<ReadingStatus, string> = {
     object-fit: cover;
     border: none;
   }
+
+  /* on hover, rotate the cover slightly if it has an image */
+  .book-cover[data-has-cover='true']:hover {
+    transform: rotate(2deg) scale(1.03);
+    transition: transform 0.2s ease;
+  }
+
 
   .book-cover-placeholder {
     width: 70%;
