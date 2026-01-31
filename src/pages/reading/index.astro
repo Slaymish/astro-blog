@@ -45,7 +45,11 @@ const statusLabel: Record<ReadingStatus, string> = {
     </header>
 
     <section class="reading-grid" aria-label="Reading list">
-      {readingItems.map((item) => (
+      <!-- sorted in this order: to-read, reading, read -->
+      {readingItems.sort((a, b) => {
+        const order = ['to-read', 'reading', 'read'];
+        return order.indexOf(a.status) - order.indexOf(b.status);
+      }).map((item) => (
         <article class="reading-card">
           <div class="reading-card-meta">
             <span>Reading · Books</span>
