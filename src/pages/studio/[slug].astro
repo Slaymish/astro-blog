@@ -25,16 +25,6 @@ type AphorismDoc = {
   body?: any;
 };
 
-export async function getStaticPaths() {
-  const aphorisms = await fetchSanity<Array<{ slug: string }>>(`
-    *[_type == "aphorism" && defined(slug.current)]{ "slug": slug.current }
-  `);
-
-  return aphorisms.map((aphorism) => ({
-    params: { slug: aphorism.slug }
-  }));
-}
-
 const { slug } = Astro.params;
 const aphorism = await fetchSanity<AphorismDoc | null>(`
   *[_type == "aphorism" && slug.current == $slug][0]{

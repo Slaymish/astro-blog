@@ -15,16 +15,6 @@ type ProjectDoc = {
   body?: any;
 };
 
-export async function getStaticPaths() {
-  const projects = await fetchSanity<Array<{ slug: string }>>(`
-    *[_type == "project" && defined(slug.current)]{ "slug": slug.current }
-  `);
-
-  return projects.map(project => ({
-    params: { slug: project.slug }
-  }));
-}
-
 const { slug } = Astro.params;
 
 const project = await fetchSanity<ProjectDoc | null>(`

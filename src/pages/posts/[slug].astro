@@ -22,16 +22,6 @@ type PostDoc = {
   markdownBody?: string;
 };
 
-export async function getStaticPaths() {
-  const posts = await fetchSanity<Array<{ slug: string }>>(`
-    *[_type == "post" && defined(slug.current)]{ "slug": slug.current }
-  `);
-
-  return posts.map((post) => ({
-    params: { slug: post.slug }
-  }));
-}
-
 const { slug } = Astro.params;
 
 const post = await fetchSanity<PostDoc | null>(`

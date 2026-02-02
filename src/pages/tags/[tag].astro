@@ -23,39 +23,37 @@ type ReportDoc = {
   tags?: string[];
 };
 
-export async function getStaticPaths() {
-  const tags = await fetchSanity<string[]>(`
-    array::unique(*[_type in ["post", "report"]].tags[])
-  `);
-
-  return tags.map((tag) => ({
-    params: { tag: createSlug(tag) },
-    props: { tagLabel: tag }
-  }));
-}
-
 const { tag } = Astro.params as TagPath;
-const { tagLabel } = Astro.props as { tagLabel: string };
 
-const posts = await fetchSanity<PostDoc[]>(`
-  *[_type == "post" && $tag in tags] | order(publishedAt desc){
-    title,
-    "slug": slug.current,
-    publishedAt,
-    excerpt,
-    tags
-  }
-`, { tag: tagLabel });
+const allTags = await fetchSanity<string[]>(`
+  array::unique(*[_type in ["post", "report"]].tags[])
+`);
 
-const reports = await fetchSanity<ReportDoc[]>(`
-  *[_type == "report" && $tag in tags] | order(publishedAt desc){
-    title,
-    "slug": slug.current,
-    publishedAt,
-    description,
-    tags
-  }
-`, { tag: tagLabel });
+const tagLabel = allTags.find((entry) => createSlug(entry) === tag) ?? tag ?? '';
+
+const posts = tagLabel
+  ? await fetchSanity<PostDoc[]>(`
+      *[_type == "post" && $tag in tags] | order(publishedAt desc){
+        title,
+        "slug": slug.current,
+        publishedAt,
+        excerpt,
+        tags
+      }
+    `, { tag: tagLabel })
+  : [];
+
+const reports = tagLabel
+  ? await fetchSanity<ReportDoc[]>(`
+      *[_type == "report" && $tag in tags] | order(publishedAt desc){
+        title,
+        "slug": slug.current,
+        publishedAt,
+        description,
+        tags
+      }
+    `, { tag: tagLabel })
+  : [];
 
 const totalItems = posts.length + reports.length;
 const displayTag = tagLabel || tag || '';

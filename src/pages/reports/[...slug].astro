@@ -19,16 +19,6 @@ type ReportDoc = {
   body?: any;
 };
 
-export async function getStaticPaths() {
-  const reports = await fetchSanity<Array<{ slug: string }>>(`
-    *[_type == "report" && defined(slug.current)]{ "slug": slug.current }
-  `);
-
-  return reports.map(r => ({
-    params: { slug: r.slug }
-  }));
-}
-
 const slug = Astro.params.slug as string;
 
 const report = await fetchSanity<ReportDoc | null>(`

@@ -122,15 +122,6 @@ const { class: className = '' } = Astro.props;
     return 'system'; // default
   }
 
-  // Get effective theme (resolved from system preference)
-  function getEffectiveTheme(): 'light' | 'dark' {
-    const mode = getThemeMode();
-    if (mode === 'system') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    return mode;
-  }
-
   // Set theme mode and apply to DOM
   function setTheme(mode: ThemeMode) {
     localStorage.setItem('theme', mode);
