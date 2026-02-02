@@ -37,6 +37,20 @@ export const project = defineType({
       initialValue: false
     }),
     defineField({
+      name: 'homeTileSize',
+      title: 'Home Tile Size',
+      type: 'string',
+      description: 'Controls the project tile size on the home page.',
+      options: {
+        list: [
+          { title: 'Square (1x1)', value: 'square' },
+          { title: 'Wide (2x1)', value: 'wide' }
+        ],
+        layout: 'radio'
+      },
+      initialValue: 'square'
+    }),
+    defineField({
       name: 'technologies',
       title: 'Technologies',
       type: 'array',

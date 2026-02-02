@@ -5,6 +5,9 @@ interface Props {
 }
 
 const { pdfPath, title } = Astro.props;
+const proxiedPdfPath = pdfPath?.startsWith('http')
+  ? `/api/pdf?url=${encodeURIComponent(pdfPath)}`
+  : pdfPath;
 ---
 
 <div class="pdf-viewer-wrapper">
@@ -98,7 +101,7 @@ const { pdfPath, title } = Astro.props;
       </button>
       
       <a 
-        href={pdfPath}
+        href={proxiedPdfPath}
         download
         class="toolbar-btn"
         title="Download PDF"
@@ -127,7 +130,7 @@ const { pdfPath, title } = Astro.props;
         <line x1="12" y1="16" x2="12.01" y2="16"></line>
       </svg>
       <p>Failed to load PDF</p>
-      <a href={pdfPath} download class="error-download-btn">
+      <a href={proxiedPdfPath} download class="error-download-btn">
         Download PDF instead
       </a>
     </div>
@@ -139,7 +142,7 @@ const { pdfPath, title } = Astro.props;
 <!-- Load PDF.js from CDN FIRST -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" is:inline></script>
 
-<script is:inline define:vars={{ pdfPath, title }}>
+<script is:inline define:vars={{ pdfPath: proxiedPdfPath, title }}>
   // Wait for PDF.js to be loaded
   function initPDFViewer() {
     if (typeof window.pdfjsLib === 'undefined') {

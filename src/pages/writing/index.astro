@@ -59,7 +59,7 @@ const postTiles = displayPosts.map((post) => ({
   title: post.title || 'Untitled',
   description: post.excerpt || '',
   href: post._type === 'report' ? `/reports/${post.slug}` : `/posts/${post.slug}`,
-  size: 'medium' as const,
+  size: 'square' as const,
   tags: post.tags || [],
   date: post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
@@ -74,23 +74,23 @@ const postTiles = displayPosts.map((post) => ({
 >
   <div class="writing-page">
     <header class="page-header">
-      <h1>writing.</h1>
-      <p>Essays, tutorials, and thoughts on technology, software engineering, and more.</p>
+      <h1 class="page-title">writing.</h1>
+      <p class="page-subtitle">Essays, tutorials, and thoughts on technology, software engineering, and more.</p>
     </header>
 
     {allTags.length > 0 && (
-      <div class="tags-filter">
+      <div class="filter-panel">
         <span class="filter-label">Filter by tag:</span>
-        <div class="tags-list">
-          <button class="tag-btn active" data-tag="all">All</button>
+        <div class="filter-tags">
+          <button class="filter-tag active" data-tag="all">All</button>
           {allTags.map(tag => (
-            <button class="tag-btn" data-tag={tag}>{tag}</button>
+            <button class="filter-tag" data-tag={tag}>{tag}</button>
           ))}
         </div>
       </div>
     )}
 
-    <div class="posts-grid bento-grid" id="posts-grid">
+    <div class="posts-grid grid grid-cols-1 gap-3 sm:grid-flow-row-dense sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3" id="posts-grid">
       {postTiles.map(tile => <GridTile {...tile} />)}
     </div>
 
@@ -102,96 +102,10 @@ const postTiles = displayPosts.map((post) => ({
   </div>
 </Layout>
 
-<style>
-  .writing-page {
-    max-width: var(--container-xl);
-    margin: 0 auto;
-  }
-
-  .page-header {
-    margin-bottom: 3rem;
-  }
-
-  .page-header h1 {
-    font-family: var(--font-heading);
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 700;
-    margin-bottom: 1rem;
-    letter-spacing: -0.03em;
-    color: var(--color-text-primary);
-  }
-
-  .page-header p {
-    font-size: 1.25rem;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-  }
-
-  .tags-filter {
-    margin-bottom: 3rem;
-    padding: 1.5rem;
-    background: var(--color-bg-tertiary);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-border-primary);
-  }
-
-  .filter-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--color-text-primary);
-  }
-
-  .tags-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .tag-btn {
-    background: var(--color-bg-primary);
-    border: 1px solid var(--color-border-primary);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-full);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .tag-btn:hover {
-    border-color: var(--color-link);
-    color: var(--color-link);
-  }
-
-  .tag-btn.active {
-    background: var(--color-link);
-    border-color: var(--color-link);
-    color: white;
-  }
-
-  .posts-grid {
-    margin-bottom: 2rem;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--color-text-muted);
-  }
-
-  @media (max-width: 768px) {
-    .page-header h1 {
-      font-size: 2.5rem;
-    }
-  }
-</style>
-
 <script>
   // Simple filter functionality
-  const tagButtons = document.querySelectorAll('.tag-btn[data-tag]');
-  const allTiles = document.querySelectorAll('.tile');
+  const tagButtons = document.querySelectorAll('.filter-tag[data-tag]');
+  const allTiles = document.querySelectorAll('.grid-tile');
 
   tagButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -207,13 +121,13 @@ const postTiles = displayPosts.map((post) => ({
       allTiles.forEach(tile => {
         const htmlTile = tile as HTMLElement;
         if (tag === 'all') {
-          htmlTile.style.display = 'flex';
+          htmlTile.style.display = 'block';
         } else {
-          const tags = tile.querySelectorAll('.tile-tag');
+          const tags = tile.querySelectorAll('.tile-filter-tag');
           const hasTag = Array.from(tags).some(
             t => t.textContent?.toLowerCase() === tag.toLowerCase()
           );
-          htmlTile.style.display = hasTag ? 'flex' : 'none';
+          htmlTile.style.display = hasTag ? 'block' : 'none';
         }
       });
     });
