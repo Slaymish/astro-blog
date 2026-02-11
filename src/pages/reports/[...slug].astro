@@ -34,7 +34,7 @@ const report = await fetchSanity<ReportDoc | null>(`
 `, { slug });
 
 if (!report) {
-  throw new Error(`Report not found: ${slug}`);
+  return new Response('Report not found', { status: 404 });
 }
 
 const htmlContent = portableTextToHtml(report.body);

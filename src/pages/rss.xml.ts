@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { fetchSanity } from '../lib/sanity';
 import { portableTextToPlainText } from '../lib/portableText';
 import { markdownToPlainText } from '../lib/markdown';
+import { escapeXml } from '../lib/escape';
 
 export const GET: APIRoute = async () => {
   const siteURL = 'https://hamishburke.dev'; // Update this to your actual domain
@@ -38,13 +39,13 @@ export const GET: APIRoute = async () => {
       
       return `
     <item>
-      <title><![CDATA[${post.title}]]></title>
-      <link>${siteURL}/posts/${post.slug}</link>
-      <guid>${siteURL}/posts/${post.slug}</guid>
-      <description><![CDATA[${cleanContent}...]]></description>
+      <title>${escapeXml(post.title)}</title>
+      <link>${escapeXml(`${siteURL}/posts/${post.slug}`)}</link>
+      <guid>${escapeXml(`${siteURL}/posts/${post.slug}`)}</guid>
+      <description>${escapeXml(`${cleanContent}...`)}</description>
       <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
       <author>hamish@your-domain.com (Hamish Burke)</author>
-      ${categories.map((cat: string) => `<category>${cat}</category>`).join('')}
+      ${categories.map((cat: string) => `<category>${escapeXml(cat)}</category>`).join('')}
     </item>`;
     }).join('')}
   </channel>

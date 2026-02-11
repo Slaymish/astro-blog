@@ -1,6 +1,7 @@
 import { toHTML } from '@portabletext/to-html';
 import GithubSlugger from 'github-slugger';
 import { urlFor } from './sanity';
+import { escapeHtmlAttribute } from './escape';
 type PortableTextBlock = any;
 
 function stripHtml(value: string) {
@@ -35,7 +36,7 @@ export function portableTextToHtml(content: PortableTextBlock[] | null | undefin
           const alt = value?.alt ? String(value.alt) : '';
           const src = value?.asset ? urlFor(value).width(1200).url() : '';
           if (!src) return '';
-          return `<img src="${src}" alt="${alt}" loading="lazy" />`;
+          return `<img src="${escapeHtmlAttribute(src)}" alt="${escapeHtmlAttribute(alt)}" loading="lazy" />`;
         }
       }
     }

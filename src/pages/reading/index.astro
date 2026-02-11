@@ -53,22 +53,42 @@ const statusLabel: Record<ReadingStatus, string> = {
         <article class="reading-card">
           <div class="reading-card-meta">
             <span>Reading · Books</span>
-            <span aria-hidden="true"><a href={item.link} target="_blank" rel="noopener noreferrer">↗</a></span>
+            <span aria-hidden="true">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer">↗</a>
+              ) : (
+                <span>•</span>
+              )}
+            </span>
           </div>
 
           <div class="reading-card-body">
             <div class="book-cover" data-has-cover={item.coverImage ? 'true' : 'false'}>
-              <a href={item.link} target="_blank" rel="noopener noreferrer">
-              {item.coverImage ? (
-                <img
-                  src={urlFor(item.coverImage).width(240).height(320).fit('crop').url()}
-                  alt={`Cover of ${item.title}`}
-                  loading="lazy"
-                />
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer">
+                  {item.coverImage ? (
+                    <img
+                      src={urlFor(item.coverImage).width(240).height(320).fit('crop').url()}
+                      alt={`Cover of ${item.title}`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="book-cover-placeholder" aria-hidden="true"></div>
+                  )}
+                </a>
               ) : (
-                <div class="book-cover-placeholder" aria-hidden="true"></div>
+                <>
+                  {item.coverImage ? (
+                    <img
+                      src={urlFor(item.coverImage).width(240).height(320).fit('crop').url()}
+                      alt={`Cover of ${item.title}`}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="book-cover-placeholder" aria-hidden="true"></div>
+                  )}
+                </>
               )}
-              </a>
             </div>
 
             <div class="reading-card-details">
