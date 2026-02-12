@@ -6,3 +6,15 @@
   SANITY_PROJECT_ID = "qnuj1c4o"
   SANITY_DATASET = "production"
   SANITY_API_VERSION = "2024-01-01"
+
+[[redirects]]
+  from = "http://hamishburke.dev/*"
+  to = "https://hamishburke.dev/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.hamishburke.dev/*"
+  to = "https://hamishburke.dev/:splat"
+  status = 301
+  force = true

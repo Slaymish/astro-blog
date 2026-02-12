@@ -1,4 +1,6 @@
 ---
+import { SITE_URL, absoluteUrl } from "../../lib/site";
+
 interface BreadcrumbItem {
   name: string;
   url: string;
@@ -9,7 +11,6 @@ interface Props {
 }
 
 const { items } = Astro.props;
-const siteURL = "https://hamishburke.dev";
 ---
 
 <nav aria-label="Breadcrumb" class="mb-8">
@@ -45,13 +46,13 @@ const siteURL = "https://hamishburke.dev";
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": siteURL
+      "item": absoluteUrl("/", SITE_URL)
     },
     ...items.map((item, index) => ({
       "@type": "ListItem",
       "position": index + 2,
       "name": item.name,
-      "item": `${siteURL}${item.url}`
+      "item": absoluteUrl(item.url, SITE_URL)
     }))
   ]
 })} />

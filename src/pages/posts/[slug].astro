@@ -6,6 +6,7 @@ import RelatedPosts from "../../components/features/RelatedPosts.astro";
 import { calculateReadingTime } from "../../utils/reading-time";
 import { createSlug } from "../../utils/slug";
 import { fetchSanity } from "../../lib/sanity";
+import { SITE_URL, absoluteUrl } from "../../lib/site";
 import { portableTextToHtml, portableTextToPlainText } from "../../lib/portableText";
 import { markdownToHtml, markdownToPlainText } from "../../lib/markdown";
 
@@ -88,7 +89,7 @@ const postUpdatedLabel = showUpdated
   publishedTime={publishedTime}
   modifiedTime={modifiedTime}
   tags={tagLinks.map(tag => tag.name)}
-  canonicalURL={`${Astro.url.origin}/posts/${post.slug}`}
+  canonicalURL={absoluteUrl(`/posts/${post.slug}`, SITE_URL)}
 >
   <div class="post-layout">
     <article itemscope itemtype="http://schema.org/BlogPosting">

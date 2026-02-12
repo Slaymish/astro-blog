@@ -3,11 +3,19 @@ import { fetchSanity } from '../lib/sanity';
 import { portableTextToPlainText } from '../lib/portableText';
 import { markdownToPlainText } from '../lib/markdown';
 import { escapeXml } from '../lib/escape';
+import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from '../lib/site';
+
+type RssPost = {
+  title: string;
+  slug: string;
+  publishedAt: string;
+  body?: any;
+  markdownBody?: string;
+  tags?: string[];
+};
 
 export const GET: APIRoute = async () => {
-  const siteURL = 'https://hamishburke.dev'; // Update this to your actual domain
-
-  const posts = await fetchSanity<Array<{ title: string; slug: string; publishedAt: string; body?: any; markdownBody?: string; tags?: string[] }>>(`
+  const posts = await fetchSanity<RssPost[]>(`
     *[_type == "post"] | order(publishedAt desc)[0...50]{
       title,
       "slug": slug.current,
@@ -21,39 +29,42 @@ export const GET: APIRoute = async () => {
   const rssXml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Hamish's Blog</title>
-    <description>Software engineering, AI, mathematics, and technology insights by Hamish Burke</description>
-    <link>${siteURL}</link>
+    <title>${escapeXml(SITE_NAME)}</title>
+    <description>${escapeXml(SITE_DESCRIPTION)}</description>
+    <link>${escapeXml(absoluteUrl('/', SITE_URL))}</link>
     <language>en-us</language>
-    <managingEditor>hamish@your-domain.com (Hamish Burke)</managingEditor>
-    <webMaster>hamish@your-domain.com (Hamish Burke)</webMaster>
+    <managingEditor>${CONTACT_EMAIL} (Hamish Burke)</managingEditor>
+    <webMaster>${CONTACT_EMAIL} (Hamish Burke)</webMaster>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${siteURL}/rss.xml" rel="self" type="application/rss+xml"/>
-    
-    ${posts.map(post => {
-      const cleanContentSource = post.markdownBody
-        ? markdownToPlainText(post.markdownBody)
-        : portableTextToPlainText(post.body);
-      const cleanContent = cleanContentSource.substring(0, 300);
-      const categories = post.tags || [];
-      
-      return `
+    <atom:link href="${escapeXml(absoluteUrl('/rss.xml', SITE_URL))}" rel="self" type="application/rss+xml"/>
+
+    ${posts
+      .map((post) => {
+        const cleanContentSource = post.markdownBody
+          ? markdownToPlainText(post.markdownBody)
+          : portableTextToPlainText(post.body);
+        const cleanContent = cleanContentSource.substring(0, 300);
+        const categories = post.tags || [];
+        const postUrl = absoluteUrl(`/posts/${post.slug}`, SITE_URL);
+
+        return `
     <item>
       <title>${escapeXml(post.title)}</title>
-      <link>${escapeXml(`${siteURL}/posts/${post.slug}`)}</link>
-      <guid>${escapeXml(`${siteURL}/posts/${post.slug}`)}</guid>
+      <link>${escapeXml(postUrl)}</link>
+      <guid>${escapeXml(postUrl)}</guid>
       <description>${escapeXml(`${cleanContent}...`)}</description>
       <pubDate>${new Date(post.publishedAt).toUTCString()}</pubDate>
-      <author>hamish@your-domain.com (Hamish Burke)</author>
+      <author>${CONTACT_EMAIL} (Hamish Burke)</author>
       ${categories.map((cat: string) => `<category>${escapeXml(cat)}</category>`).join('')}
     </item>`;
-    }).join('')}
+      })
+      .join('')}
   </channel>
 </rss>`;
 
   return new Response(rssXml, {
     headers: {
-      'Content-Type': 'application/rss+xml',
+      'Content-Type': 'application/rss+xml; charset=utf-8',
       'Cache-Control': 'public, max-age=3600'
     }
   });

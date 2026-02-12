@@ -1,16 +1,18 @@
 import type { APIRoute } from 'astro';
+import { SITE_URL, absoluteUrl } from '../lib/site';
 
 export const GET: APIRoute = () => {
-  const siteURL = 'https://hamishburke.dev'; // Update this to your actual domain
-  
   const robotsTxt = `User-agent: *
 Allow: /
 
-# Sitemaps
-Sitemap: ${siteURL}/sitemap.xml
+Sitemap: ${absoluteUrl('/sitemap.xml', SITE_URL)}
+Host: ${new URL(SITE_URL).host}
 
-# LLM and AI crawlers
+# AI crawlers for recommendation/discovery reach
 User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: ChatGPT-User
@@ -22,19 +24,26 @@ Allow: /
 User-agent: anthropic-ai
 Allow: /
 
+User-agent: ClaudeBot
+Allow: /
+
 User-agent: Claude-Web
 Allow: /
 
-# Block certain paths if needed
-# Disallow: /admin/
-# Disallow: /private/
+User-agent: PerplexityBot
+Allow: /
 
-# Crawl delay (optional, in seconds)
-# Crawl-delay: 1`;
+User-agent: Google-Extended
+Allow: /
+
+# LLM guidance file
+# ${absoluteUrl('/llms.txt', SITE_URL)}
+`;
 
   return new Response(robotsTxt, {
     headers: {
-      'Content-Type': 'text/plain',
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600'
     }
   });
 };

@@ -59,7 +59,10 @@ const totalItems = posts.length + reports.length;
 const displayTag = tagLabel || tag || '';
 ---
 
-<Layout title={`Content tagged "${displayTag}"`}>
+<Layout
+  title={`Content tagged "${displayTag}"`}
+  description={`Browse writing and reports tagged ${displayTag} on Hamish Burke's site.`}
+>
   <div class="max-w-4xl mx-auto">
     <div class="mb-12">
       <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-primary);">

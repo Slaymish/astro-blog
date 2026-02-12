@@ -7,6 +7,15 @@ import "../../styles/globals.css";
 // Layout Components
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
+import {
+  SITE_AUTHOR,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+  SOCIAL_PROFILES,
+  absoluteUrl,
+  canonicalFromAstro
+} from "../../lib/site";
 
 interface Props {
   title: string;
@@ -22,19 +31,75 @@ interface Props {
 
 const { 
   title, 
-  description = "Hamish's personal blog covering software engineering, AI, mathematics, and technology insights.",
-  image = "/images/og-default.webp",
+  description = SITE_DESCRIPTION,
+  image = "/images/posts/controller-progress.jpg",
   article = false,
   publishedTime,
   modifiedTime,
   tags = [],
-  author = "Hamish Burke",
-  canonicalURL = Astro.url.href
+  author = SITE_AUTHOR,
+  canonicalURL
 } = Astro.props;
 
-const siteTitle = "Hamish's Blog";
+const siteTitle = SITE_NAME;
 const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
-const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
+const siteURL = Astro.site?.toString() || SITE_URL;
+const canonicalHref = canonicalFromAstro(Astro.url, Astro.site, canonicalURL);
+const imageURL = absoluteUrl(image, siteURL);
+const personId = absoluteUrl("/#person", siteURL);
+const websiteId = absoluteUrl("/#website", siteURL);
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": personId,
+      "name": SITE_AUTHOR,
+      "alternateName": "Slaymish",
+      "url": absoluteUrl("/", siteURL),
+      "image": absoluteUrl("/apple-touch-icon.png", siteURL),
+      "jobTitle": "Software Engineer",
+      "sameAs": [...SOCIAL_PROFILES]
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      "url": absoluteUrl("/", siteURL),
+      "name": siteTitle,
+      "description": SITE_DESCRIPTION,
+      "publisher": { "@id": personId },
+      "inLanguage": "en-US"
+    },
+    article
+      ? {
+          "@type": "BlogPosting",
+          "headline": title,
+          "description": description,
+          "url": canonicalHref,
+          "author": { "@id": personId },
+          "publisher": { "@id": personId },
+          "image": [imageURL],
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": canonicalHref
+          },
+          ...(publishedTime ? { "datePublished": publishedTime } : {}),
+          ...(modifiedTime ? { "dateModified": modifiedTime } : {}),
+          ...(tags.length > 0 ? { "keywords": tags.join(", ") } : {})
+        }
+      : {
+          "@type": "WebPage",
+          "@id": canonicalHref,
+          "url": canonicalHref,
+          "name": fullTitle,
+          "description": description,
+          "isPartOf": { "@id": websiteId },
+          "about": { "@id": personId },
+          "inLanguage": "en-US"
+        }
+  ]
+};
 ---
 
 <!doctype html>
@@ -118,9 +183,9 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta name="author" content={author} />
-    <link rel="canonical" href={canonicalURL} />
-    <link rel="alternate" hreflang="en" href={canonicalURL} />
-    <link rel="alternate" hreflang="x-default" href={canonicalURL} />
+    <link rel="canonical" href={canonicalHref} />
+    <link rel="alternate" hreflang="en" href={canonicalHref} />
+    <link rel="alternate" hreflang="x-default" href={canonicalHref} />
     
     <!-- Google Fonts - optimized with font-display=swap and reduced weights -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -129,18 +194,20 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={article ? "article" : "website"} />
-    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:url" content={canonicalHref} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={`${siteURL}${image}`} />
+    <meta property="og:image" content={imageURL} />
     <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:locale" content="en_US" />
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:url" content={canonicalHref} />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={`${siteURL}${image}`} />
+    <meta name="twitter:image" content={imageURL} />
+    <meta name="twitter:site" content="@Slaymishh" />
     <meta name="twitter:creator" content="@Slaymishh" />
     
     <!-- Article-specific meta tags -->
@@ -150,111 +217,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     {article && tags.map(tag => <meta property="article:tag" content={tag} />)}
     
     <!-- Structured Data for LLMs and Search Engines -->
-    <script type="application/ld+json" is:inline set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": article ? "BlogPosting" : "WebSite",
-      "headline": title,
-      "description": description,
-      "url": canonicalURL,
-      "author": {
-        "@type": "Person",
-        "name": author,
-        "url": siteURL,
-        "sameAs": [
-          "https://github.com/Slaymish",
-          "https://www.linkedin.com/in/hamish-burke-2301669a",
-          "https://twitter.com/Slaymishh",
-          "https://instagram.com/hamishburke.studio"
-        ]
-      },
-      "publisher": {
-        "@type": "Person",
-        "name": author,
-        "url": siteURL,
-        "sameAs": [
-          "https://github.com/Slaymish",
-          "https://www.linkedin.com/in/hamish-burke-2301669a"
-        ]
-      },
-      "image": `${siteURL}${image}`,
-      ...(article && publishedTime ? { "datePublished": publishedTime } : {}),
-      ...(article && modifiedTime ? { "dateModified": modifiedTime } : {}),
-      ...(article && tags.length > 0 ? { "keywords": tags.join(", ") } : {}),
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": canonicalURL
-      },
-      ...(article ? {} : {
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": `${siteURL}/search?q={search_term_string}`,
-          "query-input": "required name=search_term_string"
-        }
-      })
-    })} />
-    
-    <!-- Additional Person/Organization Schema for Google Knowledge Panel -->
-    <script type="application/ld+json" is:inline set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "@id": `${siteURL}/#person`,
-      "name": "Hamish Burke",
-      "alternateName": "Slaymish",
-      "url": siteURL,
-      "image": `${siteURL}/images/profile.webp`,
-      "jobTitle": "Software Engineer",
-      "description": "Software engineer specializing in AI, distributed systems, and full-stack development. Writing about machine learning, system architecture, and software engineering.",
-      "alumniOf": {
-        "@type": "EducationalOrganization",
-        "name": "Victoria University of Wellington"
-      },
-      "knowsAbout": [
-        "Software Engineering",
-        "Artificial Intelligence",
-        "Machine Learning",
-        "Distributed Systems",
-        "System Architecture",
-        "Full-Stack Development",
-        "Python",
-        "TypeScript",
-        "Docker",
-        "Cloud Infrastructure",
-        "Database Design"
-      ],
-      "sameAs": [
-        "https://github.com/Slaymish",
-        "https://www.linkedin.com/in/hamish-burke-2301669a",
-        "https://twitter.com/Slaymishh",
-        "https://instagram.com/hamishburke.studio"
-      ],
-      "mainEntityOfPage": {
-        "@type": "ProfilePage",
-        "@id": siteURL
-      }
-    })} />
-    
-    <!-- Website Schema -->
-    <script type="application/ld+json" is:inline set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "@id": `${siteURL}/#website`,
-      "url": siteURL,
-      "name": siteTitle,
-      "description": "Personal blog and portfolio by Hamish Burke covering software engineering, AI, and technology",
-      "publisher": {
-        "@type": "Person",
-        "@id": `${siteURL}/#person`
-      },
-      "inLanguage": "en-US",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": `${siteURL}/tags/{search_term_string}`
-        },
-        "query-input": "required name=search_term_string"
-      }
-    })} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
     
     <!-- Breadcrumb Schema for Homepage -->
     {!article && (
@@ -262,12 +225,12 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": siteURL
-        }]
-      })} />
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": absoluteUrl("/", siteURL)
+          }]
+        })} />
     )}
     
     <!-- Additional meta for LLMs -->
@@ -292,6 +255,7 @@ const siteURL = "https://hamishburke.dev"; // Update this to your actual domain
     
     <!-- RSS Feed -->
     <link rel="alternate" type="application/rss+xml" title="Hamish's Blog RSS Feed" href="/rss.xml" />
+    <link rel="alternate" type="text/plain" title="LLM guidance" href="/llms.txt" />
     
     <!-- KaTeX CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">

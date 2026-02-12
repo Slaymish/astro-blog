@@ -1,13 +1,12 @@
 ---
 import Layout from '../components/layout/Layout.astro';
-
-const siteURL = "https://hamishburke.dev";
+import { SITE_URL, absoluteUrl } from '../lib/site';
 ---
 
 <Layout 
   title="About Hamish Burke"
   description="Software engineer specializing in AI, distributed systems, and full-stack development. Learn more about my work and interests."
-  canonicalURL={`${siteURL}/about`}
+  canonicalURL={absoluteUrl('/about', SITE_URL)}
 >
   <article
     class="max-w-3xl mx-auto"
@@ -137,11 +136,11 @@ const siteURL = "https://hamishburke.dev";
   <script type="application/ld+json" is:inline set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Person",
-    "@id": `${siteURL}/#person`,
+    "@id": absoluteUrl('/#person', SITE_URL),
     "name": "Hamish Burke",
     "alternateName": ["Slaymish", "hamishburke.studio"],
-    "url": siteURL,
-    "image": `${siteURL}/images/profile.webp`,
+    "url": absoluteUrl('/', SITE_URL),
+    "image": absoluteUrl('/apple-touch-icon.png', SITE_URL),
     "jobTitle": "Software Engineer",
     "description": "Software engineer specializing in AI, distributed systems, and full-stack development based in New Zealand",
     "alumniOf": {
@@ -177,7 +176,7 @@ const siteURL = "https://hamishburke.dev";
     ],
     "mainEntityOfPage": {
       "@type": "ProfilePage",
-      "@id": `${siteURL}/about`
+      "@id": absoluteUrl('/about', SITE_URL)
     }
   })} />
 </Layout>
