@@ -139,8 +139,8 @@ const proxiedPdfPath = pdfPath?.startsWith('http')
   </div>
 </div>
 
-<!-- Load PDF.js from CDN FIRST -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" is:inline></script>
+<!-- Load self-hosted pinned PDF.js runtime -->
+<script src="/vendor/pdfjs/3.11.174/pdf.min.js" is:inline></script>
 
 <script is:inline define:vars={{ pdfPath: proxiedPdfPath, title }}>
   // Wait for PDF.js to be loaded
@@ -151,7 +151,7 @@ const proxiedPdfPath = pdfPath?.startsWith('http')
     }
 
     const pdfjsLib = window.pdfjsLib;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/3.11.174/pdf.worker.min.js';
 
     // State management
     let pdfDoc = null;
