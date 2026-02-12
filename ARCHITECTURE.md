@@ -9,10 +9,9 @@ Keep this file short and stable. It should describe structure and boundaries, no
 
 ## Bird's-Eye View
 
-The system has two user-facing surfaces backed by the same Sanity dataset:
+The system has one user-facing surface backed by Sanity data:
 
 - Main site (`/`): portfolio, writing, projects, reports, reading list.
-- Studio (`/studio`): separate visual section for aphorisms and writing experiments.
 
 At runtime, Astro server routes fetch content from Sanity using GROQ queries. Shared layout components provide metadata, JSON-LD, theming, and shell structure. Additional server routes emit crawl/discovery artifacts (`sitemap.xml`, `robots.txt`, `rss.xml`, `llms.txt`) and a guarded PDF proxy (`/api/pdf`).
 
@@ -24,9 +23,8 @@ Deployment target is Netlify server output.
 
 - `src/pages`: route entrypoints (UI pages + API/text endpoints).
 - `src/components`: main-site UI building blocks (`layout`, `features`, `theme`, `ui`).
-- `src/studio`: studio-only layout, design system, and components.
 - `src/lib`: integration and transformation helpers (`sanity`, `portableText`, `markdown`, `site`, `escape`).
-- `src/sanity/schemaTypes`: canonical schema definitions used by embedded studio config.
+- `src/sanity/schemaTypes`: canonical schema definitions used by Sanity Studio configs.
 - `studio-production`: standalone Sanity Studio app with duplicate schema definitions.
 - `public`: static assets (images, audio, PDFs, icons, manifest).
 - `tests`: route and security-focused tests.
@@ -37,13 +35,12 @@ Deployment target is Netlify server output.
 - `astro.config.dev.ts`: local dev config without Netlify adapter.
 - `src/pages/index.astro`: homepage aggregation of projects/posts/reports/reading.
 - `src/pages/writing/index.astro`, `src/pages/projects/index.astro`, `src/pages/reading/index.astro`: list/index pages.
-- `src/pages/posts/[slug].astro`, `src/pages/projects/[slug].astro`, `src/pages/reports/[...slug].astro`, `src/pages/studio/[slug].astro`: dynamic detail routes.
+- `src/pages/posts/[slug].astro`, `src/pages/projects/[slug].astro`, `src/pages/reports/[...slug].astro`: dynamic detail routes.
 
 ### Layout and UI Composition
 
 - `src/components/layout/Layout.astro`: main-site HTML shell, metadata, OG/Twitter tags, JSON-LD graph, robots directives, theme bootstrap.
 - `src/components/layout/Header.astro` + `src/components/layout/Footer.astro`: shared nav/footer.
-- `src/studio/StudioLayout.astro`: isolated studio shell with independent styles and nav.
 
 ### Content and Data Access
 
@@ -71,19 +68,17 @@ Core document types are defined in `src/sanity/schemaTypes`:
 - `project`: project portfolio entries.
 - `report`: long-form report entries, optional PDF file.
 - `book`: reading list entries.
-- `aphorism`: studio entries.
 - `blockContent`: shared rich text schema.
 
-`studio-production/schemaTypes` mirrors these for the standalone Studio app.
+`studio-production/schemaTypes` mirrors these for the standalone Sanity Studio app.
 
 ## Architectural Invariants
 
 1. Sanity is the runtime source of truth for published content routes.
 - Page routes query Sanity directly via `fetchSanity`; Astro content collections exist but are not the active runtime path.
 
-2. Main site and Studio are style-isolated surfaces.
-- Main site uses `src/components/layout/Layout.astro` and design-system CSS.
-- Studio routes use `src/studio/StudioLayout.astro` and `src/studio/design.css`.
+2. The main site shell is centralized.
+- Main site uses `src/components/layout/Layout.astro` and shared design-system CSS.
 
 3. Canonical URL logic is centralized.
 - Route-level canonical and absolute URL generation should use helpers/constants from `src/lib/site.ts`.
@@ -97,7 +92,7 @@ Core document types are defined in `src/sanity/schemaTypes`:
 ## Boundaries
 
 - Route layer (`src/pages`) owns request-level data fetching and page assembly.
-- Component layer (`src/components`, `src/studio/components`) owns presentation concerns.
+- Component layer (`src/components`) owns presentation concerns.
 - Integration layer (`src/lib`) owns external client setup and content transformation.
 - Schema layer (`src/sanity/schemaTypes`, `studio-production/schemaTypes`) owns content model contracts with Sanity Studio.
 

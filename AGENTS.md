@@ -1,7 +1,7 @@
 # AGENTS.md
 
-This file is a task router for coding agents working in this repository.
-Use it to find the right files fast, apply changes in the right layer, and avoid common mistakes.
+This file routes coding-agent work in this repository.
+Use it to find the right files quickly, apply changes in the correct layer, and avoid common mistakes.
 
 ## Start Here
 
@@ -12,13 +12,14 @@ Use it to find the right files fast, apply changes in the right layer, and avoid
 
 ## Fast Repo Map
 
-- Routes and endpoints: `src/pages/*`
-- Main-site shared shell: `src/components/layout/*`
+- Routes and endpoints (site + API + crawl artifacts): `src/pages/*`
+- Main-site shared shell and metadata surface: `src/components/layout/*`
 - Main-site feature components: `src/components/features/*`
-- Studio (separate visual subsystem): `src/studio/*` and `src/pages/studio/*`
-- Sanity client and content transforms: `src/lib/*`
-- Sanity schema (embedded studio): `src/sanity/schemaTypes/*`
-- Standalone production studio app: `studio-production/*`
+- Theme/accent UI: `src/components/theme/*`, `src/theme/*`
+- Sanity client, canonical helpers, and content transforms: `src/lib/*`
+- Astro content collections (local content definitions): `src/content.config.ts`, `src/content/*`
+- Canonical Sanity schemas: `src/sanity/schemaTypes/*`
+- Standalone production studio app and mirrored schemas: `studio-production/*`, `studio-production/schemaTypes/*`
 - Static assets: `public/*`
 - Tests: `tests/*`
 - CI workflow: `.github/workflows/ci.yml`
@@ -26,30 +27,28 @@ Use it to find the right files fast, apply changes in the right layer, and avoid
 ## Where To Go For X
 
 - Add or change a page route: `src/pages/...`
-- Change global metadata/canonical/social cards/JSON-LD: `src/components/layout/Layout.astro`
-- Change canonical domain/site identity constants: `src/lib/site.ts`
-- Change crawl artifacts (`robots`, `sitemap`, `rss`, `llms`):
-  - `src/pages/robots.txt.ts`
-  - `src/pages/sitemap.xml.ts`
-  - `src/pages/rss.xml.ts`
-  - `src/pages/llms.txt.ts`
+- Change global metadata/canonical/OG/Twitter/JSON-LD: `src/components/layout/Layout.astro`
+- Change canonical domain/site identity constants/helpers: `src/lib/site.ts`
+- Change crawl artifacts: `src/pages/robots.txt.ts`, `src/pages/sitemap.xml.ts`, `src/pages/rss.xml.ts`, `src/pages/llms.txt.ts`
 - Change PDF proxy behavior (security-sensitive): `src/pages/api/pdf.ts`
-- Change Sanity data model: `src/sanity/schemaTypes/*` (and mirror in `studio-production/schemaTypes/*`)
-- Change post/report text rendering: `src/lib/portableText.ts`, `src/lib/markdown.ts`
+- Change post/report text rendering and sanitization: `src/lib/portableText.ts`, `src/lib/markdown.ts`, `src/lib/escape.ts`
 - Change theme/accent controls: `src/theme/ThemeProvider.astro`, `src/components/theme/AccentPicker.astro`
-- Change Studio look/interaction: `src/studio/StudioLayout.astro`, `src/studio/design.css`, `public/studio/studio-interactions.js`
+- Change Sanity data model: update both `src/sanity/schemaTypes/*` and `studio-production/schemaTypes/*`
+- Change standalone studio behavior/config: `studio-production/*`
 
 ## Commands
 
 Run from repo root unless noted.
 
 - Install deps: `npm ci`
-- Dev server: `npm run dev`
+- Dev server (Astro, dev config): `npm run dev`
+- Dev server (Astro default): `npm run start`
 - Build: `npm run build`
 - Tests: `npm run test`
-- Preview (note: Netlify adapter does not support local `astro preview` behavior for server output): `npm run preview`
+- Preview build: `npm run preview`
 - Standalone studio dev: `npm run studio:dev`
 - Standalone studio build: `npm run studio:build`
+- Asset/reference update utilities: `npm run convert:webp`, `npm run update:references`, `npm run convert:all`
 
 ## Environment and Config
 
@@ -63,20 +62,50 @@ Config locations:
 
 - Production Astro config: `astro.config.ts`
 - Dev Astro config: `astro.config.dev.ts`
+- Root Sanity config: `sanity.config.ts`
+- Standalone studio config: `studio-production/sanity.config.ts`
 - Netlify settings and redirects: `netlify.toml`
+- CI pipeline: `.github/workflows/ci.yml`
+
+## Safety and Permissions
+
+Allowed without asking:
+
+- Read/list/search files
+- Run targeted checks and tests (`npm run test`)
+- Run local builds (`npm run build`)
+
+Ask first:
+
+- Add/update/remove dependencies
+- Run deploy commands (for example `studio-production` deploy scripts)
+- Delete files, rewrite git history, or run destructive cleanup
+
+Never:
+
+- Commit secrets or credentials
+- Bypass PDF proxy allowlist, HTTPS enforcement, redirect blocking, timeout controls, or MIME validation in `src/pages/api/pdf.ts`
 
 ## Working Rules for This Repo
 
 - Prefer minimal, targeted edits.
 - Do not commit generated output from `dist/` unless explicitly asked.
 - Keep `src/sanity/schemaTypes/*` and `studio-production/schemaTypes/*` in sync when schema changes.
-- If you change routing/canonical behavior, re-check `Layout.astro` and crawl endpoints together.
+- If you change routing/canonical behavior, re-check `src/components/layout/Layout.astro`, `src/lib/site.ts`, and crawl endpoints together.
 - If architectural boundaries or invariants change, update `ARCHITECTURE.md` in the same change.
 - For substantial features/refactors, create and maintain an ExecPlan per `PLANS.md`.
 
 ## Known Footguns
 
-- `SANITY_PROJECT_ID` missing will break build/config load early.
-- Main content routes are server-rendered (`prerender = false` in many pages), so avoid assumptions that routes are static.
-- `src/content.config.ts` defines Astro collections but runtime content currently comes from Sanity queries in route files.
-- `src/pages/api/pdf.ts` is security-sensitive; preserve allowlist and MIME checks.
+- `SANITY_PROJECT_ID` missing fails config loading early in both Astro configs.
+- Main content routes are server-rendered (`output: 'server'`; many routes use `prerender = false`), so avoid static-only assumptions.
+- `src/content.config.ts` defines Astro collections, but runtime published routes query Sanity directly via `src/lib/sanity.ts`.
+- `src/pages/api/pdf.ts` is security-sensitive; preserve host allowlist, HTTPS-only rule, redirect blocking, and `application/pdf` content checks.
+- CI runs on Node 20 with Sanity env vars set in `.github/workflows/ci.yml`; local mismatches are often env/version related.
+
+## Done Criteria for Agent Changes
+
+- Changes are limited to files relevant to the task.
+- Commands/tests relevant to the change are run or explicitly deferred.
+- Schema changes are mirrored across both schema directories when required.
+- Risks, assumptions, and follow-ups are called out clearly.

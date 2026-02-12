@@ -46,20 +46,4 @@ const reports = defineCollection({
     })
 });
 
-const studio = defineCollection({
-    type: 'content',
-    schema: z.object({
-        title: z.string(),
-        subtitle: z.string().optional(),
-        text: z.string().optional(), // Short aphorism text (when content is minimal)
-        palette: z.enum(['noir', 'sepia', 'forest', 'ocean', 'ember']).default('noir'),
-        motion: z.enum(['subtle', 'moderate', 'expressive']).default('subtle'),
-        audio: z.string().optional(),
-        published: z.coerce.date(),
-        updated: z.coerce.date().optional(),
-        tags: z.array(z.string()).default([]),
-        status: z.enum(['draft', 'published']).default('draft'),
-    })
-});
-
-export const collections = { projects, posts, reports, studio };
+export const collections = { projects, posts, reports };
