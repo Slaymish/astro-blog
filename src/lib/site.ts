@@ -1,5 +1,5 @@
 export const SITE_URL = 'https://hamishburke.dev';
-export const SITE_NAME = "Hamish's Blog";
+export const SITE_NAME = 'Hamish Burke';
 export const SITE_DESCRIPTION =
   "Personal site by Hamish Burke covering software engineering, AI, distributed systems, and practical project write-ups.";
 export const SITE_AUTHOR = 'Hamish Burke';
