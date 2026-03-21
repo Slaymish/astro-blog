@@ -1,0 +1,33 @@
+---
+/**
+ * Logo component for nav and favicon.
+ * Uses currentColor so it adapts to light/dark theme and hover via parent text color.
+ *
+ * To swap in the real logo:
+ * 1. Replace /public/logo.svg with the final file
+ * 2. Update the paths below to match
+ * 3. Update /public/favicon.svg for the browser tab icon
+ */
+interface Props {
+  class?: string;
+  size?: number;
+}
+
+const { class: className = '', size = 28 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1"
+  stroke-linecap="square"
+  stroke-linejoin="miter"
+  class={className}
+  aria-hidden="true"
+>
+  <rect width="18" height="18" x="3" y="3"/>
+  <path stroke-linecap="round" d="M21 21L3 3 21 21zM21 3L3 21 21 3z"/>
+</svg>

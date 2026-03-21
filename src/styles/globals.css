@@ -125,11 +125,18 @@
     color: var(--accent);
     transition: all 0.2s ease;
     text-decoration: none;
-    border-bottom: 1px solid transparent;
   }
 
   a:hover {
     opacity: 0.8;
+  }
+
+  /* Underline-on-hover for inline text links only */
+  .prose a {
+    border-bottom: 1px solid transparent;
+  }
+
+  .prose a:hover {
     border-bottom-color: var(--accent);
   }
 
@@ -691,6 +698,12 @@
   .dark .status-chip[data-status='to-read'] {
     background: #9f1239;
     color: #fecdd3;
+  }
+
+  /* CTA buttons — accent-tinted hover that works across all accent colors */
+  .cta-primary:hover {
+    background-color: color-mix(in srgb, var(--accent) 12%, transparent);
+    opacity: 1;
   }
 
   /* Skip link */
