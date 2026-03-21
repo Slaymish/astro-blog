@@ -311,6 +311,47 @@
     font-size: 0.875rem;
   }
 
+  /* Tables: scroll horizontally on mobile instead of overflowing */
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: max-content;
+    max-width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    margin: 2rem 0;
+  }
+
+  .prose thead {
+    border-bottom: 2px solid var(--border);
+  }
+
+  .prose th,
+  .prose td {
+    padding: 0.625rem 1rem;
+    border: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose th {
+    background-color: var(--surface);
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text);
+  }
+
+  .prose tr:nth-child(even) td {
+    background-color: var(--surface);
+  }
+
+  /* Images: ensure they never escape the prose container */
+  .prose img {
+    max-width: 100%;
+    height: auto;
+  }
+
   /* Add some visual flair */
   .prose hr {
     border: none;
@@ -863,9 +904,17 @@
 
   .grid-section {
     margin-bottom: 2rem;
-    width: 90vw;
-    margin-left: calc(50% - 45vw);
+    /* On mobile: stay within the normal flow, no breakout */
+    width: 100%;
     padding: 0 var(--padding-mobile);
+  }
+
+  @media (min-width: 640px) {
+    .grid-section {
+      /* Slightly wider breakout once there's enough screen room */
+      width: 90vw;
+      margin-left: calc(50% - 45vw);
+    }
   }
 
   .featured-tile {
