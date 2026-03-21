@@ -14,21 +14,27 @@ const { items } = Astro.props;
 ---
 
 <nav aria-label="Breadcrumb" class="mb-8">
-  <ol class="flex items-center space-x-2 text-sm" style="color: var(--color-text-muted);" role="list">
+  <ol class="flex items-center flex-wrap gap-x-2 gap-y-1 text-sm text-[var(--text-muted)]" role="list">
     <li role="listitem">
-      <a href="/" style="color: var(--color-link);" class="hover:underline">
+      <a
+        href="/"
+        class="text-[var(--accent)] hover:underline no-underline border-b-0"
+      >
         Home
       </a>
     </li>
     {items.map((item, index) => (
-      <li role="listitem" class="flex items-center space-x-2">
-        <span style="color: var(--color-text-subtle);">/</span>
+      <li role="listitem" class="flex items-center gap-2">
+        <span class="text-[var(--border-strong)] select-none">/</span>
         {index === items.length - 1 ? (
-          <span style="color: var(--color-text-primary);" aria-current="page">
+          <span class="text-[var(--text)]" aria-current="page">
             {item.name}
           </span>
         ) : (
-          <a href={item.url} style="color: var(--color-link);" class="hover:underline">
+          <a
+            href={item.url}
+            class="text-[var(--accent)] hover:underline no-underline border-b-0"
+          >
             {item.name}
           </a>
         )}

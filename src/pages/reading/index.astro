@@ -35,45 +35,61 @@ const statusLabel: Record<ReadingStatus, string> = {
   title="Reading"
   description="What I'm reading, what I've read, and what I hope to read next."
 >
-  <div class="reading-page">
-    <header class="reading-header">
-      <h1 class="page-title">reading.</h1>
-      <p class="page-subtitle">
+  <div class="max-w-[var(--container-xl)] mx-auto">
+    <header class="mb-10">
+      <h1 class="font-serif text-[clamp(2.5rem,6vw,4rem)] font-bold tracking-[-0.03em] text-[var(--text)]">
+        reading.
+      </h1>
+      <p class="max-w-[40rem] text-xl text-[var(--text-muted)] leading-[1.6]">
         What I'm reading, what I've read, and what I hope to read next.
         Recommendations are always welcome.
       </p>
     </header>
 
-    <section class="reading-grid" aria-label="Reading list">
-      <!-- sorted in this order: to-read, reading, read -->
+    <section
+      class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-5"
+      aria-label="Reading list"
+    >
       {readingItems.sort((a, b) => {
         const order = ['to-read', 'reading', 'read'];
         return order.indexOf(a.status) - order.indexOf(b.status);
       }).map((item) => (
-        <article class="reading-card">
-          <div class="reading-card-meta">
+        <article class="bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-md)] p-4 grid gap-3 min-h-64">
+
+          <!-- Meta row -->
+          <div class="flex justify-between text-xs text-[var(--text-muted)] uppercase tracking-[0.08em]">
             <span>Reading · Books</span>
             <span aria-hidden="true">
               {item.link ? (
-                <a href={item.link} target="_blank" rel="noopener noreferrer">↗</a>
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="no-underline border-b-0 hover:text-[var(--accent)]">↗</a>
               ) : (
                 <span>•</span>
               )}
             </span>
           </div>
 
-          <div class="reading-card-body">
-            <div class="book-cover" data-has-cover={item.coverImage ? 'true' : 'false'}>
+          <!-- Body -->
+          <div class="grid grid-cols-[80px_1fr] gap-[0.9rem] items-start max-sm:grid-cols-[72px_1fr]">
+            <div
+              class="w-full rounded-[0.2rem] overflow-hidden bg-[var(--surface-2)] flex items-center justify-center transition-transform duration-200"
+              data-has-cover={item.coverImage ? 'true' : 'false'}
+              style="data-has-cover='true' && 'hover:rotate-[2deg] hover:scale-[1.03]'"
+            >
               {item.link ? (
-                <a href={item.link} target="_blank" rel="noopener noreferrer">
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="block w-full h-full no-underline border-b-0 text-inherit">
                   {item.coverImage ? (
                     <img
                       src={urlFor(item.coverImage).width(240).height(320).fit('crop').url()}
                       alt={`Cover of ${item.title}`}
                       loading="lazy"
+                      class="w-full h-full object-cover border-0"
                     />
                   ) : (
-                    <div class="book-cover-placeholder" aria-hidden="true"></div>
+                    <div
+                      class="w-[70%] h-[70%] rounded-[0.35rem]"
+                      style="background: linear-gradient(135deg, rgba(246,82,160,0.2), rgba(99,102,241,0.15));"
+                      aria-hidden="true"
+                    />
                   )}
                 </a>
               ) : (
@@ -83,22 +99,28 @@ const statusLabel: Record<ReadingStatus, string> = {
                       src={urlFor(item.coverImage).width(240).height(320).fit('crop').url()}
                       alt={`Cover of ${item.title}`}
                       loading="lazy"
+                      class="w-full h-full object-cover border-0"
                     />
                   ) : (
-                    <div class="book-cover-placeholder" aria-hidden="true"></div>
+                    <div
+                      class="w-[70%] h-[70%] rounded-[0.35rem]"
+                      style="background: linear-gradient(135deg, rgba(246,82,160,0.2), rgba(99,102,241,0.15));"
+                      aria-hidden="true"
+                    />
                   )}
                 </>
               )}
             </div>
 
-            <div class="reading-card-details">
+            <div>
               <span class="status-chip" data-status={item.status}>
                 {statusLabel[item.status]}
               </span>
-              <h2 class="reading-card-title">{item.title}</h2>
-              <p class="reading-card-author">{item.author}</p>
+              <h2 class="text-base mt-[0.6rem] mb-1 font-semibold leading-[1.4] text-[var(--text)]">{item.title}</h2>
+              <p class="m-0 text-[var(--text-muted)] text-[0.9rem]">{item.author}</p>
             </div>
           </div>
+
         </article>
       ))}
     </section>

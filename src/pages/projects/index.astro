@@ -38,10 +38,7 @@ const featuredTiles = featuredProjects.map((project) => ({
   href: `/projects/${project.slug}`,
   size: 'square' as const,
   tags: project.technologies || [],
-  date: new Date(project.date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short'
-  }),
+  date: new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }),
   type: 'project' as const
 }));
 
@@ -51,10 +48,7 @@ const otherTiles = otherProjects.map((project) => ({
   href: `/projects/${project.slug}`,
   size: 'square' as const,
   tags: project.technologies || [],
-  date: new Date(project.date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short'
-  }),
+  date: new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }),
   type: 'project' as const
 }));
 ---
@@ -63,16 +57,20 @@ const otherTiles = otherProjects.map((project) => ({
   title="Projects"
   description="A collection of projects I've worked on, featuring web applications, tools, and experiments."
 >
-  <div class="projects-page">
-    <header class="page-header">
-      <h1 class="page-title">projects.</h1>
-      <p class="page-subtitle">Things I've built, experiments I've tried, and work in progress.</p>
+  <div class="max-w-[var(--container-xl)] mx-auto">
+    <header class="mb-12">
+      <h1 class="font-serif text-[clamp(2.5rem,6vw,4rem)] font-bold tracking-[-0.03em] text-[var(--text)]">
+        projects.
+      </h1>
+      <p class="max-w-[40rem] text-xl text-[var(--text-muted)] leading-[1.6]">
+        Things I've built, experiments I've tried, and work in progress.
+      </p>
     </header>
 
     {allTechnologies.length > 0 && (
-      <div class="filter-panel">
-        <span class="filter-label">Filter by technology:</span>
-        <div class="filter-tags">
+      <div class="mb-12 p-6 bg-[var(--surface-2)] rounded-[var(--radius-md)] border border-[var(--border)]">
+        <span class="block font-semibold mb-4 text-[var(--text)]">Filter by technology:</span>
+        <div class="flex flex-wrap gap-2">
           <button class="filter-tag active" data-tech="all">All</button>
           {allTechnologies.map(tech => (
             <button class="filter-tag" data-tech={tech}>{tech}</button>
@@ -82,8 +80,8 @@ const otherTiles = otherProjects.map((project) => ({
     )}
 
     {featuredTiles.length > 0 && (
-      <section class="projects-section">
-        <h2 class="section-title">Featured</h2>
+      <section class="mb-16">
+        <h2 class="font-serif text-[1.75rem] font-semibold mb-6 text-[var(--text)] tracking-tight">Featured</h2>
         <div class="grid grid-cols-1 gap-3 sm:grid-flow-row-dense sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3" id="featured-grid">
           {featuredTiles.map(tile => <GridTile {...tile} />)}
         </div>
@@ -91,8 +89,8 @@ const otherTiles = otherProjects.map((project) => ({
     )}
 
     {otherTiles.length > 0 && (
-      <section class="projects-section">
-        <h2 class="section-title">All Projects</h2>
+      <section class="mb-16">
+        <h2 class="font-serif text-[1.75rem] font-semibold mb-6 text-[var(--text)] tracking-tight">All Projects</h2>
         <div class="grid grid-cols-1 gap-3 sm:grid-flow-row-dense sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3" id="projects-grid">
           {otherTiles.map(tile => <GridTile {...tile} />)}
         </div>
@@ -100,7 +98,7 @@ const otherTiles = otherProjects.map((project) => ({
     )}
 
     {projects.length === 0 && (
-      <div class="empty-state">
+      <div class="text-center py-16 px-8 text-[var(--text-muted)]">
         <p>No projects yet. Check back soon!</p>
       </div>
     )}
@@ -108,21 +106,17 @@ const otherTiles = otherProjects.map((project) => ({
 </Layout>
 
 <script>
-  // Simple filter functionality
   const techButtons = document.querySelectorAll('.filter-tag[data-tech]');
   const allTiles = document.querySelectorAll('.grid-tile');
 
   techButtons.forEach(button => {
     button.addEventListener('click', () => {
       const tech = button.getAttribute('data-tech');
-
       if (!tech) return;
 
-      // Update active state
       techButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
 
-      // Filter tiles
       allTiles.forEach(tile => {
         const htmlTile = tile as HTMLElement;
         if (tech === 'all') {

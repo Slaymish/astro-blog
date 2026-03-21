@@ -28,23 +28,33 @@ if (currentPostTags.length > 0) {
 ---
 
 {relatedPosts.length > 0 && (
-    <div class="bg-white/50 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg p-6 border border-slate-200/50 dark:border-slate-700/50" itemscope itemtype="https://schema.org/Article">
-    <h2 class="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-200" itemprop="headline">Related Posts</h2>
+  <div
+    class="rounded-[var(--radius-lg)] p-6 border border-[var(--border)] bg-[var(--surface)]"
+    itemscope
+    itemtype="https://schema.org/Article"
+  >
+    <h2 class="text-xl font-semibold mb-4 text-[var(--text)]" itemprop="headline">
+      Related Posts
+    </h2>
     <div class="space-y-4" itemprop="articleBody">
       {relatedPosts.map((post: any) => (
-        <article class="border-l-2 border-primary/30 pl-4 py-2" itemscope itemtype="https://schema.org/BlogPosting">
+        <article
+          class="border-l-2 border-[var(--accent)] pl-4 py-2"
+          itemscope
+          itemtype="https://schema.org/BlogPosting"
+        >
           <h3 class="font-medium" itemprop="headline">
-            <a 
-              href={`/posts/${post.slug}`} 
-              class="text-slate-800 dark:text-slate-200 hover:text-primary transition-colors duration-200"
+            <a
+              href={`/posts/${post.slug}`}
+              class="text-[var(--text)] no-underline border-b-0 hover:text-[var(--accent)] hover:opacity-100 transition-colors duration-200"
               itemprop="url"
             >
               {post.title}
             </a>
           </h3>
-          <time 
-            datetime={new Date(post.publishedAt).toISOString()} 
-            class="text-sm text-slate-600 dark:text-slate-400 block mt-1"
+          <time
+            datetime={new Date(post.publishedAt).toISOString()}
+            class="text-sm text-[var(--text-muted)] block mt-1"
             itemprop="datePublished"
           >
             {new Date(post.publishedAt).toLocaleDateString()}

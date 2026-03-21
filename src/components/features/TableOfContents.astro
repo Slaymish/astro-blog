@@ -7,14 +7,12 @@ interface TocItem {
 
 interface Props {
   content: string;
-  htmlContent?: string; // Add optional processed HTML
+  htmlContent?: string;
   minItems?: number;
 }
 
 const { content, htmlContent, minItems = 3 } = Astro.props;
 
-// Extract headings from processed HTML if available, otherwise fall back to markdown
-// Entity decode map for common HTML entities
 const entityMap: Record<string, string> = {
   '&lt;': '<',
   '&gt;': '>',
@@ -25,63 +23,49 @@ const entityMap: Record<string, string> = {
   '&nbsp;': ' ',
 };
 
-// Efficient entity decoder using single pass
 function decodeEntities(str: string): string {
   return str.replace(/&(?:lt|gt|amp|quot|#39|apos|nbsp);/g, match => entityMap[match] || match);
 }
 
 function extractTableOfContents(markdown: string, html?: string): TocItem[] {
   const toc: TocItem[] = [];
-  
+
   if (html) {
-    // Extract from processed HTML - this ensures perfect ID matching
     const headingRegex = /<h([2-4])[^>]*id="([^"]*)"[^>]*>(.*?)<\/h[2-4]>/gi;
     let match;
-    
     while ((match = headingRegex.exec(html)) !== null) {
       const level = parseInt(match[1]);
       const id = match[2];
       const rawText = match[3];
-      
-      // Clean up the text content - single pass for tags, then entities
       const text = decodeEntities(rawText.replace(/<[^>]*>/g, '')).trim();
-      
       if (level >= 2 && level <= 4 && id && text) {
         toc.push({ id, text, level });
       }
     }
   } else {
-    // Fallback to markdown parsing if no HTML provided
     const headingRegex = /^(#{2,4})\s+(.+)$/gm;
     let match;
-
     while ((match = headingRegex.exec(markdown)) !== null) {
       const level = match[1].length;
       const rawText = match[2];
-      
-      // Clean markdown formatting and generate ID in optimized passes
       const text = rawText
         .replace(/\*\*([^*]+)\*\*/g, '$1')
         .replace(/\*([^*]+)\*/g, '$1')
         .replace(/`([^`]+)`/g, '$1')
         .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
         .trim();
-      
-      // Generate slug-style ID
       const id = text
         .toLowerCase()
         .replace(/\s+/g, '-')
         .replace(/[^\w-]/g, '')
         .replace(/-{2,}/g, '-')
         .replace(/^-|-$/g, '');
-
-      // Regex already constrains to h2-h4, but add explicit check for consistency
       if (level >= 2 && level <= 4 && id) {
         toc.push({ id, text, level });
       }
     }
   }
-  
+
   return toc;
 }
 
@@ -90,21 +74,23 @@ const shouldShowToc = toc.length >= minItems;
 ---
 
 {shouldShowToc && (
-  <aside class="mb-8 p-6 rounded-lg" style="background-color: var(--color-bg-tertiary); border-left: 3px solid var(--color-accent-500);">
-    <h2 class="text-lg font-semibold mb-4" style="color: var(--color-accent2-500);">
+  <aside
+    class="mb-8 rounded-[var(--radius-lg)] p-6 border-l-[3px] border-[var(--accent)] bg-[var(--surface-2)]"
+    aria-label="Table of contents"
+  >
+    <h2 class="text-lg font-semibold mb-4 text-[var(--text)]">
       Table of Contents
     </h2>
-    <nav aria-label="Table of contents">
+    <nav aria-label="Article sections">
       <ol class="space-y-2" role="list">
         {toc.map((item) => (
-          <li 
+          <li
             role="listitem"
             class={`text-sm ${item.level === 2 ? 'ml-0' : item.level === 3 ? 'ml-4' : 'ml-8'}`}
           >
-            <a 
+            <a
               href={`#${item.id}`}
-              style="color: var(--color-link);"
-              class="hover:underline block py-1"
+              class="text-[var(--accent)] hover:underline no-underline border-b-0 block py-1"
             >
               {item.text}
             </a>
