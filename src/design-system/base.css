@@ -29,10 +29,11 @@ body {
   padding: 0;
 }
 
-/* Card styling for visibility */
+/* Card styling — neumorphic */
 .tile {
-  border: 1px solid var(--border);
+  border: none;
   background-color: var(--surface);
+  box-shadow: var(--shadow-neu);
 }
 
 /* ============================================
@@ -206,10 +207,11 @@ a:hover::after {
    ============================================ */
 
 img {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-base);
+  border: none;
+  border-radius: var(--radius-md);
   max-width: 100%;
   height: auto;
+  box-shadow: var(--shadow-sm);
 }
 
 /* ============================================

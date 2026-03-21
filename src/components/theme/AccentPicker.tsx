@@ -3,19 +3,19 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useEffect, useState } from 'react';
 
 const colors = [
-  { name: 'green', value: '#059669' },
-  { name: 'blue', value: '#2563eb' },
-  { name: 'purple', value: '#7c3aed' },
-  { name: 'orange', value: '#ea580c' },
-  { name: 'pink', value: '#f652a0' },
+  { name: 'forest', value: '#2d6a4f' },
+  { name: 'sage', value: '#74796d' },
+  { name: 'sand', value: '#b5a28a' },
+  { name: 'slate', value: '#64748b' },
+  { name: 'charcoal', value: '#3d3d3d' },
 ] as const;
 
 export function AccentPicker() {
-  const [activeColor, setActiveColor] = useState('#f652a0');
+  const [activeColor, setActiveColor] = useState('#2d6a4f');
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('accent') || '#f652a0';
+    const saved = localStorage.getItem('accent') || '#2d6a4f';
     setActiveColor(saved);
     applyAccent(saved, false);
   }, []);
@@ -31,7 +31,8 @@ export function AccentPicker() {
     <Popover.Root open={open} onOpenChange={setOpen}>
       <Popover.Trigger asChild>
         <button
-          className="cursor-pointer bg-transparent border border-[var(--border)] rounded-full p-2 flex items-center justify-center text-[var(--text)] transition-all duration-150 hover:border-[var(--accent)] hover:bg-[var(--surface-2)] focus-visible:outline-2 focus-visible:outline-[var(--focus)] focus-visible:outline-offset-2"
+          className="cursor-pointer bg-[var(--surface)] border-none rounded-full p-2 flex items-center justify-center text-[var(--text)] transition-all duration-200 hover:text-[var(--accent)] focus-visible:outline-2 focus-visible:outline-[var(--focus)] focus-visible:outline-offset-2"
+          style={{ boxShadow: 'var(--shadow-neu)' }}
           aria-label="Choose accent color"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

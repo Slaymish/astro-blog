@@ -84,7 +84,8 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="cursor-pointer bg-[var(--surface)] border border-[var(--border)] rounded-full p-2 flex items-center justify-center text-[var(--text)] transition-all duration-150 hover:border-[var(--accent)] hover:bg-[var(--surface-2)] focus-visible:outline-2 focus-visible:outline-[var(--focus)] focus-visible:outline-offset-2"
+      className="cursor-pointer bg-[var(--surface)] border-none rounded-full p-2 flex items-center justify-center text-[var(--text)] transition-all duration-200 hover:text-[var(--accent)] focus-visible:outline-2 focus-visible:outline-[var(--focus)] focus-visible:outline-offset-2"
+      style={{ boxShadow: 'var(--shadow-neu)' }}
       aria-label={labels[mode]}
     >
       {mode === 'light' ? <SunIcon /> : mode === 'dark' ? <MoonIcon /> : <SystemIcon />}

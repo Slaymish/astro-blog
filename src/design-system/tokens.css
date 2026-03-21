@@ -19,37 +19,37 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
-  /* Gray scale */
-  --color-gray-50: #fafbfc;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
-  --color-gray-950: #0a0a0a;
+  /* Warm gray scale */
+  --color-gray-50: #faf9f7;
+  --color-gray-100: #f5f2ed;
+  --color-gray-200: #e8e4dd;
+  --color-gray-300: #d6d0c8;
+  --color-gray-400: #b5afa6;
+  --color-gray-500: #8a847b;
+  --color-gray-600: #6b6560;
+  --color-gray-700: #4a4540;
+  --color-gray-800: #2d2a26;
+  --color-gray-900: #1a1a1a;
+  --color-gray-950: #0c0c0c;
 
-  /* Accent color presets (default: emerald) */
-  --accent-blue: #2563eb;
-  --accent-green: #059669;
-  --accent-orange: #ea580c;
-  --accent-pink: #db2777;
-  --accent-purple: #7c3aed;
+  /* Accent color presets (default: forest) */
+  --accent-forest: #2d6a4f;
+  --accent-sage: #74796d;
+  --accent-sand: #b5a28a;
+  --accent-slate: #64748b;
+  --accent-charcoal: #3d3d3d;
 
   /* Semantic colors - Light theme */
-  --bg: #ffffff;
-  --surface: #f1f3f5;
-  --surface-2: #e5e7eb;
-  --text: #111827;
-  --text-muted: #6b7280;
-  --border: #d1d5db;
-  --border-strong: #9ca3af;
-  --accent: #f652a0;
-  --accent-contrast: #ffffff;
-  --focus: #f652a0;
+  --bg: #faf9f7;
+  --surface: #f0ede8;
+  --surface-2: #e8e4dd;
+  --text: #1a1a1a;
+  --text-muted: #6b6560;
+  --border: #d6d0c8;
+  --border-strong: #b5afa6;
+  --accent: #2d6a4f;
+  --accent-contrast: #faf9f7;
+  --focus: #2d6a4f;
 
   /* ============================================
      SPACING SCALE
@@ -95,9 +95,9 @@
      TYPOGRAPHY
      ============================================ */
 
-  /* Font families - simplified to 1-2 fonts max */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-serif: 'Playfair Display', Georgia, Cambria, 'Times New Roman', Times, serif;
+  /* Font families — DM Serif Display + DM Sans for editorial warmth */
+  --font-sans: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'DM Serif Display', 'Playfair Display', Georgia, Cambria, serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
 
   /* Semantic font usage */
@@ -170,6 +170,14 @@
   --shadow-2xl: 0 50px 100px -20px rgb(0 0 0 / 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
 
+  /* Neumorphic shadows (light theme) */
+  --shadow-neu: 6px 6px 12px rgba(0, 0, 0, 0.06),
+                -6px -6px 12px rgba(255, 255, 255, 0.8);
+  --shadow-neu-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.06),
+                      inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  --shadow-neu-hover: 8px 8px 16px rgba(0, 0, 0, 0.08),
+                      -8px -8px 16px rgba(255, 255, 255, 0.9);
+
   /* ============================================
      Z-INDEX SCALE
      ============================================ */
@@ -214,8 +222,8 @@
   --container-xl: 1280px;
   --container-2xl: 1536px;
 
-  /* Content max-widths (UPDATE.md spec) */
-  --content-max-width: 1150px;     /* 1100-1200px */
+  /* Content max-widths */
+  --content-max-width: 1200px;     /* slightly wider canvas */
   --reading-width: 750px;          /* 720-780px reading width */
   --toc-width: 270px;              /* 240-300px TOC */
 
@@ -230,16 +238,16 @@
 
   /* Grid system */
   --grid-columns: 12;
-  --grid-gap: 0.75rem;
+  --grid-gap: 1rem;
   --grid-row-height: 18px;
 
-  /* Tile styling */
-  --tile-border: 1px solid var(--border);
-  --tile-border-hover: 1px solid var(--accent);
-  --tile-radius: 0.375rem;
-  --tile-padding: 1.5rem;
+  /* Tile styling — neumorphic */
+  --tile-border: none;
+  --tile-border-hover: none;
+  --tile-radius: 1rem;
+  --tile-padding: 1.75rem;
   --tile-bg: var(--surface);
-  --tile-bg-hover: var(--surface-2);
+  --tile-bg-hover: var(--surface);
   --tile-image-text: #f8fafc;
   --tile-image-label-text: #ffffff;
   --tile-image-label-bg: rgba(0, 0, 0, 0.45);
@@ -271,21 +279,29 @@
 
 .dark {
   /* Semantic colors - Dark theme */
-  --bg: #0a0a0a;
-  --surface: #111827;
-  --surface-2: #1f2937;
-  --text: #fafbfc;
-  --text-muted: #6b7280;
-  --border: #374151;
-  --border-strong: #4b5563;
-  --accent: #f652a0;
-  --accent-contrast: #ffffff;
-  --focus: #f652a0;
-  --tile-image-text: #f3f4f6;
-  --tile-image-label-text: #ffffff;
+  --bg: #0c0c0c;
+  --surface: #1a1917;
+  --surface-2: #26251f;
+  --text: #e8e4dd;
+  --text-muted: #9a948c;
+  --border: #3d3a34;
+  --border-strong: #524e46;
+  --accent: #4ade80;
+  --accent-contrast: #0c0c0c;
+  --focus: #4ade80;
+  --tile-image-text: #e8e4dd;
+  --tile-image-label-text: #faf9f7;
   --tile-image-label-bg: rgba(0, 0, 0, 0.7);
   --tile-image-text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   --tile-image-label-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
+
+  /* Neumorphic shadows (dark theme) */
+  --shadow-neu: 6px 6px 12px rgba(0, 0, 0, 0.25),
+                -6px -6px 12px rgba(50, 48, 42, 0.15);
+  --shadow-neu-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.25),
+                      inset -4px -4px 8px rgba(50, 48, 42, 0.15);
+  --shadow-neu-hover: 8px 8px 16px rgba(0, 0, 0, 0.3),
+                      -8px -8px 16px rgba(50, 48, 42, 0.2);
 
   /* Adjust shadows for dark mode */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
