@@ -13,6 +13,7 @@ type ProjectDoc = {
   technologies?: string[];
   homeTileSize?: 'square' | 'wide';
   relatedPostSlug?: string;
+  link?: string;
 };
 
 type PostDoc = {
@@ -47,6 +48,7 @@ const projects = await fetchSanity<ProjectDoc[]>(`
     date,
     technologies,
     homeTileSize,
+    link,
     "relatedPostSlug": relatedPost->slug.current
   }
 `);
@@ -88,12 +90,16 @@ const displayPosts = [
   ...reports.map(r => ({ ...r, excerpt: r.description, _type: 'report' as const }))
 ].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
+const liveTools = projects.filter(p => p.link);
+
 const projectTiles = projects.map((project) => {
   const dateStr = new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-  // If the project has a related blog post, link to the post instead
-  const href = project.relatedPostSlug
-    ? `/posts/${project.relatedPostSlug}`
-    : `/projects/${project.slug}`;
+  // Live tools link directly to the tool; otherwise link to write-up or project page
+  const href = project.link
+    ? project.link
+    : project.relatedPostSlug
+      ? `/posts/${project.relatedPostSlug}`
+      : `/projects/${project.slug}`;
   return {
     title: project.title,
     description: project.description,
@@ -101,7 +107,8 @@ const projectTiles = projects.map((project) => {
     size: project.homeTileSize === 'wide' ? 'wide' : 'square',
     tags: project.technologies || [],
     date: dateStr,
-    type: 'project' as const
+    type: project.link ? 'tool' as const : 'project' as const,
+    external: !!project.link,
   };
 });
 
@@ -138,8 +145,14 @@ const readingPreview = readingItems.slice(0, 2);
       </p>
       <div class="flex flex-wrap justify-center gap-4 mb-6">
         <a
-          href="/projects"
+          href="/tools"
           class="cta-primary text-base text-[var(--accent)] py-3 px-6 rounded-[var(--radius-base)] no-underline border border-[var(--accent)] font-medium transition-colors"
+        >
+          Try my tools
+        </a>
+        <a
+          href="/projects"
+          class="text-base text-[var(--text)] py-3 px-6 rounded-[var(--radius-base)] no-underline border border-[var(--border)] font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           See my projects
         </a>
@@ -161,7 +174,7 @@ const readingPreview = readingItems.slice(0, 2);
     <div class="grid grid-cols-1 gap-3 sm:grid-flow-row-dense sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
 
       {postTiles.slice(0, 2).map(tile => <GridTile {...tile} />)}
-      {projectTiles.slice(0, 3).map(tile => <GridTile {...tile} />)}
+      {projectTiles.filter(t => t.type !== 'tool').slice(0, 3).map(tile => <GridTile {...tile} />)}
 
       <!-- Bouldering hobby tile -->
       <div class="aspect-square px-1 pb-2">
@@ -257,7 +270,7 @@ const readingPreview = readingItems.slice(0, 2);
         </div>
       ))}
 
-      {projectTiles.slice(3, 6).map(tile => <GridTile {...tile} />)}
+      {projectTiles.filter(t => t.type !== 'tool').slice(3, 6).map(tile => <GridTile {...tile} />)}
       {postTiles.slice(2, 5).map(tile => <GridTile {...tile} />)}
 
       <!-- About tile -->
@@ -304,6 +317,7 @@ const readingPreview = readingItems.slice(0, 2);
 
     <!-- View more -->
     <div class="flex justify-center gap-8 mt-8">
+      <a href="/tools" class="text-[var(--text-muted)] no-underline border-b-0 text-[0.9375rem] transition-colors hover:text-[var(--accent)]">View all tools →</a>
       <a href="/projects" class="text-[var(--text-muted)] no-underline border-b-0 text-[0.9375rem] transition-colors hover:text-[var(--accent)]">View all projects →</a>
       <a href="/writing" class="text-[var(--text-muted)] no-underline border-b-0 text-[0.9375rem] transition-colors hover:text-[var(--accent)]">View all writing →</a>
     </div>

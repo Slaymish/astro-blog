@@ -8,6 +8,7 @@ const pathname = Astro.url.pathname;
 const leftNav = [
   { href: '/projects', label: 'Projects' },
   { href: '/writing', label: 'Writing' },
+  { href: '/tools', label: 'Tools' },
 ];
 
 const rightNav = [
@@ -62,15 +63,15 @@ function navLinkClasses(href: string) {
           </a>
         ))}
         <div class="flex items-center gap-2 ml-4">
-          <AccentPicker client:load />
-          <ThemeToggle client:load />
+          <AccentPicker client:only="react" />
+          <ThemeToggle client:only="react" />
         </div>
       </div>
 
       <!-- Mobile: controls + hamburger -->
       <div class="sm:hidden flex items-center gap-2">
-        <AccentPicker client:load />
-        <ThemeToggle client:load />
+        <AccentPicker client:only="react" />
+        <ThemeToggle client:only="react" />
         <button
           id="mobile-menu-toggle"
           class="flex items-center justify-center w-9 h-9 rounded-[var(--radius-md)] text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--surface-2)] transition-colors duration-150 border-0 bg-transparent cursor-pointer"

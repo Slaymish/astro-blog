@@ -41,12 +41,14 @@ const baseTypeLabel =
   type === 'report' ? 'Report'
   : type === 'post' ? 'Writing'
   : type === 'project' ? 'Projects'
+  : type === 'tool' ? 'Tools'
   : type;
 const typeLabel = baseTypeLabel ?? 'Project';
 const metaParts = [typeLabel, tags[0]].filter(Boolean);
 const inferredTypeHref =
   type === 'report' || type === 'post' ? '/writing'
   : type === 'project' ? '/projects'
+  : type === 'tool' ? '/tools'
   : undefined;
 const resolvedTypeHref = typeHref ?? inferredTypeHref;
 ---
