@@ -21,7 +21,7 @@ if (!projectId) {
   throw new Error('Missing SANITY_PROJECT_ID. Add it to your .env file.');
 }
 
-export const sanityClient = createClient({
+const sanityClient = createClient({
   projectId,
   dataset,
   apiVersion,
