@@ -123,17 +123,30 @@ const readingPreview = readingItems.slice(0, 2);
       <h1 class="font-serif text-[clamp(3rem,8vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)] mb-6">
         Hi, I'm Hamish
       </h1>
-      <p class="text-lg text-[var(--text-muted)] leading-[1.7] mb-8">
-        I build things with code and write about technology, software engineering, and whatever I'm learning.
+      <p class="text-lg text-[var(--text-muted)] leading-[1.7] mb-4">
+        Software engineer building AI infrastructure, self-hosted tools, and full-stack web applications.
+        Based in Wellington, NZ. Junior Web Developer at Alphero.
       </p>
-      <div class="flex flex-col items-center gap-6">
+      <p class="text-base text-[var(--text-muted)] leading-[1.7] mb-8 opacity-80">
+        I write about what I learn along the way.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4 mb-6">
         <a
-          href="mailto:hamishapps@gmail.com"
-          class="text-base bg-[var(--accent)] text-[var(--accent-contrast)] py-3 px-6 rounded-[var(--radius-base)] no-underline border-b-0 font-medium transition-colors hover:opacity-90"
+          href="/projects"
+          class="text-base text-[var(--accent)] py-3 px-6 rounded-[var(--radius-base)] no-underline border border-[var(--accent)] font-medium transition-colors hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
         >
-          hamishapps@gmail.com
+          See my projects
+        </a>
+        <a
+          href="/writing"
+          class="text-base text-[var(--text)] py-3 px-6 rounded-[var(--radius-base)] no-underline border border-[var(--border)] font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+        >
+          Read my writing
         </a>
       </div>
+      <p class="text-sm text-[var(--text-muted)] opacity-70">
+        Currently: Junior Web Developer at Alphero &middot; MSc Computer Science, VUW
+      </p>
     </div>
   </section>
 

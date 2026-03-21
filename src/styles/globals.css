@@ -371,6 +371,36 @@
     font-size: 0.875rem;
   }
 
+  .prose pre {
+    position: relative;
+  }
+
+  .code-copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .prose pre:hover .code-copy-btn {
+    opacity: 1;
+  }
+
+  .code-copy-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
   .prose table {
     display: block;
     overflow-x: auto;

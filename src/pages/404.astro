@@ -2,61 +2,47 @@
 import Layout from '../components/layout/Layout.astro';
 ---
 
-<Layout 
-  title="404 - Page Not Found" 
+<Layout
+  title="404 - Page Not Found"
   description="The page you're looking for doesn't exist."
 >
-  <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 fade-in">
-    <div class="mb-8">
-      <h1 class="text-9xl font-bold mb-4" style="color: var(--color-primary-500); font-family: var(--font-heading);">
-        404
-      </h1>
-      <div class="h-1 w-32 mx-auto mb-8" style="background: linear-gradient(90deg, var(--color-primary-500), var(--color-accent-500));"></div>
-    </div>
-    
-    <h2 class="text-3xl md:text-4xl font-bold mb-4" style="color: var(--color-text-primary); font-family: var(--font-heading);">
-      Oops! Page Not Found
+  <div class="min-h-[50vh] flex flex-col items-center justify-center text-center px-4">
+    <h1 class="font-serif text-[8rem] sm:text-[10rem] font-bold leading-none text-[var(--accent)] mb-2 tracking-tight">
+      404
+    </h1>
+
+    <h2 class="font-serif text-2xl sm:text-3xl font-semibold mb-4 text-[var(--text)] tracking-tight">
+      Page not found
     </h2>
-    
-    <p class="text-lg md:text-xl mb-8 max-w-2xl" style="color: var(--color-text-secondary); line-height: 1.7;">
-      The page you're looking for seems to have wandered off into the digital void. 
-      Don't worry though, you can find your way back home.
+
+    <p class="text-lg mb-8 max-w-md text-[var(--text-muted)] leading-relaxed">
+      This page doesn't exist. Maybe it was moved, or maybe it never was.
     </p>
-    
-    <div class="flex flex-col sm:flex-row gap-4">
-      <a 
-        href="/" 
-        class="cta-button cta-primary"
-        style="background-color: var(--color-primary-500); color: white;"
+
+    <div class="flex flex-col sm:flex-row gap-3">
+      <a
+        href="/"
+        class="inline-flex items-center justify-center gap-2 px-6 py-3 text-[var(--accent)] border border-[var(--accent)] rounded-[var(--radius-md)] no-underline border-b-[1px] font-medium transition-colors hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
       >
-        <svg class="inline-block w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-        </svg>
-        Go Home
+        Go home
       </a>
       <button
         type="button"
         id="go-back-button"
-        class="cta-button cta-secondary"
-        style="border: 2px solid var(--color-primary-500); color: var(--color-primary-500);"
+        class="inline-flex items-center justify-center gap-2 px-6 py-3 text-[var(--text)] border border-[var(--border)] rounded-[var(--radius-md)] font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] bg-transparent cursor-pointer"
       >
-        <svg class="inline-block w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        Go Back
+        Go back
       </button>
     </div>
-    
-    <!-- Helpful Links -->
-    <div class="mt-16 pt-8" style="border-top: 1px solid var(--color-border-secondary);">
-      <h3 class="text-lg font-semibold mb-4" style="color: var(--color-text-primary);">
-        Helpful Links
-      </h3>
-      <div class="flex flex-wrap justify-center gap-6 text-sm">
-        <a href="/#reports" class="helpful-link" style="color: var(--color-text-muted);">Reports</a>
-        <a href="/#posts" class="helpful-link" style="color: var(--color-text-muted);">Blog Posts</a>
-        <a href="/cv" class="helpful-link" style="color: var(--color-text-muted);">CV</a>
-        <a href="/rss.xml" class="helpful-link" style="color: var(--color-text-muted);">RSS Feed</a>
+
+    <div class="mt-16 pt-8 border-t border-[var(--border)] w-full max-w-md">
+      <p class="text-sm font-medium text-[var(--text-muted)] mb-4">Or try one of these:</p>
+      <div class="flex flex-wrap justify-center gap-4 text-sm">
+        <a href="/projects" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">Projects</a>
+        <a href="/writing" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">Writing</a>
+        <a href="/about" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">About</a>
+        <a href="/cv" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">CV</a>
+        <a href="/rss.xml" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">RSS Feed</a>
       </div>
     </div>
   </div>
@@ -72,69 +58,3 @@ import Layout from '../components/layout/Layout.astro';
     window.location.href = '/';
   });
 </script>
-
-<style>
-  .cta-button {
-    padding: 0.875rem 2rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-  }
-
-  .cta-primary {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
-
-  .cta-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    filter: brightness(1.1);
-  }
-
-  .cta-secondary {
-    background-color: transparent;
-  }
-
-  .cta-secondary:hover {
-    background-color: var(--color-primary-500);
-    color: white !important;
-    transform: translateY(-2px);
-  }
-
-  .helpful-link {
-    transition: all 0.2s ease;
-  }
-
-  .helpful-link:hover {
-    color: var(--color-primary-500) !important;
-    text-decoration: underline;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .fade-in {
-    animation: fadeIn 0.6s ease-out;
-  }
-
-  @media (max-width: 640px) {
-    .cta-button {
-      width: 100%;
-      justify-content: center;
-    }
-  }
-</style>

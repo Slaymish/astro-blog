@@ -151,6 +151,46 @@ const postUpdatedLabel = showUpdated
         currentPostTags={tagLinks.map(tag => tag.name)}
       />
 
+      <!-- Share & Subscribe -->
+      <div class="post-share">
+        <div class="share-links">
+          <span class="text-sm font-medium text-[var(--text-muted)]">Share:</span>
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(absoluteUrl(`/posts/${post.slug}`, SITE_URL))}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="share-link"
+            aria-label="Share on Twitter"
+          >
+            Twitter/X
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(absoluteUrl(`/posts/${post.slug}`, SITE_URL))}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="share-link"
+            aria-label="Share on LinkedIn"
+          >
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <div class="subscribe-cta">
+        <p class="text-[var(--text)] font-semibold mb-1">Enjoyed this post?</p>
+        <p class="text-sm text-[var(--text-muted)] mb-3">
+          Subscribe via RSS to get notified when I publish new writing.
+        </p>
+        <a href="/rss.xml" class="subscribe-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 11a9 9 0 0 1 9 9"/>
+            <path d="M4 4a16 16 0 0 1 16 16"/>
+            <circle cx="5" cy="19" r="1"/>
+          </svg>
+          Subscribe via RSS
+        </a>
+      </div>
+
       <footer class="post-footer">
         <nav aria-label="Post navigation">
           <a href="/writing" class="back-link">
@@ -282,5 +322,65 @@ const postUpdatedLabel = showUpdated
   /* Ensure prose doesn't exceed reading line length */
   .prose {
     max-width: 65ch;
+  }
+
+  .post-share {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .share-links {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .share-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.25rem;
+    transition: all 0.15s ease;
+  }
+
+  .share-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .share-link::after {
+    display: none;
+  }
+
+  .subscribe-cta {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+
+  .subscribe-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: opacity 0.15s ease;
+  }
+
+  .subscribe-link:hover {
+    opacity: 0.8;
+  }
+
+  .subscribe-link::after {
+    display: none;
   }
 </style>

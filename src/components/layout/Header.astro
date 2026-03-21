@@ -20,7 +20,7 @@ const navLinks = [
       <a
         href="/"
         class="font-serif font-semibold text-[1.125rem] text-[var(--text)] tracking-tight no-underline border-b-0 hover:text-[var(--accent)] hover:opacity-100 transition-colors duration-150"
-        aria-label="Hamish — Home"
+        aria-label="Hamish - Home"
         aria-current={pathname === '/' ? 'page' : undefined}
       >
         Hamish
@@ -48,12 +48,83 @@ const navLinks = [
         })}
       </div>
 
-      <!-- Theme controls -->
+      <!-- Theme controls + mobile menu button -->
       <div class="flex items-center gap-2">
         <AccentPicker client:load />
         <ThemeToggle client:load />
+
+        <!-- Mobile menu button -->
+        <button
+          id="mobile-menu-toggle"
+          class="sm:hidden flex items-center justify-center w-9 h-9 rounded-[var(--radius-md)] text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--surface-2)] transition-colors duration-150 border-0 bg-transparent cursor-pointer"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <svg class="menu-icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+          <svg class="menu-icon-close hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
 
     </nav>
   </div>
+
+  <!-- Mobile menu -->
+  <div
+    id="mobile-menu"
+    class="sm:hidden hidden border-t border-[var(--border)]"
+    role="navigation"
+    aria-label="Mobile navigation"
+  >
+    <div class="max-w-[var(--content-max-width)] mx-auto px-6 py-4 flex flex-col gap-1">
+      {navLinks.map(({ href, label }) => {
+        const isActive = pathname === href || pathname.startsWith(href + '/');
+        return (
+          <a
+            href={href}
+            class={[
+              'text-base font-medium no-underline border-b-0 py-2.5 px-3 rounded-[var(--radius-md)] transition-colors duration-150',
+              isActive
+                ? 'text-[var(--accent)] bg-[var(--surface-2)]'
+                : 'text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--surface-2)]',
+            ].join(' ')}
+            aria-current={isActive ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        );
+      })}
+    </div>
+  </div>
 </header>
+
+<script>
+  const toggle = document.getElementById('mobile-menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const openIcon = toggle?.querySelector('.menu-icon-open');
+  const closeIcon = toggle?.querySelector('.menu-icon-close');
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = menu?.classList.contains('hidden') === false;
+    if (isOpen) {
+      menu?.classList.add('hidden');
+      openIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+    } else {
+      menu?.classList.remove('hidden');
+      openIcon?.classList.add('hidden');
+      closeIcon?.classList.remove('hidden');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close menu');
+    }
+  });
+</script>
