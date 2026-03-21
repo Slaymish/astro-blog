@@ -30,9 +30,13 @@ const projects = await fetchSanity<ProjectDoc[]>(`
 const featuredProjects = projects.filter(p => p.featured);
 const otherProjects = projects.filter(p => !p.featured);
 
-const allTechnologies = [...new Set(
-  projects.flatMap(p => p.technologies || [])
-)].sort();
+// Count occurrences of each technology, only keep those with 2+ results
+const techCounts = new Map<string, number>();
+projects.forEach(p => (p.technologies || []).forEach(t => techCounts.set(t, (techCounts.get(t) || 0) + 1)));
+const allTechnologies = [...techCounts.entries()]
+  .filter(([, count]) => count >= 2)
+  .map(([tech]) => tech)
+  .sort();
 
 const featuredTiles = featuredProjects.map((project) => ({
   title: project.title,
@@ -70,8 +74,8 @@ const otherTiles = otherProjects.map((project) => ({
     </header>
 
     {allTechnologies.length > 0 && (
-      <div class="mb-12 p-6 bg-[var(--surface-2)] rounded-[var(--radius-md)] border border-[var(--border)]">
-        <span class="block font-semibold mb-4 text-[var(--text)]">Filter by technology:</span>
+      <div class="mb-12">
+        <span class="block text-xs font-medium uppercase tracking-[0.1em] mb-4 text-[var(--text-muted)]">Filter by technology</span>
         <div class="flex flex-wrap gap-2">
           <button class="filter-tag active" data-tech="all">All</button>
           {allTechnologies.map(tech => (

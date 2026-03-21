@@ -664,31 +664,30 @@
     transform: translateY(0);
   }
 
-  /* Filter tags — neumorphic style */
+  /* Filter tags — clean pill style */
   .filter-tag {
     background: var(--surface);
-    border: none;
+    border: 1px solid var(--border);
     padding: 0.375rem 0.875rem;
     border-radius: var(--radius-full);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     color: var(--text-muted);
     cursor: pointer;
-    box-shadow: var(--shadow-neu);
-    transition: all 0.2s ease;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   }
 
   .filter-tag:hover {
-    box-shadow: var(--shadow-neu-hover);
     color: var(--accent);
-    transform: translateY(-1px);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface));
   }
 
   .filter-tag.active {
     background: var(--accent);
-    box-shadow: var(--shadow-neu-inset);
+    border-color: var(--accent);
     color: var(--accent-contrast);
-    transform: translateY(0);
+    font-weight: 600;
   }
 
   /* Status chips */
