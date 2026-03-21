@@ -12,6 +12,14 @@ import { markdownToHtml, markdownToPlainText } from "../../lib/markdown";
 
 export const prerender = false;
 
+type RelatedProjectDoc = {
+  title: string;
+  slug: string;
+  technologies?: string[];
+  link?: string;
+  github?: string;
+};
+
 type PostDoc = {
   title: string;
   slug: string;
@@ -37,6 +45,17 @@ const post = await fetchSanity<PostDoc | null>(`
     markdownBody
   }
 `, { slug });
+
+// Find any project that references this post
+const relatedProject = post ? await fetchSanity<RelatedProjectDoc | null>(`
+  *[_type == "project" && relatedPost._ref in *[_type == "post" && slug.current == $slug]._id][0]{
+    title,
+    "slug": slug.current,
+    technologies,
+    link,
+    github
+  }
+`, { slug }) : null;
 
 if (!post) {
   return Astro.redirect("/404");
@@ -143,6 +162,21 @@ const postUpdatedLabel = showUpdated
           </div>
         )}
       </header>
+
+      {relatedProject && (
+        <div class="project-callout">
+          <span class="project-callout-label">Project</span>
+          <span class="project-callout-title">{relatedProject.title}</span>
+          <div class="project-callout-links">
+            {relatedProject.link && (
+              <a href={relatedProject.link} target="_blank" rel="noopener noreferrer">Live Demo →</a>
+            )}
+            {relatedProject.github && (
+              <a href={relatedProject.github} target="_blank" rel="noopener noreferrer">GitHub →</a>
+            )}
+          </div>
+        </div>
+      )}
 
       <div class="prose" itemprop="articleBody" set:html={htmlContent}></div>
 
@@ -381,6 +415,54 @@ const postUpdatedLabel = showUpdated
   }
 
   .subscribe-link::after {
+    display: none;
+  }
+
+  .project-callout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 0.875rem 1.25rem;
+    margin-bottom: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+  }
+
+  .project-callout-label {
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+  }
+
+  .project-callout-title {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .project-callout-links {
+    display: flex;
+    gap: 0.75rem;
+    margin-left: auto;
+  }
+
+  .project-callout-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+
+  .project-callout-links a:hover {
+    color: var(--accent);
+  }
+
+  .project-callout-links a::after {
     display: none;
   }
 </style>

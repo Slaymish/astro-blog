@@ -67,6 +67,14 @@ export const project = defineType({
       type: 'url'
     }),
     defineField({
+      name: 'relatedPost',
+      title: 'Related Blog Post',
+      type: 'reference',
+      to: [{ type: 'post' }],
+      description:
+        'Link this project to its blog post. When set, the project card will link directly to the post instead of the project page.'
+    }),
+    defineField({
       name: 'coverImage',
       title: 'Cover Image',
       type: 'image',

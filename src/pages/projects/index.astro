@@ -12,6 +12,7 @@ type ProjectDoc = {
   date: string;
   featured?: boolean;
   technologies?: string[];
+  relatedPostSlug?: string;
 };
 
 const projects = await fetchSanity<ProjectDoc[]>(`
@@ -21,7 +22,8 @@ const projects = await fetchSanity<ProjectDoc[]>(`
     "slug": slug.current,
     date,
     featured,
-    technologies
+    technologies,
+    "relatedPostSlug": relatedPost->slug.current
   }
 `);
 
@@ -35,7 +37,7 @@ const allTechnologies = [...new Set(
 const featuredTiles = featuredProjects.map((project) => ({
   title: project.title,
   description: project.description,
-  href: `/projects/${project.slug}`,
+  href: project.relatedPostSlug ? `/posts/${project.relatedPostSlug}` : `/projects/${project.slug}`,
   size: 'square' as const,
   tags: project.technologies || [],
   date: new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }),
@@ -45,7 +47,7 @@ const featuredTiles = featuredProjects.map((project) => ({
 const otherTiles = otherProjects.map((project) => ({
   title: project.title,
   description: project.description,
-  href: `/projects/${project.slug}`,
+  href: project.relatedPostSlug ? `/posts/${project.relatedPostSlug}` : `/projects/${project.slug}`,
   size: 'square' as const,
   tags: project.technologies || [],
   date: new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }),

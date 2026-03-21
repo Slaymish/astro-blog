@@ -2,9 +2,73 @@
 
 *Comprehensive audit covering user personas, journey maps, competitive analysis, and a prioritised improvement roadmap.*
 
-**Date:** March 21, 2026
+**Date:** March 21, 2026 (original) · March 21, 2026 (reassessment update)
 **Site:** https://hamishburke.dev
 **Stack:** Astro 5 + Sanity CMS + Tailwind CSS v4, hosted on Netlify
+
+---
+
+## 0. Reassessment Summary (Post-Update)
+
+After the initial audit, significant changes were implemented across the site. This section tracks what was addressed, what improved, and what remains outstanding.
+
+### Changes Implemented — What's Now Working Well
+
+**Hero section — transformed.** The generic tagline has been replaced with a specific, informative introduction: software engineer, AI infrastructure, self-hosted tools, Wellington NZ, Junior Web Developer at Alphero. The dual CTAs ("See my projects" / "Read my writing") are perfectly journey-appropriate. The "Currently" status line below (role at Alphero, MSc Computer Science, VUW) gives employers immediate context. This is a night-and-day improvement.
+
+**Mobile navigation — fixed.** A hamburger menu now appears on mobile viewports, revealing Projects, Writing, Reading, and About links. This was a critical blocker — mobile visitors can now actually navigate the site.
+
+**About page — substantially enriched.** The bio is now three strong paragraphs covering education (MSc thesis on anomaly detection in electrical distribution networks using diffusion methods), current role, technical interests, and personal hobbies. The new "Currently" card is excellent — Working, Building, Learning, and Reading in a clean 2x2 grid. The "Get in Touch" section with four clear buttons (Email me, GitHub, LinkedIn, View CV) is exactly right. The "This Website" section adds a nice meta-transparency touch.
+
+**CV page — fully implemented.** A dedicated `/cv` route with a prominent "Curriculum Vitae" header, subtitle, Download PDF and Open in New Tab buttons, and an embedded PDF viewer. This is professional and complete. The CV link also appears in the footer navigation.
+
+**Footer — dramatically improved.** Now includes the "Hamish Burke" name, a one-line bio, Alphero link, full navigation links (Home, Projects, Writing, Reading, About, CV), and social icons (GitHub, LinkedIn, Email, RSS). This went from bare-minimum to genuinely useful.
+
+**Blog post reading experience — improved.** Social sharing buttons (Twitter/X, LinkedIn) now appear at the end of posts. An "Enjoyed this post?" RSS subscription prompt is placed after the content — the highest-converting position. A "Back to writing" link provides clear navigation after reading. The scroll progress indicator is active at the top of the page.
+
+**Navigation redesign.** The nav now uses a centred logo/icon with links split either side (Projects, Writing | Reading, About), plus accent colour picker and theme toggle. This is a cleaner layout than the previous left-aligned "Hamish" text.
+
+**"View all" links added.** The bottom of the homepage bento grid now has "View all projects →" and "View all writing →" links, giving visitors a clear path forward after scanning.
+
+### Issues Identified in Reassessment
+
+**Broken logo/favicon in navigation.** The centred nav element that should show a logo or monogram is rendering as a broken image placeholder (a pink-bordered square with an X). This is the most visible thing on every page and reads as unfinished. This needs fixing urgently — either load the correct image asset, use an SVG inline, or fall back to text ("HB" or "Hamish") until the image is sorted.
+
+**About page still lacks a photo.** The bio is much stronger now, but there's still no headshot or working photo. Research consistently shows that a face makes a portfolio more memorable and personable. For employer visitors in particular, putting a face to the application is important for recall during hiring discussions.
+
+**Navigation doesn't include CV link.** The CV is accessible from the About page's "View CV" button and the footer, but not from the main navigation bar. Given that the CV page exists and is well-built, adding it to the nav (or at least making it more discoverable) would help employer visitors who go looking for it.
+
+**No related posts at end of blog articles.** The post ends with sharing buttons and an RSS prompt, but there's no "You might also like" or "More writing" section. With only a few posts this is less critical, but as content grows, related posts keep readers on-site longer.
+
+**Project pages still lack depth.** The project cards remain description + tech tags. No screenshots, no case studies, no live demo links, no architecture diagrams. This is still the single biggest gap for the employer audience (Persona 1: Alex). The hero and About page improvements help get visitors interested — now the projects need to close the deal.
+
+### Updated Priority Matrix
+
+| Recommendation | Original Priority | Status | New Priority |
+|----------------|-------------------|--------|--------------|
+| Rewrite hero section | P0 | **Done** | — |
+| Fix mobile navigation | P0 | **Done** | — |
+| Enrich About page | P0 | **Done** (minus photo) | — |
+| Add CV link/download | P0 | **Done** | — |
+| Improve footer | P1 | **Done** | — |
+| Fix broken nav logo | — | **New issue** | **P0** |
+| Add photo to About page | P0 (part of About) | **Outstanding** | **P1** |
+| Project case studies (top 3) | P1 | **Outstanding** | **P1** |
+| Add screenshots to project cards | P1 | **Outstanding** | **P1** |
+| Project status badges | P1 | **Outstanding** | **P2** |
+| Add CV to main navigation | — | **New suggestion** | **P2** |
+| Newsletter signup | P2 | **Partially done** (RSS prompt exists) | **P2** |
+| Blog sharing buttons | P2 | **Done** | — |
+| Related posts at end of articles | P2 | **Outstanding** | **P2** |
+| Rationalise tags | P2 | **Outstanding** | **P3** |
+| Add search (Pagefind) | P3 | **Outstanding** | **P3** |
+| Social proof / GitHub stats | P3 | **Outstanding** | **P3** |
+| Interactive project demos | P3 | **Outstanding** | **P3** |
+| Connect Reading page with reviews | P3 | **Outstanding** | **P3** |
+
+### Bottom Line
+
+The Phase 1 recommendations have been comprehensively addressed. The site has gone from "clean but generic" to "specific, professional, and navigable." The hero, About page, footer, mobile nav, CV, and blog post experience are all markedly better. The remaining high-impact work is: fix the broken nav logo (immediate), add a photo to the About page (quick win), and build out project case studies with visuals (the biggest remaining gap for employer visitors).
 
 ---
 

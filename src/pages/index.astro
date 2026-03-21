@@ -12,6 +12,7 @@ type ProjectDoc = {
   date: string;
   technologies?: string[];
   homeTileSize?: 'square' | 'wide';
+  relatedPostSlug?: string;
 };
 
 type PostDoc = {
@@ -45,7 +46,8 @@ const projects = await fetchSanity<ProjectDoc[]>(`
     "slug": slug.current,
     date,
     technologies,
-    homeTileSize
+    homeTileSize,
+    "relatedPostSlug": relatedPost->slug.current
   }
 `);
 
@@ -88,10 +90,14 @@ const displayPosts = [
 
 const projectTiles = projects.map((project) => {
   const dateStr = new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+  // If the project has a related blog post, link to the post instead
+  const href = project.relatedPostSlug
+    ? `/posts/${project.relatedPostSlug}`
+    : `/projects/${project.slug}`;
   return {
     title: project.title,
     description: project.description,
-    href: `/projects/${project.slug}`,
+    href,
     size: project.homeTileSize === 'wide' ? 'wide' : 'square',
     tags: project.technologies || [],
     date: dateStr,

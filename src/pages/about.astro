@@ -26,13 +26,24 @@ import { SITE_URL, absoluteUrl, CONTACT_EMAIL } from '../lib/site';
       class="max-w-none"
       itemprop="mainContentOfPage"
     >
-      <!-- Bio -->
+      <!-- Bio with headshot -->
       <section class="mb-16">
-        <p class="mb-5 text-lg text-[var(--text-muted)] leading-[1.8]">
-          I'm Hamish, a software engineer based in Wellington, New Zealand. I recently completed my Master of Computer Science
-          at Victoria University of Wellington, where my thesis focused on anomaly detection of electrical distribution networks
-          using diffusion methods.
-        </p>
+        <div class="flex flex-col sm:flex-row gap-8 items-start mb-8">
+          <img
+            src="/images/headshot.jpg"
+            alt="Hamish Burke"
+            class="w-36 h-36 rounded-full object-cover object-top shadow-md flex-shrink-0 border-2 border-[var(--border)]"
+            itemprop="image"
+            loading="eager"
+          />
+          <div>
+            <p class="mb-5 text-lg text-[var(--text-muted)] leading-[1.8]">
+              I'm Hamish, a software engineer based in Wellington, New Zealand. I recently completed my Master of Computer Science
+              at Victoria University of Wellington, where my thesis focused on anomaly detection of electrical distribution networks
+              using diffusion methods.
+            </p>
+          </div>
+        </div>
         <p class="mb-5 text-lg text-[var(--text-muted)] leading-[1.8]">
           I now work at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer" class="text-[var(--accent)] no-underline hover:opacity-80 transition-colors">Alphero</a> as a Junior Web Developer. My broader interests sit at the intersection of AI, infrastructure,
           and systems thinking. I've built tools for GPU sharing and distributed computing, self-hosted applications, and
@@ -180,7 +191,7 @@ import { SITE_URL, absoluteUrl, CONTACT_EMAIL } from '../lib/site';
     "name": "Hamish Burke",
     "alternateName": ["Slaymish", "hamishburke.studio"],
     "url": absoluteUrl('/', SITE_URL),
-    "image": absoluteUrl('/apple-touch-icon.png', SITE_URL),
+    "image": absoluteUrl('/images/headshot.jpg', SITE_URL),
     "jobTitle": "Junior Web Developer",
     "worksFor": {
       "@type": "Organization",

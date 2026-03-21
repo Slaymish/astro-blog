@@ -13,6 +13,8 @@ type ProjectDoc = {
   link?: string;
   github?: string;
   body?: any;
+  relatedPostSlug?: string;
+  relatedPostTitle?: string;
 };
 
 const { slug } = Astro.params;
@@ -25,7 +27,9 @@ const project = await fetchSanity<ProjectDoc | null>(`
     technologies,
     link,
     github,
-    body
+    body,
+    "relatedPostSlug": relatedPost->slug.current,
+    "relatedPostTitle": relatedPost->title
   }
 `, { slug });
 
@@ -38,6 +42,8 @@ const projectDescription = project.description;
 const technologies = project.technologies || [];
 const link = project.link;
 const github = project.github;
+const relatedPostSlug = project.relatedPostSlug;
+const relatedPostTitle = project.relatedPostTitle;
 const htmlContent = portableTextToHtml(project.body);
 ---
 
@@ -59,6 +65,11 @@ const htmlContent = portableTextToHtml(project.body);
         </div>
 
         <div class="project-links">
+          {relatedPostSlug && (
+            <a href={`/posts/${relatedPostSlug}`} class="project-link project-link--primary">
+              Read the write-up →
+            </a>
+          )}
           {link && (
             <a href={link} target="_blank" rel="noopener noreferrer" class="project-link">
               Live Demo →
@@ -167,6 +178,18 @@ const htmlContent = portableTextToHtml(project.body);
   .project-link:hover {
     border-color: var(--color-link);
     color: var(--color-link);
+  }
+
+  .project-link--primary {
+    background: var(--accent, var(--color-link));
+    color: white;
+    border-color: var(--accent, var(--color-link));
+  }
+
+  .project-link--primary:hover {
+    opacity: 0.9;
+    color: white;
+    border-color: var(--accent, var(--color-link));
   }
 
   .project-link::after {
