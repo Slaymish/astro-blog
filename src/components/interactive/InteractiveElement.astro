@@ -1,0 +1,17 @@
+---
+import GpuCalculator from './GpuCalculator';
+
+interface Props {
+  componentId: string;
+}
+
+const { componentId } = Astro.props;
+
+const components: Record<string, any> = {
+  'gpu-calculator': GpuCalculator,
+};
+
+const Component = components[componentId];
+---
+
+{Component && <Component client:load />}

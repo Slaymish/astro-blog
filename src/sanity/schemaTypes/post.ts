@@ -58,6 +58,17 @@ export const post = defineType({
       type: 'text',
       rows: 10,
       description: 'Optional: paste markdown here if you prefer markdown over the rich text editor.'
+    }),
+    defineField({
+      name: 'interactiveElement',
+      title: 'Interactive Element',
+      type: 'string',
+      description: 'Component ID. Place {{interactive}} in the body where it should appear.',
+      options: {
+        list: [
+          { title: 'GPU Cost Calculator', value: 'gpu-calculator' },
+        ],
+      },
     })
   ]
 });

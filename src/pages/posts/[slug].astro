@@ -10,6 +10,8 @@ import { fetchSanity } from "../../lib/sanity";
 import { SITE_URL, absoluteUrl } from "../../lib/site";
 import { portableTextToHtml, portableTextToPlainText } from "../../lib/portableText";
 import { markdownToHtml, markdownToPlainText } from "../../lib/markdown";
+import { splitHtmlAtInteractive, stripInteractivePlaceholder } from "../../utils/split-html";
+import InteractiveElement from "../../components/interactive/InteractiveElement.astro";
 
 export const prerender = false;
 
@@ -30,6 +32,7 @@ type PostDoc = {
   excerpt?: string;
   body?: any;
   markdownBody?: string;
+  interactiveElement?: string;
 };
 
 const { slug } = Astro.params;
@@ -43,7 +46,8 @@ const post = await fetchSanity<PostDoc | null>(`
     tags,
     excerpt,
     body,
-    markdownBody
+    markdownBody,
+    interactiveElement
   }
 `, { slug });
 
@@ -62,9 +66,17 @@ if (!post) {
   return Astro.redirect("/404");
 }
 
-const htmlContent = post.markdownBody
+const rawHtml = post.markdownBody
   ? markdownToHtml(post.markdownBody)
   : portableTextToHtml(post.body);
+
+const interactiveSplit = post.interactiveElement
+  ? splitHtmlAtInteractive(rawHtml)
+  : null;
+
+const htmlContent = !post.interactiveElement
+  ? stripInteractivePlaceholder(rawHtml)
+  : rawHtml;
 
 const plainText = post.markdownBody
   ? markdownToPlainText(post.markdownBody)
@@ -179,7 +191,15 @@ const postUpdatedLabel = showUpdated
         </div>
       )}
 
-      <div class="prose" itemprop="articleBody" set:html={htmlContent}></div>
+      {interactiveSplit ? (
+        <div class="prose" itemprop="articleBody">
+          <Fragment set:html={interactiveSplit[0]} />
+          <InteractiveElement componentId={post.interactiveElement!} />
+          <Fragment set:html={interactiveSplit[1]} />
+        </div>
+      ) : (
+        <div class="prose" itemprop="articleBody" set:html={htmlContent}></div>
+      )}
 
       <RelatedPosts
         currentPostSlug={post.slug}
