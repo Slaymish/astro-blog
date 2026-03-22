@@ -1,6 +1,7 @@
 ---
 import Layout from "../../components/layout/Layout.astro";
 import GridTile from "../../components/ui/GridTile.astro";
+import { FadeIn } from "../../components/motion/FadeIn";
 import { fetchSanity } from "../../lib/sanity";
 
 export const prerender = false;
@@ -66,14 +67,14 @@ const otherTiles = otherProjects.map((project) => ({
   description="A collection of projects I've worked on, featuring web applications, tools, and experiments."
 >
   <div class="max-w-[var(--container-xl)] mx-auto">
-    <header class="mb-12">
+    <FadeIn client:load as="header" className="mb-12">
       <h1 class="font-serif text-[clamp(3rem,7vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)]" transition:name="page-heading">
         projects.
       </h1>
       <p class="max-w-[40rem] text-xl text-[var(--text-muted)] leading-[1.6]">
         Things I've built, experiments I've tried, and work in progress.
       </p>
-    </header>
+    </FadeIn>
 
     {allTechnologies.length > 0 && (
       <div class="mb-12">

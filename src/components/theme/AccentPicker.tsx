@@ -1,5 +1,6 @@
 import * as Popover from '@radix-ui/react-popover';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 const colors = [
@@ -45,36 +46,52 @@ export function AccentPicker() {
         </button>
       </Popover.Trigger>
 
-      <Popover.Portal>
-        <Popover.Content
-          className="z-[var(--z-dropdown)] min-w-[12rem] rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[var(--shadow-lg)]"
-          sideOffset={8}
-          align="end"
-        >
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Accent color options">
-            {colors.map((color) => (
-              <button
-                key={color.name}
-                onClick={() => {
-                  applyAccent(color.value);
-                  setOpen(false);
-                }}
-                className={`h-8 w-8 cursor-pointer rounded-full border-2 transition-transform duration-150 hover:scale-110 focus-visible:outline-2 focus-visible:outline-[var(--focus)] focus-visible:outline-offset-2 ${
-                  activeColor === color.value
-                    ? 'border-[var(--text)]'
-                    : 'border-transparent'
-                }`}
-                style={{ backgroundColor: color.value }}
-                aria-label={`Select ${color.name} accent color`}
-                aria-pressed={activeColor === color.value}
+      <AnimatePresence>
+        {open && (
+          <Popover.Portal forceMount>
+            <Popover.Content
+              className="z-[var(--z-dropdown)] min-w-[12rem] rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[var(--shadow-lg)]"
+              sideOffset={8}
+              align="end"
+              asChild
+              forceMount
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
               >
-                <VisuallyHidden>{color.name}</VisuallyHidden>
-              </button>
-            ))}
-          </div>
-          <Popover.Arrow className="fill-[var(--border)]" />
-        </Popover.Content>
-      </Popover.Portal>
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Accent color options">
+                  {colors.map((color, i) => (
+                    <motion.button
+                      key={color.name}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.15, delay: i * 0.03 }}
+                      onClick={() => {
+                        applyAccent(color.value);
+                        setOpen(false);
+                      }}
+                      className={`h-8 w-8 cursor-pointer rounded-full border-2 transition-transform duration-150 hover:scale-110 focus-visible:outline-2 focus-visible:outline-[var(--focus)] focus-visible:outline-offset-2 ${
+                        activeColor === color.value
+                          ? 'border-[var(--text)]'
+                          : 'border-transparent'
+                      }`}
+                      style={{ backgroundColor: color.value }}
+                      aria-label={`Select ${color.name} accent color`}
+                      aria-pressed={activeColor === color.value}
+                    >
+                      <VisuallyHidden>{color.name}</VisuallyHidden>
+                    </motion.button>
+                  ))}
+                </div>
+                <Popover.Arrow className="fill-[var(--border)]" />
+              </motion.div>
+            </Popover.Content>
+          </Popover.Portal>
+        )}
+      </AnimatePresence>
     </Popover.Root>
   );
 }

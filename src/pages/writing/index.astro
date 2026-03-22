@@ -1,6 +1,7 @@
 ---
 import Layout from "../../components/layout/Layout.astro";
 import GridTile from "../../components/ui/GridTile.astro";
+import { FadeIn } from "../../components/motion/FadeIn";
 import { fetchSanity } from "../../lib/sanity";
 
 export const prerender = false;
@@ -78,14 +79,14 @@ const postTiles = displayPosts.map((post) => {
   description="Essays, tutorials, and thoughts on technology, software engineering, and more."
 >
   <div class="max-w-[var(--container-xl)] mx-auto">
-    <header class="mb-12">
+    <FadeIn client:load as="header" className="mb-12">
       <h1 class="font-serif text-[clamp(3rem,7vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)]" transition:name="page-heading">
         writing.
       </h1>
       <p class="max-w-[40rem] text-xl text-[var(--text-muted)] leading-[1.6]">
         Essays, tutorials, and thoughts on technology, software engineering, and more.
       </p>
-    </header>
+    </FadeIn>
 
     {allTags.length > 0 && (
       <div class="mb-12">

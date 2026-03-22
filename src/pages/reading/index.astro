@@ -1,5 +1,6 @@
 ---
 import Layout from "../../components/layout/Layout.astro";
+import { FadeIn } from "../../components/motion/FadeIn";
 import { fetchSanity, urlFor } from "../../lib/sanity";
 
 export const prerender = false;
@@ -36,7 +37,7 @@ const statusLabel: Record<ReadingStatus, string> = {
   description="What I'm reading, what I've read, and what I hope to read next."
 >
   <div class="max-w-[var(--container-xl)] mx-auto">
-    <header class="mb-10">
+    <FadeIn client:load as="header" className="mb-10">
       <h1 class="font-serif text-[clamp(3rem,7vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)]" transition:name="page-heading">
         reading.
       </h1>
@@ -44,7 +45,7 @@ const statusLabel: Record<ReadingStatus, string> = {
         What I'm reading, what I've read, and what I hope to read next.
         Recommendations are always welcome.
       </p>
-    </header>
+    </FadeIn>
 
     <section
       class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-5"

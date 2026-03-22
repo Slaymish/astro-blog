@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 type ThemeMode = 'system' | 'light' | 'dark';
@@ -88,7 +89,18 @@ export function ThemeToggle() {
       style={{ boxShadow: 'var(--shadow-neu)' }}
       aria-label={labels[mode]}
     >
-      {mode === 'light' ? <SunIcon /> : mode === 'dark' ? <MoonIcon /> : <SystemIcon />}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={mode}
+          initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
+          animate={{ opacity: 1, rotate: 0, scale: 1 }}
+          exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
+          transition={{ duration: 0.2 }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {mode === 'light' ? <SunIcon /> : mode === 'dark' ? <MoonIcon /> : <SystemIcon />}
+        </motion.span>
+      </AnimatePresence>
     </button>
   );
 }

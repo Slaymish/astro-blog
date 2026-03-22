@@ -1,6 +1,7 @@
 ---
 import Layout from "../components/layout/Layout.astro";
 import GridTile from "../components/ui/GridTile.astro";
+import { FadeIn } from "../components/motion/FadeIn";
 import { fetchSanity, urlFor } from "../lib/sanity";
 
 export const prerender = false;
@@ -140,16 +141,21 @@ const readingPreview = readingItems.slice(0, 2);
   <!-- Masthead -->
   <section class="py-12 md:py-16 text-center">
     <div class="max-w-[40rem] mx-auto">
-      <h1 class="font-serif text-[clamp(3.5rem,9vw,5rem)] font-bold tracking-[-0.03em] text-[var(--text)] mb-6">
-        Hi, I'm Hamish
-      </h1>
-      <p class="text-lg text-[var(--text-muted)] leading-[1.7] mb-4">
-        Software engineer building AI infrastructure, self-hosted tools, and full-stack web applications.
-        Based in Wellington, NZ. Junior Web Developer at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer" class="text-[var(--text-muted)] no-underline hover:text-[var(--accent)] hover:opacity-100 transition-colors">Alphero</a>.
-      </p>
-      <p class="text-base text-[var(--text-muted)] leading-[1.7] mb-8 opacity-80">
-        I write about what I learn along the way.
-      </p>
+      <FadeIn client:load duration={0.6}>
+        <h1 class="font-serif text-[clamp(3.5rem,9vw,5rem)] font-bold tracking-[-0.03em] text-[var(--text)] mb-6">
+          Hi, I'm Hamish
+        </h1>
+      </FadeIn>
+      <FadeIn client:load delay={0.1} duration={0.6}>
+        <p class="text-lg text-[var(--text-muted)] leading-[1.7] mb-4">
+          Software engineer building AI infrastructure, self-hosted tools, and full-stack web applications.
+          Based in Wellington, NZ. Junior Web Developer at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer" class="text-[var(--text-muted)] no-underline hover:text-[var(--accent)] hover:opacity-100 transition-colors">Alphero</a>.
+        </p>
+        <p class="text-base text-[var(--text-muted)] leading-[1.7] mb-8 opacity-80">
+          I write about what I learn along the way.
+        </p>
+      </FadeIn>
+      <FadeIn client:load delay={0.2} duration={0.5}>
       <div class="flex flex-wrap justify-center gap-4 mb-6">
         <a
           href="/tools"
@@ -173,11 +179,12 @@ const readingPreview = readingItems.slice(0, 2);
       <p class="text-sm text-[var(--text-muted)] opacity-70">
         Currently: Junior Web Developer at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer" class="text-[var(--text-muted)] no-underline hover:text-[var(--accent)] hover:opacity-100 transition-colors">Alphero</a> &middot; MSc Computer Science, VUW
       </p>
+      </FadeIn>
     </div>
   </section>
 
   <!-- Bento Grid -->
-  <section class="mb-8 w-full sm:w-[90vw] sm:ml-[calc(50%-45vw)]">
+  <FadeIn client:load delay={0.3} duration={0.6} as="section" className="mb-8 w-full sm:w-[90vw] sm:ml-[calc(50%-45vw)]">
     <div class="grid grid-cols-1 gap-3 sm:grid-flow-row-dense sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
 
       {postTiles.slice(0, 2).map(tile => <GridTile {...tile} />)}
@@ -328,6 +335,6 @@ const readingPreview = readingItems.slice(0, 2);
       <a href="/projects" class="text-[var(--text-muted)] no-underline border-b-0 text-[0.9375rem] transition-colors hover:text-[var(--accent)]">View all projects →</a>
       <a href="/writing" class="text-[var(--text-muted)] no-underline border-b-0 text-[0.9375rem] transition-colors hover:text-[var(--accent)]">View all writing →</a>
     </div>
-  </section>
+  </FadeIn>
 
 </Layout>

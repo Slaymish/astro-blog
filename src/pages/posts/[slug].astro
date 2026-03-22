@@ -3,6 +3,7 @@ import Layout from "../../components/layout/Layout.astro";
 import Breadcrumb from "../../components/features/Breadcrumb.astro";
 import TableOfContents from "../../components/features/TableOfContents.astro";
 import RelatedPosts from "../../components/features/RelatedPosts.astro";
+import { FadeIn } from "../../components/motion/FadeIn";
 import { calculateReadingTime } from "../../utils/reading-time";
 import { createSlug } from "../../utils/slug";
 import { fetchSanity } from "../../lib/sanity";
@@ -112,7 +113,7 @@ const postUpdatedLabel = showUpdated
 >
   <div class="post-layout">
     <article itemscope itemtype="http://schema.org/BlogPosting">
-      <header class="post-header">
+      <FadeIn client:load as="header" className="post-header">
         <Breadcrumb items={[
           { name: "Writing", url: "/writing" },
           { name: postTitle, url: `/posts/${post.slug}` }
@@ -161,7 +162,7 @@ const postUpdatedLabel = showUpdated
             ))}
           </div>
         )}
-      </header>
+      </FadeIn>
 
       {relatedProject && (
         <div class="project-callout">
