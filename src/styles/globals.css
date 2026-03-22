@@ -204,6 +204,23 @@
     display: none !important;
   }
 
+  /* Footer logo */
+  a.footer-logo {
+    display: inline-flex;
+    text-decoration: none !important;
+    border-bottom: none !important;
+    overflow: visible;
+  }
+
+  a.footer-logo:hover {
+    text-decoration: none !important;
+    border-bottom: none !important;
+  }
+
+  a.footer-logo::after {
+    display: none !important;
+  }
+
 
   /* Smooth transitions on interactive elements */
   a, button {

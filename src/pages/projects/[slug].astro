@@ -54,7 +54,7 @@ const htmlContent = portableTextToHtml(project.body);
   <article class="project-page">
     <header class="project-header">
       <a href="/projects" class="back-link">← Back to Projects</a>
-      <h1>{projectTitle}</h1>
+      <h1 transition:name={`title-projects-${project.slug}`}>{projectTitle}</h1>
       <p class="project-description">{projectDescription}</p>
 
       <div class="project-meta">

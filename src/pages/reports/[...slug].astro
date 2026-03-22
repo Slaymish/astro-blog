@@ -69,9 +69,10 @@ const publishedTime = new Date(report.publishedAt).toISOString();
   >
     <header class="mb-8">
       <h1 
-        class="text-4xl font-bold mb-4" 
+        class="text-4xl font-bold mb-4"
         style="color: var(--color-text-primary);"
         itemprop="headline"
+        transition:name={`title-reports-${report.slug}`}
       >
         {report.title}
       </h1>

@@ -1,0 +1,160 @@
+---
+---
+
+<div id="custom-cursor" class="custom-cursor" aria-hidden="true">
+  <div class="cursor-circle"></div>
+</div>
+
+<style>
+  /* Hide on touch devices */
+  @media (hover: none), (pointer: coarse) {
+    .custom-cursor {
+      display: none !important;
+    }
+  }
+
+  .custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    pointer-events: none;
+    mix-blend-mode: difference;
+  }
+
+  .cursor-circle {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition:
+      width 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+      height 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+      border-width 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+      background-color 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+      opacity 0.2s ease;
+    will-change: transform;
+    opacity: 0;
+  }
+
+  /* Once JS has positioned the cursor, fade it in */
+  .custom-cursor.is-visible .cursor-circle {
+    opacity: 1;
+  }
+
+  /* Link / clickable state */
+  .custom-cursor.is-link .cursor-circle {
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    border-width: 0;
+  }
+
+  /* Draggable state */
+  .custom-cursor.is-grab .cursor-circle {
+    width: 40px;
+    height: 40px;
+    border-style: dashed;
+  }
+
+  /* Text-input state */
+  .custom-cursor.is-text .cursor-circle {
+    width: 4px;
+    height: 28px;
+    border-radius: 2px;
+    background-color: #fff;
+    border-width: 0;
+  }
+</style>
+
+<script>
+  function initCustomCursor() {
+    const cursor = document.getElementById('custom-cursor') as HTMLElement;
+    if (!cursor) return;
+
+    // Bail on touch devices
+    if (window.matchMedia('(hover: none)').matches) return;
+
+    // Hide default cursor
+    if (!document.getElementById('hide-default-cursor')) {
+      const style = document.createElement('style');
+      style.id = 'hide-default-cursor';
+      style.textContent = '*, *::before, *::after { cursor: none !important; }';
+      document.head.appendChild(style);
+    }
+
+    let mouseX = -100;
+    let mouseY = -100;
+    let curX = -100;
+    let curY = -100;
+    let visible = false;
+
+    function lerp(a: number, b: number, t: number) {
+      return a + (b - a) * t;
+    }
+
+    function tick() {
+      curX = lerp(curX, mouseX, 0.15);
+      curY = lerp(curY, mouseY, 0.15);
+      cursor.style.transform = `translate3d(${curX}px, ${curY}px, 0)`;
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!visible) {
+        visible = true;
+        cursor.classList.add('is-visible');
+      }
+    });
+
+    document.addEventListener('mouseleave', () => {
+      visible = false;
+      cursor.classList.remove('is-visible');
+    });
+
+    document.addEventListener('mouseenter', () => {
+      visible = true;
+      cursor.classList.add('is-visible');
+    });
+
+    // Detect what's under the cursor
+    function updateCursorState(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (!target) return;
+
+      const el = target.closest(
+        'a, button, [role="button"], input[type="submit"], input[type="button"], label[for], select, summary, [onclick], [data-cursor]'
+      );
+
+      const isText =
+        target.closest('input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"]');
+
+      const isGrab = target.closest('[draggable="true"], [data-cursor="grab"]');
+
+      cursor.classList.remove('is-link', 'is-grab', 'is-text');
+
+      if (isText) {
+        cursor.classList.add('is-text');
+      } else if (isGrab) {
+        cursor.classList.add('is-grab');
+      } else if (el) {
+        cursor.classList.add('is-link');
+      }
+    }
+
+    document.addEventListener('mouseover', updateCursorState);
+  }
+
+  // Run on initial load and after Astro view transitions
+  document.addEventListener('astro:page-load', initCustomCursor);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCustomCursor);
+  } else {
+    initCustomCursor();
+  }
+</script>

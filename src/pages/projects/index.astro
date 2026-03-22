@@ -45,7 +45,8 @@ const featuredTiles = featuredProjects.map((project) => ({
   size: 'square' as const,
   tags: project.technologies || [],
   date: new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }),
-  type: 'project' as const
+  type: 'project' as const,
+  transitionName: !project.relatedPostSlug ? `title-projects-${project.slug}` : undefined,
 }));
 
 const otherTiles = otherProjects.map((project) => ({
@@ -55,7 +56,8 @@ const otherTiles = otherProjects.map((project) => ({
   size: 'square' as const,
   tags: project.technologies || [],
   date: new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }),
-  type: 'project' as const
+  type: 'project' as const,
+  transitionName: !project.relatedPostSlug ? `title-projects-${project.slug}` : undefined,
 }));
 ---
 
@@ -65,7 +67,7 @@ const otherTiles = otherProjects.map((project) => ({
 >
   <div class="max-w-[var(--container-xl)] mx-auto">
     <header class="mb-12">
-      <h1 class="font-serif text-[clamp(3rem,7vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)]">
+      <h1 class="font-serif text-[clamp(3rem,7vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)]" transition:name="page-heading">
         projects.
       </h1>
       <p class="max-w-[40rem] text-xl text-[var(--text-muted)] leading-[1.6]">
@@ -112,29 +114,34 @@ const otherTiles = otherProjects.map((project) => ({
 </Layout>
 
 <script>
-  const techButtons = document.querySelectorAll('.filter-tag[data-tech]');
-  const allTiles = document.querySelectorAll('.grid-tile');
+  function initTechFilter() {
+    const techButtons = document.querySelectorAll('.filter-tag[data-tech]');
+    const allTiles = document.querySelectorAll('.grid-tile');
+    if (!techButtons.length) return;
 
-  techButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const tech = button.getAttribute('data-tech');
-      if (!tech) return;
+    techButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tech = button.getAttribute('data-tech');
+        if (!tech) return;
 
-      techButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+        techButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
 
-      allTiles.forEach(tile => {
-        const htmlTile = tile as HTMLElement;
-        if (tech === 'all') {
-          htmlTile.style.display = 'block';
-        } else {
-          const tags = tile.querySelectorAll('.tile-filter-tag');
-          const hasTech = Array.from(tags).some(
-            tag => tag.textContent?.toLowerCase() === tech.toLowerCase()
-          );
-          htmlTile.style.display = hasTech ? 'block' : 'none';
-        }
+        allTiles.forEach(tile => {
+          const htmlTile = tile as HTMLElement;
+          if (tech === 'all') {
+            htmlTile.style.display = 'block';
+          } else {
+            const tags = tile.querySelectorAll('.tile-filter-tag');
+            const hasTech = Array.from(tags).some(
+              tag => tag.textContent?.toLowerCase() === tech.toLowerCase()
+            );
+            htmlTile.style.display = hasTech ? 'block' : 'none';
+          }
+        });
       });
     });
-  });
+  }
+
+  document.addEventListener('astro:page-load', initTechFilter);
 </script>

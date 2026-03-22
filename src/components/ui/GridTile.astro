@@ -16,6 +16,7 @@ interface TileProps {
   external?: boolean;
   type?: 'post' | 'report' | string;
   typeHref?: string;
+  transitionName?: string;
 }
 
 const {
@@ -27,7 +28,8 @@ const {
   date = '',
   external = false,
   type,
-  typeHref
+  typeHref,
+  transitionName
 } = Astro.props;
 
 const containerClass =
@@ -51,6 +53,7 @@ const inferredTypeHref =
   : type === 'tool' ? '/tools'
   : undefined;
 const resolvedTypeHref = typeHref ?? inferredTypeHref;
+
 ---
 
 <article class={`grid-tile ${containerClass}`}>
@@ -102,7 +105,10 @@ const resolvedTypeHref = typeHref ?? inferredTypeHref;
         rel={external ? 'noopener noreferrer' : undefined}
         aria-label={title}
       >
-        <h3 class="font-serif text-4xl font-light tracking-tight text-[var(--text)]">{title}</h3>
+        <h3
+          class="font-serif text-4xl font-light tracking-tight text-[var(--text)]"
+          transition:name={transitionName}
+        >{title}</h3>
 
         {date && (
           <span class="mt-2 mb-4 block text-sm tracking-tight text-[var(--text-muted)]">{date}</span>

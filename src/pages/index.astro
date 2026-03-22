@@ -95,6 +95,7 @@ const liveTools = projects.filter(p => p.link);
 const projectTiles = projects.map((project) => {
   const dateStr = new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
   // Live tools link directly to the tool; otherwise link to write-up or project page
+  const linksToOwnPage = !project.link && !project.relatedPostSlug;
   const href = project.link
     ? project.link
     : project.relatedPostSlug
@@ -109,19 +110,25 @@ const projectTiles = projects.map((project) => {
     date: dateStr,
     type: project.link ? 'tool' as const : 'project' as const,
     external: !!project.link,
+    // Only set transition name when the tile links to its own detail page
+    // (title won't match if linking to a related post with a different title)
+    transitionName: linksToOwnPage ? `title-projects-${project.slug}` : undefined,
   };
 });
 
 const postTiles = displayPosts.map((post) => {
   const dateStr = new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+  const slug = post.slug;
+  const prefix = post._type === 'report' ? 'reports' : 'posts';
   return {
     title: post.title,
     description: post.excerpt || '',
-    href: post._type === 'report' ? `/reports/${post.slug}` : `/posts/${post.slug}`,
+    href: `/${prefix}/${slug}`,
     size: 'square',
     tags: post.tags || [],
     date: dateStr,
-    type: post._type
+    type: post._type,
+    transitionName: `title-${prefix}-${slug}`,
   };
 });
 

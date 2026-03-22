@@ -56,17 +56,21 @@ const allTags = [...tagCounts.entries()]
   .map(([tag]) => tag)
   .sort();
 
-const postTiles = displayPosts.map((post) => ({
-  title: post.title || 'Untitled',
-  description: post.excerpt || '',
-  href: post._type === 'report' ? `/reports/${post.slug}` : `/posts/${post.slug}`,
-  size: 'square' as const,
-  tags: post.tags || [],
-  date: post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
-    : '',
-  type: post._type
-}));
+const postTiles = displayPosts.map((post) => {
+  const prefix = post._type === 'report' ? 'reports' : 'posts';
+  return {
+    title: post.title || 'Untitled',
+    description: post.excerpt || '',
+    href: `/${prefix}/${post.slug}`,
+    size: 'square' as const,
+    tags: post.tags || [],
+    date: post.publishedAt
+      ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
+      : '',
+    type: post._type,
+    transitionName: `title-${prefix}-${post.slug}`,
+  };
+});
 ---
 
 <Layout
@@ -75,7 +79,7 @@ const postTiles = displayPosts.map((post) => ({
 >
   <div class="max-w-[var(--container-xl)] mx-auto">
     <header class="mb-12">
-      <h1 class="font-serif text-[clamp(3rem,7vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)]">
+      <h1 class="font-serif text-[clamp(3rem,7vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)]" transition:name="page-heading">
         writing.
       </h1>
       <p class="max-w-[40rem] text-xl text-[var(--text-muted)] leading-[1.6]">
@@ -108,29 +112,34 @@ const postTiles = displayPosts.map((post) => ({
 </Layout>
 
 <script>
-  const tagButtons = document.querySelectorAll('.filter-tag[data-tag]');
-  const allTiles = document.querySelectorAll('.grid-tile');
+  function initTagFilter() {
+    const tagButtons = document.querySelectorAll('.filter-tag[data-tag]');
+    const allTiles = document.querySelectorAll('.grid-tile');
+    if (!tagButtons.length) return;
 
-  tagButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const tag = button.getAttribute('data-tag');
-      if (!tag) return;
+    tagButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tag = button.getAttribute('data-tag');
+        if (!tag) return;
 
-      tagButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+        tagButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
 
-      allTiles.forEach(tile => {
-        const htmlTile = tile as HTMLElement;
-        if (tag === 'all') {
-          htmlTile.style.display = 'block';
-        } else {
-          const tags = tile.querySelectorAll('.tile-filter-tag');
-          const hasTag = Array.from(tags).some(
-            t => t.textContent?.toLowerCase() === tag.toLowerCase()
-          );
-          htmlTile.style.display = hasTag ? 'block' : 'none';
-        }
+        allTiles.forEach(tile => {
+          const htmlTile = tile as HTMLElement;
+          if (tag === 'all') {
+            htmlTile.style.display = 'block';
+          } else {
+            const tags = tile.querySelectorAll('.tile-filter-tag');
+            const hasTag = Array.from(tags).some(
+              t => t.textContent?.toLowerCase() === tag.toLowerCase()
+            );
+            htmlTile.style.display = hasTag ? 'block' : 'none';
+          }
+        });
       });
     });
-  });
+  }
+
+  document.addEventListener('astro:page-load', initTagFilter);
 </script>

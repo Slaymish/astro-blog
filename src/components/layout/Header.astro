@@ -63,15 +63,15 @@ function navLinkClasses(href: string) {
           </a>
         ))}
         <div class="flex items-center gap-2 ml-4">
-          <AccentPicker client:only="react" />
-          <ThemeToggle client:only="react" />
+          <AccentPicker client:only="react" transition:persist />
+          <ThemeToggle client:only="react" transition:persist />
         </div>
       </div>
 
       <!-- Mobile: controls + hamburger -->
       <div class="sm:hidden flex items-center gap-2">
-        <AccentPicker client:only="react" />
-        <ThemeToggle client:only="react" />
+        <AccentPicker client:only="react" transition:persist />
+        <ThemeToggle client:only="react" transition:persist />
         <button
           id="mobile-menu-toggle"
           class="flex items-center justify-center w-9 h-9 rounded-[var(--radius-md)] text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--surface-2)] transition-colors duration-150 border-0 bg-transparent cursor-pointer"
@@ -124,25 +124,36 @@ function navLinkClasses(href: string) {
 </header>
 
 <script>
-  const toggle = document.getElementById('mobile-menu-toggle');
-  const menu = document.getElementById('mobile-menu');
-  const openIcon = toggle?.querySelector('.menu-icon-open');
-  const closeIcon = toggle?.querySelector('.menu-icon-close');
+  function initMobileMenu() {
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    const openIcon = toggle?.querySelector('.menu-icon-open');
+    const closeIcon = toggle?.querySelector('.menu-icon-close');
 
-  toggle?.addEventListener('click', () => {
-    const isOpen = menu?.classList.contains('hidden') === false;
-    if (isOpen) {
-      menu?.classList.add('hidden');
-      openIcon?.classList.remove('hidden');
-      closeIcon?.classList.add('hidden');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Open menu');
-    } else {
-      menu?.classList.remove('hidden');
-      openIcon?.classList.add('hidden');
-      closeIcon?.classList.remove('hidden');
-      toggle.setAttribute('aria-expanded', 'true');
-      toggle.setAttribute('aria-label', 'Close menu');
-    }
-  });
+    // Reset menu state on navigation
+    menu?.classList.add('hidden');
+    openIcon?.classList.remove('hidden');
+    closeIcon?.classList.add('hidden');
+    toggle?.setAttribute('aria-expanded', 'false');
+    toggle?.setAttribute('aria-label', 'Open menu');
+
+    toggle?.addEventListener('click', () => {
+      const isOpen = menu?.classList.contains('hidden') === false;
+      if (isOpen) {
+        menu?.classList.add('hidden');
+        openIcon?.classList.remove('hidden');
+        closeIcon?.classList.add('hidden');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open menu');
+      } else {
+        menu?.classList.remove('hidden');
+        openIcon?.classList.add('hidden');
+        closeIcon?.classList.remove('hidden');
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Close menu');
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initMobileMenu);
 </script>

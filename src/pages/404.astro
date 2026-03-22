@@ -49,12 +49,16 @@ import Layout from '../components/layout/Layout.astro';
 </Layout>
 
 <script>
-  const goBackButton = document.getElementById('go-back-button');
-  goBackButton?.addEventListener('click', () => {
-    if (window.history.length > 1) {
-      window.history.back();
-      return;
-    }
-    window.location.href = '/';
-  });
+  function initGoBack() {
+    const goBackButton = document.getElementById('go-back-button');
+    goBackButton?.addEventListener('click', () => {
+      if (window.history.length > 1) {
+        window.history.back();
+        return;
+      }
+      window.location.href = '/';
+    });
+  }
+
+  document.addEventListener('astro:page-load', initGoBack);
 </script>

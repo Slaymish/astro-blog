@@ -118,7 +118,7 @@ const postUpdatedLabel = showUpdated
           { name: postTitle, url: `/posts/${post.slug}` }
         ]} />
 
-        <h1 itemprop="headline">{postTitle}</h1>
+        <h1 itemprop="headline" transition:name={`title-posts-${post.slug}`}>{postTitle}</h1>
 
         <div class="post-meta">
           <time datetime={postDateISO} itemprop="datePublished">
