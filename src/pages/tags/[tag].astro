@@ -65,38 +65,34 @@ const displayTag = tagLabel || tag || '';
 >
   <div class="max-w-4xl mx-auto">
     <div class="mb-12">
-      <h1 class="text-4xl font-bold mb-4" style="color: var(--color-text-primary);">
+      <h1 class="text-4xl font-bold mb-4 text-[var(--text)]">
         Content tagged "{displayTag}"
       </h1>
-      <p class="mb-4" style="color: var(--color-text-muted);">
+      <p class="mb-4 text-[var(--text-muted)]">
         {totalItems} {totalItems === 1 ? 'item' : 'items'} found
       </p>
-      <a href="/" style="color: var(--color-link);" class="hover:underline">
+      <a href="/" class="text-[var(--accent)] hover:underline no-underline border-b-0">
         ← Back to home
       </a>
     </div>
 
     {reports.length > 0 && (
       <section class="mb-12">
-        <h2 class="text-3xl font-bold mb-6" style="color: var(--color-primary-500);">
+        <h2 class="text-3xl font-bold mb-6 text-[var(--text)]">
           Reports ({reports.length})
         </h2>
         <div class="space-y-8">
           {reports.map((report) => (
-            <article 
-              class="pb-8 card-hover" 
-              style="border-bottom: 1px solid var(--color-border-secondary);"
-            >
+            <article class="pb-8 border-b border-[var(--border)]">
               <h3 class="text-2xl font-bold mb-2">
-                <a 
+                <a
                   href={`/reports/${report.slug}`}
-                  style="color: var(--color-text-primary);" 
-                  class="hover:underline transition-colors"
+                  class="text-[var(--text)] hover:text-[var(--accent)] no-underline border-b-0 transition-colors"
                 >
                   {report.title}
                 </a>
               </h3>
-              <p class="mb-4" style="color: var(--color-text-muted);">
+              <p class="mb-4 text-[var(--text-muted)]">
                 {new Date(report.publishedAt).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
@@ -104,35 +100,20 @@ const displayTag = tagLabel || tag || '';
                 })}
               </p>
               {report.description && (
-                <p class="mb-4" style="color: var(--color-text-secondary);">
+                <p class="mb-4 text-[var(--text-muted)]">
                   {report.description}
                 </p>
               )}
               {report.tags && report.tags.length > 0 && (
                 <div class="flex flex-wrap gap-2">
-                  {report.tags.map((t, index) => {
-                    const colorVariant = index % 3;
-                    let bgColor = 'var(--color-tag-bg)';
-                    let textColor = 'var(--color-tag-text)';
-                    
-                    if (colorVariant === 1) {
-                      bgColor = 'var(--color-tag-accent1-bg)';
-                      textColor = 'var(--color-tag-accent1-text)';
-                    } else if (colorVariant === 2) {
-                      bgColor = 'var(--color-tag-accent2-bg)';
-                      textColor = 'var(--color-tag-accent2-text)';
-                    }
-                    
-                    return (
-                      <a
-                        href={`/tags/${createSlug(t)}`}
-                        class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-                        style={`background-color: ${bgColor}; color: ${textColor};`}
-                      >
-                        {t}
-                      </a>
-                    );
-                  })}
+                  {report.tags.map((t) => (
+                    <a
+                      href={`/tags/${createSlug(t)}`}
+                      class="text-sm px-3 py-1 rounded-full bg-[var(--surface-2)] text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors"
+                    >
+                      {t}
+                    </a>
+                  ))}
                 </div>
               )}
             </article>
@@ -143,25 +124,21 @@ const displayTag = tagLabel || tag || '';
 
     {posts.length > 0 && (
       <section>
-        <h2 class="text-3xl font-bold mb-6" style="color: var(--color-primary-500);">
+        <h2 class="text-3xl font-bold mb-6 text-[var(--text)]">
           Posts ({posts.length})
         </h2>
         <div class="space-y-8">
           {posts.map((post) => (
-            <article 
-              class="pb-8 card-hover" 
-              style="border-bottom: 1px solid var(--color-border-secondary);"
-            >
+            <article class="pb-8 border-b border-[var(--border)]">
               <h3 class="text-2xl font-bold mb-2">
-                <a 
+                <a
                   href={`/posts/${post.slug}`}
-                  style="color: var(--color-text-primary);" 
-                  class="hover:underline transition-colors"
+                  class="text-[var(--text)] hover:text-[var(--accent)] no-underline border-b-0 transition-colors"
                 >
                   {post.title}
                 </a>
               </h3>
-              <p class="mb-4" style="color: var(--color-text-muted);">
+              <p class="mb-4 text-[var(--text-muted)]">
                 {new Date(post.publishedAt).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
@@ -169,35 +146,20 @@ const displayTag = tagLabel || tag || '';
                 })}
               </p>
               {post.excerpt && (
-                <p class="mb-4" style="color: var(--color-text-secondary);">
+                <p class="mb-4 text-[var(--text-muted)]">
                   {post.excerpt}
                 </p>
               )}
               {post.tags && post.tags.length > 0 && (
                 <div class="flex flex-wrap gap-2">
-                  {post.tags.map((t, index) => {
-                    const colorVariant = index % 3;
-                    let bgColor = 'var(--color-tag-bg)';
-                    let textColor = 'var(--color-tag-text)';
-                    
-                    if (colorVariant === 1) {
-                      bgColor = 'var(--color-tag-accent1-bg)';
-                      textColor = 'var(--color-tag-accent1-text)';
-                    } else if (colorVariant === 2) {
-                      bgColor = 'var(--color-tag-accent2-bg)';
-                      textColor = 'var(--color-tag-accent2-text)';
-                    }
-                    
-                    return (
-                      <a
-                        href={`/tags/${createSlug(t)}`}
-                        class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-                        style={`background-color: ${bgColor}; color: ${textColor};`}
-                      >
-                        {t}
-                      </a>
-                    );
-                  })}
+                  {post.tags.map((t) => (
+                    <a
+                      href={`/tags/${createSlug(t)}`}
+                      class="text-sm px-3 py-1 rounded-full bg-[var(--surface-2)] text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors"
+                    >
+                      {t}
+                    </a>
+                  ))}
                 </div>
               )}
             </article>
@@ -208,10 +170,10 @@ const displayTag = tagLabel || tag || '';
 
     {totalItems === 0 && (
       <div class="text-center py-12">
-        <h2 class="text-2xl font-bold mb-4" style="color: var(--color-text-primary);">
+        <h2 class="text-2xl font-bold mb-4 text-[var(--text)]">
           No content found
         </h2>
-        <p style="color: var(--color-text-muted);">
+        <p class="text-[var(--text-muted)]">
           There is no content tagged with "{displayTag}" yet.
         </p>
       </div>

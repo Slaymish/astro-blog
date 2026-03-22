@@ -68,16 +68,15 @@ const publishedTime = new Date(report.publishedAt).toISOString();
     itemtype="http://schema.org/ScholarlyArticle"
   >
     <header class="mb-8">
-      <h1 
-        class="text-4xl font-bold mb-4"
-        style="color: var(--color-text-primary);"
+      <h1
+        class="text-4xl font-bold mb-4 text-[var(--text)]"
         itemprop="headline"
         transition:name={`title-reports-${report.slug}`}
       >
         {report.title}
       </h1>
       
-      <div class="flex items-center gap-4 mb-4" style="color: var(--color-text-muted);">
+      <div class="flex items-center gap-4 mb-4 text-[var(--text-muted)]">
         <time 
           datetime={report.publishedAt}
           itemprop="datePublished"
@@ -115,31 +114,16 @@ const publishedTime = new Date(report.publishedAt).toISOString();
 
       {report.tags && report.tags.length > 0 && (
         <div class="flex flex-wrap gap-2 mb-8" role="list" aria-label="Report tags">
-          {report.tags.map((tag: string, index: number) => {
-            const colorVariant = index % 3;
-            let bgColor = 'var(--color-tag-bg)';
-            let textColor = 'var(--color-tag-text)';
-            
-            if (colorVariant === 1) {
-              bgColor = 'var(--color-tag-accent1-bg)';
-              textColor = 'var(--color-tag-accent1-text)';
-            } else if (colorVariant === 2) {
-              bgColor = 'var(--color-tag-accent2-bg)';
-              textColor = 'var(--color-tag-accent2-text)';
-            }
-            
-            return (
-              <a
-                role="listitem"
-                href={`/tags/${createSlug(tag)}`}
-                class="text-sm px-3 py-1 rounded-full hover:opacity-80 transition-all"
-                style={`background-color: ${bgColor}; color: ${textColor};`}
-                itemprop="keywords"
-              >
-                {tag}
-              </a>
-            );
-          })}
+          {report.tags.map((tag: string) => (
+            <a
+              role="listitem"
+              href={`/tags/${createSlug(tag)}`}
+              class="text-sm px-3 py-1 rounded-full bg-[var(--surface-2)] text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors"
+              itemprop="keywords"
+            >
+              {tag}
+            </a>
+          ))}
         </div>
       )}
     </header>
@@ -158,9 +142,9 @@ const publishedTime = new Date(report.publishedAt).toISOString();
       ></div>
     )}
     
-    <footer class="mt-12 pt-8" style="border-top: 1px solid var(--color-border-secondary);">
+    <footer class="mt-12 pt-8 border-t border-[var(--border)]">
       <nav aria-label="Report navigation">
-        <a href="/" style="color: var(--color-link);" class="hover:underline">
+        <a href="/" class="text-[var(--accent)] hover:underline no-underline border-b-0">
           ← Back to home
         </a>
       </nav>

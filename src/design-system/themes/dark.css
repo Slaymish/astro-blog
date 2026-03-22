@@ -1,75 +1,13 @@
 /**
  * DARK THEME
  *
- * Dark color scheme — warm dark with bright green accent.
- * Applied when .dark class is present on <html> element.
+ * Dark color scheme — applied when .dark class is present on <html>.
+ *
+ * The active design system uses --bg, --surface, --text, --accent, etc.
+ * (defined in Layout.astro critical styles and tokens.css).
+ * This file is kept for any future extension.
  */
 
 .dark {
-  /* ============================================
-     BRAND COLORS (brighter green for dark mode)
-     ============================================ */
-
-  --color-primary-50: #f0fdf4;
-  --color-primary-100: #dcfce7;
-  --color-primary-200: #bbf7d0;
-  --color-primary-300: #86efac;
-  --color-primary-400: #4ade80;
-  --color-primary-500: #22c55e;
-  --color-primary-600: #16a34a;
-  --color-primary-700: #15803d;
-  --color-primary-800: #166534;
-  --color-primary-900: #14532d;
-
-  /* ============================================
-     NEUTRAL COLORS (warm dark palette)
-     ============================================ */
-
-  --color-white: #faf9f7;
-  --color-black: #0c0c0c;
-
-  /* ============================================
-     SEMANTIC COLORS - BACKGROUND
-     ============================================ */
-
-  --color-bg-primary: #0c0c0c;
-  --color-bg-secondary: #1a1917;
-  --color-bg-tertiary: #26251f;
-  --color-bg-inverse: #faf9f7;
-
-  /* ============================================
-     SEMANTIC COLORS - TEXT
-     ============================================ */
-
-  --color-text-primary: #e8e4dd;
-  --color-text-secondary: #c4bfb6;
-  --color-text-muted: #9a948c;
-  --color-text-subtle: #6b6560;
-  --color-text-inverse: #1a1a1a;
-
-  /* ============================================
-     SEMANTIC COLORS - BORDER
-     ============================================ */
-
-  --color-border-primary: #3d3a34;
-  --color-border-secondary: #26251f;
-
-  /* ============================================
-     COMPONENT COLORS
-     ============================================ */
-
-  /* Links */
-  --color-link: var(--color-primary-400);
-  --color-link-hover: var(--color-primary-300);
-
-  /* Tags */
-  --color-tag-bg: hsla(142, 70%, 55%, 0.15);
-  --color-tag-bg-hover: hsla(142, 70%, 55%, 0.25);
-  --color-tag-text: var(--color-primary-300);
-
-  /* Tag Variants */
-  --color-tag-accent1-bg: hsla(160, 30%, 55%, 0.15);
-  --color-tag-accent1-text: hsl(160, 30%, 75%);
-  --color-tag-accent2-bg: hsla(35, 30%, 55%, 0.15);
-  --color-tag-accent2-text: hsl(35, 30%, 75%);
+  /* Currently empty — all active tokens are in tokens.css and Layout.astro */
 }

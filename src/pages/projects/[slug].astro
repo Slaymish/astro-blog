@@ -103,14 +103,14 @@ const htmlContent = portableTextToHtml(project.body);
   .back-link {
     display: inline-block;
     margin-bottom: 1.5rem;
-    color: var(--color-text-secondary);
+    color: var(--text-muted);
     text-decoration: none;
     font-size: 0.9375rem;
     transition: color 0.2s ease;
   }
 
   .back-link:hover {
-    color: var(--color-link);
+    color: var(--accent);
   }
 
   .back-link::after {
@@ -123,12 +123,12 @@ const htmlContent = portableTextToHtml(project.body);
     font-weight: 700;
     margin-bottom: 1rem;
     letter-spacing: -0.03em;
-    color: var(--color-text-primary);
+    color: var(--text);
   }
 
   .project-description {
     font-size: 1.25rem;
-    color: var(--color-text-secondary);
+    color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 2rem;
   }
@@ -138,7 +138,7 @@ const htmlContent = portableTextToHtml(project.body);
     flex-direction: column;
     gap: 1.5rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--color-border-secondary);
+    border-top: 1px solid var(--border);
   }
 
   .project-technologies {
@@ -148,8 +148,8 @@ const htmlContent = portableTextToHtml(project.body);
   }
 
   .tech-tag {
-    background: var(--color-tag-bg);
-    color: var(--color-tag-text);
+    background: var(--surface-2);
+    color: var(--text-muted);
     padding: 0.375rem 0.75rem;
     border-radius: 0.25rem;
     font-size: 0.875rem;
@@ -166,30 +166,30 @@ const htmlContent = portableTextToHtml(project.body);
     display: inline-flex;
     align-items: center;
     padding: 0.75rem 1.5rem;
-    background: var(--color-bg-tertiary);
-    border: 1px solid var(--color-border-primary);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    color: var(--color-text-primary);
+    color: var(--text);
     text-decoration: none;
     font-weight: 500;
     transition: all 0.2s ease;
   }
 
   .project-link:hover {
-    border-color: var(--color-link);
-    color: var(--color-link);
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .project-link--primary {
-    background: var(--accent, var(--color-link));
+    background: var(--accent);
     color: white;
-    border-color: var(--accent, var(--color-link));
+    border-color: var(--accent);
   }
 
   .project-link--primary:hover {
     opacity: 0.9;
     color: white;
-    border-color: var(--accent, var(--color-link));
+    border-color: var(--accent);
   }
 
   .project-link::after {
@@ -197,7 +197,7 @@ const htmlContent = portableTextToHtml(project.body);
   }
 
   .project-content {
-    color: var(--color-text-primary);
+    color: var(--text);
     line-height: 1.75;
   }
 

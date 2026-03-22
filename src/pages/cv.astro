@@ -111,13 +111,13 @@ import Layout from '../components/layout/Layout.astro';
     text-align: center;
     margin-bottom: 3rem;
     padding-bottom: 2rem;
-    border-bottom: 1px solid var(--color-border-secondary);
+    border-bottom: 1px solid var(--border);
   }
 
   .cv-header h1 {
     font-family: var(--font-heading);
     font-size: clamp(2.5rem, 5vw, 4rem);
-    color: var(--color-primary-500);
+    color: var(--accent);
     margin-bottom: 0.75rem;
     font-weight: 700;
     letter-spacing: -0.03em;
@@ -125,7 +125,7 @@ import Layout from '../components/layout/Layout.astro';
 
   .cv-subtitle {
     font-size: 1.25rem;
-    color: var(--color-text-secondary);
+    color: var(--text-muted);
     margin: 0;
     font-weight: 400;
   }
@@ -153,25 +153,25 @@ import Layout from '../components/layout/Layout.astro';
   }
 
   .download-btn.primary {
-    background: var(--color-primary-500);
+    background: var(--accent);
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   }
 
   .download-btn.primary:hover {
-    background: var(--color-primary-600);
+    background: var(--accent);
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   }
 
   .download-btn.secondary {
     background: transparent;
-    color: var(--color-primary-500);
-    border-color: var(--color-primary-500);
+    color: var(--accent);
+    border-color: var(--accent);
   }
 
   .download-btn.secondary:hover {
-    background: var(--color-primary-500);
+    background: var(--accent);
     color: white;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
@@ -181,11 +181,11 @@ import Layout from '../components/layout/Layout.astro';
   .pdf-container {
     max-width: 100%;
     margin: 2.5rem 0;
-    border: 1px solid var(--color-border-primary);
+    border: 1px solid var(--border);
     border-radius: 0.75rem;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    background: var(--color-bg-secondary);
+    background: var(--surface);
   }
 
   .pdf-container iframe {
@@ -197,18 +197,18 @@ import Layout from '../components/layout/Layout.astro';
   .pdf-fallback {
     padding: 3rem 2rem;
     text-align: center;
-    background: var(--color-bg-secondary);
+    background: var(--surface);
     display: none;
   }
 
   .pdf-fallback h2 {
-    color: var(--color-text-primary);
+    color: var(--text);
     margin-bottom: 1rem;
     font-family: var(--font-heading);
   }
 
   .pdf-fallback p {
-    color: var(--color-text-secondary);
+    color: var(--text-muted);
     margin-bottom: 1.5rem;
   }
 
@@ -216,13 +216,13 @@ import Layout from '../components/layout/Layout.astro';
   .cv-info {
     margin-top: 4rem;
     padding: 2rem;
-    background: var(--color-bg-secondary);
+    background: var(--surface);
     border-radius: 0.75rem;
-    border: 1px solid var(--color-border-primary);
+    border: 1px solid var(--border);
   }
 
   .cv-info h2 {
-    color: var(--color-primary-500);
+    color: var(--accent);
     font-family: var(--font-heading);
     font-size: 2rem;
     margin-bottom: 1rem;
@@ -230,7 +230,7 @@ import Layout from '../components/layout/Layout.astro';
   }
 
   .cv-info > p {
-    color: var(--color-text-secondary);
+    color: var(--text-muted);
     line-height: 1.75;
     margin-bottom: 2.5rem;
     font-size: 1.0625rem;
@@ -246,8 +246,8 @@ import Layout from '../components/layout/Layout.astro';
 
   .highlight-item {
     padding: 1.75rem;
-    background: var(--color-bg-primary);
-    border: 1px solid var(--color-border-secondary);
+    background: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 0.5rem;
     text-align: center;
     transition: all 0.2s ease;
@@ -256,7 +256,7 @@ import Layout from '../components/layout/Layout.astro';
   .highlight-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border-color: var(--color-primary-400);
+    border-color: var(--accent);
   }
 
   .dark .highlight-item:hover {
@@ -264,14 +264,14 @@ import Layout from '../components/layout/Layout.astro';
   }
 
   .highlight-item h3 {
-    color: var(--color-primary-500);
+    color: var(--accent);
     font-family: var(--font-heading);
     font-size: 1.25rem;
     margin-bottom: 0.625rem;
   }
 
   .highlight-item p {
-    color: var(--color-text-secondary);
+    color: var(--text-muted);
     margin: 0;
     font-size: 0.9375rem;
     line-height: 1.6;
@@ -287,14 +287,14 @@ import Layout from '../components/layout/Layout.astro';
 
   .cv-section {
     padding: 1.75rem;
-    background: var(--color-bg-primary);
-    border: 1px solid var(--color-border-secondary);
+    background: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 0.5rem;
     transition: all 0.2s ease;
   }
 
   .cv-section:hover {
-    border-color: var(--color-primary-400);
+    border-color: var(--accent);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 
@@ -303,12 +303,12 @@ import Layout from '../components/layout/Layout.astro';
   }
 
   .cv-section h3 {
-    color: var(--color-primary-500);
+    color: var(--accent);
     font-family: var(--font-heading);
     font-size: 1.375rem;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--color-border-secondary);
+    border-bottom: 1px solid var(--border);
   }
 
   .cv-section ul {
@@ -318,7 +318,7 @@ import Layout from '../components/layout/Layout.astro';
   }
 
   .cv-section li {
-    color: var(--color-text-secondary);
+    color: var(--text-muted);
     margin-bottom: 0.875rem;
     padding-left: 1.25rem;
     position: relative;
@@ -327,14 +327,14 @@ import Layout from '../components/layout/Layout.astro';
 
   .cv-section li:before {
     content: "▸";
-    color: var(--color-primary-500);
+    color: var(--accent);
     font-weight: bold;
     position: absolute;
     left: 0;
   }
 
   .cv-section li strong {
-    color: var(--color-text-primary);
+    color: var(--text);
     font-weight: 600;
   }
 
