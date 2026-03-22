@@ -116,8 +116,12 @@ const otherTiles = otherProjects.map((project) => ({
 
 <script>
   function initTechFilter() {
+    const grid = document.getElementById('projects-grid');
+    if (!grid || grid.dataset.filterInit) return;
+    grid.dataset.filterInit = 'true';
+
     const techButtons = document.querySelectorAll('.filter-tag[data-tech]');
-    const allTiles = document.querySelectorAll('.grid-tile');
+    const allTiles = grid.querySelectorAll('.grid-tile');
     if (!techButtons.length) return;
 
     techButtons.forEach(button => {
@@ -131,18 +135,19 @@ const otherTiles = otherProjects.map((project) => ({
         allTiles.forEach(tile => {
           const htmlTile = tile as HTMLElement;
           if (tech === 'all') {
-            htmlTile.style.display = 'block';
+            htmlTile.style.display = '';
           } else {
             const tags = tile.querySelectorAll('.tile-filter-tag');
             const hasTech = Array.from(tags).some(
               tag => tag.textContent?.toLowerCase() === tech.toLowerCase()
             );
-            htmlTile.style.display = hasTech ? 'block' : 'none';
+            htmlTile.style.display = hasTech ? '' : 'none';
           }
         });
       });
     });
   }
 
+  initTechFilter();
   document.addEventListener('astro:page-load', initTechFilter);
 </script>

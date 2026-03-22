@@ -114,8 +114,12 @@ const postTiles = displayPosts.map((post) => {
 
 <script>
   function initTagFilter() {
+    const grid = document.getElementById('posts-grid');
+    if (!grid || grid.dataset.filterInit) return;
+    grid.dataset.filterInit = 'true';
+
     const tagButtons = document.querySelectorAll('.filter-tag[data-tag]');
-    const allTiles = document.querySelectorAll('.grid-tile');
+    const allTiles = grid.querySelectorAll('.grid-tile');
     if (!tagButtons.length) return;
 
     tagButtons.forEach(button => {
@@ -129,18 +133,19 @@ const postTiles = displayPosts.map((post) => {
         allTiles.forEach(tile => {
           const htmlTile = tile as HTMLElement;
           if (tag === 'all') {
-            htmlTile.style.display = 'block';
+            htmlTile.style.display = '';
           } else {
             const tags = tile.querySelectorAll('.tile-filter-tag');
             const hasTag = Array.from(tags).some(
               t => t.textContent?.toLowerCase() === tag.toLowerCase()
             );
-            htmlTile.style.display = hasTag ? 'block' : 'none';
+            htmlTile.style.display = hasTag ? '' : 'none';
           }
         });
       });
     });
   }
 
+  initTagFilter();
   document.addEventListener('astro:page-load', initTagFilter);
 </script>
