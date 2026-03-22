@@ -8,14 +8,30 @@ const { class: className = '', size = 36 } = Astro.props;
 ---
 
 <span
-  class:list={['nav-logo-icon', className]}
+  class:list={['hb-logo-wrap', className]}
   style={`width: ${size}px; height: ${size}px;`}
   aria-hidden="true"
-/>
+>
+  <span class="logo-layer logo-main"></span>
+  <span class="logo-layer logo-glitch glitch-r"></span>
+  <span class="logo-layer logo-glitch glitch-c"></span>
+</span>
 
 <style>
-  .nav-logo-icon {
-    display: inline-block;
+  /* ── Container ── */
+  .hb-logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    position: relative;
+  }
+
+  /* ── Shared mask layer ── */
+  .logo-layer {
+    display: block;
+    width: 100%;
+    height: 100%;
     background-color: currentColor;
     mask-image: url('/HB_logo.svg');
     mask-size: contain;
@@ -26,4 +42,161 @@ const { class: className = '', size = 36 } = Astro.props;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-position: center;
   }
+
+  /* Glitch layers sit on top */
+  .logo-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .glitch-r {
+    background-color: #ff3d3d;
+  }
+
+  .glitch-c {
+    background-color: #3dd8ff;
+  }
+
+  /* ── Elastic Pop Entry ── */
+  .hb-logo-wrap {
+    opacity: 0;
+    transform: scale(0) rotate(-8deg);
+    transform-origin: center center;
+  }
+
+  .hb-logo-wrap.animate-in {
+    animation: hb-bounce-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes hb-bounce-in {
+    0% {
+      opacity: 0;
+      transform: scale(0) rotate(-8deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
+  /* ── Glitch Hover — enter ── */
+  .hb-logo-wrap.glitch-active .logo-main {
+    animation: hb-glitch-main-in 0.5s ease forwards;
+  }
+
+  .hb-logo-wrap.glitch-active .glitch-r {
+    animation: hb-glitch-r 0.5s steps(4) forwards;
+  }
+
+  .hb-logo-wrap.glitch-active .glitch-c {
+    animation: hb-glitch-c 0.5s steps(4) forwards;
+  }
+
+  /* ── Glitch Hover — leave ── */
+  .hb-logo-wrap.glitch-out .logo-main {
+    animation: hb-glitch-main-out 0.4s ease forwards;
+  }
+
+  .hb-logo-wrap.glitch-out .glitch-r {
+    animation: hb-glitch-r-out 0.4s steps(5) forwards;
+  }
+
+  .hb-logo-wrap.glitch-out .glitch-c {
+    animation: hb-glitch-c-out 0.4s steps(5) forwards;
+  }
+
+  /* ── Keyframes ── */
+  @keyframes hb-glitch-main-in {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(4px) skewX(-2deg); }
+    40%  { transform: translateX(-3px) skewX(1.5deg); }
+    60%  { transform: translateX(2px) skewX(-0.5deg); }
+    80%  { transform: translateX(-1px) skewX(0deg); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes hb-glitch-main-out {
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(-3px) skewX(2deg); }
+    50%  { transform: translateX(2px) skewX(-1deg); }
+    75%  { transform: translateX(-1px) skewX(0deg); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes hb-glitch-r {
+    0%   { opacity: 0.7; transform: translate(-5px, -2px); }
+    25%  { opacity: 0.5; transform: translate(3px, 1px); }
+    50%  { opacity: 0.3; transform: translate(-2px, 2px); }
+    75%  { opacity: 0.1; transform: translate(1px, -1px); }
+    100% { opacity: 0;   transform: translate(0); }
+  }
+
+  @keyframes hb-glitch-c {
+    0%   { opacity: 0.7; transform: translate(4px, 2px); }
+    25%  { opacity: 0.5; transform: translate(-3px, -1px); }
+    50%  { opacity: 0.3; transform: translate(2px, -2px); }
+    75%  { opacity: 0.1; transform: translate(-1px, 1px); }
+    100% { opacity: 0;   transform: translate(0); }
+  }
+
+  @keyframes hb-glitch-r-out {
+    0%   { opacity: 0; }
+    20%  { opacity: 0.5; transform: translate(4px, -2px); }
+    40%  { opacity: 0.3; transform: translate(-3px, 2px); }
+    60%  { opacity: 0.4; transform: translate(5px, -1px); }
+    80%  { opacity: 0.15; transform: translate(-2px, 1px); }
+    100% { opacity: 0; }
+  }
+
+  @keyframes hb-glitch-c-out {
+    0%   { opacity: 0; }
+    20%  { opacity: 0.5; transform: translate(-3px, 2px); }
+    40%  { opacity: 0.3; transform: translate(4px, -1px); }
+    60%  { opacity: 0.4; transform: translate(-5px, 1px); }
+    80%  { opacity: 0.15; transform: translate(2px, -1px); }
+    100% { opacity: 0; }
+  }
 </style>
+
+<script>
+  function initLogoAnim() {
+    const wraps = document.querySelectorAll<HTMLElement>('.hb-logo-wrap');
+    wraps.forEach((el) => {
+      // Entry pop
+      setTimeout(() => {
+        el.classList.add('animate-in');
+      }, 200);
+
+      // Glitch on hover
+      let glitchTimeout: ReturnType<typeof setTimeout> | null = null;
+
+      el.addEventListener('mouseenter', () => {
+        if (glitchTimeout) clearTimeout(glitchTimeout);
+        el.classList.remove('glitch-out');
+        void el.offsetWidth;
+        el.classList.add('glitch-active');
+      });
+
+      el.addEventListener('mouseleave', () => {
+        el.classList.remove('glitch-active');
+        void el.offsetWidth;
+        el.classList.add('glitch-out');
+        glitchTimeout = setTimeout(() => {
+          el.classList.remove('glitch-out');
+        }, 450);
+      });
+    });
+  }
+
+  // Run on initial load and after Astro view transitions
+  document.addEventListener('astro:page-load', initLogoAnim);
+  // Fallback for non-transition navigation
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLogoAnim);
+  } else {
+    initLogoAnim();
+  }
+</script>
