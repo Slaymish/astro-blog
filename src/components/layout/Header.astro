@@ -124,7 +124,12 @@ function navLinkClasses(href: string) {
 </header>
 
 <script>
+  let mobileMenuAbort: AbortController | undefined;
+
   function initMobileMenu() {
+    mobileMenuAbort?.abort();
+    mobileMenuAbort = new AbortController();
+
     const toggle = document.getElementById('mobile-menu-toggle');
     const menu = document.getElementById('mobile-menu');
     const openIcon = toggle?.querySelector('.menu-icon-open');
@@ -152,7 +157,7 @@ function navLinkClasses(href: string) {
         toggle.setAttribute('aria-expanded', 'true');
         toggle.setAttribute('aria-label', 'Close menu');
       }
-    });
+    }, { signal: mobileMenuAbort.signal });
   }
 
   document.addEventListener('astro:page-load', initMobileMenu);
