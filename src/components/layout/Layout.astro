@@ -163,7 +163,7 @@ const structuredData = {
           document.documentElement.style.setProperty('--accent', accent);
           document.documentElement.style.setProperty('--focus', accent);
 
-          var savedTheme = localStorage.getItem('theme') || 'system';
+          var savedTheme = localStorage.getItem('theme') || 'dark';
           var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           var effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
 
@@ -187,7 +187,7 @@ const structuredData = {
           document.documentElement.style.setProperty('--accent', accent);
           document.documentElement.style.setProperty('--focus', accent);
 
-          var savedTheme = localStorage.getItem('theme') || 'system';
+          var savedTheme = localStorage.getItem('theme') || 'dark';
           var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           var effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
           document.documentElement.classList.remove('light', 'dark');
