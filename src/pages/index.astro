@@ -112,7 +112,7 @@ const readingPreview = readingItems.slice(0, 2);
       </FadeIn>
       
       <FadeIn client:load delay={0.15} duration={1}>
-        <h1 class="home-hero-heading font-serif font-bold text-[var(--text)] leading-[0.95] tracking-[-0.04em] mb-8 sm:mb-12">
+        <h1 class="home-hero-heading font-serif font-bold text-[var(--text)] leading-[1.1] sm:leading-[0.95] tracking-[-0.04em] mb-8 sm:mb-12">
           Software engineer.<br class="hidden sm:block" />
           Wellington, NZ.<br class="hidden sm:block" />
           <span class="text-[var(--text-muted)]">AI infrastructure. Self-hosted tools. Full-stack.</span>
@@ -563,10 +563,23 @@ const readingPreview = readingItems.slice(0, 2);
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px 0px 0px' }
     );
 
-    els.forEach((el) => observer.observe(el));
+    els.forEach((el) => {
+      // If already in the viewport on page load, reveal immediately
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        const delay = parseInt(el.dataset.revealDelay || '0', 10);
+        if (delay > 0) {
+          setTimeout(() => el.classList.add('revealed'), delay);
+        } else {
+          el.classList.add('revealed');
+        }
+      } else {
+        observer.observe(el);
+      }
+    });
   }
 
   // Run on initial load and after Astro view transitions

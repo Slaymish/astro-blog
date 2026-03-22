@@ -159,13 +159,13 @@ const postUpdatedLabel = showUpdated
       )}
 
       {interactiveSplit ? (
-        <div class="prose" itemprop="articleBody" data-reveal>
+        <div class="prose prose-fade-in" itemprop="articleBody">
           <Fragment set:html={interactiveSplit[0]} />
           <InteractiveElement componentId={post.interactiveElement!} />
           <Fragment set:html={interactiveSplit[1]} />
         </div>
       ) : (
-        <div class="prose" itemprop="articleBody" set:html={htmlContent} data-reveal></div>
+        <div class="prose prose-fade-in" itemprop="articleBody" set:html={htmlContent}></div>
       )}
 
       <RelatedPosts
@@ -266,6 +266,21 @@ const postUpdatedLabel = showUpdated
 
   .prose {
     max-width: 65ch;
+  }
+
+  .prose-fade-in {
+    animation: prose-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  }
+
+  @keyframes prose-enter {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prose-fade-in {
+      animation: none;
+    }
   }
 
   .post-sidebar {
@@ -467,10 +482,17 @@ const postUpdatedLabel = showUpdated
           }
         });
       },
-      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px 0px 0px' }
     );
 
-    els.forEach(el => observer.observe(el));
+    els.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        el.classList.add('revealed');
+      } else {
+        observer.observe(el);
+      }
+    });
   }
 
   document.addEventListener('astro:page-load', initPostReveal);
