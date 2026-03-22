@@ -193,7 +193,36 @@ const structuredData = {
         } catch (e) {}
       });
     </script>
-    
+
+    <!-- Navigation loading bar — instant feedback on link clicks -->
+    <script is:inline>
+      (function() {
+        var bar = document.getElementById('nav-loading-bar');
+        if (!bar) return;
+
+        document.addEventListener('astro:before-preparation', function() {
+          bar.classList.remove('done');
+          bar.style.width = '0';
+          // Force reflow so the width:0 is applied before adding .loading
+          void bar.offsetWidth;
+          bar.classList.add('loading');
+        });
+
+        document.addEventListener('astro:after-swap', function() {
+          bar.classList.remove('loading');
+          bar.classList.add('done');
+        });
+
+        // Clean up after transition finishes
+        document.addEventListener('astro:page-load', function() {
+          setTimeout(function() {
+            bar.classList.remove('done');
+            bar.style.width = '0';
+          }, 400);
+        });
+      })();
+    </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
@@ -292,9 +321,35 @@ const structuredData = {
       html, body {
         overflow-x: hidden;
       }
+
+      /* Navigation loading bar — shows instantly on click, hides after swap */
+      #nav-loading-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        width: 0;
+        background: var(--accent);
+        z-index: 9999;
+        opacity: 0;
+        transition: none;
+      }
+
+      #nav-loading-bar.loading {
+        opacity: 1;
+        width: 70%;
+        transition: width 8s cubic-bezier(0.1, 0.5, 0.3, 1);
+      }
+
+      #nav-loading-bar.done {
+        width: 100%;
+        transition: width 0.15s ease, opacity 0.3s ease 0.1s;
+        opacity: 0;
+      }
     </style>
   </head>
   <body class="antialiased min-h-screen flex flex-col" style="background-color: var(--bg); color: var(--text);">
+    <div id="nav-loading-bar"></div>
     <CustomCursor />
     <a class="skip-link" href="#main-content">Skip to content</a>
 
@@ -317,8 +372,6 @@ const structuredData = {
         id="main-content"
         class="grow w-full max-w-[var(--content-max-width)] mx-auto py-8 sm:py-12 md:py-16"
         tabindex="-1"
-        transition:name="main"
-        transition:animate="fade"
       >
         <slot />
       </main>

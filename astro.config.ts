@@ -19,6 +19,10 @@ if (!projectId) {
 
 export default defineConfig({
   site: 'https://hamishburke.dev',
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: 'hover',
+  },
   integrations: [
     mdx(),
     react(),

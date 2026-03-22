@@ -18,6 +18,10 @@ if (!projectId) {
 
 // Development configuration without Netlify adapter
 export default defineConfig({
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: 'hover',
+  },
   integrations: [
     mdx(),
     react(),
