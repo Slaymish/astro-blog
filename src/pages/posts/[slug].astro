@@ -421,15 +421,17 @@ const postUpdatedLabel = showUpdated
 
   .project-callout {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem 1rem;
     padding: 0.875rem 1.25rem;
+    margin-top: 1.5rem;
     margin-bottom: 2rem;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     font-size: 0.875rem;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 
   .project-callout-label {

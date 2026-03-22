@@ -12,16 +12,6 @@ interface FadeInStaggerProps {
   className?: string;
 }
 
-const container: Variants = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0,
-    },
-  },
-};
-
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: {
