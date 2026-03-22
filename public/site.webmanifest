@@ -8,7 +8,7 @@
   "theme_color": "#10b981",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "/HB_logo.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     },
