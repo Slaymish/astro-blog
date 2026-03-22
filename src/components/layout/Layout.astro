@@ -9,6 +9,7 @@ import "../../styles/globals.css";
 // Layout Components
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
+import { ViewTransitions } from "astro:transitions";
 import {
   SITE_AUTHOR,
   SITE_DESCRIPTION,
@@ -117,9 +118,9 @@ const structuredData = {
         --text-muted: #6b7280;
         --border: #d1d5db;
         --border-strong: #9ca3af;
-        --accent: #f652a0;
+        --accent: #2d6a4f;
         --accent-contrast: #ffffff;
-        --focus: #f652a0;
+        --focus: #2d6a4f;
       }
 
       .dark {
@@ -130,9 +131,9 @@ const structuredData = {
         --text-muted: #6b7280;
         --border: #374151;
         --border-strong: #4b5563;
-        --accent: #f652a0;
+        --accent: #2d6a4f;
         --accent-contrast: #ffffff;
-        --focus: #f652a0;
+        --focus: #2d6a4f;
       }
 
       /* Apply immediately */
@@ -151,24 +152,21 @@ const structuredData = {
 
     <!-- Critical theme initialization script (must be VERY early to prevent FOUC) -->
     <script is:inline>
-      (function() {
+      (function applyThemeAndAccent() {
         try {
-          const savedAccent = localStorage.getItem('accent');
-          if (savedAccent) {
-            document.documentElement.style.setProperty('--accent', savedAccent);
-            document.documentElement.style.setProperty('--focus', savedAccent);
-          }
+          // Always apply accent – fall back to forest green if not saved
+          var accent = localStorage.getItem('accent') || '#2d6a4f';
+          document.documentElement.style.setProperty('--accent', accent);
+          document.documentElement.style.setProperty('--focus', accent);
 
-          const savedTheme = localStorage.getItem('theme') || 'system';
-          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
+          var savedTheme = localStorage.getItem('theme') || 'system';
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
 
-          // Apply theme class immediately
+          document.documentElement.classList.remove('light', 'dark');
           document.documentElement.classList.add(effectiveTheme);
           document.documentElement.setAttribute('data-theme', savedTheme);
         } catch (e) {
-          // Fail silently if localStorage is not available
-          // Default to system preference
           if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
           } else {
@@ -176,6 +174,23 @@ const structuredData = {
           }
         }
       })();
+
+      // Re-apply after view transitions swap the DOM (theme class lives on <html>
+      // which is NOT swapped, but this ensures accent inline style is preserved)
+      document.addEventListener('astro:after-swap', function() {
+        try {
+          var accent = localStorage.getItem('accent') || '#2d6a4f';
+          document.documentElement.style.setProperty('--accent', accent);
+          document.documentElement.style.setProperty('--focus', accent);
+
+          var savedTheme = localStorage.getItem('theme') || 'system';
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
+          document.documentElement.classList.remove('light', 'dark');
+          document.documentElement.classList.add(effectiveTheme);
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        } catch (e) {}
+      });
     </script>
     
     <meta charset="UTF-8" />
@@ -259,6 +274,9 @@ const structuredData = {
     <link rel="alternate" type="application/rss+xml" title="Hamish's Blog RSS Feed" href="/rss.xml" />
     <link rel="alternate" type="text/plain" title="LLM guidance" href="/llms.txt" />
     
+    <!-- View Transitions for SPA-like navigation without full page reloads -->
+    <ViewTransitions />
+
     <!-- Analytics — Umami (privacy-respecting, no cookies) -->
     <script defer src="https://cloud.umami.is/script.js" data-website-id="3b77a67f-19f6-4f3c-a7ab-8af0d58bfbc6"></script>
 
@@ -297,6 +315,8 @@ const structuredData = {
         id="main-content"
         class="grow w-full max-w-[var(--content-max-width)] mx-auto py-8 sm:py-12 md:py-16"
         tabindex="-1"
+        transition:name="main"
+        transition:animate="slide"
       >
         <slot />
       </main>
@@ -304,22 +324,29 @@ const structuredData = {
     </div>
     {article && (
       <script is:inline>
-        // Scroll progress bar
-        (function() {
-          const bar = document.getElementById('scroll-progress');
-          if (!bar) return;
-          function updateProgress() {
-            const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
-            bar.style.width = progress + '%';
-            bar.setAttribute('aria-valuenow', String(Math.round(progress)));
+        // Scroll progress bar + copy buttons — runs on initial load and after each view transition
+        function initArticlePage() {
+          var bar = document.getElementById('scroll-progress');
+          if (bar) {
+            // Remove old listener by replacing with a fresh scroll handler stored on window
+            if (window.__scrollHandler) {
+              window.removeEventListener('scroll', window.__scrollHandler);
+            }
+            function updateProgress() {
+              var scrollTop = window.scrollY;
+              var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+              var progress = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
+              bar.style.width = progress + '%';
+              bar.setAttribute('aria-valuenow', String(Math.round(progress)));
+            }
+            window.__scrollHandler = updateProgress;
+            window.addEventListener('scroll', updateProgress, { passive: true });
+            updateProgress();
           }
-          window.addEventListener('scroll', updateProgress, { passive: true });
-          updateProgress();
 
           // Copy-to-clipboard on code blocks
           document.querySelectorAll('.prose pre').forEach(function(pre) {
+            if (pre.querySelector('.code-copy-btn')) return; // already added
             var btn = document.createElement('button');
             btn.className = 'code-copy-btn';
             btn.setAttribute('aria-label', 'Copy code');
@@ -335,107 +362,86 @@ const structuredData = {
             pre.style.position = 'relative';
             pre.appendChild(btn);
           });
-        })();
+        }
+
+        document.addEventListener('astro:page-load', initArticlePage);
       </script>
     )}
     <!-- Custom analytics events for UX success metrics -->
     <script is:inline>
-      (function() {
-        // Wait for umami to be available
+      function initAnalytics() {
         function track(name, data) {
           if (typeof umami !== 'undefined' && umami.track) {
             umami.track(name, data);
           }
         }
 
-        // --- Scroll depth tracking (target: >60% on blog posts) ---
         var maxScroll = 0;
         var scrollMilestones = [25, 50, 60, 75, 90, 100];
         var firedMilestones = {};
         var pathname = window.location.pathname;
 
-        window.addEventListener('scroll', function() {
+        if (window.__analyticsScrollHandler) {
+          window.removeEventListener('scroll', window.__analyticsScrollHandler);
+        }
+        function analyticsScroll() {
           var scrollTop = window.scrollY;
           var docHeight = document.documentElement.scrollHeight - window.innerHeight;
           if (docHeight <= 0) return;
           var pct = Math.round((scrollTop / docHeight) * 100);
           if (pct > maxScroll) maxScroll = pct;
-
           scrollMilestones.forEach(function(m) {
             if (pct >= m && !firedMilestones[m]) {
               firedMilestones[m] = true;
               track('scroll-depth', { depth: m, page: pathname });
             }
           });
-        }, { passive: true });
+        }
+        window.__analyticsScrollHandler = analyticsScroll;
+        window.addEventListener('scroll', analyticsScroll, { passive: true });
 
-        // Fire final scroll depth on page leave
-        document.addEventListener('visibilitychange', function() {
-          if (document.visibilityState === 'hidden' && maxScroll > 0) {
-            track('scroll-depth-final', { depth: maxScroll, page: pathname });
-          }
-        });
-
-        // --- CV download / view tracking ---
         document.querySelectorAll('a[href*="/cv"], a[href*="cv.pdf"], a[href*="CV"]').forEach(function(el) {
           el.addEventListener('click', function() {
             var label = el.textContent.trim().toLowerCase();
-            if (label.includes('download')) {
-              track('cv-download', { page: pathname });
-            } else {
-              track('cv-view', { page: pathname });
-            }
+            track(label.includes('download') ? 'cv-download' : 'cv-view', { page: pathname });
           });
         });
 
-        // --- Email click tracking ---
         document.querySelectorAll('a[href^="mailto:"]').forEach(function(el) {
-          el.addEventListener('click', function() {
-            track('email-click', { page: pathname });
-          });
+          el.addEventListener('click', function() { track('email-click', { page: pathname }); });
         });
 
-        // --- Social share tracking ---
         document.querySelectorAll('.share-link, a[href*="twitter.com/intent"], a[href*="linkedin.com/share"]').forEach(function(el) {
           el.addEventListener('click', function() {
-            var platform = 'unknown';
             var href = el.getAttribute('href') || '';
-            if (href.includes('twitter.com') || href.includes('x.com')) platform = 'twitter';
-            else if (href.includes('linkedin.com')) platform = 'linkedin';
+            var platform = href.includes('twitter.com') || href.includes('x.com') ? 'twitter' : href.includes('linkedin.com') ? 'linkedin' : 'unknown';
             track('social-share', { platform: platform, page: pathname });
           });
         });
 
-        // --- External link tracking (GitHub, LinkedIn profile, etc.) ---
         document.querySelectorAll('a[target="_blank"], a[rel*="noopener"]').forEach(function(el) {
           el.addEventListener('click', function() {
             var href = el.getAttribute('href') || '';
-            if (href.includes('github.com')) {
-              track('outbound-click', { destination: 'github', page: pathname });
-            } else if (href.includes('linkedin.com')) {
-              track('outbound-click', { destination: 'linkedin', page: pathname });
-            }
+            if (href.includes('github.com')) track('outbound-click', { destination: 'github', page: pathname });
+            else if (href.includes('linkedin.com')) track('outbound-click', { destination: 'linkedin', page: pathname });
           });
         });
 
-        // --- CTA button tracking (hero CTAs, about page CTAs) ---
         document.querySelectorAll('.cta-primary, a[href="/projects"], a[href="/writing"]').forEach(function(el) {
-          // Only track ones that look like CTAs (not nav links)
           if (el.closest('nav') || el.closest('header') || el.closest('footer')) return;
-          el.addEventListener('click', function() {
-            track('cta-click', { text: el.textContent.trim(), page: pathname });
-          });
+          el.addEventListener('click', function() { track('cta-click', { text: el.textContent.trim(), page: pathname }); });
         });
 
-        // --- Time on page tracking (target: >2min on project pages) ---
         var pageStart = Date.now();
-        document.addEventListener('visibilitychange', function() {
+        document.addEventListener('visibilitychange', function onHide() {
           if (document.visibilityState === 'hidden') {
-            var seconds = Math.round((Date.now() - pageStart) / 1000);
-            track('time-on-page', { seconds: seconds, page: pathname });
+            track('scroll-depth-final', { depth: maxScroll, page: pathname });
+            track('time-on-page', { seconds: Math.round((Date.now() - pageStart) / 1000), page: pathname });
           }
         });
-      })();
+      }
+
+      document.addEventListener('astro:page-load', initAnalytics);
     </script>
   </body>
 </html>
