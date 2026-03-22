@@ -221,11 +221,17 @@ const formattedDate = date
     font-family: var(--font-heading);
     font-size: clamp(2.5rem, 7vw, 5rem);
     font-weight: 700;
-    line-height: 1.05;
+    line-height: 1.15;
     letter-spacing: -0.03em;
     color: var(--text);
     margin: 0 0 1.5rem;
     max-width: 56rem;
+  }
+
+  @media (min-width: 640px) {
+    .parallax-hero__title {
+      line-height: 1.05;
+    }
   }
 
   .parallax-hero__subtitle {
