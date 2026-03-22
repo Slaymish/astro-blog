@@ -1,7 +1,7 @@
 ---
 import Layout from "../components/layout/Layout.astro";
-import GridTile from "../components/ui/GridTile.astro";
 import { FadeIn } from "../components/motion/FadeIn";
+import { ScrollReveal, ScrollRevealStagger, ScrollRevealItem } from "../components/motion/ScrollReveal";
 import { fetchSanity, urlFor } from "../lib/sanity";
 
 export const prerender = false;
@@ -84,268 +84,401 @@ const readingItems = await fetchSanity<ReadingItem[]>(`
   }
 `);
 
-const homeDescription = "Welcome to my personal site - a collection of projects, writing, and thoughts.";
+const homeDescription = "Software engineer building AI infrastructure, self-hosted tools, and full-stack web applications.";
 
 const displayPosts = [
   ...posts.map(p => ({ ...p, _type: 'post' as const })),
   ...reports.map(r => ({ ...r, excerpt: r.description, _type: 'report' as const }))
 ].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
-const projectTiles = projects.map((project) => {
-  const dateStr = new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-  // Live tools link directly to the tool; otherwise link to write-up or project page
-  const linksToOwnPage = !project.link && !project.relatedPostSlug;
-  const href = project.link
-    ? project.link
-    : project.relatedPostSlug
-      ? `/posts/${project.relatedPostSlug}`
-      : `/projects/${project.slug}`;
-  return {
-    title: project.title,
-    description: project.description,
-    href,
-    size: project.homeTileSize === 'wide' ? 'wide' : 'square',
-    tags: project.technologies || [],
-    date: dateStr,
-    type: project.link ? 'tool' as const : 'project' as const,
-    external: !!project.link,
-    // Only set transition name when the tile links to its own detail page
-    // (title won't match if linking to a related post with a different title)
-    transitionName: linksToOwnPage ? `title-projects-${project.slug}` : undefined,
-  };
-});
-
-const postTiles = displayPosts.map((post) => {
-  const dateStr = new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-  const slug = post.slug;
-  const prefix = post._type === 'report' ? 'reports' : 'posts';
-  return {
-    title: post.title,
-    description: post.excerpt || '',
-    href: `/${prefix}/${slug}`,
-    size: 'square',
-    tags: post.tags || [],
-    date: dateStr,
-    type: post._type,
-    transitionName: `title-${prefix}-${slug}`,
-  };
-});
-
+const featuredProjects = projects.filter(p => !p.link).slice(0, 4);
+const recentWriting = displayPosts.slice(0, 4);
 const readingPreview = readingItems.slice(0, 2);
 ---
 
-<Layout title="Hamish Burke" description={homeDescription}>
+<Layout title="Hamish Burke" description={homeDescription} fullWidth>
 
-  <!-- Masthead -->
-  <section class="py-12 md:py-16 text-center">
-    <div class="max-w-[40rem] mx-auto">
-      <FadeIn client:load duration={0.6}>
-        <h1 class="font-serif text-[clamp(3.5rem,9vw,5rem)] font-bold tracking-[-0.03em] text-[var(--text)] mb-6">
-          Hi, I'm Hamish
+  <!-- ============================================
+       HERO — Full viewport, massive bold text
+       ============================================ -->
+  <section class="home-hero relative flex flex-col justify-center items-center min-h-[90vh] -mt-8 sm:-mt-12 md:-mt-16 mb-0 overflow-hidden">
+    <div class="w-full max-w-[90rem] mx-auto px-4 sm:px-8">
+      <FadeIn client:load duration={0.8} direction="none">
+        <p class="text-sm sm:text-base uppercase tracking-[0.2em] text-[var(--text-muted)] mb-6 sm:mb-8 font-medium">
+          Software Engineer &middot; Wellington, NZ
+        </p>
+      </FadeIn>
+      <FadeIn client:load delay={0.15} duration={1}>
+        <h1 class="home-hero-heading font-serif font-bold text-[var(--text)] leading-[0.95] tracking-[-0.04em] mb-8 sm:mb-12">
+          Building things<br class="hidden sm:block" />
+          <span class="text-[var(--text-muted)]">that matter.</span>
         </h1>
       </FadeIn>
-      <FadeIn client:load delay={0.1} duration={0.6}>
-        <p class="text-lg text-[var(--text-muted)] leading-[1.7] mb-4">
-          Software engineer building AI infrastructure, self-hosted tools, and full-stack web applications.
-          Based in Wellington, NZ. Junior Web Developer at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer" class="text-[var(--text-muted)] no-underline hover:text-[var(--accent)] hover:opacity-100 transition-colors">Alphero</a>.
-        </p>
-        <p class="text-base text-[var(--text-muted)] leading-[1.7] mb-8 opacity-80">
-          I write about what I learn along the way.
+      <FadeIn client:load delay={0.4} duration={0.8}>
+        <p class="text-lg sm:text-xl md:text-2xl text-[var(--text-muted)] max-w-[42rem] leading-relaxed mb-10">
+          AI infrastructure, self-hosted tools, and full-stack applications — crafted with care, shipped with purpose.
         </p>
       </FadeIn>
-      <FadeIn client:load delay={0.2} duration={0.5}>
-      <div class="flex flex-wrap justify-center gap-4 mb-6">
-        <a
-          href="/tools"
-          class="cta-primary text-base text-[var(--accent)] py-3 px-6 rounded-[var(--radius-base)] no-underline border border-[var(--accent)] font-medium transition-colors"
-        >
-          Try my tools
-        </a>
-        <a
-          href="/projects"
-          class="text-base text-[var(--text)] py-3 px-6 rounded-[var(--radius-base)] no-underline border border-[var(--border)] font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-        >
-          See my projects
-        </a>
-        <a
-          href="/writing"
-          class="text-base text-[var(--text)] py-3 px-6 rounded-[var(--radius-base)] no-underline border border-[var(--border)] font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-        >
-          Read my writing
-        </a>
-      </div>
-      <p class="text-sm text-[var(--text-muted)] opacity-70">
-        Currently: Junior Web Developer at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer" class="text-[var(--text-muted)] no-underline hover:text-[var(--accent)] hover:opacity-100 transition-colors">Alphero</a> &middot; MSc Computer Science, VUW
-      </p>
+      <FadeIn client:load delay={0.6} duration={0.7}>
+        <div class="flex flex-wrap gap-4 sm:gap-6">
+          <a
+            href="/projects"
+            class="cta-primary group inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline border-b-0 py-3 px-6 rounded-full border border-[var(--accent)] transition-all duration-300 hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
+          >
+            View work
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">
+              <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
+            </svg>
+          </a>
+          <a
+            href="/about"
+            class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--text-muted)] no-underline border-b-0 py-3 px-6 transition-colors duration-300 hover:text-[var(--text)]"
+          >
+            About me
+          </a>
+        </div>
       </FadeIn>
+    </div>
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--text-muted)] opacity-60">
+      <span class="text-xs uppercase tracking-[0.15em]">Scroll</span>
+      <div class="w-px h-8 bg-[var(--text-muted)] animate-pulse"></div>
     </div>
   </section>
 
-  <!-- Bento Grid -->
-  <FadeIn client:load delay={0.3} duration={0.6} as="section" className="mb-8 w-full sm:w-[90vw] sm:ml-[calc(50%-45vw)]">
-    <div class="grid grid-cols-1 gap-3 sm:grid-flow-row-dense sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-
-      {postTiles.slice(0, 2).map(tile => <GridTile {...tile} />)}
-      {projectTiles.filter(t => t.type !== 'tool').slice(0, 3).map(tile => <GridTile {...tile} />)}
-
-      <!-- Walking hobby tile -->
-      <div class="aspect-square px-1 pb-2">
-        <div
-          class="tile-image group relative h-full w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--surface)]"
-          style={`--tile-image: url('/images/tiles/walking.JPG'); --tile-image-overlay: linear-gradient(180deg, rgba(10, 10, 10, 0.15), rgba(10, 10, 10, 0.55))`}
-        >
-          <div class="flex items-center justify-between pl-4 pr-2 pt-2 text-sm tracking-tight text-[var(--tile-image-text,var(--text-muted))]">
-            <span class="py-1.5">Hobby</span>
-          </div>
-          <div class="p-5">
-            <div class="font-serif font-semibold text-xl mb-2 text-[var(--tile-image-text,var(--text))] flex items-center justify-between gap-2">
-              <span>Walking</span>
-            </div>
-          </div>
-        </div>
+  <!-- ============================================
+       SELECTED PROJECTS — Large showcase cards
+       ============================================ -->
+  <section class="home-section py-16 sm:py-24 md:py-32 max-w-[var(--content-max-width)] mx-auto">
+    <ScrollReveal client:load duration={0.6} direction="up" distance={30}>
+      <div class="flex items-end justify-between mb-12 sm:mb-16">
+        <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
+          Selected<br />projects
+        </h2>
+        <a href="/projects" class="hidden sm:inline-flex items-center gap-2 text-sm uppercase tracking-[0.1em] text-[var(--text-muted)] no-underline border-b-0 font-medium transition-colors hover:text-[var(--accent)]">
+          All projects
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
+          </svg>
+        </a>
       </div>
+    </ScrollReveal>
 
-      <!-- Gym hobby tile -->
-      <div class="aspect-square px-1 pb-2">
-        <div
-          class="tile-image group relative h-full w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--surface)]"
-          style={`--tile-image: url('/images/tiles/gym.JPG'); --tile-image-overlay: linear-gradient(180deg, rgba(10, 10, 10, 0.15), rgba(10, 10, 10, 0.55))`}
-        >
-          <div class="flex items-center justify-between pl-4 pr-2 pt-2 text-sm tracking-tight text-[var(--tile-image-text,var(--text-muted))]">
-            <span class="py-1.5">Hobby</span>
-          </div>
-          <div class="p-5">
-            <div class="font-serif font-semibold text-xl mb-2 text-[var(--tile-image-text,var(--text))] flex items-center justify-between gap-2">
-              <span>Gym</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Piano hobby tile -->
-      <div class="aspect-square px-1 pb-2">
-        <div
-          class="tile-image group relative h-full w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--surface)]"
-          style={`--tile-image: url('/images/tiles/piano.jpg'); --tile-image-overlay: linear-gradient(180deg, rgba(10, 10, 10, 0.15), rgba(10, 10, 10, 0.55))`}
-        >
-          <div class="flex items-center justify-between pl-4 pr-2 pt-2 text-sm tracking-tight text-[var(--tile-image-text,var(--text-muted))]">
-            <span class="py-1.5">Hobby</span>
-          </div>
-          <div class="p-5">
-            <div class="font-serif font-semibold text-xl mb-2 text-[var(--tile-image-text,var(--text))] flex items-center justify-between gap-2">
-              <span>Piano</span>
-            </div>
-            <div class="hobby-list text-sm text-[var(--tile-image-text,var(--text-muted))]">
-              <div><span class="label">Currently:</span> Talk to Me (by CaveTown)</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Reading tiles -->
-      {readingPreview.map((book) => (
-        <div class="aspect-square px-1 pb-2">
-          <div class="group h-full w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--surface)] transition-colors hover:bg-[var(--surface-2)]">
-            <div class="isolate flex h-full w-full flex-col">
-              <div class="flex items-center justify-between pl-4 pr-2 pt-2 text-sm tracking-tight text-[var(--text-muted)]">
-                <span class="py-1.5">
-                  <a
-                    href="/reading"
-                    class="no-underline border-b-0 transition-colors hover:text-[var(--accent)] hover:underline focus-visible:ring-4 focus-visible:ring-[var(--focus)] focus-visible:underline"
-                  >
-                    Reading
-                  </a>
-                  &nbsp;·&nbsp;Books
-                </span>
-                {book.link && (
-                  <a
-                    href={book.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="flex h-8 w-8 items-center justify-center rounded-full transition-colors no-underline border-b-0 focus-visible:ring-4 focus-visible:ring-[var(--focus)] group-focus-within:bg-[var(--text)] group-focus-within:text-[var(--bg)] group-hover:bg-[var(--text)] group-hover:text-[var(--bg)] cursor-alias"
-                    aria-label={`View ${book.title} on external site`}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+    <div class="space-y-6 sm:space-y-8">
+      {featuredProjects.map((project, i) => {
+        const href = project.relatedPostSlug
+          ? `/posts/${project.relatedPostSlug}`
+          : `/projects/${project.slug}`;
+        const dateStr = new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+        return (
+          <ScrollReveal client:load delay={i * 0.08} duration={0.7} distance={50}>
+            <a
+              href={href}
+              class="project-card group block no-underline border-b-0 text-inherit hover:text-inherit"
+            >
+              <article class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[var(--surface)] p-6 sm:p-8 md:p-10 transition-all duration-500 hover:bg-[var(--surface-2)] hover:shadow-lg">
+                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-8">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-3 mb-4">
+                      <span class="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)] font-medium">{dateStr}</span>
+                      {project.technologies?.slice(0, 2).map((tech: string) => (
+                        <span class="text-xs uppercase tracking-[0.08em] text-[var(--accent)] font-medium">{tech}</span>
+                      ))}
+                    </div>
+                    <h3 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[var(--text)] leading-[1.1] mb-3 transition-colors duration-300 group-hover:text-[var(--accent)]"
+                      transition:name={`title-projects-${project.slug}`}
+                    >{project.title}</h3>
+                    {project.description && (
+                      <p class="text-base sm:text-lg text-[var(--text-muted)] leading-relaxed max-w-[36rem] line-clamp-2 m-0">{project.description}</p>
+                    )}
+                  </div>
+                  <div class="flex-shrink-0 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-[var(--accent-contrast)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true">
                       <path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"/>
                     </svg>
-                  </a>
+                  </div>
+                </div>
+              </article>
+            </a>
+          </ScrollReveal>
+        );
+      })}
+    </div>
+
+    <div class="sm:hidden mt-8 text-center">
+      <a href="/projects" class="inline-flex items-center gap-2 text-sm uppercase tracking-[0.1em] text-[var(--text-muted)] no-underline border-b-0 font-medium transition-colors hover:text-[var(--accent)]">
+        All projects →
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================
+       STATEMENT — Bold typographic section
+       ============================================ -->
+  <section class="py-20 sm:py-28 md:py-36 max-w-[var(--content-max-width)] mx-auto">
+    <ScrollReveal client:load duration={0.9} distance={40}>
+      <blockquote class="home-statement font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.1] m-0 p-0 border-0 bg-transparent max-w-[56rem]" style="font-style: normal;">
+        I build tools and write about what I learn — sharing knowledge to help others navigate the same challenges.
+      </blockquote>
+    </ScrollReveal>
+    <ScrollReveal client:load delay={0.2} duration={0.6} distance={20}>
+      <div class="mt-8 sm:mt-12">
+        <a href="/writing" class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline border-b-0 transition-all duration-300 hover:gap-4">
+          Read my writing
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
+          </svg>
+        </a>
+      </div>
+    </ScrollReveal>
+  </section>
+
+  <!-- ============================================
+       RECENT WRITING — Scroll-revealed list
+       ============================================ -->
+  <section class="home-section py-16 sm:py-24 md:py-32 border-t border-[var(--border)] max-w-[var(--content-max-width)] mx-auto">
+    <ScrollReveal client:load duration={0.6} direction="up" distance={30}>
+      <div class="flex items-end justify-between mb-12 sm:mb-16">
+        <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
+          Recent<br />writing
+        </h2>
+        <a href="/writing" class="hidden sm:inline-flex items-center gap-2 text-sm uppercase tracking-[0.1em] text-[var(--text-muted)] no-underline border-b-0 font-medium transition-colors hover:text-[var(--accent)]">
+          All articles
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
+          </svg>
+        </a>
+      </div>
+    </ScrollReveal>
+
+    <div class="divide-y divide-[var(--border)]">
+      {recentWriting.map((post, i) => {
+        const dateStr = new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+        const prefix = post._type === 'report' ? 'reports' : 'posts';
+        return (
+          <ScrollReveal client:load delay={i * 0.08} duration={0.6} distance={30}>
+            <a
+              href={`/${prefix}/${post.slug}`}
+              class="writing-row group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8 py-6 sm:py-8 no-underline border-b-0 text-inherit hover:text-inherit transition-all duration-300"
+            >
+              <span class="text-sm text-[var(--text-muted)] sm:w-40 flex-shrink-0 uppercase tracking-[0.06em]">{dateStr}</span>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-[-0.02em] text-[var(--text)] leading-tight transition-colors duration-300 group-hover:text-[var(--accent)] m-0"
+                  transition:name={`title-${prefix}-${post.slug}`}
+                >{post.title}</h3>
+                {post.excerpt && (
+                  <p class="text-sm sm:text-base text-[var(--text-muted)] mt-2 line-clamp-1 m-0">{post.excerpt}</p>
                 )}
               </div>
-              <div class="grid grow grid-cols-2 items-center gap-6 px-7 pb-8">
-                <div class="flex h-full items-center">
+              <div class="flex-shrink-0 w-10 h-10 rounded-full border border-[var(--border)] flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] group-hover:text-[var(--accent)] max-sm:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </a>
+          </ScrollReveal>
+        );
+      })}
+    </div>
+
+    <div class="sm:hidden mt-8 text-center">
+      <a href="/writing" class="inline-flex items-center gap-2 text-sm uppercase tracking-[0.1em] text-[var(--text-muted)] no-underline border-b-0 font-medium transition-colors hover:text-[var(--accent)]">
+        All articles →
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CURRENTLY READING — Optional section
+       ============================================ -->
+  {readingPreview.length > 0 && (
+    <section class="py-16 sm:py-24 border-t border-[var(--border)] max-w-[var(--content-max-width)] mx-auto">
+      <ScrollReveal client:load duration={0.6} distance={30}>
+        <div class="flex items-end justify-between mb-10 sm:mb-14">
+          <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
+            Currently<br />reading
+          </h2>
+          <a href="/reading" class="inline-flex items-center gap-2 text-sm uppercase tracking-[0.1em] text-[var(--text-muted)] no-underline border-b-0 font-medium transition-colors hover:text-[var(--accent)]">
+            Reading list
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+              <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
+            </svg>
+          </a>
+        </div>
+      </ScrollReveal>
+
+      <ScrollRevealStagger client:load stagger={0.12}>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {readingPreview.map((book) => (
+            <ScrollRevealItem client:load>
+              <div class="group flex gap-6 p-6 rounded-2xl bg-[var(--surface)] transition-all duration-300 hover:bg-[var(--surface-2)] hover:shadow-md">
+                <div class="flex-shrink-0 w-20 sm:w-24">
                   {book.coverImage ? (
                     <img
                       src={urlFor(book.coverImage).width(240).height(360).fit('max').url()}
                       alt={`Cover of ${book.title}`}
-                      class="aspect-[3/4] w-full max-h-full rounded object-contain shadow-lg transition-transform group-focus-within:-rotate-3 group-focus-within:scale-110 group-focus-within:shadow-xl group-hover:-rotate-3 group-hover:scale-110 group-hover:shadow-xl border-0"
+                      class="aspect-[3/4] w-full rounded-lg object-cover shadow-md transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-1 border-0"
                       loading="lazy"
                     />
                   ) : (
-                    <div class="aspect-[3/4] w-full rounded bg-[var(--surface-2)] shadow-inner"></div>
+                    <div class="aspect-[3/4] w-full rounded-lg bg-[var(--surface-2)] shadow-inner"></div>
                   )}
                 </div>
-                <div class="tracking-tight">
-                  <span class="status-chip" data-status="reading">Reading</span>
-                  <h3 class="mt-3 line-clamp-3 text-[var(--text)] font-medium leading-snug" style="font-size: 0.875rem;">{book.title}</h3>
-                  <span class="text-[var(--text-muted)] text-sm">{book.author}</span>
+                <div class="flex flex-col justify-center min-w-0">
+                  <span class="status-chip mb-3" data-status="reading">Reading</span>
+                  <h3 class="font-serif text-lg sm:text-xl font-bold tracking-tight text-[var(--text)] leading-snug m-0 line-clamp-2">{book.title}</h3>
+                  <span class="text-sm text-[var(--text-muted)] mt-1">{book.author}</span>
+                  {book.link && (
+                    <a
+                      href={book.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1 text-xs text-[var(--accent)] no-underline border-b-0 mt-3 font-medium transition-colors hover:text-[var(--text)]"
+                    >
+                      View book
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"/>
+                      </svg>
+                    </a>
+                  )}
                 </div>
               </div>
-            </div>
-          </div>
+            </ScrollRevealItem>
+          ))}
         </div>
-      ))}
+      </ScrollRevealStagger>
+    </section>
+  )}
 
-      {projectTiles.filter(t => t.type !== 'tool').slice(3, 6).map(tile => <GridTile {...tile} />)}
-      {postTiles.slice(2, 5).map(tile => <GridTile {...tile} />)}
+  <!-- ============================================
+       STAGGERED CTA CARDS — Layered, overlapping
+       ============================================ -->
+  <section class="home-cta-section relative py-20 sm:py-28 md:py-36 overflow-hidden">
+    <ScrollReveal client:load duration={0.8} distance={50}>
+      <div class="relative max-w-[56rem] mx-auto">
 
-      <!-- About tile -->
-      <div class="aspect-square px-1 pb-2">
-        <div class="group h-full w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--surface)] transition-colors hover:bg-[var(--surface-2)]">
-          <a href="/about" class="tile-link flex h-full w-full cursor-pointer flex-col justify-between no-underline border-b-0 text-inherit hover:text-inherit">
-            <div class="flex items-center justify-between pl-4 pr-2 pt-2 text-sm tracking-tight text-[var(--text-muted)]">
-              <span class="py-1.5">Navigation</span>
-              <span class="flex h-8 w-8 items-center justify-center rounded-full transition-colors group-focus-within:bg-[var(--text)] group-focus-within:text-[var(--bg)] group-hover:bg-[var(--text)] group-hover:text-[var(--bg)]">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-                </svg>
-              </span>
-            </div>
-            <div class="p-5">
-              <h3 class="font-serif text-4xl font-light tracking-tight text-[var(--text)]">About</h3>
-              <p class="mt-2 text-sm tracking-tight text-[var(--text-muted)]">More about me and my background</p>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <!-- GitHub tile -->
-      <div class="aspect-square px-1 pb-2">
-        <div class="group h-full w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--surface)] transition-colors hover:bg-[var(--surface-2)]">
-          <a href="https://github.com/Slaymish" target="_blank" rel="noopener noreferrer" class="tile-link flex h-full w-full cursor-alias flex-col justify-between no-underline border-b-0 text-inherit hover:text-inherit">
-            <div class="flex items-center justify-between pl-4 pr-2 pt-2 text-sm tracking-tight text-[var(--text-muted)]">
-              <span class="py-1.5">External</span>
-              <span class="flex h-8 w-8 items-center justify-center rounded-full transition-colors group-focus-within:bg-[var(--text)] group-focus-within:text-[var(--bg)] group-hover:bg-[var(--text)] group-hover:text-[var(--bg)]">
+        <!-- Background staggered cards (decorative layers) -->
+        <div class="home-cta-stack relative">
+          <!-- Card layer 3 (furthest back) -->
+          <div class="home-cta-layer home-cta-layer--3 absolute inset-x-6 sm:inset-x-12 -top-6 sm:-top-8 rounded-2xl sm:rounded-3xl bg-[var(--surface-2)] opacity-50 h-full" aria-hidden="true"></div>
+          <!-- Card layer 2 -->
+          <div class="home-cta-layer home-cta-layer--2 absolute inset-x-3 sm:inset-x-6 -top-3 sm:-top-4 rounded-2xl sm:rounded-3xl bg-[var(--surface)] opacity-75 h-full" aria-hidden="true"></div>
+          <!-- Card layer 1 (front) -->
+          <div class="home-cta-card relative rounded-2xl sm:rounded-3xl bg-[var(--surface)] p-8 sm:p-12 md:p-16 text-center z-10">
+            <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[var(--text)] leading-[1.1] mb-6">
+              Let's connect
+            </h2>
+            <p class="text-base sm:text-lg text-[var(--text-muted)] max-w-[28rem] mx-auto leading-relaxed mb-10 mt-0">
+              Currently a Junior Web Developer at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">Alphero</a>.
+              Always open to interesting conversations and collaborations.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+              <a href="/about" class="home-cta-btn-primary inline-flex items-center gap-2 text-base font-medium no-underline border-b-0 py-3 px-8 rounded-full bg-[var(--accent)] transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+                About me
+              </a>
+              <a href="https://github.com/Slaymish" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-base font-medium text-[var(--text)] no-underline border-b-0 py-3 px-8 rounded-full border border-[var(--border)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--accent)]">
+                GitHub
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
                   <path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"/>
                 </svg>
-              </span>
+              </a>
+              <a href="/tools" class="inline-flex items-center gap-2 text-base font-medium text-[var(--text)] no-underline border-b-0 py-3 px-8 rounded-full border border-[var(--border)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--accent)]">
+                Try my tools
+              </a>
             </div>
-            <div class="p-5">
-              <h3 class="font-serif text-4xl font-light tracking-tight text-[var(--text)]">GitHub</h3>
-              <p class="mt-2 text-sm tracking-tight text-[var(--text-muted)]">Check out my code and contributions</p>
-            </div>
-          </a>
+          </div>
         </div>
+
       </div>
-
-    </div>
-
-    <!-- View more -->
-    <div class="flex justify-center gap-8 mt-8">
-      <a href="/tools" class="text-[var(--text-muted)] no-underline border-b-0 text-[0.9375rem] transition-colors hover:text-[var(--accent)]">View all tools →</a>
-      <a href="/projects" class="text-[var(--text-muted)] no-underline border-b-0 text-[0.9375rem] transition-colors hover:text-[var(--accent)]">View all projects →</a>
-      <a href="/writing" class="text-[var(--text-muted)] no-underline border-b-0 text-[0.9375rem] transition-colors hover:text-[var(--accent)]">View all writing →</a>
-    </div>
-  </FadeIn>
+    </ScrollReveal>
+  </section>
 
 </Layout>
+
+<style>
+  /* Primary CTA button — override global a color */
+  .home-cta-btn-primary {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff;
+  }
+
+  .home-cta-btn-primary:hover {
+    color: #fff !important;
+    opacity: 1;
+  }
+
+  .home-cta-btn-primary::after {
+    display: none !important;
+  }
+
+  /* Hero heading — massive responsive type */
+  .home-hero-heading {
+    font-size: clamp(3.5rem, 12vw, 8rem);
+  }
+
+  /* Section headings — large but not hero-sized */
+  .home-section-heading {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+  }
+
+  /* Statement quote — large editorial text */
+  .home-statement {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  /* CTA stacked cards depth effect */
+  .home-cta-stack {
+    perspective: 1000px;
+  }
+
+  .home-cta-layer {
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .home-cta-stack:hover .home-cta-layer--3 {
+    transform: translateY(-4px) scale(0.96);
+  }
+
+  .home-cta-stack:hover .home-cta-layer--2 {
+    transform: translateY(-2px) scale(0.98);
+  }
+
+  .home-cta-card {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
+  }
+
+  .home-cta-stack:hover .home-cta-card {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
+  }
+
+  :global(.dark) .home-cta-stack:hover .home-cta-card {
+    box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Writing row hover padding shift */
+  .writing-row {
+    padding-left: 0;
+    transition: padding-left 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
+  }
+
+  .writing-row:hover {
+    padding-left: 0.5rem;
+  }
+
+  /* Project card subtle lift */
+  .project-card article {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.3s ease,
+                box-shadow 0.5s ease;
+  }
+
+  .project-card:hover article {
+    transform: translateY(-2px);
+  }
+
+  /* Smooth scroll for the whole page */
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+</style>

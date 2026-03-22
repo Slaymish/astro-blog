@@ -31,6 +31,8 @@ interface Props {
   tags?: string[];
   author?: string;
   canonicalURL?: string;
+  /** Use full-width layout (no max-width constraint on main) */
+  fullWidth?: boolean;
 }
 
 const { 
@@ -42,7 +44,8 @@ const {
   modifiedTime,
   tags = [],
   author = SITE_AUTHOR,
-  canonicalURL
+  canonicalURL,
+  fullWidth = false,
 } = Astro.props;
 
 const siteTitle = SITE_NAME;
@@ -322,6 +325,46 @@ const structuredData = {
         overflow-x: hidden;
       }
 
+      /* Lenis smooth scroll */
+      html.lenis, html.lenis body {
+        height: auto;
+      }
+
+      .lenis.lenis-smooth {
+        scroll-behavior: auto !important;
+      }
+
+      .lenis.lenis-smooth [data-lenis-prevent] {
+        overscroll-behavior: contain;
+      }
+
+      .lenis.lenis-stopped {
+        overflow: hidden;
+      }
+
+      .lenis.lenis-smooth iframe {
+        pointer-events: none;
+      }
+
+      /* ── Smoother View Transitions ── */
+      @keyframes fade-in {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes fade-out {
+        from { opacity: 1; transform: translateY(0); }
+        to   { opacity: 0; transform: translateY(-4px); }
+      }
+
+      ::view-transition-old(root) {
+        animation: fade-out 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+
+      ::view-transition-new(root) {
+        animation: fade-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+      }
+
       /* Navigation loading bar — shows instantly on click, hides after swap */
       #nav-loading-bar {
         position: fixed;
@@ -370,7 +413,7 @@ const structuredData = {
       <Header />
       <main
         id="main-content"
-        class="grow w-full max-w-[var(--content-max-width)] mx-auto py-8 sm:py-12 md:py-16"
+        class={`grow w-full mx-auto py-8 sm:py-12 md:py-16 ${fullWidth ? '' : 'max-w-[var(--content-max-width)]'}`}
         tabindex="-1"
       >
         <slot />
@@ -497,6 +540,38 @@ const structuredData = {
       }
 
       document.addEventListener('astro:page-load', initAnalytics);
+    </script>
+    <!-- Lenis smooth scroll -->
+    <script>
+      import Lenis from 'lenis';
+
+      let lenis: Lenis | null = null;
+
+      function initLenis() {
+        // Destroy previous instance
+        if (lenis) {
+          lenis.destroy();
+          lenis = null;
+        }
+
+        // Respect reduced-motion preference
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        lenis = new Lenis({
+          duration: 1.2,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          touchMultiplier: 1.5,
+          infinite: false,
+        });
+
+        function raf(time: number) {
+          lenis?.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+      }
+
+      document.addEventListener('astro:page-load', initLenis);
     </script>
   </body>
 </html>

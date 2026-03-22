@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 /* ============================================
    DARK MODE (class-based via .dark on <html>)
@@ -93,14 +93,22 @@
     font-family: var(--font-body);
     font-weight: 400;
     line-height: 1.8;
-    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1,
+      "calt" 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
     font-weight: 700;
     line-height: 1.1;
@@ -192,6 +200,12 @@
     border-bottom: none !important;
     color: var(--text);
     opacity: 1 !important;
+    min-width: 36px;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
   }
 
   a.nav-logo:hover {
@@ -221,10 +235,13 @@
     display: none !important;
   }
 
-
   /* Smooth transitions on interactive elements */
-  a, button {
-    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  a,
+  button {
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease;
   }
 
   /* Reduce motion */
@@ -374,7 +391,7 @@
   }
 
   .prose blockquote::before {
-    content: '\201C';
+    content: "\201C";
     font-size: 2em;
     color: var(--accent);
     line-height: 0.5;
@@ -383,7 +400,7 @@
   }
 
   .prose blockquote::after {
-    content: '\201D';
+    content: "\201D";
     font-size: 2em;
     color: var(--accent);
     line-height: 0.5;
@@ -438,7 +455,10 @@
     border-radius: 0.25rem;
     cursor: pointer;
     opacity: 0;
-    transition: opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease;
   }
 
   .prose pre:hover .code-copy-btn {
@@ -492,7 +512,12 @@
   .prose hr {
     border: none;
     height: 2px;
-    background: linear-gradient(to right, transparent, var(--border), transparent);
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--border),
+      transparent
+    );
     margin: 3.5rem 0;
   }
 
@@ -578,7 +603,9 @@
     border-radius: var(--tile-radius);
     padding: var(--tile-padding);
     box-shadow: var(--shadow-neu);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    transition:
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -626,7 +653,7 @@
 
   .tile-image::before,
   .tile-image::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     z-index: 0;
@@ -688,7 +715,9 @@
     color: var(--text);
     font-weight: 500;
     cursor: pointer;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition:
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
   }
 
   .btn-neu:hover {
@@ -711,7 +740,10 @@
     font-weight: 500;
     color: var(--text-muted);
     cursor: pointer;
-    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease,
+      border-color 0.15s ease;
   }
 
   .filter-tag:hover {
@@ -739,32 +771,32 @@
     letter-spacing: 0.08em;
   }
 
-  .status-chip[data-status='reading'] {
+  .status-chip[data-status="reading"] {
     background: #fde68a;
     color: #92400e;
   }
 
-  .status-chip[data-status='read'] {
+  .status-chip[data-status="read"] {
     background: #bbf7d0;
     color: #166534;
   }
 
-  .status-chip[data-status='to-read'] {
+  .status-chip[data-status="to-read"] {
     background: #fecdd3;
     color: #9f1239;
   }
 
-  .dark .status-chip[data-status='reading'] {
+  .dark .status-chip[data-status="reading"] {
     background: #92400e;
     color: #fde68a;
   }
 
-  .dark .status-chip[data-status='read'] {
+  .dark .status-chip[data-status="read"] {
     background: #166534;
     color: #bbf7d0;
   }
 
-  .dark .status-chip[data-status='to-read'] {
+  .dark .status-chip[data-status="to-read"] {
     background: #9f1239;
     color: #fecdd3;
   }
@@ -823,11 +855,21 @@
    ANIMATIONS
    ============================================ */
 @keyframes gentle-float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-3px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
 }
 
 @keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
