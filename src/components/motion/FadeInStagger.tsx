@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import type { Variants } from "motion/react";
 import type { ReactNode } from "react";
 
 interface FadeInStaggerProps {
@@ -11,41 +12,47 @@ interface FadeInStaggerProps {
   className?: string;
 }
 
-const container = {
+const container: Variants = {
   hidden: {},
-  show: (opts: { delay: number; stagger: number }) => ({
+  show: {
     transition: {
-      staggerChildren: opts.stagger,
-      delayChildren: opts.delay,
+      staggerChildren: 0.06,
+      delayChildren: 0,
     },
-  }),
+  },
 };
 
-const item = (duration: number) => ({
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration,
+      duration: 0.4,
       ease: [0.25, 0.1, 0.25, 1],
     },
   },
-});
+};
 
 export function FadeInStagger({
   children,
   delay = 0,
   stagger = 0.06,
-  duration = 0.4,
   className,
 }: FadeInStaggerProps) {
   return (
     <motion.div
-      variants={container}
+      variants={{
+        hidden: {},
+        show: {
+          transition: {
+            staggerChildren: stagger,
+            delayChildren: delay,
+          },
+        },
+      }}
       initial="hidden"
       animate="show"
-      custom={{ delay, stagger }}
       className={className}
     >
       {children}
@@ -57,14 +64,12 @@ export function FadeInStagger({
 export function StaggerItem({
   children,
   className,
-  duration = 0.4,
 }: {
   children: ReactNode;
   className?: string;
-  duration?: number;
 }) {
   return (
-    <motion.div variants={item(duration)} className={className}>
+    <motion.div variants={itemVariants} className={className}>
       {children}
     </motion.div>
   );
