@@ -132,32 +132,32 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-weight: var(--font-weight-bold);
-  font-size: clamp(var(--font-size-4xl), 5vw, var(--font-size-6xl));
+  font-size: clamp(3.25rem, 7vw, 5rem);
   letter-spacing: var(--letter-spacing-tight);
   margin-top: 0;
   margin-bottom: var(--spacing-7);
 }
 
 h2 {
-  font-size: clamp(var(--font-size-3xl), 4vw, var(--font-size-5xl));
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
   letter-spacing: var(--letter-spacing-normal);
 }
 
 h3 {
-  font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-3xl));
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   letter-spacing: var(--letter-spacing-normal);
 }
 
 h4 {
-  font-size: var(--font-size-2xl);
+  font-size: 1.75rem;
 }
 
 h5 {
-  font-size: var(--font-size-xl);
+  font-size: 1.5rem;
 }
 
 h6 {
-  font-size: var(--font-size-base);
+  font-size: 1.125rem;
   color: var(--text-muted);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
