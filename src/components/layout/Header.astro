@@ -161,4 +161,11 @@ function navLinkClasses(href: string) {
   }
 
   document.addEventListener('astro:page-load', initMobileMenu);
+  // Ensure the menu initialises on very first load even if astro:page-load
+  // already fired before this module script executed.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileMenu);
+  } else {
+    initMobileMenu();
+  }
 </script>

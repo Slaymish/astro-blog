@@ -188,21 +188,35 @@ const readingPreview = readingItems.slice(0, 2);
       {postTiles.slice(0, 2).map(tile => <GridTile {...tile} />)}
       {projectTiles.filter(t => t.type !== 'tool').slice(0, 3).map(tile => <GridTile {...tile} />)}
 
-      <!-- Bouldering hobby tile -->
+      <!-- Walking hobby tile -->
       <div class="aspect-square px-1 pb-2">
         <div
           class="tile-image group relative h-full w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--surface)]"
-          style={`--tile-image: url('/images/tiles/bouldering.JPEG'); --tile-image-overlay: linear-gradient(180deg, rgba(10, 10, 10, 0.15), rgba(10, 10, 10, 0.55))`}
+          style={`--tile-image: url('/images/tiles/walking.JPG'); --tile-image-overlay: linear-gradient(180deg, rgba(10, 10, 10, 0.15), rgba(10, 10, 10, 0.55))`}
         >
           <div class="flex items-center justify-between pl-4 pr-2 pt-2 text-sm tracking-tight text-[var(--tile-image-text,var(--text-muted))]">
             <span class="py-1.5">Hobby</span>
           </div>
           <div class="p-5">
             <div class="font-serif font-semibold text-xl mb-2 text-[var(--tile-image-text,var(--text))] flex items-center justify-between gap-2">
-              <span>Bouldering</span>
+              <span>Walking</span>
             </div>
-            <div class="hobby-list text-sm text-[var(--tile-image-text,var(--text-muted))]">
-              <div><span class="label">Currently:</span> 4/5 Projects (Faultline levels)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gym hobby tile -->
+      <div class="aspect-square px-1 pb-2">
+        <div
+          class="tile-image group relative h-full w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--surface)]"
+          style={`--tile-image: url('/images/tiles/gym.JPG'); --tile-image-overlay: linear-gradient(180deg, rgba(10, 10, 10, 0.15), rgba(10, 10, 10, 0.55))`}
+        >
+          <div class="flex items-center justify-between pl-4 pr-2 pt-2 text-sm tracking-tight text-[var(--tile-image-text,var(--text-muted))]">
+            <span class="py-1.5">Hobby</span>
+          </div>
+          <div class="p-5">
+            <div class="font-serif font-semibold text-xl mb-2 text-[var(--tile-image-text,var(--text))] flex items-center justify-between gap-2">
+              <span>Gym</span>
             </div>
           </div>
         </div>
@@ -222,8 +236,7 @@ const readingPreview = readingItems.slice(0, 2);
               <span>Piano</span>
             </div>
             <div class="hobby-list text-sm text-[var(--tile-image-text,var(--text-muted))]">
-              <div><span class="label">Currently:</span>Merry Go Round of Life (by Joe Hisaishi)</div>
-              <div><span class="label">Next:</span> Talk to me (by Cavetown)</div>
+              <div><span class="label">Currently:</span> Talk to Me (by CaveTown)</div>
             </div>
           </div>
         </div>
