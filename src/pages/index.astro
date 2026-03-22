@@ -1,7 +1,6 @@
 ---
 import Layout from "../components/layout/Layout.astro";
 import { FadeIn } from "../components/motion/FadeIn";
-import { ScrollReveal, ScrollRevealStagger, ScrollRevealItem } from "../components/motion/ScrollReveal";
 import { fetchSanity, urlFor } from "../lib/sanity";
 
 export const prerender = false;
@@ -91,7 +90,7 @@ const displayPosts = [
   ...reports.map(r => ({ ...r, excerpt: r.description, _type: 'report' as const }))
 ].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
-const featuredProjects = projects.filter(p => !p.link).slice(0, 4);
+const featuredProjects = projects.slice(0, 4);
 const recentWriting = displayPosts.slice(0, 4);
 const readingPreview = readingItems.slice(0, 2);
 ---
@@ -150,7 +149,7 @@ const readingPreview = readingItems.slice(0, 2);
        SELECTED PROJECTS — Large showcase cards
        ============================================ -->
   <section class="home-section py-16 sm:py-24 md:py-32 max-w-[var(--content-max-width)] mx-auto">
-    <ScrollReveal client:load duration={0.6} direction="up" distance={30}>
+    <div data-reveal>
       <div class="flex items-end justify-between mb-12 sm:mb-16">
         <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
           Selected<br />projects
@@ -162,7 +161,7 @@ const readingPreview = readingItems.slice(0, 2);
           </svg>
         </a>
       </div>
-    </ScrollReveal>
+    </div>
 
     <div class="space-y-6 sm:space-y-8">
       {featuredProjects.map((project, i) => {
@@ -171,7 +170,7 @@ const readingPreview = readingItems.slice(0, 2);
           : `/projects/${project.slug}`;
         const dateStr = new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
         return (
-          <ScrollReveal client:load delay={i * 0.08} duration={0.7} distance={50}>
+          <div data-reveal data-reveal-delay={i * 80}>
             <a
               href={href}
               class="project-card group block no-underline border-b-0 text-inherit hover:text-inherit"
@@ -200,7 +199,7 @@ const readingPreview = readingItems.slice(0, 2);
                 </div>
               </article>
             </a>
-          </ScrollReveal>
+          </div>
         );
       })}
     </div>
@@ -216,12 +215,12 @@ const readingPreview = readingItems.slice(0, 2);
        STATEMENT — Bold typographic section
        ============================================ -->
   <section class="py-20 sm:py-28 md:py-36 max-w-[var(--content-max-width)] mx-auto">
-    <ScrollReveal client:load duration={0.9} distance={40}>
+    <div data-reveal>
       <blockquote class="home-statement font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.1] m-0 p-0 border-0 bg-transparent max-w-[56rem]" style="font-style: normal;">
         I build tools and write about what I learn — sharing knowledge to help others navigate the same challenges.
       </blockquote>
-    </ScrollReveal>
-    <ScrollReveal client:load delay={0.2} duration={0.6} distance={20}>
+    </div>
+    <div data-reveal data-reveal-delay="200">
       <div class="mt-8 sm:mt-12">
         <a href="/writing" class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline border-b-0 transition-all duration-300 hover:gap-4">
           Read my writing
@@ -230,14 +229,14 @@ const readingPreview = readingItems.slice(0, 2);
           </svg>
         </a>
       </div>
-    </ScrollReveal>
+    </div>
   </section>
 
   <!-- ============================================
        RECENT WRITING — Scroll-revealed list
        ============================================ -->
   <section class="home-section py-16 sm:py-24 md:py-32 border-t border-[var(--border)] max-w-[var(--content-max-width)] mx-auto">
-    <ScrollReveal client:load duration={0.6} direction="up" distance={30}>
+    <div data-reveal>
       <div class="flex items-end justify-between mb-12 sm:mb-16">
         <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
           Recent<br />writing
@@ -249,14 +248,14 @@ const readingPreview = readingItems.slice(0, 2);
           </svg>
         </a>
       </div>
-    </ScrollReveal>
+    </div>
 
     <div class="divide-y divide-[var(--border)]">
       {recentWriting.map((post, i) => {
         const dateStr = new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
         const prefix = post._type === 'report' ? 'reports' : 'posts';
         return (
-          <ScrollReveal client:load delay={i * 0.08} duration={0.6} distance={30}>
+          <div data-reveal data-reveal-delay={i * 80}>
             <a
               href={`/${prefix}/${post.slug}`}
               class="writing-row group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8 py-6 sm:py-8 no-underline border-b-0 text-inherit hover:text-inherit transition-all duration-300"
@@ -276,7 +275,7 @@ const readingPreview = readingItems.slice(0, 2);
                 </svg>
               </div>
             </a>
-          </ScrollReveal>
+          </div>
         );
       })}
     </div>
@@ -293,7 +292,7 @@ const readingPreview = readingItems.slice(0, 2);
        ============================================ -->
   {readingPreview.length > 0 && (
     <section class="py-16 sm:py-24 border-t border-[var(--border)] max-w-[var(--content-max-width)] mx-auto">
-      <ScrollReveal client:load duration={0.6} distance={30}>
+      <div data-reveal>
         <div class="flex items-end justify-between mb-10 sm:mb-14">
           <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
             Currently<br />reading
@@ -305,12 +304,12 @@ const readingPreview = readingItems.slice(0, 2);
             </svg>
           </a>
         </div>
-      </ScrollReveal>
+      </div>
 
-      <ScrollRevealStagger client:load stagger={0.12}>
+      <div data-reveal>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {readingPreview.map((book) => (
-            <ScrollRevealItem client:load>
+          {readingPreview.map((book, i) => (
+            <div data-reveal data-reveal-delay={i * 120}>
               <div class="group flex gap-6 p-6 rounded-2xl bg-[var(--surface)] transition-all duration-300 hover:bg-[var(--surface-2)] hover:shadow-md">
                 <div class="flex-shrink-0 w-20 sm:w-24">
                   {book.coverImage ? (
@@ -343,10 +342,10 @@ const readingPreview = readingItems.slice(0, 2);
                   )}
                 </div>
               </div>
-            </ScrollRevealItem>
+            </div>
           ))}
         </div>
-      </ScrollRevealStagger>
+      </div>
     </section>
   )}
 
@@ -354,7 +353,7 @@ const readingPreview = readingItems.slice(0, 2);
        STAGGERED CTA CARDS — Layered, overlapping
        ============================================ -->
   <section class="home-cta-section relative py-20 sm:py-28 md:py-36 overflow-hidden">
-    <ScrollReveal client:load duration={0.8} distance={50}>
+    <div data-reveal>
       <div class="relative max-w-[56rem] mx-auto">
 
         <!-- Background staggered cards (decorative layers) -->
@@ -390,7 +389,7 @@ const readingPreview = readingItems.slice(0, 2);
         </div>
 
       </div>
-    </ScrollReveal>
+    </div>
   </section>
 
 </Layout>
@@ -477,8 +476,61 @@ const readingPreview = readingItems.slice(0, 2);
     transform: translateY(-2px);
   }
 
-  /* Smooth scroll for the whole page */
-  :global(html) {
-    scroll-behavior: smooth;
+  /* ── Scroll Reveal (CSS-only initial state) ── */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  [data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 </style>
+
+<script>
+  function initScrollReveal() {
+    const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
+    if (!els.length) return;
+
+    // Respect reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach(el => el.classList.add('revealed'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            const delay = parseInt(el.dataset.revealDelay || '0', 10);
+            if (delay > 0) {
+              setTimeout(() => el.classList.add('revealed'), delay);
+            } else {
+              el.classList.add('revealed');
+            }
+            observer.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    els.forEach((el) => observer.observe(el));
+  }
+
+  // Run on initial load and after Astro view transitions
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>

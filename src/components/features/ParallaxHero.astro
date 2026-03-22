@@ -1,0 +1,351 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  /** Category label shown above the title (e.g. "Project", "Article") */
+  label?: string;
+  /** Date string to display */
+  date?: string;
+  /** Reading time text */
+  readingTime?: string;
+  /** Technology tags */
+  tags?: string[];
+  /** Tag links with slug (for clickable tags) */
+  tagLinks?: Array<{ name: string; slug: string }>;
+  /** Accent color override for the decorative elements */
+  accentColor?: string;
+  /** Transition name for the title (for Astro view transitions) */
+  titleTransitionName?: string;
+  /** Back link */
+  backHref?: string;
+  backLabel?: string;
+}
+
+const {
+  title,
+  subtitle,
+  label,
+  date,
+  readingTime,
+  tags = [],
+  tagLinks = [],
+  accentColor,
+  titleTransitionName,
+  backHref,
+  backLabel,
+} = Astro.props;
+
+const formattedDate = date
+  ? new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  : null;
+---
+
+<section class="parallax-hero" data-parallax-hero>
+  <!-- Decorative background shapes -->
+  <div class="parallax-hero__shapes" aria-hidden="true">
+    <div class="parallax-hero__shape parallax-hero__shape--1" data-parallax-speed="0.3"></div>
+    <div class="parallax-hero__shape parallax-hero__shape--2" data-parallax-speed="0.15"></div>
+    <div class="parallax-hero__shape parallax-hero__shape--3" data-parallax-speed="0.45"></div>
+  </div>
+
+  <div class="parallax-hero__content">
+    {backHref && (
+      <a href={backHref} class="parallax-hero__back" data-reveal>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+          <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd"/>
+        </svg>
+        {backLabel || 'Back'}
+      </a>
+    )}
+
+    {label && (
+      <span class="parallax-hero__label" data-reveal>{label}</span>
+    )}
+
+    <h1
+      class="parallax-hero__title"
+      data-reveal
+      transition:name={titleTransitionName}
+    >
+      {title}
+    </h1>
+
+    {subtitle && (
+      <p class="parallax-hero__subtitle" data-reveal>{subtitle}</p>
+    )}
+
+    <div class="parallax-hero__meta" data-reveal>
+      {formattedDate && (
+        <time datetime={date} class="parallax-hero__date">{formattedDate}</time>
+      )}
+      {readingTime && (
+        <>
+          <span class="parallax-hero__dot">·</span>
+          <span>{readingTime}</span>
+        </>
+      )}
+    </div>
+
+    {(tagLinks.length > 0 || tags.length > 0) && (
+      <div class="parallax-hero__tags" data-reveal>
+        {tagLinks.length > 0 ? (
+          tagLinks.map(tag => (
+            <a href={`/tags/${tag.slug}`} class="parallax-hero__tag">{tag.name}</a>
+          ))
+        ) : (
+          tags.map(tag => (
+            <span class="parallax-hero__tag">{tag}</span>
+          ))
+        )}
+      </div>
+    )}
+  </div>
+
+  <!-- Bottom edge fade -->
+  <div class="parallax-hero__fade" aria-hidden="true"></div>
+</section>
+
+<style define:vars={{ accentColor: accentColor || 'var(--accent)' }}>
+  .parallax-hero {
+    position: relative;
+    min-height: 70vh;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 1.5rem 4rem;
+    overflow: hidden;
+    margin: -2rem -1.5rem 0;
+  }
+
+  @media (min-width: 640px) {
+    .parallax-hero {
+      padding: 0 2rem 5rem;
+      margin: -3rem -2rem 0;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .parallax-hero {
+      min-height: 75vh;
+      padding: 0 2.5rem 6rem;
+      margin: -4rem -2.5rem 0;
+    }
+  }
+
+  /* ── Decorative shapes ── */
+  .parallax-hero__shapes {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .parallax-hero__shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.08;
+    background: var(--accentColor);
+    transition: transform 0.1s linear;
+  }
+
+  .parallax-hero__shape--1 {
+    width: clamp(200px, 35vw, 500px);
+    height: clamp(200px, 35vw, 500px);
+    top: -10%;
+    right: -5%;
+  }
+
+  .parallax-hero__shape--2 {
+    width: clamp(120px, 20vw, 300px);
+    height: clamp(120px, 20vw, 300px);
+    bottom: 10%;
+    left: -3%;
+    opacity: 0.05;
+  }
+
+  .parallax-hero__shape--3 {
+    width: clamp(80px, 12vw, 180px);
+    height: clamp(80px, 12vw, 180px);
+    top: 30%;
+    right: 20%;
+    opacity: 0.06;
+  }
+
+  :global(.dark) .parallax-hero__shape {
+    opacity: 0.04;
+  }
+
+  /* ── Content ── */
+  .parallax-hero__content {
+    position: relative;
+    z-index: 1;
+    max-width: var(--content-max-width);
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .parallax-hero__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2rem;
+    transition: color 0.2s ease, gap 0.2s ease;
+    border-bottom: none;
+  }
+
+  .parallax-hero__back:hover {
+    color: var(--accentColor);
+    gap: 0.75rem;
+  }
+
+  .parallax-hero__back::after {
+    display: none !important;
+  }
+
+  .parallax-hero__label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accentColor);
+    margin-bottom: 1.5rem;
+  }
+
+  .parallax-hero__title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin: 0 0 1.5rem;
+    max-width: 56rem;
+  }
+
+  .parallax-hero__subtitle {
+    font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 42rem;
+    margin: 0 0 2rem;
+  }
+
+  .parallax-hero__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .parallax-hero__dot {
+    opacity: 0.4;
+  }
+
+  .parallax-hero__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .parallax-hero__tag {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    padding: 0.375rem 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+  }
+
+  a.parallax-hero__tag:hover {
+    border-color: var(--accentColor);
+    color: var(--accentColor);
+  }
+
+  a.parallax-hero__tag::after {
+    display: none !important;
+  }
+
+  /* ── Bottom fade ── */
+  .parallax-hero__fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── data-reveal within hero ── */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function initParallaxHero() {
+    const hero = document.querySelector('[data-parallax-hero]');
+    if (!hero) return;
+
+    // Reveal elements with staggered delay
+    const reveals = hero.querySelectorAll('[data-reveal]');
+    reveals.forEach((el, i) => {
+      setTimeout(() => el.classList.add('revealed'), 150 + i * 100);
+    });
+
+    // Parallax shapes on scroll
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const shapes = hero.querySelectorAll<HTMLElement>('[data-parallax-speed]');
+    let ticking = false;
+
+    function updateParallax() {
+      const scrollY = window.scrollY;
+      const heroHeight = (hero as HTMLElement).offsetHeight;
+      if (scrollY > heroHeight * 1.5) return; // Stop calculating past hero
+
+      shapes.forEach((shape) => {
+        const speed = parseFloat(shape.dataset.parallaxSpeed || '0.2');
+        shape.style.transform = `translateY(${scrollY * speed}px)`;
+      });
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
+  document.addEventListener('astro:page-load', initParallaxHero);
+</script>

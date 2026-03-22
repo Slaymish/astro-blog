@@ -1,9 +1,8 @@
 ---
 import Layout from "../../components/layout/Layout.astro";
-import Breadcrumb from "../../components/features/Breadcrumb.astro";
+import ParallaxHero from "../../components/features/ParallaxHero.astro";
 import TableOfContents from "../../components/features/TableOfContents.astro";
 import RelatedPosts from "../../components/features/RelatedPosts.astro";
-import { FadeIn } from "../../components/motion/FadeIn";
 import { calculateReadingTime } from "../../utils/reading-time";
 import { createSlug } from "../../utils/slug";
 import { fetchSanity } from "../../lib/sanity";
@@ -122,62 +121,30 @@ const postUpdatedLabel = showUpdated
   modifiedTime={modifiedTime}
   tags={tagLinks.map(tag => tag.name)}
   canonicalURL={absoluteUrl(`/posts/${post.slug}`, SITE_URL)}
+  fullWidth
 >
+  <ParallaxHero
+    title={postTitle}
+    label="Article"
+    date={postDate}
+    readingTime={readingTime.text}
+    tagLinks={tagLinks}
+    titleTransitionName={`title-posts-${post.slug}`}
+    backHref="/writing"
+    backLabel="Writing"
+  />
+
+  <!-- Hidden schema.org metadata -->
+  <meta itemprop="headline" content={postTitle} />
+  <meta itemprop="datePublished" content={postDateISO} />
+  {showUpdated && <meta itemprop="dateModified" content={postUpdatedISO} />}
+  <meta itemprop="timeRequired" content={`PT${readingTime.minutes}M`} />
+
   <div class="post-layout">
     <article itemscope itemtype="http://schema.org/BlogPosting">
-      <FadeIn client:load as="header" className="post-header">
-        <Breadcrumb items={[
-          { name: "Writing", url: "/writing" },
-          { name: postTitle, url: `/posts/${post.slug}` }
-        ]} />
-
-        <h1 itemprop="headline" transition:name={`title-posts-${post.slug}`}>{postTitle}</h1>
-
-        <div class="post-meta">
-          <time datetime={postDateISO} itemprop="datePublished">
-            {new Date(postDate).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric"
-            })}
-          </time>
-
-          <span>·</span>
-
-          <time itemprop="timeRequired" datetime={`PT${readingTime.minutes}M`} title={`${readingTime.words} words`}>
-            {readingTime.text}
-          </time>
-
-          {showUpdated && (
-            <>
-              <span>·</span>
-              <span>
-                Updated <time datetime={postUpdatedISO} itemprop="dateModified">
-                  {postUpdatedLabel}
-                </time>
-              </span>
-            </>
-          )}
-        </div>
-
-        {tagLinks.length > 0 && (
-          <div class="post-tags" role="list" aria-label="Article tags">
-            {tagLinks.map((tag) => (
-              <a
-                role="listitem"
-                href={`/tags/${tag.slug}`}
-                class="tag-link"
-                itemprop="keywords"
-              >
-                {tag.name}
-              </a>
-            ))}
-          </div>
-        )}
-      </FadeIn>
 
       {relatedProject && (
-        <div class="project-callout">
+        <div class="project-callout" data-reveal>
           <span class="project-callout-label">Project</span>
           <span class="project-callout-title">{relatedProject.title}</span>
           <div class="project-callout-links">
@@ -192,13 +159,13 @@ const postUpdatedLabel = showUpdated
       )}
 
       {interactiveSplit ? (
-        <div class="prose" itemprop="articleBody">
+        <div class="prose" itemprop="articleBody" data-reveal>
           <Fragment set:html={interactiveSplit[0]} />
           <InteractiveElement componentId={post.interactiveElement!} />
           <Fragment set:html={interactiveSplit[1]} />
         </div>
       ) : (
-        <div class="prose" itemprop="articleBody" set:html={htmlContent}></div>
+        <div class="prose" itemprop="articleBody" set:html={htmlContent} data-reveal></div>
       )}
 
       <RelatedPosts
@@ -207,7 +174,7 @@ const postUpdatedLabel = showUpdated
       />
 
       <!-- Share & Subscribe -->
-      <div class="post-share">
+      <div class="post-share" data-reveal>
         <div class="share-links">
           <span class="text-sm font-medium text-[var(--text-muted)]">Share:</span>
           <a
@@ -229,27 +196,30 @@ const postUpdatedLabel = showUpdated
             LinkedIn
           </a>
         </div>
+
+        <div class="subscribe-cta">
+          <p class="text-[var(--text)] font-semibold mb-1">Enjoyed this post?</p>
+          <p class="text-sm text-[var(--text-muted)] mb-3">
+            Subscribe via RSS to get notified when I publish new writing.
+          </p>
+          <a href="/rss.xml" class="subscribe-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 11a9 9 0 0 1 9 9"/>
+              <path d="M4 4a16 16 0 0 1 16 16"/>
+              <circle cx="5" cy="19" r="1"/>
+            </svg>
+            Subscribe via RSS
+          </a>
+        </div>
       </div>
 
-      <div class="subscribe-cta">
-        <p class="text-[var(--text)] font-semibold mb-1">Enjoyed this post?</p>
-        <p class="text-sm text-[var(--text-muted)] mb-3">
-          Subscribe via RSS to get notified when I publish new writing.
-        </p>
-        <a href="/rss.xml" class="subscribe-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 11a9 9 0 0 1 9 9"/>
-            <path d="M4 4a16 16 0 0 1 16 16"/>
-            <circle cx="5" cy="19" r="1"/>
-          </svg>
-          Subscribe via RSS
-        </a>
-      </div>
-
-      <footer class="post-footer">
+      <footer class="post-footer" data-reveal>
         <nav aria-label="Post navigation">
           <a href="/writing" class="back-link">
-            ← Back to writing
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+              <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd"/>
+            </svg>
+            Back to writing
           </a>
         </nav>
       </footer>
@@ -266,6 +236,13 @@ const postUpdatedLabel = showUpdated
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 2rem 1.5rem 0;
+  }
+
+  @media (min-width: 640px) {
+    .post-layout { padding: 3rem 2rem 0; }
   }
 
   @media (min-width: 1024px) {
@@ -277,8 +254,8 @@ const postUpdatedLabel = showUpdated
 
   article {
     max-width: var(--reading-width);
-    min-width: 0; /* Prevent grid blowout from wide content */
-    overflow-x: hidden; /* Contain any overflowing child elements */
+    min-width: 0;
+    overflow-x: hidden;
   }
 
   @media (min-width: 1024px) {
@@ -287,55 +264,8 @@ const postUpdatedLabel = showUpdated
     }
   }
 
-  .post-header {
-    margin-bottom: 2rem;
-  }
-
-  .post-header h1 {
-    font-family: var(--font-heading);
-    font-size: clamp(2rem, 5vw, 2.5rem);
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-    color: var(--text);
-    letter-spacing: -0.025em;
-  }
-
-  .post-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-  }
-
-  .post-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .tag-link {
-    background-color: var(--surface-2);
-    color: var(--text-muted);
-    padding: 0.375rem 0.75rem;
-    border-radius: 0.25rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.15s ease;
-    border: 1px solid transparent;
-  }
-
-  .tag-link:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .tag-link::after {
-    display: none;
+  .prose {
+    max-width: 65ch;
   }
 
   .post-sidebar {
@@ -353,35 +283,10 @@ const postUpdatedLabel = showUpdated
     }
   }
 
-  .post-footer {
+  /* ── Share & Subscribe ── */
+  .post-share {
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .back-link {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.15s ease;
-  }
-
-  .back-link:hover {
-    color: var(--accent);
-  }
-
-  .back-link::after {
-    display: none;
-  }
-
-  /* Ensure prose doesn't exceed reading line length */
-  .prose {
-    max-width: 65ch;
-  }
-
-  .post-share {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
     border-top: 1px solid var(--border);
   }
 
@@ -397,10 +302,10 @@ const postUpdatedLabel = showUpdated
     text-decoration: none;
     font-size: 0.875rem;
     font-weight: 500;
-    padding: 0.375rem 0.75rem;
+    padding: 0.375rem 0.875rem;
     border: 1px solid var(--border);
-    border-radius: 0.25rem;
-    transition: all 0.15s ease;
+    border-radius: 9999px;
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .share-link:hover {
@@ -409,12 +314,12 @@ const postUpdatedLabel = showUpdated
   }
 
   .share-link::after {
-    display: none;
+    display: none !important;
   }
 
   .subscribe-cta {
     margin-top: 2rem;
-    padding: 1.5rem;
+    padding: 1.5rem 2rem;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
@@ -436,29 +341,61 @@ const postUpdatedLabel = showUpdated
   }
 
   .subscribe-link::after {
-    display: none;
+    display: none !important;
   }
 
+  /* ── Footer ── */
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    transition: color 0.2s ease, gap 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: var(--accent);
+    gap: 0.75rem;
+  }
+
+  .back-link::after {
+    display: none !important;
+  }
+
+  /* ── Project callout ── */
   .project-callout {
     display: flex;
     align-items: center;
     gap: 0.5rem 1rem;
-    padding: 0.875rem 1.25rem;
-    margin-top: 1.5rem;
+    padding: 1rem 1.5rem;
     margin-bottom: 2rem;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     font-size: 0.875rem;
     overflow-x: auto;
     white-space: nowrap;
+    transition: border-color 0.2s ease;
+  }
+
+  .project-callout:hover {
+    border-color: var(--accent);
   }
 
   .project-callout-label {
     font-weight: 600;
     color: var(--accent);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     font-size: 0.75rem;
   }
 
@@ -486,6 +423,55 @@ const postUpdatedLabel = showUpdated
   }
 
   .project-callout-links a::after {
-    display: none;
+    display: none !important;
+  }
+
+  /* ── data-reveal ── */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 </style>
+
+<script>
+  function initPostReveal() {
+    const els = document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-parallax-hero] [data-reveal])');
+    if (!els.length) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach(el => el.classList.add('revealed'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
+    );
+
+    els.forEach(el => observer.observe(el));
+  }
+
+  document.addEventListener('astro:page-load', initPostReveal);
+</script>
