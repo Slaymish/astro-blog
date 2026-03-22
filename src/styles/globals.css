@@ -192,11 +192,9 @@
     border-bottom: none !important;
     color: var(--text);
     opacity: 1 !important;
-    transition: transform 0.2s ease;
   }
 
   a.nav-logo:hover {
-    transform: scale(1.15);
     text-decoration: none !important;
     border-bottom: none !important;
     opacity: 1 !important;
