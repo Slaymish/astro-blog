@@ -149,7 +149,7 @@ const readingPreview = readingItems.slice(0, 2);
        SELECTED PROJECTS — Large showcase cards
        ============================================ -->
   <section class="home-section py-16 sm:py-24 md:py-32 max-w-[var(--content-max-width)] mx-auto">
-    <div data-reveal>
+    <div class="section-animate-in">
       <div class="flex items-end justify-between mb-12 sm:mb-16">
         <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
           Selected<br />projects
@@ -214,20 +214,16 @@ const readingPreview = readingItems.slice(0, 2);
        STATEMENT — Bold typographic section
        ============================================ -->
   <section class="py-20 sm:py-28 md:py-36 max-w-[var(--content-max-width)] mx-auto">
-    <div data-reveal>
-      <blockquote class="home-statement font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.1] m-0 p-0 border-0 bg-transparent max-w-[56rem]" style="font-style: normal;">
-        I build tools and write about what I learn — sharing knowledge to help others navigate the same challenges.
-      </blockquote>
-    </div>
-    <div data-reveal data-reveal-delay="200">
-      <div class="mt-8 sm:mt-12">
-        <a href="/writing" class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline border-b-0 transition-all duration-300 hover:gap-4">
-          Read my writing
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
-            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-          </svg>
-        </a>
-      </div>
+    <blockquote class="home-statement section-animate-in font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.1] m-0 p-0 border-0 bg-transparent max-w-[56rem]" style="font-style: normal;">
+      I build tools and write about what I learn — sharing knowledge to help others navigate the same challenges.
+    </blockquote>
+    <div class="mt-8 sm:mt-12 section-animate-in" style="animation-delay: 100ms">
+      <a href="/writing" class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline border-b-0 transition-all duration-300 hover:gap-4">
+        Read my writing
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
+          <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
+        </svg>
+      </a>
     </div>
   </section>
 
@@ -235,7 +231,7 @@ const readingPreview = readingItems.slice(0, 2);
        RECENT WRITING — Scroll-revealed list
        ============================================ -->
   <section class="home-section py-16 sm:py-24 md:py-32 border-t border-[var(--border)] max-w-[var(--content-max-width)] mx-auto">
-    <div data-reveal>
+    <div class="section-animate-in">
       <div class="flex items-end justify-between mb-12 sm:mb-16">
         <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
           Recent<br />writing
@@ -290,7 +286,7 @@ const readingPreview = readingItems.slice(0, 2);
        ============================================ -->
   {readingPreview.length > 0 && (
     <section class="py-16 sm:py-24 border-t border-[var(--border)] max-w-[var(--content-max-width)] mx-auto">
-      <div data-reveal>
+      <div class="section-animate-in">
         <div class="flex items-end justify-between mb-10 sm:mb-14">
           <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
             Currently<br />reading
@@ -304,10 +300,9 @@ const readingPreview = readingItems.slice(0, 2);
         </div>
       </div>
 
-      <div data-reveal>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {readingPreview.map((book, i) => (
-            <div data-reveal data-reveal-delay={i * 120}>
+            <div class="card-animate-in" style={`animation-delay: ${i * 120}ms`}>
               <div class="group flex gap-6 p-6 rounded-2xl bg-[var(--surface)] transition-all duration-300 hover:bg-[var(--surface-2)] hover:shadow-md">
                 <div class="flex-shrink-0 w-20 sm:w-24">
                   {book.coverImage ? (
@@ -343,7 +338,6 @@ const readingPreview = readingItems.slice(0, 2);
             </div>
           ))}
         </div>
-      </div>
     </section>
   )}
 
@@ -351,8 +345,7 @@ const readingPreview = readingItems.slice(0, 2);
        STAGGERED CTA CARDS — Layered, overlapping
        ============================================ -->
   <section class="home-cta-section relative py-20 sm:py-28 md:py-36 overflow-hidden">
-    <div data-reveal>
-      <div class="relative max-w-[56rem] mx-auto">
+    <div class="relative max-w-[56rem] mx-auto section-animate-in">
 
         <!-- Background staggered cards (decorative layers) -->
         <div class="home-cta-stack relative">
@@ -387,7 +380,6 @@ const readingPreview = readingItems.slice(0, 2);
         </div>
 
       </div>
-    </div>
   </section>
 
 </Layout>
@@ -514,7 +506,8 @@ const readingPreview = readingItems.slice(0, 2);
 
   /* ── Content item entrance animations (JS-independent) ── */
   .card-animate-in,
-  .row-animate-in {
+  .row-animate-in,
+  .section-animate-in {
     animation: content-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
@@ -525,89 +518,10 @@ const readingPreview = readingItems.slice(0, 2);
 
   @media (prefers-reduced-motion: reduce) {
     .card-animate-in,
-    .row-animate-in {
+    .row-animate-in,
+    .section-animate-in {
       animation: none;
-    }
-  }
-
-  /* ── Scroll Reveal (CSS-only initial state) ── */
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
-  }
-
-  [data-reveal].revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-      opacity: 1;
-      transform: none;
-      transition: none;
     }
   }
 </style>
 
-<script>
-  function initScrollReveal() {
-    const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
-    if (!els.length) return;
-
-    // Respect reduced motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      els.forEach(el => el.classList.add('revealed'));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement;
-            const delay = parseInt(el.dataset.revealDelay || '0', 10);
-            if (delay > 0) {
-              setTimeout(() => el.classList.add('revealed'), delay);
-            } else {
-              el.classList.add('revealed');
-            }
-            observer.unobserve(el);
-          }
-        });
-      },
-      { threshold: 0.05, rootMargin: '0px 0px 0px 0px' }
-    );
-
-    els.forEach((el) => {
-      // If already in the viewport on page load, reveal immediately
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0) {
-        const delay = parseInt(el.dataset.revealDelay || '0', 10);
-        if (delay > 0) {
-          setTimeout(() => el.classList.add('revealed'), delay);
-        } else {
-          el.classList.add('revealed');
-        }
-      } else {
-        observer.observe(el);
-      }
-    });
-  }
-
-  function revealFallback() {
-    document.querySelectorAll<HTMLElement>('[data-reveal]:not(.revealed)').forEach(el => {
-      el.classList.add('revealed');
-    });
-  }
-
-  // Run on initial load and after Astro view transitions
-  document.addEventListener('astro:page-load', () => {
-    initScrollReveal();
-    // Safety net: force-reveal anything still hidden after 1.5s
-    setTimeout(revealFallback, 1500);
-  });
-</script>
