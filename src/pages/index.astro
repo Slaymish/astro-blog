@@ -1,6 +1,5 @@
 ---
 import Layout from "../components/layout/Layout.astro";
-import { FadeIn } from "../components/motion/FadeIn";
 import { fetchSanity, urlFor } from "../lib/sanity";
 
 export const prerender = false;
@@ -108,39 +107,35 @@ console.log('Reports:', reports.length);
   <section class="home-hero relative flex flex-col justify-center items-center min-h-[90vh] -mt-8 sm:-mt-12 md:-mt-16 mb-0 overflow-hidden">
     <div class="w-full max-w-[90rem] mx-auto px-4 sm:px-8">
       <!-- Invisible reference: the nav logo scales up to align with this exact position -->
-      <div class="flex justify-center mb-8 sm:mb-12">
+      <div class="flex justify-center mb-4 sm:mb-12">
         <div class="home-hero-logo-ref" style="width:180px;height:180px;opacity:0;" aria-hidden="true"></div>
       </div>
 
-      <FadeIn client:load delay={0.15} duration={1}>
-        <h1 class="home-hero-heading font-serif font-bold text-[var(--text)] leading-[0.95] tracking-[-0.04em] mb-8 sm:mb-12">
-          Software engineer.<br class="hidden sm:block" />
-          Wellington, NZ.<br class="hidden sm:block" />
-          <span class="text-[var(--text-muted)]">AI infrastructure. Self-hosted tools. Full-stack.</span>
-        </h1>
-      </FadeIn>
-      <FadeIn client:load delay={0.6} duration={0.7}>
-        <div class="flex flex-wrap gap-4 sm:gap-6">
-          <a
-            href="/projects"
-            class="cta-primary group inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline border-b-0 py-3 px-6 rounded-full border border-[var(--accent)] transition-all duration-300 hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
-          >
-            View work
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">
-              <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-            </svg>
-          </a>
-          <a
-            href="/about"
-            class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--text-muted)] no-underline border-b-0 py-3 px-6 transition-colors duration-300 hover:text-[var(--text)]"
-          >
-            About me
-          </a>
-        </div>
-      </FadeIn>
+      <h1 class="home-hero-heading font-serif font-bold text-[var(--text)] leading-[0.95] tracking-[-0.04em] mb-4 sm:mb-12">
+        Software engineer.<br class="hidden sm:block" />
+        Wellington, NZ.<br class="hidden sm:block" />
+        <span class="text-[var(--text-muted)]">AI infrastructure. Self-hosted tools. Full-stack.</span>
+      </h1>
+      <div class="flex flex-wrap gap-3 sm:gap-6">
+        <a
+          href="/projects"
+          class="cta-primary group inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline py-3 px-6 rounded-full border border-[var(--accent)] transition-all duration-300 hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)] hover:opacity-100"
+        >
+          View work
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">
+            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
+          </svg>
+        </a>
+        <a
+          href="/about"
+          class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--text-muted)] no-underline border-b-0 py-3 px-6 transition-colors duration-300 hover:text-[var(--text)]"
+        >
+          About me
+        </a>
+      </div>
     </div>
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--text-muted)] opacity-60">
+    <!-- Scroll indicator — hidden on mobile to avoid overlapping CTAs -->
+    <div class="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-[var(--text-muted)] opacity-60">
       <span class="text-xs uppercase tracking-[0.15em]">Scroll</span>
       <div class="w-px h-8 bg-[var(--text-muted)] animate-pulse"></div>
     </div>
@@ -413,7 +408,7 @@ console.log('Reports:', reports.length);
 
   /* Hero heading — massive responsive type */
   .home-hero-heading {
-    font-size: clamp(3.5rem, 12vw, 8rem);
+    font-size: clamp(2rem, 10vw, 8rem);
   }
 
   /* Section headings — large but not hero-sized */
