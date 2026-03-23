@@ -2,7 +2,6 @@
 import Layout from "../components/layout/Layout.astro";
 import { FadeIn } from "../components/motion/FadeIn";
 import { fetchSanity, urlFor } from "../lib/sanity";
-import Logo from "../components/ui/Logo.astro";
 
 export const prerender = false;
 
@@ -102,15 +101,7 @@ const readingPreview = readingItems.slice(0, 2);
        HERO — Full viewport, massive bold text
        ============================================ -->
   <section class="home-hero relative flex flex-col justify-center items-center min-h-[90vh] -mt-8 sm:-mt-12 md:-mt-16 mb-0 overflow-hidden">
-    <div class="w-full max-w-[90rem] mx-auto px-4 sm:px-8">
-      <FadeIn client:load delay={0.1} duration={1}>
-        <div class="flex justify-center mb-8 sm:mb-12">
-          <div class="home-hero-logo-container">
-            <Logo size={120} class="home-hero-logo" />
-          </div>
-        </div>
-      </FadeIn>
-      
+    <div class="w-full max-w-[90rem] mx-auto px-4 sm:px-8 pb-24 sm:pb-0">
       <FadeIn client:load delay={0.15} duration={1}>
         <h1 class="home-hero-heading font-serif font-bold text-[var(--text)] leading-[1.1] sm:leading-[0.95] tracking-[-0.04em] mb-8 sm:mb-12">
           Software engineer.<br class="hidden sm:block" />
@@ -119,10 +110,10 @@ const readingPreview = readingItems.slice(0, 2);
         </h1>
       </FadeIn>
       <FadeIn client:load delay={0.6} duration={0.7}>
-        <div class="flex flex-wrap gap-4 sm:gap-6">
+        <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-8 sm:mt-0">
           <a
             href="/projects"
-            class="cta-primary group inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline border-b-0 py-3 px-6 rounded-full border border-[var(--accent)] transition-all duration-300 hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
+            class="cta-primary group inline-flex items-center justify-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline border-b-0 py-4 sm:py-3 px-6 rounded-full border border-[var(--accent)] transition-all duration-300 hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)]"
           >
             View work
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">
@@ -131,7 +122,7 @@ const readingPreview = readingItems.slice(0, 2);
           </a>
           <a
             href="/about"
-            class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--text-muted)] no-underline border-b-0 py-3 px-6 transition-colors duration-300 hover:text-[var(--text)]"
+            class="inline-flex items-center justify-center gap-3 text-base sm:text-lg font-medium text-[var(--text-muted)] no-underline border-b-0 py-4 sm:py-3 px-6 rounded-full border border-transparent transition-colors duration-300 hover:text-[var(--text)]"
           >
             About me
           </a>
@@ -403,44 +394,6 @@ const readingPreview = readingItems.slice(0, 2);
   /* Hero heading — massive responsive type */
   .home-hero-heading {
     font-size: clamp(3.5rem, 12vw, 8rem);
-  }
-
-  /* Prominent hero logo styling */
-  .home-hero-logo-container {
-    position: relative;
-    display: inline-block;
-  }
-
-  .home-hero-logo {
-    color: var(--accent) !important;
-    filter: drop-shadow(0 0 30px var(--accent));
-    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .home-hero-logo-container:hover .home-hero-logo {
-    transform: scale(1.1) rotate(5deg);
-    filter: drop-shadow(0 0 40px var(--accent)) brightness(1.2);
-  }
-
-  /* Enhanced glitch effect for hero logo */
-  .home-hero-logo-container:hover .logo-glitch {
-    opacity: 0.8 !important;
-  }
-
-  /* Logo pulse animation */
-  @keyframes logo-pulse {
-    0%, 100% { 
-      transform: scale(1);
-      filter: drop-shadow(0 0 30px var(--accent));
-    }
-    50% { 
-      transform: scale(1.05);
-      filter: drop-shadow(0 0 35px var(--accent));
-    }
-  }
-
-  .home-hero-logo {
-    animation: logo-pulse 4s ease-in-out infinite;
   }
 
   /* Section headings — large but not hero-sized */
