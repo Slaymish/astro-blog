@@ -1,6 +1,6 @@
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "pnpm run build"
 
 [build.environment]
   SANITY_PROJECT_ID = "qnuj1c4o"

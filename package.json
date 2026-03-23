@@ -44,7 +44,7 @@
     "unified": "^11.0.5"
   },
   "devDependencies": {
-    "knip": "^6.0.1",
+    "knip": "^6.0.2",
     "tailwindcss": "^4.0.1",
     "tsx": "^4.20.3"
   }
