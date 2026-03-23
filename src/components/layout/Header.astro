@@ -143,9 +143,9 @@ function navLinkClasses(href: string) {
   /* Logo anchor: allow transform without layout shift */
   #nav-logo-link {
     transform-origin: center center;
-    will-change: transform;
-    /* Color/filter transition — transform is driven by JS, no CSS transition on it */
-    transition: color 0.5s ease, filter 0.5s ease;
+    /* No will-change: transform — it causes the browser to rasterize the SVG
+       at native 36px and upscale the bitmap, making it blurry when large */
+    transition: color 0.5s ease;
   }
 
   /* Logo accent color when in hero mode */
@@ -286,7 +286,21 @@ function navLinkClasses(href: string) {
     measure();
     updateLogo();
 
-    window.addEventListener('scroll', updateLogo, { passive: true, signal });
+    let scrollRaf: ReturnType<typeof requestAnimationFrame> | null = null;
+    let scrollIdleTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function onScroll() {
+      // Enable will-change during scroll for smooth GPU compositing
+      navLogoLink!.style.willChange = 'transform';
+      updateLogo();
+      // Remove will-change shortly after scrolling stops so SVG re-rasterises at full quality
+      if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
+      scrollIdleTimer = setTimeout(() => {
+        navLogoLink!.style.willChange = 'auto';
+      }, 150);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true, signal });
     window.addEventListener('resize', () => { measure(); updateLogo(); }, { passive: true, signal });
   }
 
