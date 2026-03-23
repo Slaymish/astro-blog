@@ -170,11 +170,11 @@ const readingPreview = readingItems.slice(0, 2);
           : `/projects/${project.slug}`;
         const dateStr = new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
         return (
-          <div data-reveal data-reveal-delay={i * 80}>
-            <a
-              href={href}
-              class="project-card group block no-underline border-b-0 text-inherit hover:text-inherit"
-            >
+          <a
+            href={href}
+            class="project-card group block no-underline border-b-0 text-inherit hover:text-inherit card-animate-in"
+            style={`animation-delay: ${i * 120}ms`}
+          >
               <article class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[var(--surface)] p-6 sm:p-8 md:p-10 transition-all duration-500 hover:bg-[var(--surface-2)] hover:shadow-lg">
                 <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-8">
                   <div class="flex-1 min-w-0">
@@ -198,8 +198,7 @@ const readingPreview = readingItems.slice(0, 2);
                   </div>
                 </div>
               </article>
-            </a>
-          </div>
+          </a>
         );
       })}
     </div>
@@ -255,11 +254,11 @@ const readingPreview = readingItems.slice(0, 2);
         const dateStr = new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
         const prefix = post._type === 'report' ? 'reports' : 'posts';
         return (
-          <div data-reveal data-reveal-delay={i * 80}>
-            <a
-              href={`/${prefix}/${post.slug}`}
-              class="writing-row group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8 py-6 sm:py-8 no-underline border-b-0 text-inherit hover:text-inherit transition-all duration-300"
-            >
+          <a
+            href={`/${prefix}/${post.slug}`}
+            class="writing-row group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8 py-6 sm:py-8 no-underline border-b-0 text-inherit hover:text-inherit transition-all duration-300 row-animate-in"
+            style={`animation-delay: ${i * 80}ms`}
+          >
               <span class="text-sm text-[var(--text-muted)] sm:w-40 flex-shrink-0 uppercase tracking-[0.06em]">{dateStr}</span>
               <div class="flex-1 min-w-0">
                 <h3 class="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-[-0.02em] text-[var(--text)] leading-tight transition-colors duration-300 group-hover:text-[var(--accent)] m-0"
@@ -274,8 +273,7 @@ const readingPreview = readingItems.slice(0, 2);
                   <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
                 </svg>
               </div>
-            </a>
-          </div>
+          </a>
         );
       })}
     </div>
@@ -514,6 +512,24 @@ const readingPreview = readingItems.slice(0, 2);
     transform: translateY(-2px);
   }
 
+  /* ── Content item entrance animations (JS-independent) ── */
+  .card-animate-in,
+  .row-animate-in {
+    animation: content-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes content-enter {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-animate-in,
+    .row-animate-in {
+      animation: none;
+    }
+  }
+
   /* ── Scroll Reveal (CSS-only initial state) ── */
   [data-reveal] {
     opacity: 0;
@@ -582,6 +598,16 @@ const readingPreview = readingItems.slice(0, 2);
     });
   }
 
+  function revealFallback() {
+    document.querySelectorAll<HTMLElement>('[data-reveal]:not(.revealed)').forEach(el => {
+      el.classList.add('revealed');
+    });
+  }
+
   // Run on initial load and after Astro view transitions
-  document.addEventListener('astro:page-load', initScrollReveal);
+  document.addEventListener('astro:page-load', () => {
+    initScrollReveal();
+    // Safety net: force-reveal anything still hidden after 1.5s
+    setTimeout(revealFallback, 1500);
+  });
 </script>
