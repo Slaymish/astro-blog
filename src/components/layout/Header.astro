@@ -286,21 +286,7 @@ function navLinkClasses(href: string) {
     measure();
     updateLogo();
 
-    let scrollRaf: ReturnType<typeof requestAnimationFrame> | null = null;
-    let scrollIdleTimer: ReturnType<typeof setTimeout> | null = null;
-
-    function onScroll() {
-      // Enable will-change during scroll for smooth GPU compositing
-      navLogoLink!.style.willChange = 'transform';
-      updateLogo();
-      // Remove will-change shortly after scrolling stops so SVG re-rasterises at full quality
-      if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
-      scrollIdleTimer = setTimeout(() => {
-        navLogoLink!.style.willChange = 'auto';
-      }, 150);
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true, signal });
+    window.addEventListener('scroll', updateLogo, { passive: true, signal });
     window.addEventListener('resize', () => { measure(); updateLogo(); }, { passive: true, signal });
   }
 
