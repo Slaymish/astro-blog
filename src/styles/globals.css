@@ -801,9 +801,10 @@
     color: #fecdd3;
   }
 
-  /* CTA buttons — accent-tinted hover that works across all accent colors */
+  /* CTA buttons — filled accent on hover */
   .cta-primary:hover {
-    background-color: color-mix(in srgb, var(--accent) 12%, transparent);
+    background-color: var(--accent);
+    color: var(--accent-contrast);
     opacity: 1;
   }
 
