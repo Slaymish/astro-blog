@@ -7,6 +7,25 @@
   SANITY_DATASET = "production"
   SANITY_API_VERSION = "2024-01-01"
 
+# Fingerprinted Astro assets — cache forever (filenames change on content change)
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# HTML pages — Netlify CDN caches for 5 min, serves stale while revalidating for 10 min
+# (portfolios don't need real-time updates; content changes land within minutes)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, s-maxage=300, stale-while-revalidate=600"
+
+# API routes — never cache
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store"
+
 [[redirects]]
   from = "http://hamishburke.dev/*"
   to = "https://hamishburke.dev/:splat"

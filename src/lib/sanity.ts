@@ -25,7 +25,7 @@ const sanityClient = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false
+  useCdn: true   // Use Sanity's global CDN — queries are cached at the edge (~2 min TTL)
 });
 
 const builder = createImageUrlBuilder(sanityClient);
