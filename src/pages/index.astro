@@ -93,7 +93,12 @@ const displayPosts = [
 
 const featuredProjects = projects.slice(0, 4);
 const recentWriting = displayPosts.slice(0, 4);
-const readingPreview = readingItems.slice(0, 2);
+const readingPreview = readingItems.slice(0,2);
+
+// Debug: Check if data is loading
+console.log('Projects:', projects.length);
+console.log('Posts:', posts.length);
+console.log('Reports:', reports.length);
 ---
 
 <Layout title="Hamish Burke" description={homeDescription} fullWidth>
@@ -442,11 +447,11 @@ const readingPreview = readingItems.slice(0, 2);
 
   /* Logo pulse animation */
   @keyframes logo-pulse {
-    0%, 100% {
+    0%, 100% { 
       transform: scale(1);
       filter: drop-shadow(0 0 12px var(--accent));
     }
-    50% {
+    50% { 
       transform: scale(1.05);
       filter: drop-shadow(0 0 16px var(--accent));
     }
