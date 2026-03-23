@@ -105,7 +105,7 @@ const readingPreview = readingItems.slice(0, 2);
     <div class="w-full max-w-[90rem] mx-auto px-4 sm:px-8">
       <FadeIn client:load delay={0.1} duration={1}>
         <div class="flex justify-center mb-8 sm:mb-12">
-          <div class="home-hero-logo-container">
+          <div class="home-hero-logo-container" style="color: var(--accent);">
             <Logo size={120} class="home-hero-logo" />
           </div>
         </div>
@@ -413,23 +413,26 @@ const readingPreview = readingItems.slice(0, 2);
   /* Hero heading — massive responsive type */
   .home-hero-heading {
     font-size: clamp(3.5rem, 12vw, 8rem);
+    position: relative;
+    z-index: 1;
   }
 
   /* Prominent hero logo styling */
   .home-hero-logo-container {
     position: relative;
+    z-index: 0;
     display: inline-block;
   }
 
   .home-hero-logo {
     color: var(--accent) !important;
-    filter: drop-shadow(0 0 30px var(--accent));
+    filter: drop-shadow(0 0 12px var(--accent));
     transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .home-hero-logo-container:hover .home-hero-logo {
     transform: scale(1.1) rotate(5deg);
-    filter: drop-shadow(0 0 40px var(--accent)) brightness(1.2);
+    filter: drop-shadow(0 0 18px var(--accent)) brightness(1.2);
   }
 
   /* Enhanced glitch effect for hero logo */
@@ -439,13 +442,13 @@ const readingPreview = readingItems.slice(0, 2);
 
   /* Logo pulse animation */
   @keyframes logo-pulse {
-    0%, 100% { 
+    0%, 100% {
       transform: scale(1);
-      filter: drop-shadow(0 0 30px var(--accent));
+      filter: drop-shadow(0 0 12px var(--accent));
     }
-    50% { 
+    50% {
       transform: scale(1.05);
-      filter: drop-shadow(0 0 35px var(--accent));
+      filter: drop-shadow(0 0 16px var(--accent));
     }
   }
 
@@ -571,4 +574,49 @@ const readingPreview = readingItems.slice(0, 2);
 
   // Run on initial load and after Astro view transitions
   document.addEventListener('astro:page-load', initScrollReveal);
+</script>
+
+<script>
+  function initHeroLogoTransition() {
+    const heroLogoContainer = document.querySelector<HTMLElement>('.home-hero-logo-container');
+    // Target the inner logo wrap — the <a>.nav-logo contains a <span>.hb-logo-wrap
+    // whose hb-bounce-in animation (opacity 0→1) overrides any opacity set on the parent.
+    const navLogoWrap = document.querySelector<HTMLElement>('.nav-logo .hb-logo-wrap');
+    if (!heroLogoContainer || !navLogoWrap) return;
+
+    // Suppress the bounce-in animation and set initial hidden state.
+    // animation:none must come first so it wins over the .animate-in class.
+    navLogoWrap.style.animation = 'none';
+    navLogoWrap.style.opacity = '0';
+    navLogoWrap.style.transform = 'scale(0.8) rotate(0deg)';
+    navLogoWrap.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+
+    // Use the actual header height so the nav logo appears exactly when
+    // the hero logo finishes sliding behind the sticky header.
+    const headerEl = document.getElementById('site-header');
+    const headerH = headerEl ? headerEl.getBoundingClientRect().height : 84;
+    const rootMargin = `-${Math.round(headerH)}px 0px 0px 0px`;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const heroVisible = entry.isIntersecting;
+        navLogoWrap.style.opacity = heroVisible ? '0' : '1';
+        navLogoWrap.style.transform = heroVisible ? 'scale(0.8) rotate(0deg)' : 'scale(1) rotate(0deg)';
+      },
+      { threshold: 0, rootMargin }
+    );
+
+    observer.observe(heroLogoContainer);
+
+    // Restore nav logo when navigating away from homepage
+    document.addEventListener('astro:before-preparation', () => {
+      observer.disconnect();
+      navLogoWrap.style.animation = '';
+      navLogoWrap.style.opacity = '';
+      navLogoWrap.style.transform = '';
+      navLogoWrap.style.transition = '';
+    }, { once: true });
+  }
+
+  document.addEventListener('astro:page-load', initHeroLogoTransition);
 </script>
