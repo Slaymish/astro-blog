@@ -115,29 +115,29 @@ const structuredData = {
     <!-- Critical inline styles to prevent FOUC - must be first! -->
     <style>
       :root {
-        --bg: #ffffff;
-        --surface: #f1f3f5;
-        --surface-2: #e5e7eb;
-        --text: #111827;
-        --text-muted: #6b7280;
-        --border: #d1d5db;
-        --border-strong: #9ca3af;
+        --bg: #faf9f7;
+        --surface: #f0ede8;
+        --surface-2: #e8e4dd;
+        --text: #1a1a1a;
+        --text-muted: #6b6560;
+        --border: #d6d0c8;
+        --border-strong: #b5afa6;
         --accent: #2d6a4f;
-        --accent-contrast: #ffffff;
+        --accent-contrast: #faf9f7;
         --focus: #2d6a4f;
       }
 
       .dark {
-        --bg: #0a0a0a;
-        --surface: #111827;
-        --surface-2: #1f2937;
-        --text: #fafbfc;
-        --text-muted: #6b7280;
-        --border: #374151;
-        --border-strong: #4b5563;
-        --accent: #2d6a4f;
-        --accent-contrast: #ffffff;
-        --focus: #2d6a4f;
+        --bg: #0c0c0c;
+        --surface: #1a1917;
+        --surface-2: #26251f;
+        --text: #e8e4dd;
+        --text-muted: #9a948c;
+        --border: #3d3a34;
+        --border-strong: #524e46;
+        --accent: #4ade80;
+        --accent-contrast: #0c0c0c;
+        --focus: #4ade80;
       }
 
       /* Apply immediately */
@@ -158,11 +158,6 @@ const structuredData = {
     <script is:inline>
       (function applyThemeAndAccent() {
         try {
-          // Always apply accent – fall back to forest green if not saved
-          var accent = localStorage.getItem('accent') || '#2d6a4f';
-          document.documentElement.style.setProperty('--accent', accent);
-          document.documentElement.style.setProperty('--focus', accent);
-
           var savedTheme = localStorage.getItem('theme') || 'dark';
           var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           var effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
@@ -170,6 +165,14 @@ const structuredData = {
           document.documentElement.classList.remove('light', 'dark');
           document.documentElement.classList.add(effectiveTheme);
           document.documentElement.setAttribute('data-theme', savedTheme);
+
+          // Default accent is theme-aware: lime green on dark bg passes AA, forest green on light bg passes AA
+          var defaultAccent = effectiveTheme === 'dark' ? '#4ade80' : '#2d6a4f';
+          var accent = localStorage.getItem('accent') || defaultAccent;
+          var accentContrast = localStorage.getItem('accentContrast') || (effectiveTheme === 'dark' ? '#0c0c0c' : '#faf9f7');
+          document.documentElement.style.setProperty('--accent', accent);
+          document.documentElement.style.setProperty('--focus', accent);
+          document.documentElement.style.setProperty('--accent-contrast', accentContrast);
         } catch (e) {
           if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
@@ -183,16 +186,19 @@ const structuredData = {
       // which is NOT swapped, but this ensures accent inline style is preserved)
       document.addEventListener('astro:after-swap', function() {
         try {
-          var accent = localStorage.getItem('accent') || '#2d6a4f';
-          document.documentElement.style.setProperty('--accent', accent);
-          document.documentElement.style.setProperty('--focus', accent);
-
           var savedTheme = localStorage.getItem('theme') || 'dark';
           var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           var effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
           document.documentElement.classList.remove('light', 'dark');
           document.documentElement.classList.add(effectiveTheme);
           document.documentElement.setAttribute('data-theme', savedTheme);
+
+          var defaultAccent = effectiveTheme === 'dark' ? '#4ade80' : '#2d6a4f';
+          var accent = localStorage.getItem('accent') || defaultAccent;
+          var accentContrast = localStorage.getItem('accentContrast') || (effectiveTheme === 'dark' ? '#0c0c0c' : '#faf9f7');
+          document.documentElement.style.setProperty('--accent', accent);
+          document.documentElement.style.setProperty('--focus', accent);
+          document.documentElement.style.setProperty('--accent-contrast', accentContrast);
         } catch (e) {}
       });
     </script>

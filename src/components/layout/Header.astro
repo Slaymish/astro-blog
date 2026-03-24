@@ -259,6 +259,7 @@ function navLinkClasses(href: string) {
 
     function measure() {
       heroHeight = heroEl!.offsetHeight;
+      const scrollY = window.scrollY;
       const navRect = navLogoLink!.getBoundingClientRect();
       const navCX = navRect.left + navRect.width / 2;
       const navCY = navRect.top + navRect.height / 2;
@@ -268,9 +269,11 @@ function navLinkClasses(href: string) {
       if (refEl) {
         const refRect = refEl.getBoundingClientRect();
         const refCX = refRect.left + refRect.width / 2;
-        const refCY = refRect.top + refRect.height / 2;
+        // refRect.top is viewport-relative; add scrollY to get document Y,
+        // giving the viewport position the ref would have at scrollY = 0.
+        const refCYAtScrollZero = refRect.top + refRect.height / 2 + scrollY;
         initialDx = refCX - navCX;
-        initialDy = refCY - navCY;
+        initialDy = refCYAtScrollZero - navCY;
       } else {
         initialDx = 0;
         initialDy = Math.min(window.innerHeight * 0.28, 240) - navCY;
@@ -299,8 +302,20 @@ function navLinkClasses(href: string) {
       }
     }
 
-    measure();
-    updateLogo();
+    // Use rAF so the browser has completed layout before we measure positions.
+    // A second rAF ensures compositing is also settled (important after view transitions).
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        measure();
+        updateLogo();
+      });
+    });
+
+    // Re-measure once custom fonts are ready — font swap can shift the hero layout.
+    document.fonts?.ready?.then(() => {
+      measure();
+      updateLogo();
+    });
 
     window.addEventListener('scroll', updateLogo, { passive: true, signal });
     window.addEventListener('resize', () => { measure(); updateLogo(); }, { passive: true, signal });
