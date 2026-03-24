@@ -45,7 +45,12 @@ export default defineConfig({
       'import.meta.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(env.SANITY_PROJECT_ID || ''),
       'import.meta.env.PUBLIC_SANITY_DATASET': JSON.stringify(env.SANITY_DATASET || 'production'),
       'import.meta.env.PUBLIC_SANITY_API_VERSION': JSON.stringify(env.SANITY_API_VERSION || '2024-01-01')
-    }
+    },
+    ssr: {
+      // Bundle motion into SSR chunks so it doesn't need to be resolved
+      // from node_modules at runtime (avoids pnpm symlink tracing issues on Netlify CI)
+      noExternal: ['motion', 'framer-motion'],
+    },
   },
   output: 'server',
   adapter: netlify({
