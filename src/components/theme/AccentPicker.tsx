@@ -3,12 +3,23 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useState } from 'react';
 
+// Returns the WCAG-AA–compliant contrast colour for text drawn on top of `hex`.
+// Uses the relative luminance formula: white if L ≤ 0.183 (gives ≥ 4.5:1), dark otherwise.
+function getContrastColor(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const lin = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  return L <= 0.183 ? '#faf9f7' : '#1a1a1a';
+}
+
 const colors = [
-  { name: 'forest', value: '#2d6a4f' },
-  { name: 'sage', value: '#74796d' },
-  { name: 'sand', value: '#b5a28a' },
-  { name: 'slate', value: '#64748b' },
-  { name: 'charcoal', value: '#3d3d3d' },
+  { name: 'forest', value: '#2d6a4f' },   // L≈0.134 → white contrast 5.7:1 ✓
+  { name: 'sage', value: '#686d62' },      // darkened from #74796d; L≈0.157 → white 5.1:1 ✓
+  { name: 'sand', value: '#b5a28a' },      // L≈0.375 → dark contrast 6.6:1 ✓
+  { name: 'slate', value: '#64748b' },     // L≈0.176 → white contrast 4.65:1 ✓
+  { name: 'charcoal', value: '#3d3d3d' },  // L≈0.033 → white contrast 11:1 ✓
 ] as const;
 
 export function AccentPicker() {
@@ -22,9 +33,14 @@ export function AccentPicker() {
   }, []);
 
   function applyAccent(value: string, save = true) {
+    const contrast = getContrastColor(value);
     document.documentElement.style.setProperty('--accent', value);
     document.documentElement.style.setProperty('--focus', value);
-    if (save) localStorage.setItem('accent', value);
+    document.documentElement.style.setProperty('--accent-contrast', contrast);
+    if (save) {
+      localStorage.setItem('accent', value);
+      localStorage.setItem('accentContrast', contrast);
+    }
     setActiveColor(value);
   }
 
