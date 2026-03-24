@@ -4,7 +4,8 @@
       "Bash(npx astro:*)",
       "mcp__Claude_Preview__preview_start",
       "Bash(xargs cat:*)",
-      "Bash(grep -n \"prerender\\\\|cache\\\\|Cache\" /Users/hamish/Documents/Personal/astro-blog/src/pages/writing/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/projects/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/reading/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/tools/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/posts/[slug].astro)"
+      "Bash(grep -n \"prerender\\\\|cache\\\\|Cache\" /Users/hamish/Documents/Personal/astro-blog/src/pages/writing/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/projects/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/reading/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/tools/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/posts/[slug].astro)",
+      "Bash(node:*)"
     ]
   }
 }

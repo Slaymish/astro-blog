@@ -348,4 +348,9 @@ const htmlContent = portableTextToHtml(project.body);
   }
 
   document.addEventListener('astro:page-load', initProjectReveal);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProjectReveal);
+  } else {
+    initProjectReveal();
+  }
 </script>

@@ -355,4 +355,9 @@ const formattedDate = date
   }
 
   document.addEventListener('astro:page-load', initParallaxHero);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initParallaxHero);
+  } else {
+    initParallaxHero();
+  }
 </script>

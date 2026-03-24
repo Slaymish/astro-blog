@@ -496,4 +496,9 @@ const postUpdatedLabel = showUpdated
   }
 
   document.addEventListener('astro:page-load', initPostReveal);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPostReveal);
+  } else {
+    initPostReveal();
+  }
 </script>
