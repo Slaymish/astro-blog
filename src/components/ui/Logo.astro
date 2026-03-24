@@ -155,6 +155,20 @@ const path2 = "M223.78,427.65l112.72-19.17c14.3-2.43,25.48-13.66,27.85-27.97l15.
 </style>
 
 <script>
+  function triggerGlitch(el: HTMLElement) {
+    let glitchTimeout: ReturnType<typeof setTimeout> | null = null;
+    if (glitchTimeout) clearTimeout(glitchTimeout);
+    el.classList.remove('glitch-out', 'glitch-active');
+    void el.offsetWidth;
+    el.classList.add('glitch-active');
+    glitchTimeout = setTimeout(() => {
+      el.classList.remove('glitch-active');
+      void el.offsetWidth;
+      el.classList.add('glitch-out');
+      setTimeout(() => el.classList.remove('glitch-out'), 450);
+    }, 500);
+  }
+
   function initLogoAnim() {
     const wraps = document.querySelectorAll<HTMLElement>('.hb-logo-wrap');
     wraps.forEach((el) => {
@@ -181,6 +195,11 @@ const path2 = "M223.78,427.65l112.72-19.17c14.3-2.43,25.48-13.66,27.85-27.97l15.
           el.classList.remove('glitch-out');
         }, 450);
       });
+    });
+
+    // Glitch on accent color change
+    document.addEventListener('accent-changed', () => {
+      wraps.forEach(triggerGlitch);
     });
   }
 
