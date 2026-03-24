@@ -40,6 +40,7 @@ export function AccentPicker() {
     if (save) {
       localStorage.setItem('accent', value);
       localStorage.setItem('accentContrast', contrast);
+      document.dispatchEvent(new CustomEvent('accent-changed'));
     }
     setActiveColor(value);
   }
