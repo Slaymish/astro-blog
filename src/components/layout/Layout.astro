@@ -560,6 +560,11 @@ const structuredData = {
           lenis = null;
         }
 
+        // Skip on touch-primary devices. Lenis attaches touch listeners that
+        // can randomly block native scroll on mobile — native momentum scroll
+        // is faster and more reliable on phones/tablets anyway.
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+
         // Respect reduced-motion preference
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
