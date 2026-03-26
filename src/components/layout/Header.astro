@@ -278,6 +278,14 @@ function navLinkClasses(href: string) {
         initialDx = 0;
         initialDy = Math.min(window.innerHeight * 0.28, 240) - navCY;
       }
+
+      // Sanity check: if the vertical displacement is suspiciously small the ref
+      // element wasn't in its final position yet (e.g. mid view-transition).
+      // Fall back to a viewport-proportional estimate so the logo at least lands
+      // somewhere reasonable instead of staying at nav-size scale in the header.
+      if (Math.abs(initialDy) < 50) {
+        initialDy = Math.min(window.innerHeight * 0.28, 240) - navCY;
+      }
     }
 
     function updateLogo() {

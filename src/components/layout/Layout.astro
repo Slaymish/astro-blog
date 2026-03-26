@@ -38,7 +38,7 @@ interface Props {
 const { 
   title, 
   description = SITE_DESCRIPTION,
-  image = "/images/posts/controller-progress.jpg",
+  image = "/apple-touch-icon.png",
   article = false,
   publishedTime,
   modifiedTime,
@@ -566,8 +566,9 @@ const structuredData = {
         lenis = new Lenis({
           duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          touchMultiplier: 1.5,
-          infinite: false,
+          // Keep touch scrolling native — browsers handle momentum far better
+          // than JS-driven smooth scroll on touchscreen devices.
+          smoothTouch: false,
         });
 
         function raf(time: number) {
