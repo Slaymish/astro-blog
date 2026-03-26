@@ -566,9 +566,8 @@ const structuredData = {
         lenis = new Lenis({
           duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          // Keep touch scrolling native — browsers handle momentum far better
-          // than JS-driven smooth scroll on touchscreen devices.
-          smoothTouch: false,
+          // Lenis 1.x leaves touch scrolling native by default (no smooth
+          // interpolation on touchscreen), so no extra option is needed.
         });
 
         function raf(time: number) {
