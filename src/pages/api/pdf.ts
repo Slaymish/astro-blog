@@ -1,3 +1,8 @@
+// This proxy reads a `url` query param, so it must be server-rendered. Without
+// this it inherits the config default (static in dev), which prerenders the
+// endpoint and strips query params — breaking the PDF viewer in local dev.
+export const prerender = false;
+
 const ALLOWED_HOSTS = new Set(['cdn.sanity.io', 'assets.sanity.io']);
 const IMPORT_META_ENV = (import.meta as { env?: Record<string, string> }).env || {};
 const ALLOWED_PROJECT_ID =
@@ -20,8 +25,10 @@ function isAllowedSanityFilePath(pathname: string) {
   return assetType === 'files' && projectId === ALLOWED_PROJECT_ID && dataset === ALLOWED_DATASET;
 }
 
-export async function GET({ request }: { request: Request }) {
-  const requestUrl = new URL(request.url);
+export async function GET({ request, url }: { request: Request; url: URL }) {
+  // Prefer Astro's pre-parsed context URL; fall back to request.url. Some
+  // adapters/dev servers expose query params on one but not the other.
+  const requestUrl = url ?? new URL(request.url);
   const target = requestUrl.searchParams.get('url');
 
   if (!target) {
