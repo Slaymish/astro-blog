@@ -56,60 +56,97 @@ import { SITE_URL, absoluteUrl, CONTACT_EMAIL } from '../lib/site';
         </p>
       </section>
 
-      <!-- Currently -->
-      <section class="mb-16 p-6 rounded-[var(--radius-lg)] bg-[var(--surface)] border border-[var(--border)]">
-        <h2 class="font-serif text-2xl font-semibold mb-6 text-[var(--text)] tracking-tight">
-          Currently
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-          <div>
-            <span class="block text-[var(--text-muted)] font-medium mb-1 uppercase tracking-wider text-xs">Working</span>
-            <span class="text-[var(--text)]">Junior Web Developer at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer" class="text-[var(--text)] no-underline hover:text-[var(--accent)] hover:opacity-100 transition-colors">Alphero</a></span>
-          </div>
-          <div>
-            <span class="block text-[var(--text-muted)] font-medium mb-1 uppercase tracking-wider text-xs">Building</span>
-            <span class="text-[var(--text)]">GPUShare, distributed GPU sharing for ML workloads</span>
-          </div>
-          <div>
-            <span class="block text-[var(--text-muted)] font-medium mb-1 uppercase tracking-wider text-xs">Learning</span>
-            <span class="text-[var(--text)]">Piano, Merry Go Round of Life by Joe Hisaishi</span>
-          </div>
-          <div>
-            <span class="block text-[var(--text-muted)] font-medium mb-1 uppercase tracking-wider text-xs">Reading</span>
-            <span class="text-[var(--text)]"><a href="/reading" class="no-underline border-b-0 hover:text-[var(--accent)] transition-colors">See my reading list →</a></span>
-          </div>
-        </div>
-      </section>
-
-      <!-- What I Work With -->
+      <!-- Work with me -->
       <section class="mb-16">
         <h2 class="font-serif text-2xl font-semibold mb-6 text-[var(--text)] tracking-tight">
-          What I Work With
+          Work with me
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <h3 class="text-lg font-semibold mb-3 text-[var(--text)]">
-              Languages & Frameworks
-            </h3>
-            <ul class="list-disc list-inside text-[var(--text-muted)] space-y-1.5">
-              <li>Python, TypeScript, JavaScript, Java, C++</li>
-              <li>React, Astro, Next.js</li>
-              <li>Node.js, Express</li>
-              <li>SQL, NoSQL databases</li>
-            </ul>
+        <p class="text-[var(--text-muted)] mb-6 leading-[1.7]">
+          Alongside my main work, I take on a small number of freelance web projects. If you have a site
+          or an idea in mind, the easiest place to start is a quick call. No pressure, just a chance to
+          talk through what you need and see whether we are a good fit.
+        </p>
+        <a
+          href="https://cal.com/hamishburke/30min"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="cta-schedule inline-flex items-center gap-2.5 px-5 py-3 rounded-[var(--radius-md)] bg-[var(--accent)] no-underline border-b-0 font-medium shadow-sm transition-all hover:-translate-y-0.5 hover:opacity-90"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          Schedule a call
+        </a>
+
+        <details class="pricing-details mt-8 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] overflow-hidden">
+          <summary class="pricing-summary flex items-center justify-between gap-3 cursor-pointer select-none px-5 py-4 font-medium text-[var(--text)] transition-colors hover:text-[var(--accent)]">
+            <span>Wondering about pricing?</span>
+            <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </summary>
+          <div class="px-5 pb-6 pt-4 border-t border-[var(--border)] space-y-7">
+            <p class="text-[var(--text-muted)] leading-[1.7]">
+              I build fast, responsive custom websites and web tools, priced around your goals rather than
+              a fixed menu. Here is roughly how it works and what to expect.
+            </p>
+
+            <div>
+              <h3 class="text-base font-semibold mb-3 text-[var(--text)]">How I work</h3>
+              <ol class="space-y-3 text-[var(--text-muted)] leading-[1.7]">
+                <li>
+                  <span class="text-[var(--text)] font-medium">Free intro chat.</span>
+                  A relaxed conversation to map out your goals, timeline, and the technical scope.
+                </li>
+                <li>
+                  <span class="text-[var(--text)] font-medium">Clear proposal.</span>
+                  I put together a proposal with a few distinct options, each with its own scope and
+                  budget, based on an honest estimate of the work involved.
+                </li>
+                <li>
+                  <span class="text-[var(--text)] font-medium">Build and launch.</span>
+                  Once you pick an option and the deposit is in, I start building and keep you updated at
+                  regular milestones through to launch.
+                </li>
+              </ol>
+            </div>
+
+            <div>
+              <h3 class="text-base font-semibold mb-1 text-[var(--text)]">Portfolio package</h3>
+              <p class="mb-2 font-semibold text-[var(--accent)]">
+                $450 to $650 NZD
+                <span class="ml-1 text-sm font-normal text-[var(--text-muted)]">flat rate</span>
+              </p>
+              <p class="mb-3 text-[var(--text-muted)] leading-[1.7]">
+                A reliable, affordable way to get your personal brand online without scope creep. Built
+                for showing off creative work, a resume, or case studies.
+              </p>
+              <ul class="list-disc list-inside space-y-1.5 text-[var(--text-muted)] leading-[1.7]">
+                <li>Fixed scope: a clean, minimal three-page site, for example Home, About, and Work.</li>
+                <li>You provide the text, images, and assets up front.</li>
+                <li>Includes custom domain setup, SEO basics, and deployment.</li>
+                <li>Excludes e-commerce, deep custom databases, or specialised dynamic features.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="text-base font-semibold mb-1 text-[var(--text)]">Business and custom builds</h3>
+              <p class="mb-2 font-semibold text-[var(--accent)]">Custom quote</p>
+              <p class="mb-3 text-[var(--text-muted)] leading-[1.7]">
+                For businesses wanting custom landing pages, multi-page sites, CMS integrations, or
+                internal tools built to scale with your workflow.
+              </p>
+              <ul class="list-disc list-inside space-y-1.5 text-[var(--text-muted)] leading-[1.7]">
+                <li>Proposals come with clear budget and feature options.</li>
+                <li>Fast, production-ready code with strong performance across every device.</li>
+                <li>A CMS so you can update content yourself without touching any code.</li>
+              </ul>
+            </div>
           </div>
-          <div>
-            <h3 class="text-lg font-semibold mb-3 text-[var(--text)]">
-              Tools & Technologies
-            </h3>
-            <ul class="list-disc list-inside text-[var(--text-muted)] space-y-1.5">
-              <li>Docker, Kubernetes</li>
-              <li>Git, CI/CD pipelines</li>
-              <li>Cloud platforms (AWS, GCP)</li>
-              <li>Machine Learning (PyTorch, TensorFlow)</li>
-            </ul>
-          </div>
-        </div>
+        </details>
       </section>
 
       <!-- Get in Touch -->
@@ -236,5 +273,23 @@ import { SITE_URL, absoluteUrl, CONTACT_EMAIL } from '../lib/site';
       "@id": absoluteUrl('/about', SITE_URL)
     }
   })} />
+
+  <style>
+    /* The global `a { color: var(--accent) }` rule sits in @layer base and would
+       otherwise beat Tailwind's text utilities, painting the label and icon green
+       on the green button. Astro's scoped styles are unlayered, so this wins. */
+    .cta-schedule,
+    .cta-schedule:hover {
+      color: var(--accent-contrast);
+    }
+
+    .pricing-summary::-webkit-details-marker { display: none; }
+    .pricing-summary { list-style: none; }
+    .pricing-details .chevron {
+      flex-shrink: 0;
+      transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .pricing-details[open] .chevron { transform: rotate(180deg); }
+  </style>
 </Layout>
 
