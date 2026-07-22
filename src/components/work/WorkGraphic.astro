@@ -105,6 +105,7 @@ const image = images[kind];
     background: var(--color-bg-inset);
     border: 1px solid var(--color-stroke-subtle);
     color: var(--color-text-primary);
+    max-height: clamp(22rem, 40vw, 34rem);
     overflow: hidden;
     position: relative;
   }
@@ -118,6 +119,7 @@ const image = images[kind];
   }
 
   .work-graphic--health-agent img {
+    box-sizing: border-box;
     object-fit: contain;
     padding: clamp(1rem, 3vw, 2rem);
   }
@@ -145,7 +147,13 @@ const image = images[kind];
   .work-graphic__boundary b { color: var(--color-action); font-weight: var(--font-weight-medium); }
   .work-graphic__pipeline b { color: var(--color-action); }
 
-  .work-graphic--gpu-share { background: #080b0a; padding: clamp(1rem, 4vw, 3rem); }
+  .work-graphic--gpu-share {
+    background-color: #080b0a;
+    background-image: linear-gradient(var(--color-stroke-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-stroke-subtle) 1px, transparent 1px);
+    background-position: center;
+    background-size: clamp(1.5rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.5rem);
+    padding: clamp(1rem, 4vw, 3rem);
+  }
   .work-graphic__gpu { align-content: center; display: grid; gap: clamp(.5rem, 2vw, 1.25rem); grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); height: 100%; position: relative; }
   .work-graphic__gpu-public,
   .work-graphic__gpu-private { border: 1px solid var(--color-stroke-strong); display: flex; flex-direction: column; gap: var(--spacing-2); min-width: 0; padding: clamp(.75rem, 2.5vw, 2rem); }
@@ -169,7 +177,13 @@ const image = images[kind];
   .work-graphic__flow { display: flex; font-size: clamp(.55rem, 1.4vw, .8rem); gap: var(--spacing-2); justify-content: space-between; text-transform: uppercase; }
   .work-graphic__flow b { color: #29614a; }
 
-  .work-graphic--home-lab { background: #111713; padding: clamp(1rem, 4vw, 3rem); }
+  .work-graphic--home-lab {
+    background-color: #111713;
+    background-image: linear-gradient(var(--color-stroke-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-stroke-subtle) 1px, transparent 1px);
+    background-position: center;
+    background-size: clamp(1.5rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.5rem);
+    padding: clamp(1rem, 4vw, 3rem);
+  }
   .work-graphic__architecture { align-items: center; display: grid; gap: clamp(.3rem, 2vw, 1rem); grid-template-columns: 1fr auto 1.2fr auto 1fr; height: 100%; text-align: center; }
   .work-graphic__architecture div { border: 1px solid var(--color-stroke-strong); display: flex; flex-direction: column; padding: clamp(.65rem, 2vw, 1.5rem) .4rem; }
   .work-graphic__architecture small { color: var(--color-text-secondary); font-size: clamp(.5rem, 1vw, .7rem); text-transform: uppercase; }

@@ -10,5 +10,5 @@ The redesign implementation is complete. These items need real production data, 
 - [ ] Review/revise ALL copy in how *I* actually write, and ensure process is aligned with what I do
 - [x] Update the pinned GitHub Actions when their Node 24-compatible major versions are adopted; the current CI passes but GitHub now emits a Node 20 action-runtime deprecation notice.
 - [x] fix font glitch on load (how it loads in as a diff font). I want 0 cummulative layout shift
-- [ ] make not look AI generated (looks generic)
-- [ ] get better graphics for projects (and make graphics a good size on work pages)
+- [x] make not look AI generated (looks generic)
+- [x] get better graphics for projects (and make graphics a good size on work pages)
