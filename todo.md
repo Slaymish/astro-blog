@@ -7,4 +7,8 @@ The redesign implementation is complete. These items need real production data, 
 - [ ] Run the five-person, five-second comprehension test described in `REDESIGN-PLAN.md`; revise only if fewer than four people can identify the offer, proof, and next action.
 - [ ] Replace the historical academic `public/cv.pdf` with a current CV once the final employment dates and wording are confirmed.
 - [ ] Add the sprint coaching website as a lead case study only after it is live and the client has approved public use of the work and imagery.
-- [ ] Update the pinned GitHub Actions when their Node 24-compatible major versions are adopted; the current CI passes but GitHub now emits a Node 20 action-runtime deprecation notice.
+- [ ] Review/revise ALL copy in how *I* actually write, and ensure process is aligned with what I do
+- [x] Update the pinned GitHub Actions when their Node 24-compatible major versions are adopted; the current CI passes but GitHub now emits a Node 20 action-runtime deprecation notice.
+- [x] fix font glitch on load (how it loads in as a diff font). I want 0 cummulative layout shift
+- [ ] make not look AI generated (looks generic)
+- [ ] get better graphics for projects (and make graphics a good size on work pages)

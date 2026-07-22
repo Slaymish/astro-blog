@@ -28,3 +28,4 @@ pnpm-debug.log*
 .netlify
 
 .github/copilot-instructions.md
+.tokensave

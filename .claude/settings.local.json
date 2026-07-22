@@ -1,14 +1,32 @@
 {
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8787"
+  },
   "permissions": {
     "allow": [
       "Bash(npx astro:*)",
       "mcp__Claude_Preview__preview_start",
       "Bash(xargs cat:*)",
       "Bash(grep -n \"prerender\\\\|cache\\\\|Cache\" /Users/hamish/Documents/Personal/astro-blog/src/pages/writing/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/projects/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/reading/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/tools/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/posts/[slug].astro)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__performance_start_trace"
     ]
   },
   "disabledMcpjsonServers": [
     "shadcn"
-  ]
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/hamish/.local/bin/headroom wrap selfheal --marker headroom-wrap-selfheal",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
 }

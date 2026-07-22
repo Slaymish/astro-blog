@@ -1,9 +1,11 @@
 ---
 // Design System
+import "../../design-system/fonts.css";
 import "../../design-system/tokens.css";
 import "../../design-system/base.css";
 import "../../design-system/themes/dark.css";
 import "../../styles/globals.css";
+
 
 // Layout Components
 import Footer from "./Footer.astro";
@@ -120,10 +122,9 @@ const structuredData = {
     <link rel="alternate" hreflang="en" href={canonicalHref} />
     <link rel="alternate" hreflang="x-default" href={canonicalHref} />
     
-    <!-- Google Fonts - optimized with font-display=swap and reduced weights -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Self-hosted fonts (src/design-system/fonts.css) - preload the above-the-fold weights -->
+    <link rel="preload" href="/fonts/figtree-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/syne-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={article ? "article" : "website"} />

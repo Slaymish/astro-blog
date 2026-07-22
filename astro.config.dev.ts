@@ -3,6 +3,12 @@ import tailwindcss from "@tailwindcss/vite";
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
+import { FontaineTransform } from 'fontaine';
+
+const fontFallbackOptions = {
+  fallbacks: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Arial', 'sans-serif'],
+  resolvePath: (id: string) => new URL(`./public${id}`, import.meta.url),
+};
 
 // Load environment variables from .env file
 import { loadEnv } from 'vite';
@@ -39,7 +45,7 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), FontaineTransform.vite(fontFallbackOptions)],
     define: {
       'import.meta.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(env.SANITY_PROJECT_ID || ''),
       'import.meta.env.PUBLIC_SANITY_DATASET': JSON.stringify(env.SANITY_DATASET || 'production'),
