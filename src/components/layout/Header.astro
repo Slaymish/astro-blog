@@ -1,340 +1,196 @@
 ---
-import { AccentPicker } from '../theme/AccentPicker';
-import { ThemeToggle } from '../theme/ThemeToggle';
 import Logo from '../ui/Logo.astro';
+import ButtonLink from '../ui/ButtonLink.astro';
+import { BOOKING_URL } from '../../lib/site';
 
 const pathname = Astro.url.pathname;
-const isHome = pathname === '/';
 
-const leftNav = [
-  { href: '/projects', label: 'Projects' },
-  { href: '/writing', label: 'Writing' },
-  { href: '/tools', label: 'Tools' },
-];
-
-const rightNav = [
-  { href: '/reading', label: 'Reading' },
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/work', label: 'Work' },
   { href: '/about', label: 'About' },
 ];
-
-const allNavLinks = [...leftNav, ...rightNav];
 
 function navLinkClasses(href: string) {
   const isActive = pathname === href || pathname.startsWith(href + '/');
   return {
     class: [
-      'text-xs font-medium uppercase tracking-[0.1em] no-underline relative transition-colors duration-150',
+      'site-nav__link',
       isActive
-        ? 'text-[var(--accent)] after:absolute after:bottom-[-4px] after:left-0 after:right-0 after:h-[2px] after:bg-[var(--accent)] after:content-[\'\']'
-        : 'text-[var(--text-muted)] hover:text-[var(--accent)] hover:opacity-100',
+        ? 'site-nav__link--active'
+        : '',
     ].join(' '),
     'aria-current': isActive ? ('page' as const) : undefined,
   };
 }
 ---
 
-<header class="w-full sticky top-0 z-50 border-b border-transparent transition-colors duration-300" id="site-header" data-is-home={isHome ? "true" : undefined}>
-  <div class="max-w-[var(--content-max-width)] mx-auto px-6 md:px-8 lg:px-10">
-    <nav class="flex items-center justify-between gap-4 py-6" aria-label="Main navigation">
-
-      <!-- Left nav (desktop) -->
-      <div class="hidden sm:flex items-center gap-8 flex-1" role="list">
-        {leftNav.map(({ href, label }) => (
-          <a href={href} role="listitem" {...navLinkClasses(href)}>
-            {label}
-          </a>
-        ))}
-      </div>
-
-      <!-- Center: logo / home link -->
+<header id="site-header">
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
       <a
         id="nav-logo-link"
         href="/"
-        class="nav-logo shrink-0"
-        aria-label="Home"
+        class="nav-logo"
+        aria-label="Hamish Burke, home"
         aria-current={pathname === '/' ? 'page' : undefined}
-        data-astro-reload
       >
         <Logo size={36} />
       </a>
 
-      <!-- Right nav (desktop) + controls -->
-      <div class="hidden sm:flex items-center gap-8 flex-1 justify-end" role="list">
-        {rightNav.map(({ href, label }) => (
+      <div class="site-nav__desktop" role="list">
+        {navLinks.map(({ href, label }) => (
           <a href={href} role="listitem" {...navLinkClasses(href)}>
             {label}
           </a>
         ))}
-        <div class="flex items-center gap-2 ml-4">
-          <AccentPicker client:only="react" transition:persist />
-          <ThemeToggle client:only="react" transition:persist />
-        </div>
       </div>
 
-      <!-- Mobile: controls + hamburger -->
-      <div class="sm:hidden flex items-center gap-2">
-        <AccentPicker client:only="react" transition:persist />
-        <ThemeToggle client:only="react" transition:persist />
-        <button
-          id="mobile-menu-toggle"
-          class="flex items-center justify-center w-9 h-9 rounded-[var(--radius-md)] text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--surface-2)] transition-colors duration-150 border-0 bg-transparent cursor-pointer"
-          aria-label="Open menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
+      <div class="site-nav__actions">
+        <ButtonLink
+          href={BOOKING_URL}
+          external
+          ariaLabel="Book a call on Cal.com"
+          class="site-nav__booking"
         >
-          <svg class="menu-icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-          <svg class="menu-icon-close hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
+          <span class="site-nav__booking-long">Book a call</span>
+          <span class="site-nav__booking-short">Book</span>
+        </ButtonLink>
+
+        <details class="site-nav__mobile">
+          <summary aria-label="Open navigation menu">
+            <svg class="menu-icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+            <svg class="menu-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </summary>
+          <div class="site-nav__mobile-panel">
+            {navLinks.map(({ href, label }) => (
+              <a href={href} {...navLinkClasses(href)}>{label}</a>
+            ))}
+          </div>
+        </details>
       </div>
-
-    </nav>
-  </div>
-
-  <!-- Mobile menu -->
-  <div
-    id="mobile-menu"
-    class="sm:hidden hidden border-t border-[var(--border)]"
-    role="navigation"
-    aria-label="Mobile navigation"
-  >
-    <div class="max-w-[var(--content-max-width)] mx-auto px-6 py-4 flex flex-col gap-1">
-      {allNavLinks.map(({ href, label }) => {
-        const isActive = pathname === href || pathname.startsWith(href + '/');
-        return (
-          <a
-            href={href}
-            class={[
-              'text-base font-medium no-underline py-2.5 px-3 rounded-[var(--radius-md)] transition-colors duration-150',
-              isActive
-                ? 'text-[var(--accent)] bg-[var(--surface-2)]'
-                : 'text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--surface-2)]',
-            ].join(' ')}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            {label}
-          </a>
-        );
-      })}
     </div>
-  </div>
+  </nav>
 </header>
 
 <style>
-  /* Sticky header — pseudo-element carries the backdrop-blur so the nav logo
-     (transformed outside the header bounds) is NOT a child of a backdrop-filter
-     element, which would clip it on iOS Safari */
   #site-header {
-    background-color: transparent;
-    border-bottom: 1px solid var(--border);
-    transition: border-color 0.5s ease;
+    background: var(--color-bg-canvas);
+    border-bottom: 1px solid var(--color-stroke-subtle);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
   }
 
-  #site-header::before {
-    content: '';
+  .site-nav__inner {
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-4);
+    justify-content: space-between;
+    margin-inline: auto;
+    max-width: var(--content-max-width);
+    min-height: 4.25rem;
+    padding-inline: var(--page-gutter);
+  }
+
+  .site-nav__desktop {
+    align-items: center;
+    display: none;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    margin-inline-start: auto;
+  }
+
+  .site-nav__link {
+    color: var(--color-text-secondary);
+    display: inline-flex;
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    min-height: 2.75rem;
+    align-items: center;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .site-nav__link:hover,
+  .site-nav__link--active {
+    color: var(--color-action);
+    opacity: 1;
+  }
+
+  .site-nav__actions {
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  .site-nav__booking-long {
+    display: none;
+  }
+
+  .site-nav__mobile {
+    position: relative;
+  }
+
+  .site-nav__mobile summary {
+    align-items: center;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    display: flex;
+    height: 2.75rem;
+    justify-content: center;
+    list-style: none;
+    width: 2.75rem;
+  }
+
+  .site-nav__mobile summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu-icon-close,
+  .site-nav__mobile[open] .menu-icon-open {
+    display: none;
+  }
+
+  .site-nav__mobile[open] .menu-icon-close {
+    display: block;
+  }
+
+  .site-nav__mobile-panel {
+    background: var(--color-bg-canvas);
+    border: 1px solid var(--color-stroke-subtle);
+    display: flex;
+    flex-direction: column;
+    min-width: min(16rem, calc(100vw - 2 * var(--page-gutter)));
+    padding: var(--spacing-3);
     position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-color: color-mix(in srgb, var(--bg) 80%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: opacity 0.5s ease;
+    right: 0;
+    top: calc(100% + var(--spacing-3));
   }
 
-  /* Homepage: start transparent */
-  #site-header[data-is-home="true"]:not([data-scrolled]) {
-    border-bottom-color: transparent;
-  }
+  @media (min-width: 48rem) {
+    .site-nav__inner {
+      min-height: 4.5rem;
+    }
 
-  #site-header[data-is-home="true"]:not([data-scrolled])::before {
-    opacity: 0;
-  }
+    .site-nav__desktop {
+      display: flex;
+    }
 
-  /* Logo anchor: allow transform without layout shift */
-  #nav-logo-link {
-    transform-origin: center center;
-    /* No will-change: transform — it causes the browser to rasterize the SVG
-       at native 36px and upscale the bitmap, making it blurry when large */
-    transition: color 0.5s ease;
-  }
+    .site-nav__booking-long {
+      display: inline;
+    }
 
-  /* Logo accent color when in hero mode */
-  #site-header[data-is-home="true"]:not([data-scrolled]) #nav-logo-link {
-    color: var(--accent);
+    .site-nav__booking-short,
+    .site-nav__mobile {
+      display: none;
+    }
   }
 </style>
-
-<script>
-  let mobileMenuAbort: AbortController | undefined;
-
-  function initMobileMenu() {
-    mobileMenuAbort?.abort();
-    mobileMenuAbort = new AbortController();
-
-    const toggle = document.getElementById('mobile-menu-toggle');
-    const menu = document.getElementById('mobile-menu');
-    const openIcon = toggle?.querySelector('.menu-icon-open');
-    const closeIcon = toggle?.querySelector('.menu-icon-close');
-
-    // Reset menu state on navigation
-    menu?.classList.add('hidden');
-    openIcon?.classList.remove('hidden');
-    closeIcon?.classList.add('hidden');
-    toggle?.setAttribute('aria-expanded', 'false');
-    toggle?.setAttribute('aria-label', 'Open menu');
-
-    toggle?.addEventListener('click', () => {
-      const isOpen = menu?.classList.contains('hidden') === false;
-      if (isOpen) {
-        menu?.classList.add('hidden');
-        openIcon?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.setAttribute('aria-label', 'Open menu');
-      } else {
-        menu?.classList.remove('hidden');
-        openIcon?.classList.add('hidden');
-        closeIcon?.classList.remove('hidden');
-        toggle.setAttribute('aria-expanded', 'true');
-        toggle.setAttribute('aria-label', 'Close menu');
-      }
-    }, { signal: mobileMenuAbort.signal });
-  }
-
-  document.addEventListener('astro:page-load', initMobileMenu);
-  // Ensure the menu initialises on very first load even if astro:page-load
-  // already fired before this module script executed.
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMobileMenu);
-  } else {
-    initMobileMenu();
-  }
-
-  // ── Hero logo scroll animation ──────────────────────────────────────────
-  // On the homepage, the nav logo starts large (centered over the hero) and
-  // shrinks into its normal nav position as the user scrolls.
-
-  let heroLogoAbort: AbortController | undefined;
-
-  function initHeroLogo() {
-    heroLogoAbort?.abort();
-    heroLogoAbort = new AbortController();
-    const { signal } = heroLogoAbort;
-
-    const header = document.getElementById('site-header') as HTMLElement | null;
-    const navLogoLink = document.getElementById('nav-logo-link') as HTMLElement | null;
-    const navLogoWrap = navLogoLink?.querySelector<HTMLElement>('.hb-logo-wrap') ?? null;
-
-    // Always reset to natural state first
-    if (navLogoLink) navLogoLink.style.transform = '';
-    if (header) header.removeAttribute('data-scrolled');
-    if (navLogoWrap) {
-      navLogoWrap.style.animation = '';
-      navLogoWrap.style.opacity = '';
-      navLogoWrap.style.transform = '';
-    }
-
-    if (!header || header.dataset.isHome !== 'true' || !navLogoLink || !navLogoWrap) return;
-
-    const heroEl = document.querySelector<HTMLElement>('.home-hero');
-    if (!heroEl) return;
-
-    // Suppress the Logo component's bounce-in animation; show immediately
-    navLogoWrap.style.animation = 'none';
-    navLogoWrap.style.opacity = '1';
-    navLogoWrap.style.transform = 'scale(1) rotate(0deg)';
-
-    // Scale factor: nav logo size = 36px, hero ref size = 180px
-    const HERO_SCALE = 5;
-
-    let heroHeight = 0;
-    let initialDy = 0;
-    let initialDx = 0;
-
-    function measure() {
-      heroHeight = heroEl!.offsetHeight;
-      const scrollY = window.scrollY;
-      const navRect = navLogoLink!.getBoundingClientRect();
-      const navCX = navRect.left + navRect.width / 2;
-      const navCY = navRect.top + navRect.height / 2;
-
-      // Align with the invisible in-flow reference element if present
-      const refEl = document.querySelector<HTMLElement>('.home-hero-logo-ref');
-      if (refEl) {
-        const refRect = refEl.getBoundingClientRect();
-        const refCX = refRect.left + refRect.width / 2;
-        // refRect.top is viewport-relative; add scrollY to get document Y,
-        // giving the viewport position the ref would have at scrollY = 0.
-        const refCYAtScrollZero = refRect.top + refRect.height / 2 + scrollY;
-        initialDx = refCX - navCX;
-        initialDy = refCYAtScrollZero - navCY;
-      } else {
-        initialDx = 0;
-        initialDy = Math.min(window.innerHeight * 0.28, 240) - navCY;
-      }
-
-      // Sanity check: if the vertical displacement is suspiciously small the ref
-      // element wasn't in its final position yet (e.g. mid view-transition).
-      // Fall back to a viewport-proportional estimate so the logo at least lands
-      // somewhere reasonable instead of staying at nav-size scale in the header.
-      if (Math.abs(initialDy) < 50) {
-        initialDy = Math.min(window.innerHeight * 0.28, 240) - navCY;
-      }
-    }
-
-    function updateLogo() {
-      if (heroHeight === 0) return;
-      const scrollY = window.scrollY;
-      // Progress: 0 at top of page, 1 when scrolled ~65% through hero
-      const progress = Math.min(Math.max(scrollY / (heroHeight * 0.65), 0), 1);
-      // Ease-out cubic for a snappy feel
-      const t = 1 - Math.pow(1 - progress, 3);
-
-      const dx = initialDx * (1 - t);
-      const dy = initialDy * (1 - t);
-      const scale = 1 + (HERO_SCALE - 1) * (1 - t);
-
-      navLogoLink!.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${scale.toFixed(4)})`;
-
-      // Toggle header background
-      if (t > 0.08) {
-        header!.setAttribute('data-scrolled', '');
-      } else {
-        header!.removeAttribute('data-scrolled');
-      }
-    }
-
-    // Use rAF so the browser has completed layout before we measure positions.
-    // A second rAF ensures compositing is also settled (important after view transitions).
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        measure();
-        updateLogo();
-      });
-    });
-
-    // Re-measure once custom fonts are ready — font swap can shift the hero layout.
-    document.fonts?.ready?.then(() => {
-      measure();
-      updateLogo();
-    });
-
-    window.addEventListener('scroll', updateLogo, { passive: true, signal });
-    window.addEventListener('resize', () => { measure(); updateLogo(); }, { passive: true, signal });
-    // Handle iOS URL bar show/hide (changes visualViewport height, affecting hero layout)
-    window.visualViewport?.addEventListener('resize', () => { measure(); updateLogo(); }, { signal } as any);
-  }
-
-  document.addEventListener('astro:page-load', initHeroLogo);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHeroLogo);
-  } else {
-    initHeroLogo();
-  }
-</script>

@@ -1,0 +1,55 @@
+---
+import type { WorkStory } from '../../lib/work';
+import { workStoryHref } from '../../lib/work';
+import WorkGraphic from './WorkGraphic.astro';
+
+interface Props {
+  story: WorkStory;
+  variant?: 'featured' | 'row';
+  reverse?: boolean;
+}
+
+const { story, variant = 'featured', reverse = false } = Astro.props;
+---
+
+<article class:list={['work-card', `work-card--${variant}`, reverse && 'work-card--reverse']}>
+  <a href={workStoryHref(story.slug)} class="work-card__link" aria-label={`Read the ${story.title} case study`}>
+    <div class="work-card__visual">
+      <WorkGraphic kind={story.graphic.kind} alt={story.graphic.alt} compact={variant === 'row'} />
+    </div>
+    <div class="work-card__content">
+      <div class="work-card__meta">
+        <span>{story.descriptor}</span>
+        <span>{story.timeframe ?? new Date(story.date).getFullYear()}</span>
+      </div>
+      <h3>{story.title}</h3>
+      <p class="work-card__summary">{story.summary}</p>
+      <p class="work-card__result"><strong>Result</strong> {story.result}</p>
+      <span class="work-card__action">View case study <span aria-hidden="true">→</span></span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .work-card { border-top: 1px solid var(--color-stroke-subtle); }
+  .work-card__link { color: inherit; display: grid; gap: var(--spacing-6); padding-block: clamp(2rem, 6vw, 5rem); text-decoration: none; }
+  .work-card__link:hover { color: inherit; opacity: 1; }
+  .work-card__visual { min-width: 0; }
+  .work-card__content { align-self: center; }
+  .work-card__meta { align-items: start; color: var(--color-text-secondary); display: flex; font-size: var(--type-label); font-weight: 600; gap: var(--spacing-4); justify-content: space-between; letter-spacing: .09em; line-height: 1.4; text-transform: uppercase; }
+  .work-card__meta span:last-child { flex-shrink: 0; text-align: right; }
+  h3 { font-size: clamp(2.5rem, 6vw, 5.5rem); letter-spacing: -.055em; margin: var(--spacing-5) 0 var(--spacing-4); }
+  .work-card__summary { color: var(--color-text-primary); font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.4; margin: 0; max-width: 32rem; }
+  .work-card__result { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.55; margin: var(--spacing-5) 0 0; max-width: 36rem; }
+  .work-card__result strong { color: var(--color-action); display: block; font-size: var(--type-label); letter-spacing: .08em; margin-bottom: var(--spacing-1); text-transform: uppercase; }
+  .work-card__action { color: var(--color-action); display: inline-flex; font-size: var(--type-body-small); font-weight: 700; gap: var(--spacing-2); margin-top: var(--spacing-6); }
+  .work-card__action span { transition: transform var(--motion-duration-interaction) var(--easing-expressive); }
+  .work-card__link:hover .work-card__action span { transform: translateX(.25rem); }
+
+  @media (min-width: 52rem) {
+    .work-card--featured .work-card__link { grid-template-columns: minmax(0, 1.45fr) minmax(18rem, .85fr); }
+    .work-card--row .work-card__link { grid-template-columns: minmax(15rem, .75fr) minmax(0, 1.25fr); padding-block: clamp(2rem, 4vw, 3.5rem); }
+    .work-card--row h3 { font-size: clamp(2.1rem, 4vw, 3.8rem); }
+    .work-card--reverse .work-card__visual { order: 2; }
+  }
+</style>

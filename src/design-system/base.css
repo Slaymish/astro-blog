@@ -10,7 +10,8 @@
    ============================================ */
 
 html {
-  scroll-behavior: smooth;
+  background: var(--bg);
+  scroll-behavior: auto;
 }
 
 body {
@@ -18,8 +19,8 @@ body {
   color: var(--text);
   font-family: var(--font-body);
   font-weight: var(--font-weight-normal);
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-relaxed);
+  font-size: var(--type-body);
+  line-height: var(--line-height-body);
   font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -29,11 +30,11 @@ body {
   padding: 0;
 }
 
-/* Card styling — neumorphic */
+/* Compatibility treatment for retained grid routes. */
 .tile {
-  border: none;
+  border: 1px solid var(--border);
   background-color: var(--surface);
-  box-shadow: var(--shadow-neu);
+  box-shadow: none;
 }
 
 /* ============================================
@@ -41,14 +42,9 @@ body {
    ============================================ */
 
 /* Focus styles */
-*:focus {
+:focus-visible {
   outline: 2px solid var(--focus);
-  outline-offset: 3px;
-  border-radius: var(--radius-sm);
-}
-
-*:focus:not(:focus-visible) {
-  outline: none;
+  outline-offset: 4px;
 }
 
 /* Skip link for keyboard navigation */
@@ -62,7 +58,7 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   transform: translateY(-200%);
-  transition: transform var(--transition-base) var(--easing-ease);
+  transition: transform var(--motion-duration-interaction) var(--easing-expressive);
   z-index: var(--z-tooltip);
 }
 
@@ -86,33 +82,8 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-}
-
-/* ============================================
-   PERFORMANCE OPTIMIZATIONS
-   ============================================ */
-
-#particle-canvas {
-  will-change: transform;
-  contain: layout style paint;
-}
-
-#scroll-progress {
-  will-change: width;
-  contain: layout style paint;
-}
-
-#theme-customizer-panel {
-  contain: layout style paint;
-}
-
-.floating-shapes {
-  contain: layout style paint;
-}
-
-main {
-  contain: layout;
 }
 
 /* ============================================
@@ -122,30 +93,27 @@ main {
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-tight);
-  letter-spacing: var(--letter-spacing-normal);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.025em;
   color: var(--text);
   margin-top: var(--spacing-11);
   margin-bottom: var(--spacing-5);
 }
 
 h1 {
-  font-weight: var(--font-weight-bold);
-  font-size: clamp(3.25rem, 7vw, 5rem);
-  letter-spacing: var(--letter-spacing-tight);
+  font-size: var(--type-heading-1);
+  letter-spacing: -0.045em;
   margin-top: 0;
   margin-bottom: var(--spacing-7);
 }
 
 h2 {
-  font-size: clamp(2.25rem, 5vw, 3.5rem);
-  letter-spacing: var(--letter-spacing-normal);
+  font-size: var(--type-heading-2);
 }
 
 h3 {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  letter-spacing: var(--letter-spacing-normal);
+  font-size: var(--type-heading-3);
 }
 
 h4 {
@@ -169,37 +137,22 @@ h6 {
 p {
   margin-top: var(--spacing-6);
   margin-bottom: var(--spacing-6);
-  line-height: var(--line-height-loose);
+  line-height: var(--line-height-body);
 }
 
 /* Links */
 a {
   color: var(--accent);
-  text-decoration: none;
-  transition: color var(--transition-base) var(--easing-ease);
-  position: relative;
-  overflow: hidden;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: color var(--motion-duration-interaction) var(--easing-expressive),
+              text-decoration-thickness var(--motion-duration-interaction) var(--easing-expressive);
 }
 
 a:hover {
   color: var(--accent);
-  opacity: 0.8;
-  text-decoration: none;
-}
-
-a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--accent);
-  transition: width var(--transition-slow) var(--easing-ease);
-}
-
-a:hover::after {
-  width: 100%;
+  text-decoration-thickness: 2px;
 }
 
 /* ============================================
@@ -211,7 +164,7 @@ img {
   border-radius: var(--radius-md);
   max-width: 100%;
   height: auto;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 /* ============================================
@@ -236,50 +189,8 @@ td {
 
 /* Smooth transitions for interactive elements */
 a, button, .social-icon, .cta-button {
-  transition: color var(--transition-base) var(--easing-ease),
-              background-color var(--transition-base) var(--easing-ease),
-              border-color var(--transition-base) var(--easing-ease),
-              transform var(--transition-base) var(--easing-ease);
-}
-
-/* Subtle floating animation */
-@keyframes gentle-float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-3px);
-  }
-}
-
-/* Gradient text animation */
-.gradient-text {
-  background: linear-gradient(
-    45deg,
-    var(--accent),
-    color-mix(in srgb, var(--accent) 80%, white),
-    color-mix(in srgb, var(--accent) 70%, black)
-  );
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: var(--accent);
-  -webkit-text-fill-color: transparent;
-  animation: gradient-shift 3s ease infinite;
-}
-
-@supports not (-webkit-background-clip: text) {
-  .gradient-text {
-    color: var(--accent);
-    -webkit-text-fill-color: unset;
-  }
-}
-
-@keyframes gradient-shift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+  transition: color var(--motion-duration-interaction) var(--easing-expressive),
+              background-color var(--motion-duration-interaction) var(--easing-expressive),
+              border-color var(--motion-duration-interaction) var(--easing-expressive),
+              transform var(--motion-duration-interaction) var(--easing-expressive);
 }

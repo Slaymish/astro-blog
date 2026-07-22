@@ -1,0 +1,61 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import ContactBand from '../../components/work/ContactBand.astro';
+import WorkCard from '../../components/work/WorkCard.astro';
+import { getWorkStories } from '../../lib/workData';
+import { SITE_URL, absoluteUrl } from '../../lib/site';
+
+export const prerender = false;
+
+const stories = await getWorkStories();
+const leadStories = stories.filter((story) => story.status === 'lead');
+const supportStories = stories.filter((story) => story.status === 'support');
+---
+
+<Layout
+  title="Selected Work"
+  description="Websites, digital products, AI systems, and technical architecture built by Hamish Burke."
+  canonicalURL={absoluteUrl('/work', SITE_URL)}
+>
+  <header class="work-index__header">
+    <p class="work-index__eyebrow">Selected work · 2024–2026</p>
+    <h1>Useful systems,<br />built properly.</h1>
+    <p class="work-index__intro">
+      Client websites, digital products, AI systems, and technical architecture.
+      Each story starts with what changed—not a list of tools.
+    </p>
+  </header>
+
+  <section aria-labelledby="lead-work-heading">
+    <div class="work-index__section-heading">
+      <h2 id="lead-work-heading">Lead work</h2>
+      <p>Finished client delivery and substantial products.</p>
+    </div>
+    <div>
+      {leadStories.map((story, index) => <WorkCard story={story} reverse={index % 2 === 1} />)}
+    </div>
+  </section>
+
+  <section class="work-index__support" aria-labelledby="support-work-heading">
+    <div class="work-index__section-heading">
+      <h2 id="support-work-heading">Technical studies</h2>
+      <p>Smaller systems that prove a specific engineering capability.</p>
+    </div>
+    <div>
+      {supportStories.map((story) => <WorkCard story={story} variant="row" />)}
+    </div>
+  </section>
+
+  <ContactBand heading="What are you trying to make work?" />
+</Layout>
+
+<style>
+  .work-index__header { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
+  .work-index__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  h1 { font-size: var(--type-display); letter-spacing: -.065em; line-height: .88; margin: 0; max-width: 12ch; }
+  .work-index__intro { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.45; margin: var(--spacing-8) 0 0; max-width: 37rem; }
+  .work-index__section-heading { align-items: end; display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-8); justify-content: space-between; padding-block: var(--spacing-8); }
+  .work-index__section-heading h2 { font-size: clamp(1.8rem, 3vw, 3rem); margin: 0; }
+  .work-index__section-heading p { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: 0; max-width: 25rem; }
+  .work-index__support { margin-block-start: clamp(4rem, 10vw, 9rem); }
+</style>

@@ -7,6 +7,7 @@ import { createSlug } from '../../utils/slug';
 import { fetchSanity } from '../../lib/sanity';
 import { portableTextToHtml, portableTextToPlainText } from '../../lib/portableText';
 import { SITE_URL, absoluteUrl } from '../../lib/site';
+import { legacyRoutePolicy } from '../../lib/legacyRoutes';
 
 export const prerender = false;
 
@@ -21,6 +22,11 @@ type ReportDoc = {
 };
 
 const slug = Astro.params.slug as string;
+
+const routePolicy = legacyRoutePolicy('report', slug);
+if (routePolicy?.action === 'gone') {
+  return new Response('This report has been archived and is no longer published.', { status: 410 });
+}
 
 const report = await fetchSanity<ReportDoc | null>(`
   *[_type == "report" && slug.current == $slug][0]{
@@ -58,7 +64,7 @@ const publishedTime = new Date(report.publishedAt).toISOString();
   canonicalURL={absoluteUrl(`/reports/${report.slug}`, SITE_URL)}
 >
   <Breadcrumb items={[
-    { name: "Reports", url: "/" },
+    { name: "Work", url: "/work" },
     { name: report.title, url: `/reports/${report.slug}` }
   ]} />
   

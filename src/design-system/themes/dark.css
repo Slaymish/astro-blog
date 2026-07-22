@@ -1,13 +1,39 @@
 /**
  * DARK THEME
  *
- * Dark color scheme — applied when .dark class is present on <html>.
- *
- * The active design system uses --bg, --surface, --text, --accent, etc.
- * (defined in Layout.astro critical styles and tokens.css).
- * This file is kept for any future extension.
+ * The release has one deliberate theme. Canonical semantic roles live here;
+ * the shorter aliases keep retained routes working during the rebuild.
  */
 
 .dark {
-  /* Currently empty — all active tokens are in tokens.css and Layout.astro */
+  color-scheme: dark;
+
+  --color-bg-canvas: var(--color-ink-950);
+  --color-bg-raised: var(--color-ink-900);
+  --color-bg-inset: var(--color-ink-1000);
+  --color-text-primary: var(--color-paper-50);
+  --color-text-secondary: var(--color-paper-400);
+  --color-stroke-subtle: var(--color-line-700);
+  --color-stroke-strong: var(--color-line-500);
+  --color-action: var(--color-signal-400);
+  --color-action-ink: var(--color-signal-950);
+  --color-focus-ring: var(--color-signal-400);
+
+  --bg: var(--color-bg-canvas);
+  --surface: var(--color-bg-raised);
+  --surface-2: var(--color-bg-inset);
+  --text: var(--color-text-primary);
+  --text-muted: var(--color-text-secondary);
+  --border: var(--color-stroke-subtle);
+  --border-strong: var(--color-stroke-strong);
+  --accent: var(--color-action);
+  --accent-contrast: var(--color-action-ink);
+  --focus: var(--color-focus-ring);
+
+  --shadow-neu: none;
+  --shadow-neu-inset: none;
+  --shadow-neu-hover: none;
+  --tile-image-text: var(--color-text-primary);
+  --tile-image-label-text: var(--color-text-primary);
+  --tile-image-label-bg: rgb(7 9 8 / 0.82);
 }

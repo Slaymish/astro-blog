@@ -1,514 +1,99 @@
 ---
-import Layout from "../components/layout/Layout.astro";
-import { fetchSanity } from "../lib/sanity";
+import Layout from '../components/layout/Layout.astro';
+import ButtonLink from '../components/ui/ButtonLink.astro';
+import ContactBand from '../components/work/ContactBand.astro';
+import WorkCard from '../components/work/WorkCard.astro';
+import { getWorkStories } from '../lib/workData';
+import { BOOKING_URL } from '../lib/site';
 
 export const prerender = false;
 
-type ProjectDoc = {
-  title: string;
-  description?: string;
-  slug: string;
-  date: string;
-  technologies?: string[];
-  homeTileSize?: 'square' | 'wide';
-  relatedPostSlug?: string;
-  link?: string;
-};
-
-type PostDoc = {
-  title: string;
-  excerpt?: string;
-  slug: string;
-  publishedAt: string;
-  tags?: string[];
-};
-
-type ReportDoc = {
-  title: string;
-  description?: string;
-  slug: string;
-  publishedAt: string;
-  tags?: string[];
-};
-
-
-const projects = await fetchSanity<ProjectDoc[]>(`
-  *[_type == "project"] | order(date desc)[0...8]{
-    title,
-    description,
-    "slug": slug.current,
-    date,
-    technologies,
-    homeTileSize,
-    link,
-    "relatedPostSlug": relatedPost->slug.current
-  }
-`);
-
-const posts = await fetchSanity<PostDoc[]>(`
-  *[_type == "post"] | order(publishedAt desc)[0...6]{
-    title,
-    excerpt,
-    "slug": slug.current,
-    publishedAt,
-    tags
-  }
-`);
-
-const reports = await fetchSanity<ReportDoc[]>(`
-  *[_type == "report"] | order(publishedAt desc)[0...6]{
-    title,
-    description,
-    "slug": slug.current,
-    publishedAt,
-    tags
-  }
-`);
-
-
-const homeDescription = "Software engineer building AI infrastructure, self-hosted tools, and full-stack web applications.";
-
-const displayPosts = [
-  ...posts.map(p => ({ ...p, _type: 'post' as const })),
-  ...reports.map(r => ({ ...r, excerpt: r.description, _type: 'report' as const }))
-].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-
-const featuredProjects = projects.slice(0, 4);
-const recentWriting = displayPosts.slice(0, 4);
-
-// Debug: Check if data is loading
-console.log('Projects:', projects.length);
-console.log('Posts:', posts.length);
-console.log('Reports:', reports.length);
+const stories = await getWorkStories();
+const leadStories = stories.filter((story) => story.status === 'lead');
 ---
 
-<Layout title="Hamish Burke" description={homeDescription} fullWidth>
-
-  <!-- ============================================
-       HERO — Full viewport, massive bold text
-       ============================================ -->
-  <section class="home-hero relative flex flex-col justify-center items-center min-h-[90vh] -mt-8 sm:-mt-12 md:-mt-16 mb-0 overflow-hidden">
-    <div class="w-full max-w-[90rem] mx-auto px-4 sm:px-8">
-      <!-- Invisible reference: the nav logo scales up to align with this exact position -->
-      <div class="flex justify-center mb-4 sm:mb-12">
-        <div class="home-hero-logo-ref" style="width:180px;height:180px;opacity:0;" aria-hidden="true"></div>
+<Layout
+  title="Hamish Burke"
+  description="Software engineer in Wellington building useful websites, digital products, AI automation, and technical systems."
+>
+  <section class="home-hero">
+    <p class="home-hero__eyebrow">Hamish Burke · Software engineer · Wellington, NZ</p>
+    <h1>I make complicated software <span>useful.</span></h1>
+    <div class="home-hero__lower">
+      <p>
+        I help people turn unclear technical problems into websites, digital products,
+        AI automation, and systems that are ready to use.
+      </p>
+      <div class="home-hero__actions">
+        <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">Book a call</ButtonLink>
+        <ButtonLink href="/work" variant="secondary">See selected work</ButtonLink>
       </div>
+    </div>
+    <ul class="home-hero__services" aria-label="Services">
+      <li><span>01</span> Websites &amp; digital products</li>
+      <li><span>02</span> AI automation</li>
+      <li><span>03</span> Solution architecture</li>
+    </ul>
+  </section>
 
-      <h1 class="home-hero-heading font-serif font-extrabold text-[var(--text)] leading-[0.92] tracking-[-0.05em] mb-4 sm:mb-12">
-        Software engineer.<br class="hidden sm:block" />
-        Wellington, NZ.<br class="hidden sm:block" />
-        <span class="text-[var(--text-muted)]">AI infrastructure. Self-hosted tools. Full-stack.</span>
-      </h1>
-      <div class="flex flex-wrap gap-3 sm:gap-6">
-        <a
-          href="/projects"
-          class="cta-primary group inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline py-3 px-6 rounded-full border border-[var(--accent)] transition-all duration-300 hover:bg-[var(--accent)] hover:text-[var(--accent-contrast)] hover:opacity-100"
-        >
-          View work
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">
-            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-          </svg>
-        </a>
-        <a
-          href="/about"
-          class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--text-muted)] no-underline border-b-0 py-3 px-6 transition-colors duration-300 hover:text-[var(--text)]"
-        >
-          About me
-        </a>
+  <section class="home-work" aria-labelledby="selected-work-heading">
+    <div class="home-section-heading">
+      <div>
+        <p>Proof, not promises</p>
+        <h2 id="selected-work-heading">Selected work</h2>
       </div>
+      <a href="/work">All work <span aria-hidden="true">→</span></a>
+    </div>
+    {leadStories.map((story, index) => <WorkCard story={story} reverse={index % 2 === 1} />)}
+  </section>
+
+  <section class="home-approach" aria-labelledby="approach-heading">
+    <p class="home-approach__label">How I work</p>
+    <div>
+      <h2 id="approach-heading">Clear decisions.<br />Honest outcomes.</h2>
+      <p>
+        I work from the problem outward: define what matters, choose the smallest sound system,
+        and make the result understandable to the people who have to use it. The case studies show
+        the constraints and trade-offs, not just the finished surface.
+      </p>
+      <a href="/about">More about me <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
-  <!-- ============================================
-       SELECTED PROJECTS — Large showcase cards
-       ============================================ -->
-  <section class="home-section py-16 sm:py-24 md:py-32 max-w-[var(--content-max-width)] mx-auto">
-    <div data-reveal>
-      <div class="flex items-end justify-between mb-12 sm:mb-16">
-        <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
-          Selected<br />projects
-        </h2>
-        <a href="/projects" class="hidden sm:inline-flex items-center gap-2 text-sm uppercase tracking-[0.1em] text-[var(--text-muted)] no-underline border-b-0 font-medium transition-colors hover:text-[var(--accent)]">
-          All projects
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <div class="space-y-6 sm:space-y-8">
-      {featuredProjects.map((project, i) => {
-        const href = project.relatedPostSlug
-          ? `/posts/${project.relatedPostSlug}`
-          : `/projects/${project.slug}`;
-        const dateStr = new Date(project.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-        return (
-          <div data-reveal data-reveal-delay={i * 80}>
-            <a
-              href={href}
-              class="project-card group block no-underline border-b-0 text-inherit hover:text-inherit"
-            >
-              <article class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[var(--surface)] p-6 sm:p-8 md:p-10 transition-all duration-500 hover:bg-[var(--surface-2)] hover:shadow-lg">
-                <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 sm:gap-8">
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-3 mb-4">
-                      <span class="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)] font-medium">{dateStr}</span>
-                      {project.technologies?.slice(0, 2).map((tech: string) => (
-                        <span class="text-xs uppercase tracking-[0.08em] text-[var(--accent)] font-medium">{tech}</span>
-                      ))}
-                    </div>
-                    <h3 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[var(--text)] leading-[1.1] mb-3 transition-colors duration-300 group-hover:text-[var(--accent)]"
-                      transition:name={`title-projects-${project.slug}`}
-                    >{project.title}</h3>
-                    {project.description && (
-                      <p class="text-base sm:text-lg text-[var(--text-muted)] leading-relaxed max-w-[36rem] line-clamp-2 m-0">{project.description}</p>
-                    )}
-                  </div>
-                  <div class="flex-shrink-0 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-[var(--accent-contrast)]">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"/>
-                    </svg>
-                  </div>
-                </div>
-              </article>
-            </a>
-          </div>
-        );
-      })}
-    </div>
-
-    <div class="sm:hidden mt-8 text-center">
-      <a href="/projects" class="inline-flex items-center gap-2 text-sm uppercase tracking-[0.1em] text-[var(--text-muted)] no-underline border-b-0 font-medium transition-colors hover:text-[var(--accent)]">
-        All projects →
-      </a>
-    </div>
-  </section>
-
-  <!-- ============================================
-       STATEMENT — Bold typographic section
-       ============================================ -->
-  <section class="py-20 sm:py-28 md:py-36 max-w-[var(--content-max-width)] mx-auto">
-    <div data-reveal>
-      <blockquote class="home-statement font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.1] m-0 p-0 border-0 bg-transparent max-w-[56rem]" style="font-style: normal;">
-        I build tools and write about what I learn — sharing knowledge to help others navigate the same challenges.
-      </blockquote>
-    </div>
-    <div data-reveal data-reveal-delay="200">
-      <div class="mt-8 sm:mt-12">
-        <a href="/writing" class="inline-flex items-center gap-3 text-base sm:text-lg font-medium text-[var(--accent)] no-underline border-b-0 transition-all duration-300 hover:gap-4">
-          Read my writing
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
-            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       RECENT WRITING — Scroll-revealed list
-       ============================================ -->
-  <section class="home-section py-16 sm:py-24 md:py-32 border-t border-[var(--border)] max-w-[var(--content-max-width)] mx-auto">
-    <div data-reveal>
-      <div class="flex items-end justify-between mb-12 sm:mb-16">
-        <h2 class="home-section-heading font-serif font-bold text-[var(--text)] tracking-[-0.03em] leading-[1.05] m-0">
-          Recent<br />writing
-        </h2>
-        <a href="/writing" class="hidden sm:inline-flex items-center gap-2 text-sm uppercase tracking-[0.1em] text-[var(--text-muted)] no-underline border-b-0 font-medium transition-colors hover:text-[var(--accent)]">
-          All articles
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <div class="divide-y divide-[var(--border)]">
-      {recentWriting.map((post, i) => {
-        const dateStr = new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-        const prefix = post._type === 'report' ? 'reports' : 'posts';
-        const isReport = post._type === 'report';
-        return (
-          <div data-reveal data-reveal-delay={i * 80}>
-            <a
-              href={`/${prefix}/${post.slug}`}
-              class={`writing-row group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8 py-6 sm:py-8 no-underline border-b-0 text-inherit hover:text-inherit transition-all duration-300 ${isReport ? 'writing-row--report' : ''}`}
-            >
-              <div class="flex sm:flex-col sm:items-start gap-3 sm:gap-1 sm:w-40 flex-shrink-0">
-                <span class={`type-badge ${isReport ? 'type-badge--report' : 'type-badge--post'}`}>
-                  {isReport ? 'Report' : 'Post'}
-                </span>
-                <span class="text-xs text-[var(--text-muted)] uppercase tracking-[0.06em]">{dateStr}</span>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-[-0.02em] text-[var(--text)] leading-tight transition-colors duration-300 group-hover:text-[var(--accent)] m-0"
-                  transition:name={`title-${prefix}-${post.slug}`}
-                >{post.title}</h3>
-                {post.excerpt && (
-                  <p class="text-sm sm:text-base text-[var(--text-muted)] mt-2 line-clamp-1 m-0">{post.excerpt}</p>
-                )}
-              </div>
-              <div class="flex-shrink-0 w-10 h-10 rounded-full border border-[var(--border)] flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] group-hover:text-[var(--accent)] max-sm:hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-                </svg>
-              </div>
-            </a>
-          </div>
-        );
-      })}
-    </div>
-
-    <div class="sm:hidden mt-8 text-center">
-      <a href="/writing" class="inline-flex items-center gap-2 text-sm uppercase tracking-[0.1em] text-[var(--text-muted)] no-underline border-b-0 font-medium transition-colors hover:text-[var(--accent)]">
-        All articles →
-      </a>
-    </div>
-  </section>
-
-  <!-- ============================================
-       READING LINK — Compact inline link
-       ============================================ -->
-  <section class="py-10 sm:py-12 border-t border-[var(--border)] max-w-[var(--content-max-width)] mx-auto">
-    <div data-reveal>
-      <a href="/reading" class="group inline-flex items-center gap-3 no-underline border-b-0">
-        <span class="text-xs uppercase tracking-[0.15em] text-[var(--text-muted)] font-medium">Currently reading</span>
-        <span class="w-px h-4 bg-[var(--border)]"></span>
-        <span class="text-base font-medium text-[var(--text)] transition-colors duration-200 group-hover:text-[var(--accent)]">
-          See my reading list
-        </span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-[var(--text-muted)] transition-all duration-300 group-hover:text-[var(--accent)] group-hover:translate-x-1" aria-hidden="true">
-          <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-        </svg>
-      </a>
-    </div>
-  </section>
-
-  <!-- ============================================
-       STAGGERED CTA CARDS — Layered, overlapping
-       ============================================ -->
-  <section class="home-cta-section relative py-20 sm:py-28 md:py-36 overflow-hidden">
-    <div data-reveal>
-      <div class="relative max-w-[56rem] mx-auto">
-
-        <!-- Background staggered cards (decorative layers) -->
-        <div class="home-cta-stack relative">
-          <!-- Card layer 3 (furthest back) -->
-          <div class="home-cta-layer home-cta-layer--3 absolute inset-x-6 sm:inset-x-12 -top-6 sm:-top-8 rounded-2xl sm:rounded-3xl bg-[var(--surface-2)] opacity-50 h-full" aria-hidden="true"></div>
-          <!-- Card layer 2 -->
-          <div class="home-cta-layer home-cta-layer--2 absolute inset-x-3 sm:inset-x-6 -top-3 sm:-top-4 rounded-2xl sm:rounded-3xl bg-[var(--surface)] opacity-75 h-full" aria-hidden="true"></div>
-          <!-- Card layer 1 (front) -->
-          <div class="home-cta-card relative rounded-2xl sm:rounded-3xl bg-[var(--surface)] p-8 sm:p-12 md:p-16 text-center z-10">
-            <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold tracking-[-0.03em] text-[var(--text)] leading-[1.1] mb-6">
-              Let's connect
-            </h2>
-            <p class="text-base sm:text-lg text-[var(--text-muted)] max-w-[28rem] mx-auto leading-relaxed mb-10 mt-0">
-              Currently a Junior Web Developer at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">Alphero</a>.
-              Always open to interesting conversations and collaborations.
-            </p>
-            <div class="flex flex-wrap justify-center gap-4">
-              <a href="/about" class="home-cta-btn-primary inline-flex items-center gap-2 text-base font-medium no-underline border-b-0 py-3 px-8 rounded-full bg-[var(--accent)] transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
-                About me
-              </a>
-              <a href="https://github.com/Slaymish" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-base font-medium text-[var(--text)] no-underline border-b-0 py-3 px-8 rounded-full border border-[var(--border)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--accent)]">
-                GitHub
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"/>
-                </svg>
-              </a>
-              <a href="/tools" class="inline-flex items-center gap-2 text-base font-medium text-[var(--text)] no-underline border-b-0 py-3 px-8 rounded-full border border-[var(--border)] transition-all duration-300 hover:border-[var(--accent)] hover:text-[var(--accent)]">
-                Try my tools
-              </a>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
+  <ContactBand heading="What are you trying to make work?" />
 </Layout>
 
 <style>
-  /* Primary CTA button — override global a color */
-  .home-cta-btn-primary {
-    color: var(--accent-contrast) !important;
-    -webkit-text-fill-color: var(--accent-contrast);
+  .home-hero { display: flex; flex-direction: column; min-height: clamp(38rem, calc(100svh - 12rem), 50rem); padding-block: var(--hero-top-space) var(--spacing-8); }
+  .home-hero__eyebrow,
+  .home-section-heading p,
+  .home-approach__label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  .home-hero h1 { font-size: clamp(3.35rem, 9.8vw, 9rem); letter-spacing: -.07em; line-height: .86; margin: 0; max-width: 11ch; }
+  .home-hero h1 span { color: var(--color-action); }
+  .home-hero__lower { align-items: end; display: grid; gap: var(--spacing-6); margin-block: clamp(2rem, 6vw, 5rem); }
+  .home-hero__lower > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; margin: 0; max-width: 38rem; }
+  .home-hero__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-3); }
+  .home-hero__services { border-top: 1px solid var(--color-stroke-subtle); display: grid; list-style: none; margin: auto 0 0; padding: 0; }
+  .home-hero__services li { border-bottom: 1px solid var(--color-stroke-subtle); color: var(--color-text-primary); font-size: var(--type-body-small); padding-block: var(--spacing-3); }
+  .home-hero__services span { color: var(--color-text-secondary); display: inline-block; font-family: var(--font-mono); font-size: .65rem; width: 2rem; }
+  .home-work { margin-block-start: clamp(3rem, 5vw, 5rem); }
+  .home-section-heading { align-items: end; display: flex; justify-content: space-between; padding-block: var(--spacing-8); }
+  .home-section-heading h2 { font-size: clamp(2.3rem, 5vw, 4.5rem); margin: 0; }
+  .home-section-heading a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
+  .home-section-heading a:hover { color: var(--color-action); }
+  .home-approach { border-block: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); margin-block: clamp(5rem, 12vw, 10rem); padding-block: clamp(3rem, 7vw, 6rem); }
+  .home-approach h2 { font-size: clamp(2.5rem, 6vw, 5.5rem); letter-spacing: -.055em; margin: 0; }
+  .home-approach div > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.6; max-width: 43rem; }
+  .home-approach a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
+  .home-approach a:hover { color: var(--color-action); }
+  @media (min-width: 48rem) {
+    .home-hero__lower { grid-template-columns: minmax(0, 1.3fr) minmax(20rem, .7fr); }
+    .home-hero__services { grid-template-columns: repeat(3, 1fr); }
+    .home-hero__services li { padding-inline: var(--spacing-4); }
+    .home-hero__services li:first-child { padding-left: 0; }
+    .home-approach { grid-template-columns: minmax(10rem, .45fr) minmax(0, 1.55fr); }
   }
-
-  .home-cta-btn-primary:hover {
-    color: var(--accent-contrast) !important;
-    opacity: 1;
-  }
-
-  .home-cta-btn-primary::after {
-    display: none !important;
-  }
-
-  /* Hero heading — massive responsive type */
-  .home-hero-heading {
-    font-size: clamp(2.5rem, 11vw, 9.5rem);
-  }
-
-  /* Section headings — large but not hero-sized */
-  .home-section-heading {
-    font-size: clamp(2.5rem, 7vw, 5rem);
-  }
-
-  /* Statement quote — large editorial text */
-  .home-statement {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-  }
-
-  /* CTA stacked cards depth effect */
-  .home-cta-stack {
-    perspective: 1000px;
-  }
-
-  .home-cta-layer {
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .home-cta-stack:hover .home-cta-layer--3 {
-    transform: translateY(-4px) scale(0.96);
-  }
-
-  .home-cta-stack:hover .home-cta-layer--2 {
-    transform: translateY(-2px) scale(0.98);
-  }
-
-  .home-cta-card {
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
-  }
-
-  .home-cta-stack:hover .home-cta-card {
-    transform: translateY(-2px);
-    box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
-  }
-
-  :global(.dark) .home-cta-stack:hover .home-cta-card {
-    box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.5);
-  }
-
-  /* Writing row hover padding shift */
-  .writing-row {
-    padding-left: 0;
-    transition: padding-left 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
-  }
-
-  .writing-row:hover {
-    padding-left: 0.5rem;
-  }
-
-  /* Report rows get a distinct left accent */
-  .writing-row--report {
-    border-left: 2px solid transparent;
-    padding-left: 1rem;
-    margin-left: -1rem;
-    transition: border-color 0.3s ease, padding-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .writing-row--report:hover {
-    border-left-color: var(--border-strong);
-    padding-left: 1.5rem;
-  }
-
-  /* Type badges */
-  .type-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    flex-shrink: 0;
-  }
-
-  .type-badge--post {
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    color: var(--accent);
-  }
-
-  .type-badge--report {
-    background: color-mix(in srgb, var(--text-muted) 12%, transparent);
-    color: var(--text-muted);
-  }
-
-  /* Project card subtle lift */
-  .project-card article {
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-                background-color 0.3s ease,
-                box-shadow 0.5s ease;
-  }
-
-  .project-card:hover article {
-    transform: translateY(-2px);
-  }
-
-  /* ── Scroll Reveal (CSS-only initial state) ── */
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
-  }
-
-  [data-reveal].revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
+  @media (max-width: 30rem) {
+    .home-hero h1 { min-height: 3.44em; }
   }
 </style>
-
-<script>
-  function initScrollReveal() {
-    const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
-    if (!els.length) return;
-
-    // Respect reduced motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      els.forEach(el => el.classList.add('revealed'));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const el = entry.target as HTMLElement;
-            const delay = parseInt(el.dataset.revealDelay || '0', 10);
-            if (delay > 0) {
-              setTimeout(() => el.classList.add('revealed'), delay);
-            } else {
-              el.classList.add('revealed');
-            }
-            observer.unobserve(el);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-    );
-
-    els.forEach((el) => observer.observe(el));
-  }
-
-  // Run on initial load and after Astro view transitions
-  document.addEventListener('astro:page-load', initScrollReveal);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initScrollReveal);
-  } else {
-    initScrollReveal();
-  }
-</script>
-

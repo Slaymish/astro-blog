@@ -19,7 +19,7 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
-  /* Warm gray scale */
+  /* Legacy neutral scale retained for existing route utilities. */
   --color-gray-50: #faf9f7;
   --color-gray-100: #f5f2ed;
   --color-gray-200: #e8e4dd;
@@ -32,24 +32,23 @@
   --color-gray-900: #1a1a1a;
   --color-gray-950: #0c0c0c;
 
-  /* Accent color presets (default: forest) */
+  /* Legacy accent presets retained until the old index routes are rebuilt. */
   --accent-forest: #2d6a4f;
   --accent-sage: #686d62;
   --accent-sand: #b5a28a;
   --accent-slate: #64748b;
   --accent-charcoal: #3d3d3d;
 
-  /* Semantic colors - Light theme */
-  --bg: #faf9f7;
-  --surface: #f0ede8;
-  --surface-2: #e8e4dd;
-  --text: #1a1a1a;
-  --text-muted: #6b6560;
-  --border: #d6d0c8;
-  --border-strong: #b5afa6;
-  --accent: #2d6a4f;
-  --accent-contrast: #faf9f7;
-  --focus: #2d6a4f;
+  /* Brand primitives. Semantic aliases live in themes/dark.css. */
+  --color-ink-950: #0b0d0c;
+  --color-ink-900: #121614;
+  --color-ink-1000: #070908;
+  --color-paper-50: #f2f5ef;
+  --color-paper-400: #aab3ac;
+  --color-line-700: #2b332e;
+  --color-line-500: #69736b;
+  --color-signal-400: #e96b50;
+  --color-signal-950: #100b09;
 
   /* ============================================
      SPACING SCALE
@@ -95,15 +94,16 @@
      TYPOGRAPHY
      ============================================ */
 
-  /* Font families — Syne for bold editorial headings, Figtree for clean readable body */
+  /* Syne provides identity; Figtree handles navigation and long reading. */
   --font-sans: 'Figtree', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-serif: 'Syne', 'DM Serif Display', Georgia, sans-serif;
+  --font-display: 'Syne', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
 
   /* Semantic font usage */
   --font-body: var(--font-sans);
-  --font-heading: var(--font-serif);
+  --font-heading: var(--font-display);
   --font-code: var(--font-mono);
+  --font-serif: var(--font-display); /* compatibility alias */
 
   /* Font sizes - simplified to match UPDATE.md spec */
   --font-size-xs: 0.8125rem;   /* 13px - small/meta */
@@ -115,6 +115,15 @@
   --font-size-3xl: 1.75rem;    /* 28px - H2 */
   --font-size-4xl: 2.5rem;     /* 40px - H1 desktop */
   --font-size-5xl: 3rem;       /* 48px - H1 desktop */
+
+  /* Fluid editorial roles. */
+  --type-display: clamp(3rem, 9vw, 7.5rem);
+  --type-heading-1: clamp(2.75rem, 7vw, 6rem);
+  --type-heading-2: clamp(2rem, 4.5vw, 4.5rem);
+  --type-heading-3: clamp(1.5rem, 2.5vw, 2.5rem);
+  --type-body: clamp(1rem, 0.25vw + 0.94rem, 1.125rem);
+  --type-body-small: 0.9375rem;
+  --type-label: 0.75rem;
 
   /* Font weights */
   --font-weight-thin: 100;
@@ -134,6 +143,9 @@
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.625;
   --line-height-loose: 2;
+  --line-height-display: 0.92;
+  --line-height-heading: 1.05;
+  --line-height-body: 1.6;
 
   /* Letter spacing */
   --letter-spacing-tighter: -0.05em;
@@ -149,12 +161,12 @@
      ============================================ */
 
   --radius-none: 0;
-  --radius-sm: 0.5rem;        /* 8px - small UI */
-  --radius-base: 0.625rem;    /* 10px - buttons/chips */
-  --radius-md: 0.75rem;       /* 12px - cards */
-  --radius-lg: 0.75rem;       /* 12px */
-  --radius-xl: 1rem;          /* 16px */
-  --radius-2xl: 1.5rem;       /* 24px */
+  --radius-sm: 0.125rem;
+  --radius-base: 0.125rem;
+  --radius-md: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.25rem;
+  --radius-2xl: 0.25rem;
   --radius-full: 9999px;
 
   /* ============================================
@@ -198,6 +210,9 @@
   --transition-base: 200ms;
   --transition-slow: 300ms;
   --transition-slower: 500ms;
+  --motion-duration-interaction: 160ms;
+  --motion-duration-entry: 480ms;
+  --motion-distance-interaction: 0.125rem;
 
   /* ============================================
      EASING FUNCTIONS
@@ -210,6 +225,7 @@
   --easing-ease-in-out: ease-in-out;
   --easing-cubic: cubic-bezier(0.4, 0, 0.2, 1);
   --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --easing-expressive: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   /* ============================================
      LAYOUT
@@ -223,14 +239,19 @@
   --container-2xl: 1536px;
 
   /* Content max-widths */
-  --content-max-width: 1200px;     /* slightly wider canvas */
-  --reading-width: 750px;          /* 720-780px reading width */
+  --content-max-width: 90rem;
+  --reading-width: 68ch;
   --toc-width: 270px;              /* 240-300px TOC */
 
-  /* Responsive padding (UPDATE.md spec) */
-  --padding-mobile: 1.5rem;        /* 24px mobile */
-  --padding-tablet: 2rem;          /* 32px tablet */
-  --padding-desktop: 2.5rem;       /* 40px desktop */
+  /* Fluid shell and section rhythm. */
+  --page-gutter: clamp(1.25rem, 4vw, 4rem);
+  --section-space: clamp(4.5rem, 10vw, 9rem);
+  --hero-top-space: 0rem;
+  --hero-bottom-space: clamp(3.5rem, 7vw, 6rem);
+  --grid-gap: clamp(0.75rem, 2vw, 1.5rem);
+  --padding-mobile: var(--page-gutter);
+  --padding-tablet: var(--page-gutter);
+  --padding-desktop: var(--page-gutter);
 
   /* ============================================
      GRID & TILES
@@ -238,16 +259,16 @@
 
   /* Grid system */
   --grid-columns: 12;
-  --grid-gap: 1rem;
+  --grid-gap-legacy: 1rem;
   --grid-row-height: 18px;
 
   /* Tile styling — neumorphic */
   --tile-border: none;
   --tile-border-hover: none;
-  --tile-radius: 1rem;
+  --tile-radius: var(--radius-md);
   --tile-padding: 1.75rem;
   --tile-bg: var(--surface);
-  --tile-bg-hover: var(--surface);
+  --tile-bg-hover: var(--surface-2);
   --tile-image-text: #f8fafc;
   --tile-image-label-text: #ffffff;
   --tile-image-label-bg: rgba(0, 0, 0, 0.45);
@@ -271,45 +292,4 @@
   --tile-min-height-medium: 12.5rem;
   --tile-min-height-large: 15rem;
   --tile-min-height-wide: 17rem;
-}
-
-/* ============================================
-   DARK THEME OVERRIDES
-   ============================================ */
-
-.dark {
-  /* Semantic colors - Dark theme */
-  --bg: #0c0c0c;
-  --surface: #1a1917;
-  --surface-2: #26251f;
-  --text: #e8e4dd;
-  --text-muted: #9a948c;
-  --border: #3d3a34;
-  --border-strong: #524e46;
-  --accent: #4ade80;
-  --accent-contrast: #0c0c0c;
-  --focus: #4ade80;
-  --tile-image-text: #e8e4dd;
-  --tile-image-label-text: #faf9f7;
-  --tile-image-label-bg: rgba(0, 0, 0, 0.7);
-  --tile-image-text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-  --tile-image-label-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
-
-  /* Neumorphic shadows (dark theme) */
-  --shadow-neu: 6px 6px 12px rgba(0, 0, 0, 0.25),
-                -6px -6px 12px rgba(50, 48, 42, 0.15);
-  --shadow-neu-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.25),
-                      inset -4px -4px 8px rgba(50, 48, 42, 0.15);
-  --shadow-neu-hover: 8px 8px 16px rgba(0, 0, 0, 0.3),
-                      -8px -8px 16px rgba(50, 48, 42, 0.2);
-
-  /* Adjust shadows for dark mode */
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-  --shadow-base: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
-  --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.5);
-  --shadow-2xl: 0 50px 100px -20px rgb(0 0 0 / 0.6);
-  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.3);
 }

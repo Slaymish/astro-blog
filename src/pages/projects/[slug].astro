@@ -3,6 +3,7 @@ import Layout from "../../components/layout/Layout.astro";
 import ParallaxHero from "../../components/features/ParallaxHero.astro";
 import { fetchSanity } from "../../lib/sanity";
 import { portableTextToHtml } from "../../lib/portableText";
+import { legacyRoutePolicy } from "../../lib/legacyRoutes";
 
 export const prerender = false;
 
@@ -20,6 +21,17 @@ type ProjectDoc = {
 };
 
 const { slug } = Astro.params;
+
+const routePolicy = legacyRoutePolicy('project', slug as string);
+if (routePolicy?.action === 'redirect') {
+  return Astro.redirect(routePolicy.destination, 301);
+}
+if (routePolicy?.action === 'gone') {
+  return new Response('This project has been archived and is no longer published.', { status: 410 });
+}
+if (routePolicy?.action === 'unlisted') {
+  Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+}
 
 const project = await fetchSanity<ProjectDoc | null>(`
   *[_type == "project" && slug.current == $slug][0]{
@@ -62,8 +74,8 @@ const htmlContent = portableTextToHtml(project.body);
     date={project.date}
     tags={technologies}
     titleTransitionName={`title-projects-${project.slug}`}
-    backHref="/projects"
-    backLabel="Projects"
+    backHref="/work"
+    backLabel="Work"
   />
 
   <!-- Action bar -->
@@ -118,11 +130,11 @@ const htmlContent = portableTextToHtml(project.body);
 
   <!-- Footer nav -->
   <nav class="proj-footer" data-reveal aria-label="Project navigation">
-    <a href="/projects" class="proj-footer__link">
+    <a href="/work" class="proj-footer__link">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
         <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd"/>
       </svg>
-      All projects
+      All work
     </a>
   </nav>
 </Layout>
@@ -300,57 +312,4 @@ const htmlContent = portableTextToHtml(project.body);
     display: none !important;
   }
 
-  /* ── data-reveal for this page ── */
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  [data-reveal].revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-  }
 </style>
-
-<script>
-  function initProjectReveal() {
-    const els = document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-parallax-hero] [data-reveal])');
-    if (!els.length) return;
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      els.forEach(el => el.classList.add('revealed'));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).classList.add('revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-    );
-
-    els.forEach(el => observer.observe(el));
-  }
-
-  document.addEventListener('astro:page-load', initProjectReveal);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProjectReveal);
-  } else {
-    initProjectReveal();
-  }
-</script>

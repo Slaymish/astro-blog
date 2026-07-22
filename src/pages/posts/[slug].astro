@@ -11,6 +11,7 @@ import { portableTextToHtml, portableTextToPlainText } from "../../lib/portableT
 import { markdownToHtml, markdownToPlainText } from "../../lib/markdown";
 import { splitHtmlAtInteractive, stripInteractivePlaceholder } from "../../utils/split-html";
 import InteractiveElement from "../../components/interactive/InteractiveElement.astro";
+import { legacyRoutePolicy } from "../../lib/legacyRoutes";
 
 export const prerender = false;
 
@@ -35,6 +36,11 @@ type PostDoc = {
 };
 
 const { slug } = Astro.params;
+
+const routePolicy = legacyRoutePolicy('post', slug as string);
+if (routePolicy?.action === 'redirect') {
+  return Astro.redirect(routePolicy.destination, 301);
+}
 
 const post = await fetchSanity<PostDoc | null>(`
   *[_type == "post" && slug.current == $slug][0]{
@@ -104,13 +110,6 @@ const postDate = post.publishedAt ?? new Date().toISOString();
 const postDateISO = new Date(postDate).toISOString();
 const showUpdated = post.updatedAt && post.updatedAt !== post.publishedAt;
 const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOString() : '';
-const postUpdatedLabel = showUpdated
-  ? new Date(post.updatedAt as string).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    })
-  : '';
 ---
 
 <Layout
@@ -130,8 +129,8 @@ const postUpdatedLabel = showUpdated
     readingTime={readingTime.text}
     tagLinks={tagLinks}
     titleTransitionName={`title-posts-${post.slug}`}
-    backHref="/writing"
-    backLabel="Writing"
+    backHref="/work"
+    backLabel="Work"
   />
 
   <!-- Hidden schema.org metadata -->
@@ -215,11 +214,11 @@ const postUpdatedLabel = showUpdated
 
       <footer class="post-footer" data-reveal>
         <nav aria-label="Post navigation">
-          <a href="/writing" class="back-link">
+          <a href="/work" class="back-link">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
               <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd"/>
             </svg>
-            Back to writing
+            Back to work
           </a>
         </nav>
       </footer>
@@ -455,64 +454,4 @@ const postUpdatedLabel = showUpdated
     }
   }
 
-  /* ── data-reveal ── */
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  [data-reveal].revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-      opacity: 1;
-      transform: none;
-      transition: none;
-    }
-  }
 </style>
-
-<script>
-  function initPostReveal() {
-    const els = document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-parallax-hero] [data-reveal])');
-    if (!els.length) return;
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      els.forEach(el => el.classList.add('revealed'));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).classList.add('revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.05, rootMargin: '0px 0px 0px 0px' }
-    );
-
-    els.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0) {
-        el.classList.add('revealed');
-      } else {
-        observer.observe(el);
-      }
-    });
-  }
-
-  document.addEventListener('astro:page-load', initPostReveal);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPostReveal);
-  } else {
-    initPostReveal();
-  }
-</script>

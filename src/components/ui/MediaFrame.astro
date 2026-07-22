@@ -1,0 +1,100 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  caption?: string;
+  ratio?: 'landscape' | 'wide' | 'square' | 'portrait' | 'natural';
+  fit?: 'cover' | 'contain';
+  position?: string;
+  loading?: 'eager' | 'lazy';
+  sizes?: string;
+  srcset?: string;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  caption,
+  ratio = 'landscape',
+  fit = 'cover',
+  position = 'center',
+  loading = 'lazy',
+  sizes,
+  srcset,
+  class: className = '',
+} = Astro.props;
+---
+
+<figure class:list={['media-frame', `media-frame--${ratio}`, className]}>
+  <div class="media-frame__viewport">
+    <img
+      src={src}
+      srcset={srcset}
+      sizes={sizes}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding="async"
+      style={`object-fit: ${fit}; object-position: ${position};`}
+    />
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .media-frame {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .media-frame__viewport {
+    aspect-ratio: 4 / 3;
+    background: var(--color-bg-inset);
+    border: 1px solid var(--color-stroke-subtle);
+    border-radius: var(--radius-sm);
+    overflow: clip;
+  }
+
+  .media-frame--wide .media-frame__viewport {
+    aspect-ratio: 16 / 9;
+  }
+
+  .media-frame--square .media-frame__viewport {
+    aspect-ratio: 1;
+  }
+
+  .media-frame--portrait .media-frame__viewport {
+    aspect-ratio: 2 / 3;
+  }
+
+  .media-frame--natural .media-frame__viewport {
+    aspect-ratio: auto;
+  }
+
+  img {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+
+  .media-frame--natural img {
+    height: auto;
+  }
+
+  figcaption {
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+    font-size: var(--type-label);
+    line-height: 1.45;
+    margin-block-start: var(--spacing-2);
+  }
+</style>

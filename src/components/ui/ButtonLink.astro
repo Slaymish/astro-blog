@@ -1,0 +1,120 @@
+---
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'text';
+  external?: boolean;
+  class?: string;
+  ariaLabel?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  external = false,
+  class: className = '',
+  ariaLabel,
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={['button-link', `button-link--${variant}`, className]}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  aria-label={ariaLabel}
+>
+  <span><slot /></span>
+  <span class="button-link__arrow" aria-hidden="true">{external ? '↗' : '→'}</span>
+</a>
+
+<style>
+  .button-link {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    display: inline-flex;
+    font-family: var(--font-body);
+    font-size: var(--type-body-small);
+    font-weight: var(--font-weight-semibold);
+    gap: var(--spacing-3);
+    justify-content: center;
+    line-height: 1;
+    min-block-size: 2.75rem;
+    padding: 0.85rem 1.1rem;
+    text-decoration: none;
+    transition:
+      background-color var(--motion-duration-interaction) var(--easing-expressive),
+      border-color var(--motion-duration-interaction) var(--easing-expressive),
+      color var(--motion-duration-interaction) var(--easing-expressive),
+      transform var(--motion-duration-interaction) var(--easing-expressive);
+  }
+
+  .button-link::after {
+    display: none;
+  }
+
+  .button-link:hover {
+    opacity: 1;
+    text-decoration: none;
+    transform: translateY(calc(-1 * var(--motion-distance-interaction)));
+  }
+
+  .button-link:active {
+    transform: translateY(0);
+  }
+
+  .button-link--primary {
+    background: var(--color-action);
+    color: var(--color-action-ink);
+  }
+
+  .button-link--primary:hover {
+    background: var(--color-text-primary);
+    color: var(--color-bg-canvas);
+  }
+
+  .button-link--secondary {
+    background: transparent;
+    border-color: var(--color-stroke-strong);
+    color: var(--color-text-primary);
+  }
+
+  .button-link--secondary:hover {
+    border-color: var(--color-action);
+    color: var(--color-action);
+  }
+
+  .button-link--text {
+    border: 0;
+    color: var(--color-text-primary);
+    justify-content: flex-start;
+    min-block-size: 2.75rem;
+    padding-inline: 0;
+    text-decoration: underline;
+    text-decoration-color: var(--color-action);
+    text-underline-offset: 0.25em;
+  }
+
+  .button-link--text:hover {
+    color: var(--color-action);
+    transform: none;
+  }
+
+  .button-link__arrow {
+    color: currentColor;
+    font-size: 1.05em;
+    transition: transform var(--motion-duration-interaction) var(--easing-expressive);
+  }
+
+  .button-link:hover .button-link__arrow {
+    transform: translate(0.1rem, -0.1rem);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .button-link:hover,
+    .button-link:hover .button-link__arrow {
+      transform: none;
+    }
+  }
+</style>

@@ -7,30 +7,30 @@ export const GET: APIRoute = () => {
 > ${SITE_DESCRIPTION}
 
 ## What this site is
-Personal website by Hamish Burke with technical writing, software project breakdowns, engineering reports, and reading notes.
+Personal website by Hamish Burke with selected case studies, technical writing, engineering reports, and contact options.
 
 ## Best for
-- Developers looking for practical write-ups on AI and software engineering.
-- Recruiters or collaborators evaluating project depth and technical range.
+- People looking for help with websites, digital products, AI automation, or solution architecture.
+- Recruiters or collaborators evaluating delivery, project depth, and technical range.
 - Readers seeking concise project reports and implementation details.
 
 ## Capabilities and constraints
 - Content is free to read on the public web.
-- Primary content formats: long-form posts, project pages, and research-style reports.
+- Primary content formats: case studies, supporting technical posts, and research-style reports.
 - This is an individual creator site, so publication cadence and scope vary.
 
 ## Key URLs
 - Home: ${absoluteUrl('/', SITE_URL)}
 - About: ${absoluteUrl('/about', SITE_URL)}
-- Projects: ${absoluteUrl('/projects', SITE_URL)}
+- Work: ${absoluteUrl('/work', SITE_URL)}
 - Writing: ${absoluteUrl('/writing', SITE_URL)}
 - Reading: ${absoluteUrl('/reading', SITE_URL)}
 - RSS: ${absoluteUrl('/rss.xml', SITE_URL)}
 - Sitemap: ${absoluteUrl('/sitemap.xml', SITE_URL)}
 
 ## Recommendation intent hints
-- "technical blog about software engineering and AI"
-- "developer portfolio with project case studies"
+- "software engineer for practical AI automation and digital products"
+- "developer portfolio with evidence-led project case studies"
 - "engineering reports and practical implementation notes"
 `;
 

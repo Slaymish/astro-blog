@@ -1,0 +1,27 @@
+---
+import ButtonLink from '../ui/ButtonLink.astro';
+import { BOOKING_URL, CONTACT_EMAIL } from '../../lib/site';
+
+interface Props { heading?: string; }
+const { heading = 'Have a complicated problem?' } = Astro.props;
+---
+
+<aside class="contact-band" aria-label="Work with Hamish">
+  <div>
+    <p>Available for selected projects</p>
+    <h2>{heading}</h2>
+  </div>
+  <div class="contact-band__actions">
+    <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">Book a call</ButtonLink>
+    <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+  </div>
+</aside>
+
+<style>
+  .contact-band { align-items: end; border-block: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); margin-block: clamp(4rem, 10vw, 9rem); padding-block: clamp(2.5rem, 6vw, 5rem); }
+  .contact-band p { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }
+  .contact-band h2 { font-size: clamp(2.4rem, 7vw, 6rem); letter-spacing: -.055em; margin: 0; max-width: 13ch; }
+  .contact-band__actions { align-items: start; display: flex; flex-direction: column; gap: var(--spacing-3); }
+  .contact-band__actions > a:last-child { color: var(--color-text-secondary); font-size: var(--type-body-small); }
+  @media (min-width: 48rem) { .contact-band { grid-template-columns: minmax(0, 2fr) minmax(14rem, 1fr); } }
+</style>

@@ -16,7 +16,7 @@ type PostSitemapDoc = {
   updatedAt?: string;
 };
 
-type ProjectSitemapDoc = {
+type WorkSitemapDoc = {
   slug: string;
   date: string;
 };
@@ -57,16 +57,16 @@ function entryToXml(entry: SitemapEntry): string {
 export const GET: APIRoute = async () => {
   const now = new Date().toISOString();
 
-  const [posts, projects, reports, tags] = await Promise.all([
+  const [posts, workStories, reports, tags] = await Promise.all([
     safeFetch<PostSitemapDoc>(`
-      *[_type == "post" && defined(slug.current)] | order(coalesce(updatedAt, publishedAt) desc){
+      *[_type == "post" && defined(slug.current) && slug.current != "gpu-share"] | order(coalesce(updatedAt, publishedAt) desc){
         "slug": slug.current,
         publishedAt,
         updatedAt
       }
     `),
-    safeFetch<ProjectSitemapDoc>(`
-      *[_type == "project" && defined(slug.current)] | order(date desc){
+    safeFetch<WorkSitemapDoc>(`
+      *[_type == "workStory" && defined(slug.current)] | order(order asc){
         "slug": slug.current,
         date
       }
@@ -85,7 +85,7 @@ export const GET: APIRoute = async () => {
   const entries: SitemapEntry[] = [
     { loc: absoluteUrl('/', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '1.0' },
     { loc: absoluteUrl('/about', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.6' },
-    { loc: absoluteUrl('/projects', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.8' },
+    { loc: absoluteUrl('/work', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.9' },
     { loc: absoluteUrl('/writing', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.8' },
     { loc: absoluteUrl('/reading', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.7' },
     { loc: absoluteUrl('/cv', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.5' }
@@ -100,12 +100,12 @@ export const GET: APIRoute = async () => {
     });
   }
 
-  for (const project of projects) {
+  for (const story of workStories) {
     entries.push({
-      loc: absoluteUrl(`/projects/${project.slug}`, SITE_URL),
-      lastmod: new Date(project.date).toISOString(),
+      loc: absoluteUrl(`/work/${story.slug}`, SITE_URL),
+      lastmod: new Date(story.date).toISOString(),
       changefreq: 'monthly',
-      priority: '0.7'
+      priority: '0.8'
     });
   }
 

@@ -23,6 +23,13 @@
   --color-accent: var(--accent);
   --color-accent-contrast: var(--accent-contrast);
   --color-focus: var(--focus);
+  --color-canvas: var(--color-bg-canvas);
+  --color-raised: var(--color-bg-raised);
+  --color-inset: var(--color-bg-inset);
+  --color-foreground: var(--color-text-primary);
+  --color-secondary: var(--color-text-secondary);
+  --color-line: var(--color-stroke-subtle);
+  --color-signal: var(--color-action);
 
   /* --- Static accent presets --- */
   --color-accent-forest: var(--accent-forest);
@@ -33,6 +40,7 @@
 
   /* --- Font families --- */
   --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
   --font-serif: var(--font-serif);
   --font-mono: var(--font-mono);
   --font-body: var(--font-body);
@@ -200,8 +208,8 @@
     border-bottom: none !important;
     color: var(--text);
     opacity: 1 !important;
-    min-width: 36px;
-    min-height: 36px;
+    min-width: 44px;
+    min-height: 44px;
     align-items: center;
     justify-content: center;
     position: relative;

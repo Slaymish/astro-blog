@@ -16,7 +16,7 @@ type RssPost = {
 
 export const GET: APIRoute = async () => {
   const posts = await fetchSanity<RssPost[]>(`
-    *[_type == "post"] | order(publishedAt desc)[0...50]{
+    *[_type == "post" && slug.current != "gpu-share"] | order(publishedAt desc)[0...50]{
       title,
       "slug": slug.current,
       publishedAt,

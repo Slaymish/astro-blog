@@ -2,15 +2,12 @@
 // Design System
 import "../../design-system/tokens.css";
 import "../../design-system/base.css";
-import "../../design-system/themes/light.css";
 import "../../design-system/themes/dark.css";
 import "../../styles/globals.css";
 
 // Layout Components
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
-import CustomCursor from "../ui/CustomCursor.astro";
-import { ClientRouter } from "astro:transitions";
 import {
   SITE_AUTHOR,
   SITE_DESCRIPTION,
@@ -110,128 +107,8 @@ const structuredData = {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
-    <!-- Critical inline styles to prevent FOUC - must be first! -->
-    <style>
-      :root {
-        --bg: #faf9f7;
-        --surface: #f0ede8;
-        --surface-2: #e8e4dd;
-        --text: #1a1a1a;
-        --text-muted: #6b6560;
-        --border: #d6d0c8;
-        --border-strong: #b5afa6;
-        --accent: #2d6a4f;
-        --accent-contrast: #faf9f7;
-        --focus: #2d6a4f;
-      }
-
-      .dark {
-        --bg: #0c0c0c;
-        --surface: #1a1917;
-        --surface-2: #26251f;
-        --text: #e8e4dd;
-        --text-muted: #9a948c;
-        --border: #3d3a34;
-        --border-strong: #524e46;
-        --accent: #4ade80;
-        --accent-contrast: #0c0c0c;
-        --focus: #4ade80;
-      }
-
-      /* Apply immediately */
-      html {
-        background-color: var(--bg);
-        color: var(--text);
-      }
-
-      body {
-        background-color: var(--bg);
-        color: var(--text);
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-
-    <!-- Critical theme initialization script (must be VERY early to prevent FOUC) -->
-    <script is:inline>
-      (function applyThemeAndAccent() {
-        try {
-          var savedTheme = localStorage.getItem('theme') || 'dark';
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
-
-          document.documentElement.classList.remove('light', 'dark');
-          document.documentElement.classList.add(effectiveTheme);
-          document.documentElement.setAttribute('data-theme', savedTheme);
-
-          // Default accent is theme-aware: lime green on dark bg passes AA, forest green on light bg passes AA
-          var defaultAccent = effectiveTheme === 'dark' ? '#4ade80' : '#2d6a4f';
-          var accent = localStorage.getItem('accent') || defaultAccent;
-          var accentContrast = localStorage.getItem('accentContrast') || (effectiveTheme === 'dark' ? '#0c0c0c' : '#faf9f7');
-          document.documentElement.style.setProperty('--accent', accent);
-          document.documentElement.style.setProperty('--focus', accent);
-          document.documentElement.style.setProperty('--accent-contrast', accentContrast);
-        } catch (e) {
-          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.add('light');
-          }
-        }
-      })();
-
-      // Re-apply after view transitions swap the DOM (theme class lives on <html>
-      // which is NOT swapped, but this ensures accent inline style is preserved)
-      document.addEventListener('astro:after-swap', function() {
-        try {
-          var savedTheme = localStorage.getItem('theme') || 'dark';
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var effectiveTheme = savedTheme === 'system' ? (prefersDark ? 'dark' : 'light') : savedTheme;
-          document.documentElement.classList.remove('light', 'dark');
-          document.documentElement.classList.add(effectiveTheme);
-          document.documentElement.setAttribute('data-theme', savedTheme);
-
-          var defaultAccent = effectiveTheme === 'dark' ? '#4ade80' : '#2d6a4f';
-          var accent = localStorage.getItem('accent') || defaultAccent;
-          var accentContrast = localStorage.getItem('accentContrast') || (effectiveTheme === 'dark' ? '#0c0c0c' : '#faf9f7');
-          document.documentElement.style.setProperty('--accent', accent);
-          document.documentElement.style.setProperty('--focus', accent);
-          document.documentElement.style.setProperty('--accent-contrast', accentContrast);
-        } catch (e) {}
-      });
-    </script>
-
-    <!-- Navigation loading bar — instant feedback on link clicks -->
-    <script is:inline>
-      (function() {
-        var bar = document.getElementById('nav-loading-bar');
-        if (!bar) return;
-
-        document.addEventListener('astro:before-preparation', function() {
-          bar.classList.remove('done');
-          bar.style.width = '0';
-          // Force reflow so the width:0 is applied before adding .loading
-          void bar.offsetWidth;
-          bar.classList.add('loading');
-        });
-
-        document.addEventListener('astro:after-swap', function() {
-          bar.classList.remove('loading');
-          bar.classList.add('done');
-        });
-
-        // Clean up after transition finishes
-        document.addEventListener('astro:page-load', function() {
-          setTimeout(function() {
-            bar.classList.remove('done');
-            bar.style.width = '0';
-          }, 400);
-        });
-      })();
-    </script>
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
@@ -296,8 +173,8 @@ const structuredData = {
     <!-- Performance and Security -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="format-detection" content="telephone=no" />
-    <meta name="theme-color" content="#10b981" />
-    <meta name="msapplication-TileColor" content="#10b981" />
+    <meta name="theme-color" content="#0b0d0c" />
+    <meta name="msapplication-TileColor" content="#0b0d0c" />
     
     <!-- Preconnect to external domains for faster loading -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -305,7 +182,6 @@ const structuredData = {
     
     <!-- Favicon and Icons -->
     <link rel="icon" type="image/svg+xml" href="/HB_logo.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     
@@ -313,9 +189,6 @@ const structuredData = {
     <link rel="alternate" type="application/rss+xml" title="Hamish's Blog RSS Feed" href="/rss.xml" />
     <link rel="alternate" type="text/plain" title="LLM guidance" href="/llms.txt" />
     
-    <!-- View Transitions for SPA-like navigation without full page reloads -->
-    <ClientRouter />
-
     <!-- Analytics — Umami (privacy-respecting, no cookies) -->
     <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="3b77a67f-19f6-4f3c-a7ab-8af0d58bfbc6"></script>
 
@@ -327,99 +200,21 @@ const structuredData = {
         box-sizing: border-box;
       }
 
-      html, body {
-        overflow-x: clip;
-      }
-
-      /* Lenis smooth scroll */
-      html.lenis, html.lenis body {
-        height: auto;
-      }
-
-      .lenis.lenis-smooth {
-        scroll-behavior: auto !important;
-      }
-
-      .lenis.lenis-smooth [data-lenis-prevent] {
-        overscroll-behavior: contain;
-      }
-
-      .lenis.lenis-stopped {
-        overflow: hidden;
-      }
-
-      .lenis.lenis-smooth iframe {
-        pointer-events: none;
-      }
-
-      /* ── Smoother View Transitions ── */
-      @keyframes fade-in {
-        from { opacity: 0; transform: translateY(8px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-
-      @keyframes fade-out {
-        from { opacity: 1; transform: translateY(0); }
-        to   { opacity: 0; transform: translateY(-4px); }
-      }
-
-      ::view-transition-old(root) {
-        animation: fade-out 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
-      }
-
-      ::view-transition-new(root) {
-        animation: fade-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
-      }
-
-      /* Navigation loading bar — shows instantly on click, hides after swap */
-      #nav-loading-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 2px;
-        width: 0;
-        background: var(--accent);
-        z-index: 9999;
-        opacity: 0;
-        transition: none;
-      }
-
-      #nav-loading-bar.loading {
-        opacity: 1;
-        width: 70%;
-        transition: width 8s cubic-bezier(0.1, 0.5, 0.3, 1);
-      }
-
-      #nav-loading-bar.done {
+      .site-shell {
+        padding-inline: var(--page-gutter);
         width: 100%;
-        transition: width 0.15s ease, opacity 0.3s ease 0.1s;
-        opacity: 0;
       }
+
     </style>
   </head>
   <body class="antialiased min-h-screen flex flex-col" style="background-color: var(--bg); color: var(--text);">
-    <div id="nav-loading-bar"></div>
-    <CustomCursor />
     <a class="skip-link" href="#main-content">Skip to content</a>
 
-    {article && (
-      <div
-        id="scroll-progress"
-        class="fixed top-0 left-0 h-[3px] bg-[var(--accent)] z-[var(--z-fixed)] transition-none"
-        style="width: 0%;"
-        role="progressbar"
-        aria-label="Reading progress"
-        aria-valuenow="0"
-        aria-valuemin="0"
-        aria-valuemax="100"
-      />
-    )}
-
     <Header />
-    <div class="w-full px-6 md:px-8 lg:px-10 box-border">
+    <div class="site-shell">
       <main
         id="main-content"
-        class={`grow w-full mx-auto py-8 sm:py-12 md:py-16 ${fullWidth ? '' : 'max-w-[var(--content-max-width)]'}`}
+        class={`grow w-full mx-auto pt-8 pb-8 sm:pt-10 sm:pb-12 md:pt-10 md:pb-16 ${fullWidth ? '' : 'max-w-[var(--content-max-width)]'}`}
         tabindex="-1"
       >
         <slot />
@@ -428,26 +223,7 @@ const structuredData = {
     </div>
     {article && (
       <script is:inline>
-        // Scroll progress bar + copy buttons — runs on initial load and after each view transition
-        function initArticlePage() {
-          var bar = document.getElementById('scroll-progress');
-          if (bar) {
-            // Remove old listener by replacing with a fresh scroll handler stored on window
-            if (window.__scrollHandler) {
-              window.removeEventListener('scroll', window.__scrollHandler);
-            }
-            function updateProgress() {
-              var scrollTop = window.scrollY;
-              var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-              var progress = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
-              bar.style.width = progress + '%';
-              bar.setAttribute('aria-valuenow', String(Math.round(progress)));
-            }
-            window.__scrollHandler = updateProgress;
-            window.addEventListener('scroll', updateProgress, { passive: true });
-            updateProgress();
-          }
-
+        function initCodeCopy() {
           // Copy-to-clipboard on code blocks
           document.querySelectorAll('.prose pre').forEach(function(pre) {
             if (pre.querySelector('.code-copy-btn')) return; // already added
@@ -467,8 +243,7 @@ const structuredData = {
             pre.appendChild(btn);
           });
         }
-
-        document.addEventListener('astro:page-load', initArticlePage);
+        initCodeCopy();
       </script>
     )}
     <!-- Custom analytics events for UX success metrics -->
@@ -531,9 +306,16 @@ const structuredData = {
           });
         });
 
-        document.querySelectorAll('.cta-primary, a[href="/projects"], a[href="/writing"]').forEach(function(el) {
-          if (el.closest('nav') || el.closest('header') || el.closest('footer')) return;
-          el.addEventListener('click', function() { track('cta-click', { text: el.textContent.trim(), page: pathname }); });
+        document.querySelectorAll('a[href*="cal.com/hamishburke"]').forEach(function(el) {
+          el.addEventListener('click', function() {
+            track('book-call', { page: pathname, placement: el.closest('header') ? 'header' : 'content' });
+          });
+        });
+
+        document.querySelectorAll('a[href="/work"], a[href^="/work/"]').forEach(function(el) {
+          el.addEventListener('click', function() {
+            track('work-view', { page: pathname, destination: el.getAttribute('href') || '/work' });
+          });
         });
 
         var pageStart = Date.now();
@@ -545,44 +327,7 @@ const structuredData = {
         });
       }
 
-      document.addEventListener('astro:page-load', initAnalytics);
-    </script>
-    <!-- Lenis smooth scroll -->
-    <script>
-      import Lenis from 'lenis';
-
-      let lenis: Lenis | null = null;
-
-      function initLenis() {
-        // Destroy previous instance
-        if (lenis) {
-          lenis.destroy();
-          lenis = null;
-        }
-
-        // Skip on touch-primary devices. Lenis attaches touch listeners that
-        // can randomly block native scroll on mobile — native momentum scroll
-        // is faster and more reliable on phones/tablets anyway.
-        if (window.matchMedia('(pointer: coarse)').matches) return;
-
-        // Respect reduced-motion preference
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-        lenis = new Lenis({
-          duration: 1.2,
-          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          // Lenis 1.x leaves touch scrolling native by default (no smooth
-          // interpolation on touchscreen), so no extra option is needed.
-        });
-
-        function raf(time: number) {
-          lenis?.raf(time);
-          requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-      }
-
-      document.addEventListener('astro:page-load', initLenis);
+      initAnalytics();
     </script>
   </body>
 </html>

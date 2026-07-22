@@ -1,9 +1,10 @@
 export const SITE_URL = 'https://hamishburke.dev';
 export const SITE_NAME = 'Hamish Burke';
 export const SITE_DESCRIPTION =
-  "Personal site by Hamish Burke covering software engineering, AI, distributed systems, and practical project write-ups.";
+  'Software engineer in Wellington building useful websites, digital products, AI automation, and technical systems.';
 export const SITE_AUTHOR = 'Hamish Burke';
 export const CONTACT_EMAIL = 'hamishapps@gmail.com';
+export const BOOKING_URL = 'https://cal.com/hamishburke/30min';
 
 export const SOCIAL_PROFILES = [
   'https://github.com/Slaymish',
