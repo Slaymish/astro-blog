@@ -5,13 +5,14 @@ interface Props {
   kind: GraphicKind;
   alt: string;
   compact?: boolean;
+  priority?: boolean;
 }
 
-const { kind, alt, compact = false } = Astro.props;
+const { kind, alt, compact = false, priority = false } = Astro.props;
 
 const images: Partial<Record<GraphicKind, { src: string; position?: string }>> = {
   brontehf: {
-    src: 'https://brontehf.nz/.netlify/images?url=%2Fuploads%2Ftei-task-lamp%2Ftei-lamp-prototypes-on-wooden-display.webp&w=1200&q=80',
+    src: '/images/work/bronte-projects.webp',
   },
   'health-agent': {
     src: '/images/posts/status_screenshot.png',
@@ -20,22 +21,26 @@ const images: Partial<Record<GraphicKind, { src: string; position?: string }>> =
 };
 
 const image = images[kind];
+const graphicAlt = kind === 'brontehf'
+  ? 'BrontëHF’s public projects page showing a filterable grid of portfolio work.'
+  : alt;
 ---
 
 <div
   class:list={['work-graphic', `work-graphic--${kind}`, compact && 'work-graphic--compact']}
   role="img"
-  aria-label={alt}
+  aria-label={graphicAlt}
 >
   {kind === 'brontehf' && image && (
-    <>
-      <img src={image.src} alt="" loading="lazy" decoding="async" />
-      <div class="work-graphic__browser">
-        <span>brontehf.nz</span>
-        <strong>Projects / Tei</strong>
-      </div>
-      <div class="work-graphic__tag">Editable portfolio</div>
-    </>
+    <img
+      src={image.src}
+      alt=""
+      width="2550"
+      height="1231"
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      decoding="async"
+    />
   )}
 
   {kind === 'you-inc' && (
@@ -124,8 +129,6 @@ const image = images[kind];
     padding: clamp(1rem, 3vw, 2rem);
   }
 
-  .work-graphic__browser,
-  .work-graphic__tag,
   .work-graphic__boundary,
   .work-graphic__pipeline {
     backdrop-filter: blur(12px);
@@ -139,9 +142,6 @@ const image = images[kind];
     position: absolute;
   }
 
-  .work-graphic__browser { align-items: center; justify-content: space-between; right: var(--spacing-4); top: var(--spacing-4); }
-  .work-graphic__browser span { color: var(--color-text-secondary); }
-  .work-graphic__tag { bottom: var(--spacing-4); color: var(--color-action); left: auto; right: var(--spacing-4); text-transform: uppercase; }
   .work-graphic__boundary,
   .work-graphic__pipeline { bottom: var(--spacing-4); justify-content: space-between; right: var(--spacing-4); }
   .work-graphic__boundary b { color: var(--color-action); font-weight: var(--font-weight-medium); }
@@ -203,11 +203,9 @@ const image = images[kind];
   .work-graphic__tradeoff { display: flex; font-size: clamp(.55rem, 1.2vw, .75rem); font-weight: 700; justify-content: space-between; text-transform: uppercase; }
   .work-graphic__tradeoff span:last-child { color: #a83225; }
 
-  .work-graphic--compact .work-graphic__browser,
   .work-graphic--compact .work-graphic__pipeline { font-size: .6rem; }
 
   @media (max-width: 30rem) {
-    .work-graphic__browser strong,
     .work-graphic__pipeline b { display: none; }
   }
 </style>
