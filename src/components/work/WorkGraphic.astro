@@ -14,6 +14,9 @@ const images: Partial<Record<GraphicKind, { src: string; position?: string }>> =
   brontehf: {
     src: '/images/work/bronte-projects.webp',
   },
+  'you-inc': {
+    src: '/images/work/youinc-demo-dashboard.png',
+  },
   'health-agent': {
     src: '/images/posts/status_screenshot.png',
     position: 'top center',
@@ -23,6 +26,8 @@ const images: Partial<Record<GraphicKind, { src: string; position?: string }>> =
 const image = images[kind];
 const graphicAlt = kind === 'brontehf'
   ? 'BrontëHF’s public projects page showing a filterable grid of portfolio work.'
+  : kind === 'you-inc'
+    ? 'The working YouInc demo dashboard showing a cashflow waterfall, operating statement, expense and income breakdowns, and recurring subscriptions using sample data.'
   : alt;
 ---
 
@@ -31,31 +36,16 @@ const graphicAlt = kind === 'brontehf'
   role="img"
   aria-label={graphicAlt}
 >
-  {kind === 'brontehf' && image && (
+  {(kind === 'brontehf' || kind === 'you-inc') && image && (
     <img
       src={image.src}
       alt=""
-      width="2550"
-      height="1231"
+      width={kind === 'you-inc' ? '2462' : '2550'}
+      height={kind === 'you-inc' ? '1420' : '1231'}
       loading={priority ? 'eager' : 'lazy'}
       fetchpriority={priority ? 'high' : 'auto'}
       decoding="async"
     />
-  )}
-
-  {kind === 'you-inc' && (
-    <div class="work-graphic__ledger">
-      <div class="work-graphic__ledger-head">
-        <span>You Inc</span><small>Sample company data</small>
-      </div>
-      <div class="work-graphic__number"><small>Net worth</small><strong>$184,260</strong></div>
-      <div class="work-graphic__bars" aria-hidden="true">
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-      </div>
-      <div class="work-graphic__flow">
-        <span>Bank feed</span><b>→</b><span>Ledger</span><b>→</b><span>Board</span>
-      </div>
-    </div>
   )}
 
   {kind === 'gpu-share' && (
@@ -164,18 +154,7 @@ const graphicAlt = kind === 'brontehf'
   .work-graphic__gpu-tunnel b { font-size: clamp(1rem, 2.5vw, 2rem); }
   .work-graphic__gpu p { bottom: clamp(.35rem, 1.2vw, .8rem); color: var(--color-text-secondary); font-size: clamp(.55rem, 1.2vw, .8rem); grid-column: 1 / -1; line-height: 1.4; margin: 0; position: absolute; }
 
-  .work-graphic--you-inc { background: #0d1714; padding: clamp(1rem, 4vw, 3rem); }
-  .work-graphic__ledger { background: #f0f4ed; color: #101512; height: 100%; padding: clamp(1rem, 3vw, 2rem); }
-  .work-graphic__ledger-head { align-items: center; border-bottom: 1px solid #bdc5bd; display: flex; font-weight: 700; justify-content: space-between; padding-bottom: var(--spacing-3); }
-  .work-graphic__ledger-head small { background: #dbe6d9; font-size: 0.58rem; letter-spacing: .08em; padding: .35rem .5rem; text-transform: uppercase; }
-  .work-graphic__number { display: flex; flex-direction: column; margin-top: clamp(.75rem, 3vw, 2rem); }
-  .work-graphic__number small { color: #566057; }
-  .work-graphic__number strong { font-family: var(--font-display); font-size: clamp(1.7rem, 5vw, 4rem); letter-spacing: -.06em; }
-  .work-graphic__bars { align-items: end; display: flex; gap: 4%; height: 28%; margin-block: var(--spacing-4); }
-  .work-graphic__bars i { background: #29614a; display: block; flex: 1; height: 30%; }
-  .work-graphic__bars i:nth-child(2) { height: 45%; } .work-graphic__bars i:nth-child(3) { height: 41%; } .work-graphic__bars i:nth-child(4) { height: 61%; } .work-graphic__bars i:nth-child(5) { height: 72%; } .work-graphic__bars i:nth-child(6) { height: 69%; } .work-graphic__bars i:nth-child(7) { background: var(--color-action); height: 92%; }
-  .work-graphic__flow { display: flex; font-size: clamp(.55rem, 1.4vw, .8rem); gap: var(--spacing-2); justify-content: space-between; text-transform: uppercase; }
-  .work-graphic__flow b { color: #29614a; }
+  .work-graphic--you-inc { aspect-ratio: 2462 / 1420; }
 
   .work-graphic--home-lab {
     background-color: #111713;
