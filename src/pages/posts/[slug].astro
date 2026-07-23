@@ -11,7 +11,7 @@ import { portableTextToHtml, portableTextToPlainText } from "../../lib/portableT
 import { markdownToHtml, markdownToPlainText } from "../../lib/markdown";
 import { splitHtmlAtInteractive, stripInteractivePlaceholder } from "../../utils/split-html";
 import InteractiveElement from "../../components/interactive/InteractiveElement.astro";
-import { legacyRoutePolicy } from "../../lib/legacyRoutes";
+import { contentPostSlug, legacyRoutePolicy, publicPostSlug } from "../../lib/legacyRoutes";
 
 export const prerender = false;
 
@@ -42,6 +42,13 @@ if (routePolicy?.action === 'redirect') {
   return Astro.redirect(routePolicy.destination, 301);
 }
 
+const contentSlug = contentPostSlug(slug as string);
+const requestedBackHref = Astro.url.searchParams.get('from');
+const backHref = requestedBackHref && /^\/work\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(requestedBackHref)
+  ? requestedBackHref
+  : '/work';
+const backLabel = backHref === '/work' ? 'Work' : 'Case study';
+
 const post = await fetchSanity<PostDoc | null>(`
   *[_type == "post" && slug.current == $slug][0]{
     title,
@@ -54,7 +61,7 @@ const post = await fetchSanity<PostDoc | null>(`
     markdownBody,
     interactiveElement
   }
-`, { slug });
+`, { slug: contentSlug });
 
 // Find any project that references this post
 const relatedProject = post ? await fetchSanity<RelatedProjectDoc | null>(`
@@ -65,7 +72,7 @@ const relatedProject = post ? await fetchSanity<RelatedProjectDoc | null>(`
     link,
     github
   }
-`, { slug }) : null;
+`, { slug: contentSlug }) : null;
 
 if (!post) {
   return Astro.redirect("/404");
@@ -106,6 +113,7 @@ const tagLinks: Array<{ name: string; slug: string }> = contentTags.map((tag: st
 }));
 
 const postTitle = post.title ?? "Untitled";
+const postPublicSlug = publicPostSlug(post.slug);
 const postDate = post.publishedAt ?? new Date().toISOString();
 const postDateISO = new Date(postDate).toISOString();
 const showUpdated = post.updatedAt && post.updatedAt !== post.publishedAt;
@@ -119,7 +127,7 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
   publishedTime={publishedTime}
   modifiedTime={modifiedTime}
   tags={tagLinks.map(tag => tag.name)}
-  canonicalURL={absoluteUrl(`/posts/${post.slug}`, SITE_URL)}
+  canonicalURL={absoluteUrl(`/posts/${postPublicSlug}`, SITE_URL)}
   fullWidth
 >
   <ParallaxHero
@@ -128,9 +136,9 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
     date={postDate}
     readingTime={readingTime.text}
     tagLinks={tagLinks}
-    titleTransitionName={`title-posts-${post.slug}`}
-    backHref="/work"
-    backLabel="Work"
+    titleTransitionName={`title-posts-${postPublicSlug}`}
+    backHref={backHref}
+    backLabel={backLabel}
   />
 
   <!-- Hidden schema.org metadata -->
@@ -177,7 +185,7 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
         <div class="share-links">
           <span class="text-sm font-medium text-[var(--text-muted)]">Share:</span>
           <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(absoluteUrl(`/posts/${post.slug}`, SITE_URL))}`}
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(absoluteUrl(`/posts/${postPublicSlug}`, SITE_URL))}`}
             target="_blank"
             rel="noopener noreferrer"
             class="share-link"
@@ -186,7 +194,7 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
             Twitter/X
           </a>
           <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(absoluteUrl(`/posts/${post.slug}`, SITE_URL))}`}
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(absoluteUrl(`/posts/${postPublicSlug}`, SITE_URL))}`}
             target="_blank"
             rel="noopener noreferrer"
             class="share-link"
@@ -214,11 +222,11 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
 
       <footer class="post-footer" data-reveal>
         <nav aria-label="Post navigation">
-          <a href="/work" class="back-link">
+          <a href={backHref} class="back-link">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
               <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd"/>
             </svg>
-            Back to work
+            {backHref === '/work' ? 'Back to work' : 'Back to case study'}
           </a>
         </nav>
       </footer>
@@ -290,10 +298,7 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
     .post-sidebar {
       display: block;
       grid-area: sidebar;
-      position: sticky;
-      top: 2rem;
-      max-height: calc(100vh - 4rem);
-      overflow-y: auto;
+      align-self: start;
     }
   }
 

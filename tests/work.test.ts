@@ -6,7 +6,7 @@ import {
   validateWorkStories,
   workStoryHref
 } from '../src/lib/work';
-import { legacyRoutePolicy } from '../src/lib/legacyRoutes';
+import { contentPostSlug, legacyRoutePolicy } from '../src/lib/legacyRoutes';
 
 function story(overrides: Partial<WorkStory> = {}): WorkStory {
   return {
@@ -88,7 +88,16 @@ test('story and artifact URLs preserve their canonical route families', () => {
   assert.equal(workStoryHref('gpu-share'), '/work/gpu-share');
   assert.equal(artifactHref({ id: 'p', type: 'project', title: 'P', slug: 'p' }), '/projects/p');
   assert.equal(artifactHref({ id: 'a', type: 'post', title: 'A', slug: 'a' }), '/posts/a');
+  assert.equal(
+    artifactHref({ id: 'gpu-post', type: 'post', title: 'GPUShare post', slug: 'gpu-share' }),
+    '/posts/building-a-private-ai-server-for-friends'
+  );
   assert.equal(artifactHref({ id: 'r', type: 'report', title: 'R', slug: 'r' }), '/reports/r');
+});
+
+test('canonical post aliases resolve to the original Sanity content slug', () => {
+  assert.equal(contentPostSlug('building-a-private-ai-server-for-friends'), 'gpu-share');
+  assert.equal(contentPostSlug('ordinary-post'), 'ordinary-post');
 });
 
 test('legacy work routes redirect successors, retire archives, and preserve source material', () => {
@@ -98,7 +107,7 @@ test('legacy work routes redirect successors, retire archives, and preserve sour
   });
   assert.deepEqual(legacyRoutePolicy('post', 'gpu-share'), {
     action: 'redirect',
-    destination: '/work/gpu-share'
+    destination: '/posts/building-a-private-ai-server-for-friends'
   });
   assert.deepEqual(legacyRoutePolicy('project', 'wiki-router'), { action: 'gone' });
   assert.deepEqual(

@@ -1,3 +1,5 @@
+import { publicPostSlug } from './legacyRoutes';
+
 export type WorkStatus = 'lead' | 'support';
 export type WorkService = 'ai-automation' | 'digital-products' | 'technical-direction';
 export type ArtifactType = 'project' | 'post' | 'report';
@@ -50,7 +52,8 @@ export function workStoryHref(slug: string): string {
 
 export function artifactHref(artifact: WorkArtifact): string {
   const route = artifact.type === 'post' ? 'posts' : `${artifact.type}s`;
-  return `/${route}/${artifact.slug}`;
+  const slug = artifact.type === 'post' ? publicPostSlug(artifact.slug) : artifact.slug;
+  return `/${route}/${slug}`;
 }
 
 export function validateWorkStories(stories: WorkStory[]): string[] {

@@ -135,7 +135,7 @@ const routeExpectations = [
   ['/projects', 301, '/work'],
   ['/tools', 301, '/work'],
   ['/projects/brontehf', 301, '/work/brontehf'],
-  ['/posts/gpu-share', 301, '/work/gpu-share'],
+  ['/posts/gpu-share', 301, '/posts/building-a-private-ai-server-for-friends'],
   ['/projects/wiki-router', 410],
   ['/reports/a-survey-of-nosql-databases-and-polyglot-persistence-patterns', 410],
 ];

@@ -18,6 +18,7 @@ if (!story) {
   return new Response('Work story not found', { status: 404 });
 }
 
+const storySlug = story.slug;
 const body = portableTextToHtml(story.body);
 const artifacts = [story.primaryArtifact, ...story.supportingArtifacts].filter(Boolean);
 const soleArtifact = artifacts.length === 1 ? artifacts[0] : undefined;
@@ -35,7 +36,13 @@ const sourceDescription = soleArtifact?.liveUrl
     : 'Explore the project source and related writing.';
 
 function artifactUrl(artifact: WorkArtifact) {
-  return artifact.githubUrl || artifact.liveUrl || artifactHref(artifact);
+  const externalUrl = artifact.githubUrl || artifact.liveUrl;
+  if (externalUrl) return externalUrl;
+
+  const url = artifactHref(artifact);
+  return artifact.type === 'post'
+    ? `${url}?from=${encodeURIComponent(`/work/${storySlug}`)}`
+    : url;
 }
 
 function isExternal(url: string) {

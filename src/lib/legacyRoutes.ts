@@ -20,6 +20,22 @@ const archivedProjects = new Set([
   'wiki-router',
 ]);
 
+const publicPostSlugs: Record<string, string> = {
+  'gpu-share': 'building-a-private-ai-server-for-friends',
+};
+
+const contentPostSlugs = Object.fromEntries(
+  Object.entries(publicPostSlugs).map(([contentSlug, publicSlug]) => [publicSlug, contentSlug])
+);
+
+export function publicPostSlug(contentSlug: string): string {
+  return publicPostSlugs[contentSlug] ?? contentSlug;
+}
+
+export function contentPostSlug(publicSlug: string): string {
+  return contentPostSlugs[publicSlug] ?? publicSlug;
+}
+
 export function legacyRoutePolicy(type: LegacyRouteType, slug: string): LegacyRoutePolicy {
   if (type === 'project') {
     const successor = projectSuccessors[slug];
@@ -29,7 +45,7 @@ export function legacyRoutePolicy(type: LegacyRouteType, slug: string): LegacyRo
   }
 
   if (type === 'post' && slug === 'gpu-share') {
-    return { action: 'redirect', destination: '/work/gpu-share' };
+    return { action: 'redirect', destination: `/posts/${publicPostSlug(slug)}` };
   }
 
   if (type === 'report' && slug === 'a-survey-of-nosql-databases-and-polyglot-persistence-patterns') {

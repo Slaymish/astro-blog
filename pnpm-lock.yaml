@@ -56,6 +56,12 @@ importers:
       playwright:
         specifier: ^1.58.2
         version: 1.58.2
+      react:
+        specifier: ^19.2.4
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.2.4
+        version: 19.2.4(react@19.2.4)
       rehype-slug:
         specifier: ^6.0.0
         version: 6.0.0
