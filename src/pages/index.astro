@@ -14,32 +14,32 @@ const leadStories = stories.filter((story) => story.status === 'lead');
 
 <Layout
   title="Hamish Burke"
-  description="Software engineer in Wellington building useful websites, digital products, AI automation, and technical systems."
+  description="Wellington web developer turning unclear requirements and manual processes into digital products, internal tools, and practical automation."
 >
   <section class="home-hero">
-    <p class="home-hero__eyebrow">Hamish Burke · Software engineer · Wellington, NZ</p>
-    <h1>I make complicated software <span>useful.</span></h1>
+    <p class="home-hero__eyebrow">Hamish Burke / Web developer at Alphero in Wellington, NZ</p>
+    <h1>Software for work that has outgrown the <span>workaround.</span></h1>
     <div class="home-hero__lower">
       <p>
-        I help people turn unclear technical problems into websites, digital products,
-        AI automation, and systems that are ready to use.
+        I turn unclear requirements and manual processes into digital products, internal tools,
+        and practical automation.
       </p>
       <div class="home-hero__actions">
-        <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">Book a call</ButtonLink>
-        <ButtonLink href="/work" variant="secondary">See selected work</ButtonLink>
+        <ButtonLink href="/work">View selected work</ButtonLink>
+        <ButtonLink href={BOOKING_URL} external variant="text" ariaLabel="Discuss a project on Cal.com">Discuss a project</ButtonLink>
       </div>
     </div>
-    <ul class="home-hero__services" aria-label="Services">
-      <li><span>01</span> Websites &amp; digital products</li>
-      <li><span>02</span> AI automation</li>
-      <li><span>03</span> Solution architecture</li>
+    <ul class="home-hero__services" aria-label="Capabilities">
+      <li>Product engineering</li>
+      <li>Workflow automation</li>
+      <li>Technical direction</li>
     </ul>
   </section>
 
   <section class="home-work" aria-labelledby="selected-work-heading">
     <div class="home-section-heading">
       <div>
-        <p>2024–2026</p>
+        <p>2024-2026</p>
         <h2 id="selected-work-heading">Selected work</h2>
       </div>
       <a href="/work">All work <span aria-hidden="true">→</span></a>
@@ -64,7 +64,7 @@ const leadStories = stories.filter((story) => story.status === 'lead');
 </Layout>
 
 <style>
-  .home-hero { display: flex; flex-direction: column; min-height: clamp(38rem, calc(100svh - 12rem), 50rem); padding-block: var(--hero-top-space) var(--spacing-8); }
+  .home-hero { display: flex; flex-direction: column; min-height: clamp(32rem, calc(82svh - 8rem), 40rem); padding-block: var(--hero-top-space) var(--spacing-8); }
   .home-hero__eyebrow,
   .home-section-heading p,
   .home-approach__label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
@@ -74,9 +74,8 @@ const leadStories = stories.filter((story) => story.status === 'lead');
   .home-hero__lower > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; margin: 0; max-width: 38rem; }
   .home-hero__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-3); }
   .home-hero__services { border-top: 1px solid var(--color-stroke-subtle); display: grid; list-style: none; margin: auto 0 0; padding: 0; }
-  .home-hero__services li { border-bottom: 1px solid var(--color-stroke-subtle); color: var(--color-text-primary); font-size: var(--type-body-small); padding-block: var(--spacing-3); }
-  .home-hero__services span { color: var(--color-text-secondary); display: inline-block; font-family: var(--font-mono); font-size: .65rem; width: 2rem; }
-  .home-work { margin-block-start: clamp(3rem, 5vw, 5rem); }
+  .home-hero__services li { border-bottom: 1px solid var(--color-stroke-subtle); color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 600; padding-block: var(--spacing-3); }
+  .home-work { margin-block-start: clamp(1.5rem, 3vw, 3rem); }
   .home-section-heading { align-items: end; display: flex; justify-content: space-between; padding-block: var(--spacing-8); }
   .home-section-heading h2 { font-size: clamp(2.3rem, 5vw, 4.5rem); margin: 0; }
   .home-section-heading a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
