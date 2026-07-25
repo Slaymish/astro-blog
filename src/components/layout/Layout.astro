@@ -314,6 +314,37 @@ const structuredData = {
         initCodeCopy();
       </script>
     )}
+    <!-- Attribute completed bookings back to the page that produced them. The
+         page is prerendered, so the ref is attached here rather than at build
+         time. Cal.com returns metadata on its BOOKING_CREATED webhook, which
+         /api/cal-webhook turns into a conversion event. -->
+    <script is:inline data-cfasync="false">
+      (function () {
+        var NONCE_KEY = 'booking-nonce';
+        var nonce;
+        try {
+          nonce = localStorage.getItem(NONCE_KEY);
+          if (!nonce) {
+            nonce = Math.random().toString(36).slice(2, 10);
+            localStorage.setItem(NONCE_KEY, nonce);
+          }
+        } catch (e) {
+          nonce = 'nostorage';
+        }
+
+        var ref = window.location.pathname + '|' + nonce;
+
+        document.querySelectorAll('a[href*="cal.com/"]').forEach(function (link) {
+          var href = link.getAttribute('href');
+          if (!href || href.indexOf('metadata[ref]') !== -1) return;
+          link.setAttribute(
+            'href',
+            href + (href.indexOf('?') === -1 ? '?' : '&') + 'metadata[ref]=' + encodeURIComponent(ref)
+          );
+        });
+      })();
+    </script>
+
     <!-- Custom analytics events for UX success metrics -->
     <script is:inline>
       function initAnalytics() {

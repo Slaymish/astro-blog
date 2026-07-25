@@ -2,6 +2,10 @@
   publish = "dist"
   command = "pnpm run build"
 
+# Nightly qualitative analysis of visitor sessions. Runs at 15:00 UTC (~3am NZ).
+[functions."session-insights"]
+  schedule = "0 15 * * *"
+
 [build.environment]
   SANITY_PROJECT_ID = "qnuj1c4o"
   SANITY_DATASET = "production"

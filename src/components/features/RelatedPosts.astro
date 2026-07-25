@@ -1,5 +1,6 @@
 ---
 import { fetchSanity } from "../../lib/sanity";
+import { getRelatedByMeaning } from "../../lib/embeddings";
 
 interface Props {
   currentPostSlug: string;
@@ -9,10 +10,19 @@ interface Props {
 
 const { currentPostSlug, currentPostTags, limit = 3 } = Astro.props;
 
-let relatedPosts: Array<{ title: string; slug: string; publishedAt: string }> = [];
+type RelatedItem = { title: string; href: string; publishedAt: string | null };
 
-if (currentPostTags.length > 0) {
-  relatedPosts = await fetchSanity(`
+// Semantic first: it relates documents that discuss the same thing in different
+// words. Tag overlap remains the fallback when the model is unavailable.
+const semantic = await getRelatedByMeaning(currentPostSlug, limit);
+let relatedPosts: RelatedItem[] = semantic.map((doc) => ({
+  title: doc.title,
+  href: doc.href,
+  publishedAt: doc.publishedAt
+}));
+
+if (relatedPosts.length === 0 && currentPostTags.length > 0) {
+  const byTag = await fetchSanity<Array<{ title: string; slug: string; publishedAt: string }>>(`
     *[_type == "post" && slug.current != $slug && count(tags[@ in $tags]) > 0]
       | order(publishedAt desc)[0...$limit]{
         title,
@@ -24,6 +34,12 @@ if (currentPostTags.length > 0) {
     tags: currentPostTags,
     limit
   });
+
+  relatedPosts = (byTag ?? []).map((post) => ({
+    title: post.title,
+    href: `/posts/${post.slug}`,
+    publishedAt: post.publishedAt
+  }));
 }
 ---
 
@@ -37,7 +53,7 @@ if (currentPostTags.length > 0) {
       Related Posts
     </h2>
     <div class="space-y-4" itemprop="articleBody">
-      {relatedPosts.map((post: any) => (
+      {relatedPosts.map((post) => (
         <article
           class="border-l-2 border-[var(--accent)] pl-4 py-2"
           itemscope
@@ -45,20 +61,22 @@ if (currentPostTags.length > 0) {
         >
           <h3 class="font-medium" itemprop="headline">
             <a
-              href={`/posts/${post.slug}`}
+              href={post.href}
               class="text-[var(--text)] no-underline border-b-0 hover:text-[var(--accent)] hover:opacity-100 transition-colors duration-200"
               itemprop="url"
             >
               {post.title}
             </a>
           </h3>
-          <time
-            datetime={new Date(post.publishedAt).toISOString()}
-            class="text-sm text-[var(--text-muted)] block mt-1"
-            itemprop="datePublished"
-          >
-            {new Date(post.publishedAt).toLocaleDateString()}
-          </time>
+          {post.publishedAt && (
+            <time
+              datetime={new Date(post.publishedAt).toISOString()}
+              class="text-sm text-[var(--text-muted)] block mt-1"
+              itemprop="datePublished"
+            >
+              {new Date(post.publishedAt).toLocaleDateString()}
+            </time>
+          )}
         </article>
       ))}
     </div>
