@@ -30,6 +30,38 @@
   [headers.values]
     Cache-Control = "no-store"
 
+# Retired URLs. force=true is required so these win over any generated file.
+# Mirrors projectSuccessors / publicPostSlugs in src/lib/legacyRoutes.ts.
+[[redirects]]
+  from = "/projects/brontehf"
+  to = "/work/brontehf"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/projects/you-inc"
+  to = "/work/you-inc"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/projects/gpu-share"
+  to = "/work/gpu-share"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/projects/health-agent"
+  to = "/work/health-agent"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/posts/gpu-share"
+  to = "/posts/building-a-private-ai-server-for-friends"
+  status = 301
+  force = true
+
 # Retired content answers 410 rather than 404. Mirrors `archivedProjects` and
 # `archivedReports` in src/lib/legacyRoutes.ts — keep the two in step.
 [[redirects]]

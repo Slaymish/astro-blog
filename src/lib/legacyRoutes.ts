@@ -29,23 +29,8 @@ export const archivedReports = new Set([
   'a-survey-of-nosql-databases-and-polyglot-persistence-patterns',
 ]);
 
-/**
- * Permanent redirects for retired URLs, consumed by `redirects` in
- * astro.config.ts so they are emitted as real 301s at build time.
- */
-export function buildLegacyRedirects(): Record<string, string> {
-  const redirects: Record<string, string> = {};
-
-  for (const [slug, destination] of Object.entries(projectSuccessors)) {
-    redirects[`/projects/${slug}`] = destination;
-  }
-
-  for (const [contentSlug, publicSlug] of Object.entries(publicPostSlugs)) {
-    redirects[`/posts/${contentSlug}`] = `/posts/${publicSlug}`;
-  }
-
-  return redirects;
-}
+// Retired URLs are served as real 301s/410s by netlify.toml. The maps above stay
+// exported so the redirect rules there can be checked against one source.
 
 const contentPostSlugs = Object.fromEntries(
   Object.entries(publicPostSlugs).map(([contentSlug, publicSlug]) => [publicSlug, contentSlug])

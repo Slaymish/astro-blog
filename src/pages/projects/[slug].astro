@@ -20,9 +20,14 @@ type ProjectDoc = {
 
 export async function getStaticPaths() {
   const slugs = await fetchSanity<string[]>(`*[_type == "project" && defined(slug.current)].slug.current`);
-  // Legacy slugs are handled by build-time redirects in astro.config.ts and
-  // netlify.toml, so only live projects are generated here.
-  return slugs.map((slug) => ({ params: { slug } }));
+  // Retired slugs are served as 301s/410s from netlify.toml, so skip them here
+  // rather than generating pages that are always shadowed by a redirect.
+  return slugs
+    .filter((slug) => {
+      const policy = legacyRoutePolicy('project', slug);
+      return policy?.action !== 'redirect' && policy?.action !== 'gone';
+    })
+    .map((slug) => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;

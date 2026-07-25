@@ -5,7 +5,6 @@ import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
 import { FontaineTransform } from 'fontaine';
-import { buildLegacyRedirects } from './src/lib/legacyRoutes';
 
 const fontFallbackOptions = {
   fallbacks: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Arial', 'sans-serif'],
@@ -63,9 +62,13 @@ export default defineConfig({
   // Routes that genuinely need a server opt out with `export const prerender = false`
   // (currently only the PDF proxy). A Sanity webhook triggers a rebuild on publish.
   output: 'static',
-  // Retired URLs, derived from src/lib/legacyRoutes.ts so there is one source of
-  // truth. The adapter emits these as real 301s.
-  redirects: buildLegacyRedirects(),
+  // Emit `/work.html` rather than `/work/index.html` so URLs resolve without a
+  // trailing-slash redirect and match the canonical tags, which omit the slash.
+  build: { format: 'file' },
+  trailingSlash: 'never',
+  // Legacy redirects live in netlify.toml with force=true. Astro's `redirects`
+  // config emits meta-refresh HTML pages that Netlify serves in preference to
+  // the _redirects rule, which downgrades a 301 to a soft client-side hop.
   adapter: netlify({
     edgeMiddleware: false,
   })
