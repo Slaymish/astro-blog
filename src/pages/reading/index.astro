@@ -2,8 +2,6 @@
 import Layout from "../../components/layout/Layout.astro";
 import { fetchSanity, urlFor } from "../../lib/sanity";
 
-export const prerender = false;
-
 type ReadingStatus = 'reading' | 'read' | 'to-read';
 
 type ReadingItem = {

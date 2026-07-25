@@ -3,8 +3,6 @@ import { fetchSanity } from '../lib/sanity';
 import { SITE_URL, absoluteUrl } from '../lib/site';
 import { createSlug } from '../utils/slug';
 
-export const prerender = false;
-
 type SitemapEntry = {
   loc: string;
   lastmod: string;

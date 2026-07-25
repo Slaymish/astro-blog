@@ -7,9 +7,12 @@ import WorkGraphic from '../../components/work/WorkGraphic.astro';
 import { portableTextToHtml } from '../../lib/portableText';
 import { SITE_URL, absoluteUrl } from '../../lib/site';
 import { artifactHref, type WorkArtifact } from '../../lib/work';
-import { getWorkStory } from '../../lib/workData';
+import { getWorkStories, getWorkStory } from '../../lib/workData';
 
-export const prerender = false;
+export async function getStaticPaths() {
+  const stories = await getWorkStories();
+  return stories.map((story) => ({ params: { slug: story.slug } }));
+}
 
 const slug = Astro.params.slug as string;
 const story = await getWorkStory(slug);

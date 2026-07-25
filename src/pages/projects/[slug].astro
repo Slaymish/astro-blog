@@ -5,8 +5,6 @@ import { fetchSanity } from "../../lib/sanity";
 import { portableTextToHtml } from "../../lib/portableText";
 import { legacyRoutePolicy } from "../../lib/legacyRoutes";
 
-export const prerender = false;
-
 type ProjectDoc = {
   title: string;
   description?: string;
@@ -19,6 +17,13 @@ type ProjectDoc = {
   relatedPostSlug?: string;
   relatedPostTitle?: string;
 };
+
+export async function getStaticPaths() {
+  const slugs = await fetchSanity<string[]>(`*[_type == "project" && defined(slug.current)].slug.current`);
+  // Legacy slugs are handled by build-time redirects in astro.config.ts and
+  // netlify.toml, so only live projects are generated here.
+  return slugs.map((slug) => ({ params: { slug } }));
+}
 
 const { slug } = Astro.params;
 

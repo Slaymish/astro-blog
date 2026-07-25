@@ -6,8 +6,6 @@ import WorkCard from '../components/work/WorkCard.astro';
 import { getWorkStories } from '../lib/workData';
 import { getHomePage } from '../lib/pageContent';
 
-export const prerender = false;
-
 const [stories, copy] = await Promise.all([getWorkStories(), getHomePage()]);
 const leadStories = stories.filter((story) => story.status === 'lead');
 const { hero, workSection, approach } = copy;

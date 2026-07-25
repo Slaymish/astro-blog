@@ -6,23 +6,46 @@ export type LegacyRoutePolicy =
   | { action: 'unlisted' }
   | null;
 
-const projectSuccessors: Record<string, string> = {
+export const projectSuccessors: Record<string, string> = {
   brontehf: '/work/brontehf',
   'you-inc': '/work/you-inc',
   'gpu-share': '/work/gpu-share',
   'health-agent': '/work/health-agent',
 };
 
-const archivedProjects = new Set([
+export const archivedProjects = new Set([
   'bedroom-layout-designer',
   'drop-eta',
   'piano-improvisation-helper',
   'wiki-router',
 ]);
 
-const publicPostSlugs: Record<string, string> = {
+export const publicPostSlugs: Record<string, string> = {
   'gpu-share': 'building-a-private-ai-server-for-friends',
 };
+
+/** Archived reports that should answer 410 rather than 404. */
+export const archivedReports = new Set([
+  'a-survey-of-nosql-databases-and-polyglot-persistence-patterns',
+]);
+
+/**
+ * Permanent redirects for retired URLs, consumed by `redirects` in
+ * astro.config.ts so they are emitted as real 301s at build time.
+ */
+export function buildLegacyRedirects(): Record<string, string> {
+  const redirects: Record<string, string> = {};
+
+  for (const [slug, destination] of Object.entries(projectSuccessors)) {
+    redirects[`/projects/${slug}`] = destination;
+  }
+
+  for (const [contentSlug, publicSlug] of Object.entries(publicPostSlugs)) {
+    redirects[`/posts/${contentSlug}`] = `/posts/${publicSlug}`;
+  }
+
+  return redirects;
+}
 
 const contentPostSlugs = Object.fromEntries(
   Object.entries(publicPostSlugs).map(([contentSlug, publicSlug]) => [publicSlug, contentSlug])

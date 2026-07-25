@@ -13,23 +13,54 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# HTML pages and embedded JSON-LD use bounded edge caching
+# HTML is prerendered and Netlify purges its CDN on deploy, so revalidating
+# rather than holding a timed copy means a publish is live as soon as the
+# rebuild finishes instead of up to five minutes later.
 [[headers]]
   for = "/*"
   [headers.values]
-    Cache-Control = "public, max-age=0, s-maxage=300, stale-while-revalidate=600"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
-# RSS is generated on demand from Sanity and must always return current content
-[[headers]]
-  for = "/rss.xml"
-  [headers.values]
-    Cache-Control = "no-store"
+# RSS is now prerendered alongside the rest of the site and refreshed by the
+# publish rebuild, so it follows the same revalidate rule as every other page.
 
 # API routes — never cache
 [[headers]]
   for = "/api/*"
   [headers.values]
     Cache-Control = "no-store"
+
+# Retired content answers 410 rather than 404. Mirrors `archivedProjects` and
+# `archivedReports` in src/lib/legacyRoutes.ts — keep the two in step.
+[[redirects]]
+  from = "/projects/bedroom-layout-designer"
+  to = "/410.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/projects/drop-eta"
+  to = "/410.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/projects/piano-improvisation-helper"
+  to = "/410.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/projects/wiki-router"
+  to = "/410.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/reports/a-survey-of-nosql-databases-and-polyglot-persistence-patterns"
+  to = "/410.html"
+  status = 410
+  force = true
 
 [[redirects]]
   from = "http://hamishburke.dev/*"

@@ -5,8 +5,6 @@ import { markdownToPlainText } from '../lib/markdown';
 import { escapeXml } from '../lib/escape';
 import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from '../lib/site';
 
-export const prerender = false;
-
 type RssPost = {
   title: string;
   slug: string;

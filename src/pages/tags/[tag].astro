@@ -3,8 +3,6 @@ import Layout from "../../components/layout/Layout.astro";
 import { fetchSanity } from "../../lib/sanity";
 import { createSlug } from "../../utils/slug";
 
-export const prerender = false;
-
 type TagPath = { tag: string };
 
 type PostDoc = {
@@ -22,6 +20,15 @@ type ReportDoc = {
   description?: string;
   tags?: string[];
 };
+
+export async function getStaticPaths() {
+  const tags = await fetchSanity<string[]>(`
+    array::unique(*[_type in ["post", "report"]].tags[])
+  `);
+  return (tags ?? [])
+    .filter(Boolean)
+    .map((tag) => ({ params: { tag: createSlug(tag) } }));
+}
 
 const { tag } = Astro.params as TagPath;
 

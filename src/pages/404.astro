@@ -2,8 +2,6 @@
 import Layout from '../components/layout/Layout.astro';
 import { getNotFoundPage } from '../lib/pageContent';
 
-export const prerender = false;
-
 const copy = await getNotFoundPage();
 ---
 

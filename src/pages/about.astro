@@ -6,8 +6,6 @@ import { getAboutPage } from '../lib/pageContent';
 import { portableTextToHtml } from '../lib/portableText';
 import { SITE_URL, absoluteUrl } from '../lib/site';
 
-export const prerender = false;
-
 const copy = await getAboutPage();
 const { hero, portrait, capabilities, background } = copy;
 const largeCopyHtml = portableTextToHtml(portrait.largeCopy);

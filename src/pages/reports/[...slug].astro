@@ -9,8 +9,6 @@ import { portableTextToHtml, portableTextToPlainText } from '../../lib/portableT
 import { SITE_URL, absoluteUrl } from '../../lib/site';
 import { legacyRoutePolicy } from '../../lib/legacyRoutes';
 
-export const prerender = false;
-
 type ReportDoc = {
   title: string;
   slug: string;
@@ -20,6 +18,11 @@ type ReportDoc = {
   pdfUrl?: string;
   body?: any;
 };
+
+export async function getStaticPaths() {
+  const slugs = await fetchSanity<string[]>(`*[_type == "report" && defined(slug.current)].slug.current`);
+  return slugs.map((slug) => ({ params: { slug } }));
+}
 
 const slug = Astro.params.slug as string;
 

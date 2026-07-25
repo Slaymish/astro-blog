@@ -13,8 +13,6 @@ import { splitHtmlAtInteractive, stripInteractivePlaceholder } from "../../utils
 import InteractiveElement from "../../components/interactive/InteractiveElement.astro";
 import { contentPostSlug, legacyRoutePolicy, publicPostSlug } from "../../lib/legacyRoutes";
 
-export const prerender = false;
-
 type RelatedProjectDoc = {
   title: string;
   slug: string;
@@ -35,6 +33,12 @@ type PostDoc = {
   interactiveElement?: string;
 };
 
+export async function getStaticPaths() {
+  const slugs = await fetchSanity<string[]>(`*[_type == "post" && defined(slug.current)].slug.current`);
+  // Generate under the public slug; the legacy content slug redirects via config.
+  return slugs.map((slug) => ({ params: { slug: publicPostSlug(slug) } }));
+}
+
 const { slug } = Astro.params;
 
 const routePolicy = legacyRoutePolicy('post', slug as string);
@@ -43,11 +47,10 @@ if (routePolicy?.action === 'redirect') {
 }
 
 const contentSlug = contentPostSlug(slug as string);
-const requestedBackHref = Astro.url.searchParams.get('from');
-const backHref = requestedBackHref && /^\/work\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(requestedBackHref)
-  ? requestedBackHref
-  : '/work';
-const backLabel = backHref === '/work' ? 'Work' : 'Case study';
+// The page is prerendered, so the "from" query param is resolved on the client
+// (see the back-link script below) rather than at build time.
+const backHref = '/work';
+const backLabel = 'Work';
 
 const post = await fetchSanity<PostDoc | null>(`
   *[_type == "post" && slug.current == $slug][0]{
@@ -226,7 +229,7 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
               <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd"/>
             </svg>
-            {backHref === '/work' ? 'Back to work' : 'Back to case study'}
+            <span data-back-text>Back to work</span>
           </a>
         </nav>
       </footer>
@@ -236,6 +239,21 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
       <TableOfContents content={markdownContent} htmlContent={htmlContent || undefined} />
     </aside>
   </div>
+  <!-- The page is prerendered, so restore the "came from a case study" back link
+       on the client from the ?from= param. -->
+  <script is:inline data-cfasync="false">
+    (function () {
+      var from = new URLSearchParams(window.location.search).get('from');
+      if (!from || !/^\/work\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(from)) return;
+
+      document.querySelectorAll('.back-link, .parallax-hero__back').forEach(function (link) {
+        link.setAttribute('href', from);
+      });
+      document.querySelectorAll('[data-back-text]').forEach(function (node) {
+        node.textContent = 'Back to case study';
+      });
+    })();
+  </script>
 </Layout>
 
 <style>

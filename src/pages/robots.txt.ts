@@ -1,8 +1,6 @@
 import type { APIRoute } from 'astro';
 import { SITE_URL, absoluteUrl } from '../lib/site';
 
-export const prerender = false;
-
 export const GET: APIRoute = () => {
   const robotsTxt = `User-agent: *
 Allow: /

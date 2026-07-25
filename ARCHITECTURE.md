@@ -122,7 +122,13 @@ The PDF proxy route performs host allowlisting, protocol checks, redirect blocki
 
 ### Performance and Rendering Model
 
-The site runs in Astro server output mode on Netlify. Many content routes set `export const prerender = false`, so route handlers can fetch fresh Sanity content at request time.
+The site is prerendered. `output: 'static'` with the Netlify adapter bakes every content route to HTML at build time, so pages are served from the CDN with no function invocation and no Sanity round trip per request.
+
+- The only on-demand route is `src/pages/api/pdf.ts`, which keeps `export const prerender = false`.
+- Dynamic routes (`posts/[slug]`, `work/[slug]`, `projects/[slug]`, `reports/[...slug]`, `tags/[tag]`) enumerate their pages via `getStaticPaths` from Sanity.
+- **Publishing in Sanity must trigger a Netlify build hook.** Without it, published content will not appear until the next deploy.
+- Because pages are prerendered, request-time inputs are unavailable. Anything depending on query params must be resolved on the client — see the back-link script in `posts/[slug].astro`.
+- Retired URLs are build-time redirects: 301s come from `buildLegacyRedirects()` in `src/lib/legacyRoutes.ts` via `redirects` in `astro.config.ts`; 410s are declared in `netlify.toml`.
 
 ### Theme and UX State
 

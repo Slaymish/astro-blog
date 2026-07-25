@@ -6,8 +6,6 @@ import { getWorkStories } from '../../lib/workData';
 import { getWorkIndexPage } from '../../lib/pageContent';
 import { SITE_URL, absoluteUrl } from '../../lib/site';
 
-export const prerender = false;
-
 const [stories, copy] = await Promise.all([getWorkStories(), getWorkIndexPage()]);
 const leadStories = stories.filter((story) => story.status === 'lead');
 const supportStories = stories.filter((story) => story.status === 'support');
