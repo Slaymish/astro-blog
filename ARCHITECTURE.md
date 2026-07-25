@@ -86,6 +86,7 @@ Static page copy lives in singleton documents written by fixed ID, one per page:
 
 1. Sanity is the runtime source of truth for published content routes.
 - Page routes query Sanity directly via `fetchSanity`; Astro content collections exist but are not the active runtime path.
+- Sanity-backed pages, metadata, JSON-LD, and discovery outputs use bounded edge caching and are eventually consistent; RSS is the no-cache exception and bypasses the Sanity CDN.
 - This includes static page copy: templates hold no hardcoded user-facing strings and there are no fallback defaults, so the copy singletons must exist before the site renders.
 
 2. The main site shell is centralized.

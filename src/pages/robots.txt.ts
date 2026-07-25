@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { SITE_URL, absoluteUrl } from '../lib/site';
 
+export const prerender = false;
+
 export const GET: APIRoute = () => {
   const robotsTxt = `User-agent: *
 Allow: /
@@ -43,7 +45,7 @@ Allow: /
   return new Response(robotsTxt, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600'
+      'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600'
     }
   });
 };

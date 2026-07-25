@@ -3,6 +3,8 @@ import { fetchSanity } from '../lib/sanity';
 import { SITE_URL, absoluteUrl } from '../lib/site';
 import { createSlug } from '../utils/slug';
 
+export const prerender = false;
+
 type SitemapEntry = {
   loc: string;
   lastmod: string;
@@ -134,7 +136,7 @@ export const GET: APIRoute = async () => {
   return new Response(sitemap, {
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600'
+      'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600'
     }
   });
 };

@@ -25,7 +25,7 @@ const sanityClient = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true   // Use Sanity's global CDN — queries are cached at the edge (~2 min TTL)
+  useCdn: true // Sanity's edge cache provides bounded eventual consistency (~2 min)
 });
 
 const builder = createImageUrlBuilder(sanityClient);
@@ -34,4 +34,8 @@ export const urlFor = (source: unknown) => builder.image(source as any);
 
 export async function fetchSanity<T>(query: string, params: Record<string, unknown> = {}) {
   return sanityClient.fetch<T>(query, params);
+}
+
+export async function fetchFreshSanity<T>(query: string, params: Record<string, unknown> = {}) {
+  return sanityClient.fetch<T>(query, params, { useCdn: false });
 }

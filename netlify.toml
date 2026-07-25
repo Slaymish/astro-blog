@@ -13,12 +13,17 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# HTML pages — Netlify CDN caches for 5 min, serves stale while revalidating for 10 min
-# (portfolios don't need real-time updates; content changes land within minutes)
+# HTML pages and embedded JSON-LD use bounded edge caching
 [[headers]]
   for = "/*"
   [headers.values]
-    Cache-Control = "public, s-maxage=300, stale-while-revalidate=600"
+    Cache-Control = "public, max-age=0, s-maxage=300, stale-while-revalidate=600"
+
+# RSS is generated on demand from Sanity and must always return current content
+[[headers]]
+  for = "/rss.xml"
+  [headers.values]
+    Cache-Control = "no-store"
 
 # API routes — never cache
 [[headers]]

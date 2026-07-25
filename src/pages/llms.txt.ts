@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from '../lib/site';
 
+export const prerender = false;
+
 export const GET: APIRoute = () => {
   const content = `# ${SITE_NAME}
 
@@ -37,7 +39,7 @@ Personal website by Hamish Burke with selected case studies, technical writing, 
   return new Response(content, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600'
+      'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600'
     }
   });
 };

@@ -1,9 +1,11 @@
 import type { APIRoute } from 'astro';
-import { fetchSanity } from '../lib/sanity';
+import { fetchFreshSanity } from '../lib/sanity';
 import { portableTextToPlainText } from '../lib/portableText';
 import { markdownToPlainText } from '../lib/markdown';
 import { escapeXml } from '../lib/escape';
 import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from '../lib/site';
+
+export const prerender = false;
 
 type RssPost = {
   title: string;
@@ -15,7 +17,7 @@ type RssPost = {
 };
 
 export const GET: APIRoute = async () => {
-  const posts = await fetchSanity<RssPost[]>(`
+  const posts = await fetchFreshSanity<RssPost[]>(`
     *[_type == "post" && slug.current != "gpu-share"] | order(publishedAt desc)[0...50]{
       title,
       "slug": slug.current,
@@ -65,7 +67,7 @@ export const GET: APIRoute = async () => {
   return new Response(rssXml, {
     headers: {
       'Content-Type': 'application/rss+xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600'
+      'Cache-Control': 'no-store'
     }
   });
 };
