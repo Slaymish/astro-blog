@@ -41,6 +41,7 @@ Deployment target is Netlify server output.
 
 - `src/components/layout/Layout.astro`: main-site HTML shell, metadata, OG/Twitter tags, JSON-LD graph, robots directives, theme bootstrap.
 - `src/components/layout/Header.astro` + `src/components/layout/Footer.astro`: shared nav/footer.
+- `src/components/canvasui/Bend.tsx`: vendored Canvas UI component (shadcn registry, not an npm dependency). `Layout.astro` wraps page content in it, so **Bend owns the scroll container and the document itself does not scroll**. The header is deliberately rendered outside Bend so it never folds.
 
 ### Content and Data Access
 
@@ -48,6 +49,7 @@ Deployment target is Netlify server output.
 - `src/lib/portableText.ts`: Sanity Portable Text -> HTML/plaintext conversion.
 - `src/lib/markdown.ts`: markdown -> HTML/plaintext conversion.
 - `src/lib/site.ts`: canonical site constants and URL helpers used across metadata/feed/crawl endpoints.
+- `src/lib/pageContent.ts`: fetches the page-copy singletons by fixed document ID. Throws a descriptive error when a document is absent rather than rendering empty markup.
 
 ### Crawl and Machine-Readable Endpoints
 
@@ -69,6 +71,14 @@ Core document types are defined in `src/sanity/schemaTypes`:
 - `report`: long-form report entries, optional PDF file.
 - `book`: reading list entries.
 - `blockContent`: shared rich text schema.
+- `ctaLink`: shared link object (label, destination, external flag, accessible label).
+
+Static page copy lives in singleton documents written by fixed ID, one per page:
+
+- `siteSettings`: header nav, footer, and contact-band copy.
+- `homePage`, `aboutPage`, `cvPage`, `workIndexPage`, `notFoundPage`.
+
+`scripts/seed-page-copy.ts` (`npm run seed:copy`) publishes the initial copy for these and is safe to re-run.
 
 `studio-production/schemaTypes` mirrors these for the standalone Sanity Studio app.
 
@@ -76,6 +86,7 @@ Core document types are defined in `src/sanity/schemaTypes`:
 
 1. Sanity is the runtime source of truth for published content routes.
 - Page routes query Sanity directly via `fetchSanity`; Astro content collections exist but are not the active runtime path.
+- This includes static page copy: templates hold no hardcoded user-facing strings and there are no fallback defaults, so the copy singletons must exist before the site renders.
 
 2. The main site shell is centralized.
 - Main site uses `src/components/layout/Layout.astro` and shared design-system CSS.

@@ -4,63 +4,61 @@ import ButtonLink from '../components/ui/ButtonLink.astro';
 import ContactBand from '../components/work/ContactBand.astro';
 import WorkCard from '../components/work/WorkCard.astro';
 import { getWorkStories } from '../lib/workData';
-import { BOOKING_URL } from '../lib/site';
+import { getHomePage } from '../lib/pageContent';
 
 export const prerender = false;
 
-const stories = await getWorkStories();
+const [stories, copy] = await Promise.all([getWorkStories(), getHomePage()]);
 const leadStories = stories.filter((story) => story.status === 'lead');
+const { hero, workSection, approach } = copy;
 ---
 
-<Layout
-  title="Hamish Burke"
-  description="Wellington web developer turning unclear requirements and manual processes into digital products, internal tools, and practical automation."
->
+<Layout title={copy.seo.title} description={copy.seo.description}>
   <section class="home-hero">
-    <p class="home-hero__eyebrow">Hamish Burke / Web developer at Alphero in Wellington, NZ</p>
-    <h1>Software for work that has outgrown the <span>workaround.</span></h1>
+    <p class="home-hero__eyebrow">{hero.eyebrow}</p>
+    <h1>{hero.headline} <span>{hero.headlineAccent}</span></h1>
     <div class="home-hero__lower">
-      <p>
-        I turn unclear requirements and manual processes into digital products, internal tools,
-        and practical automation.
-      </p>
+      <p>{hero.lede}</p>
       <div class="home-hero__actions">
-        <ButtonLink href="/work">View selected work</ButtonLink>
-        <ButtonLink href={BOOKING_URL} external variant="text" ariaLabel="Discuss a project on Cal.com">Discuss a project</ButtonLink>
+        <ButtonLink href={hero.primaryCta.href} external={hero.primaryCta.external} ariaLabel={hero.primaryCta.ariaLabel}>
+          {hero.primaryCta.label}
+        </ButtonLink>
+        <ButtonLink
+          href={hero.secondaryCta.href}
+          external={hero.secondaryCta.external}
+          variant="text"
+          ariaLabel={hero.secondaryCta.ariaLabel}
+        >
+          {hero.secondaryCta.label}
+        </ButtonLink>
       </div>
     </div>
     <ul class="home-hero__services" aria-label="Capabilities">
-      <li>Product engineering</li>
-      <li>Workflow automation</li>
-      <li>Technical direction</li>
+      {copy.services.map((service) => <li>{service}</li>)}
     </ul>
   </section>
 
   <section class="home-work" aria-labelledby="selected-work-heading">
     <div class="home-section-heading">
       <div>
-        <p>2024-2026</p>
-        <h2 id="selected-work-heading">Selected work</h2>
+        <p>{workSection.eyebrow}</p>
+        <h2 id="selected-work-heading">{workSection.heading}</h2>
       </div>
-      <a href="/work">All work <span aria-hidden="true">→</span></a>
+      <a href={workSection.link.href}>{workSection.link.label} <span aria-hidden="true">→</span></a>
     </div>
     {leadStories.map((story, index) => <WorkCard story={story} reverse={index % 2 === 1} />)}
   </section>
 
   <section class="home-approach" aria-labelledby="approach-heading">
-    <p class="home-approach__label">How I work</p>
+    <p class="home-approach__label">{approach.label}</p>
     <div>
-      <h2 id="approach-heading">I work from the problem outward.</h2>
-      <p>
-        Define what matters, choose the smallest sound system that solves it, and make the result
-        understandable to the people who have to use it. The case studies show the constraints and
-        trade-offs, not just the finished surface.
-      </p>
-      <a href="/about">More about me <span aria-hidden="true">→</span></a>
+      <h2 id="approach-heading">{approach.heading}</h2>
+      <p>{approach.body}</p>
+      <a href={approach.link.href}>{approach.link.label} <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
-  <ContactBand heading="What are you trying to make work?" />
+  <ContactBand heading={copy.contactHeading} />
 </Layout>
 
 <style>

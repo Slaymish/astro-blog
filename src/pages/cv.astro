@@ -1,48 +1,55 @@
 ---
 import Layout from '../components/layout/Layout.astro';
 import ButtonLink from '../components/ui/ButtonLink.astro';
-import { CONTACT_EMAIL, SITE_URL, absoluteUrl } from '../lib/site';
+import { getCvPage } from '../lib/pageContent';
+import { SITE_URL, absoluteUrl } from '../lib/site';
+
+export const prerender = false;
+
+const copy = await getCvPage();
+const { hero, academic } = copy;
 ---
 
 <Layout
-  title="CV — Hamish Burke"
-  description="Current professional summary and academic CV for Hamish Burke, a software engineer in Wellington, New Zealand."
+  title={copy.seo.title}
+  description={copy.seo.description}
   canonicalURL={absoluteUrl('/cv', SITE_URL)}
 >
   <article class="cv">
     <header class="cv__hero">
-      <p class="cv__eyebrow">Curriculum vitae</p>
-      <h1>Software engineer.<br />Systems thinker.</h1>
-      <p>
-        I work across digital products, AI systems, infrastructure, and the interfaces that make them usable.
-        I’m currently a web developer at Alphero and take on selected independent projects.
-      </p>
+      <p class="cv__eyebrow">{hero.eyebrow}</p>
+      <h1>{hero.headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}</h1>
+      <p>{hero.intro}</p>
       <div class="cv__actions">
-        <ButtonLink href="https://www.linkedin.com/in/hamish-burke-2301669a" external>Current experience on LinkedIn</ButtonLink>
-        <ButtonLink href="/work" variant="secondary">Selected work</ButtonLink>
+        {hero.actions.map((action, index) => (
+          <ButtonLink
+            href={action.href}
+            external={action.external}
+            variant={index === 0 ? 'primary' : 'secondary'}
+            ariaLabel={action.ariaLabel}
+          >
+            {action.label}
+          </ButtonLink>
+        ))}
       </div>
     </header>
 
     <section class="cv__facts" aria-label="Professional summary">
-      <div><span>Current role</span><strong>Web Developer · Alphero</strong></div>
-      <div><span>Education</span><strong>MSc Computer Science · Victoria University of Wellington</strong></div>
-      <div><span>Based in</span><strong>Wellington, New Zealand</strong></div>
-      <div><span>Focus</span><strong>Digital products · AI automation · technical systems</strong></div>
+      {copy.facts.map((fact) => <div><span>{fact.label}</span><strong>{fact.value}</strong></div>)}
     </section>
 
     <section class="cv__academic" aria-labelledby="academic-cv-heading">
       <div>
-        <p class="cv__eyebrow">Document archive</p>
-        <h2 id="academic-cv-heading">Academic CV</h2>
+        <p class="cv__eyebrow">{academic.eyebrow}</p>
+        <h2 id="academic-cv-heading">{academic.heading}</h2>
       </div>
       <div>
-        <p>
-          The downloadable PDF is an earlier academic snapshot. It predates my current Alphero role and
-          still describes the MSc as in progress. Use LinkedIn and this site for current professional context.
-        </p>
+        <p>{academic.body}</p>
         <div class="cv__actions">
-          <ButtonLink href="/cv.pdf" variant="secondary">Open academic CV</ButtonLink>
-          <a href={`mailto:${CONTACT_EMAIL}`}>Request a current CV →</a>
+          <ButtonLink href={academic.downloadCta.href} external={academic.downloadCta.external} variant="secondary">
+            {academic.downloadCta.label}
+          </ButtonLink>
+          <a href={academic.requestCta.href}>{academic.requestCta.label}</a>
         </div>
       </div>
     </section>

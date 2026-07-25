@@ -1,22 +1,24 @@
 ---
 import Layout from '../components/layout/Layout.astro';
+import { getNotFoundPage } from '../lib/pageContent';
+
+export const prerender = false;
+
+const copy = await getNotFoundPage();
 ---
 
-<Layout
-  title="404 - Page Not Found"
-  description="The page you're looking for doesn't exist."
->
+<Layout title={copy.seo.title} description={copy.seo.description}>
   <div class="min-h-[50vh] flex flex-col items-center justify-center text-center px-4">
     <h1 class="font-serif text-[8rem] sm:text-[10rem] font-bold leading-none text-[var(--accent)] mb-2 tracking-tight">
-      404
+      {copy.code}
     </h1>
 
     <h2 class="font-serif text-2xl sm:text-3xl font-semibold mb-4 text-[var(--text)] tracking-tight">
-      Page not found
+      {copy.heading}
     </h2>
 
     <p class="text-lg mb-8 max-w-md text-[var(--text-muted)] leading-relaxed">
-      This page doesn't exist. Maybe it was moved, or maybe it never was.
+      {copy.body}
     </p>
 
     <div class="flex flex-col sm:flex-row gap-3">
@@ -24,24 +26,23 @@ import Layout from '../components/layout/Layout.astro';
         href="/"
         class="cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-[var(--accent)] border border-[var(--accent)] rounded-[var(--radius-md)] no-underline font-medium transition-colors"
       >
-        Go home
+        {copy.homeLabel}
       </a>
       <button
         type="button"
         id="go-back-button"
         class="inline-flex items-center justify-center gap-2 px-6 py-3 text-[var(--text)] border border-[var(--border)] rounded-[var(--radius-md)] font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] bg-transparent cursor-pointer"
       >
-        Go back
+        {copy.backLabel}
       </button>
     </div>
 
     <div class="mt-16 pt-8 border-t border-[var(--border)] w-full max-w-md">
-      <p class="text-sm font-medium text-[var(--text-muted)] mb-4">Or try one of these:</p>
+      <p class="text-sm font-medium text-[var(--text-muted)] mb-4">{copy.suggestionsLabel}</p>
       <div class="flex flex-wrap justify-center gap-4 text-sm">
-        <a href="/work" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">Work</a>
-        <a href="/about" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">About</a>
-        <a href="/cv" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">CV</a>
-        <a href="/rss.xml" class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">RSS Feed</a>
+        {copy.suggestions.map((link) => (
+          <a href={link.href} class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">{link.label}</a>
+        ))}
       </div>
     </div>
   </div>

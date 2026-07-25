@@ -2,14 +2,12 @@
 import Logo from '../ui/Logo.astro';
 import ButtonLink from '../ui/ButtonLink.astro';
 import { BOOKING_URL } from '../../lib/site';
+import { getSiteSettings } from '../../lib/pageContent';
 
 const pathname = Astro.url.pathname;
 
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/work', label: 'Work' },
-  { href: '/about', label: 'About' },
-];
+const { header } = await getSiteSettings();
+const navLinks = header.navLinks;
 
 function navLinkClasses(href: string) {
   const isActive = pathname === href || pathname.startsWith(href + '/');
@@ -53,8 +51,8 @@ function navLinkClasses(href: string) {
           ariaLabel="Book a call on Cal.com"
           class="site-nav__booking"
         >
-          <span class="site-nav__booking-long">Book a call</span>
-          <span class="site-nav__booking-short">Book</span>
+          <span class="site-nav__booking-long">{header.bookingLabel}</span>
+          <span class="site-nav__booking-short">{header.bookingLabelShort}</span>
         </ButtonLink>
 
         <details class="site-nav__mobile">

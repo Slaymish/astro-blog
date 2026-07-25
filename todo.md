@@ -11,7 +11,10 @@ The redesign implementation is complete. These items need real production data, 
 - [x] Update the pinned GitHub Actions when their Node 24-compatible major versions are adopted; the current CI passes but GitHub now emits a Node 20 action-runtime deprecation notice.
 - [x] fix font glitch on load (how it loads in as a diff font). I want 0 cummulative layout shift
 - [x] make not look AI generated (looks generic)
-- [x] get better graphics for projects (and make graphics a good size on work pages)
+- [~] get better graphics for projects (and make graphics a good size on work pages)
+  - [X] BronteHF
+  - [ ] YouInc (get screenshots of site)
+  - [ ] GPUShare
 - [x] For GPUShare, only the second post is visble. 'I'm Building a GPU PC, So I Made It a Private AI Server for My Friends' doesn't go to post when clicked (just goes to https://hamishburke.dev/work/gpu-share)
 - [x] Going from GPUShare to https://hamishburke.dev/posts/splitting-the-stack-and-making-setup-actually-work, the back button should take you make to the prev page (not the /works page)
 - [x] for https://hamishburke.dev/posts/splitting-the-stack-and-making-setup-actually-work, the TOC is clipped, either remove it, or fix.

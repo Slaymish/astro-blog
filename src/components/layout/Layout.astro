@@ -10,6 +10,7 @@ import "../../styles/globals.css";
 // Layout Components
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
+import { Bend } from "../canvasui/Bend";
 import {
   SITE_AUTHOR,
   SITE_DESCRIPTION,
@@ -206,22 +207,65 @@ const structuredData = {
         width: 100%;
       }
 
+      /* Bend owns the scroll container, so the document itself must not scroll. */
+      html, body.bend-host {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body.bend-host {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* The header sits outside Bend so it never folds; Bend takes the rest. */
+      .bend-shell {
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* Sits inside Bend's scroller and restores the flex column the body used to provide. */
+      .bend-page {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+      }
     </style>
   </head>
-  <body class="antialiased min-h-screen flex flex-col" style="background-color: var(--bg); color: var(--text);">
+  <body class="antialiased bend-host" style="background-color: var(--bg); color: var(--text);">
     <a class="skip-link" href="#main-content">Skip to content</a>
 
     <Header />
-    <div class="site-shell">
-      <main
-        id="main-content"
-        class={`grow w-full mx-auto pt-8 pb-8 sm:pt-10 sm:pb-12 md:pt-10 md:pb-16 ${fullWidth ? '' : 'max-w-[var(--content-max-width)]'}`}
-        tabindex="-1"
-      >
-        <slot />
-      </main>
-      <Footer />
-    </div>
+
+    <Bend
+      client:load
+      zone={100}
+      angle={80}
+      rounding={480}
+      perspective={1050}
+      ease={40}
+      smoothing={0.1}
+      tumble={0.1}
+      tilt={0}
+      direction="out"
+      top
+      bottom
+      className="bend-shell"
+    >
+      <div class="bend-page">
+        <div class="site-shell">
+          <main
+            id="main-content"
+            class={`grow w-full mx-auto pt-8 pb-8 sm:pt-10 sm:pb-12 md:pt-10 md:pb-16 ${fullWidth ? '' : 'max-w-[var(--content-max-width)]'}`}
+            tabindex="-1"
+          >
+            <slot />
+          </main>
+          <Footer />
+        </div>
+      </div>
+    </Bend>
     {article && (
       <script is:inline>
         function initCodeCopy() {
@@ -261,12 +305,20 @@ const structuredData = {
         var firedMilestones = {};
         var pathname = window.location.pathname;
 
+        // Bend hosts the page in its own scroll container and swaps that element
+        // when the canvas effect activates, so listen in the capture phase on the
+        // document rather than binding to a node that may be replaced.
         if (window.__analyticsScrollHandler) {
-          window.removeEventListener('scroll', window.__analyticsScrollHandler);
+          document.removeEventListener('scroll', window.__analyticsScrollHandler, true);
         }
-        function analyticsScroll() {
-          var scrollTop = window.scrollY;
-          var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+        function analyticsScroll(event) {
+          var node = event.target;
+          var isDocument = node === document || node === document.documentElement;
+          var scrollTop = isDocument ? window.scrollY : node.scrollTop;
+          var viewport = isDocument ? window.innerHeight : node.clientHeight;
+          var scrollHeight = isDocument ? document.documentElement.scrollHeight : node.scrollHeight;
+          var docHeight = scrollHeight - viewport;
           if (docHeight <= 0) return;
           var pct = Math.round((scrollTop / docHeight) * 100);
           if (pct > maxScroll) maxScroll = pct;
@@ -278,7 +330,7 @@ const structuredData = {
           });
         }
         window.__analyticsScrollHandler = analyticsScroll;
-        window.addEventListener('scroll', analyticsScroll, { passive: true });
+        document.addEventListener('scroll', analyticsScroll, { passive: true, capture: true });
 
         document.querySelectorAll('a[href*="/cv"], a[href*="cv.pdf"], a[href*="CV"]').forEach(function(el) {
           el.addEventListener('click', function() {

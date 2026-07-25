@@ -1,28 +1,35 @@
 ---
-import { CONTACT_EMAIL } from '../../lib/site';
+import { SITE_AUTHOR } from '../../lib/site';
+import { getSiteSettings } from '../../lib/pageContent';
 import Logo from '../ui/Logo.astro';
+
 const currentYear = new Date().getFullYear();
+const { footer } = await getSiteSettings();
 ---
 
 <footer class="site-footer">
   <div class="site-footer__inner">
     <div class="site-footer__meta">
       <a href="/" class="footer-logo" aria-label="Hamish Burke, home"><Logo size={28} /></a>
-      <p>Independent software work from Wellington, NZ.</p>
+      <p>{footer.tagline}</p>
 
       <nav aria-label="Footer navigation">
-        <a href="/work">Work</a>
-        <a href="/about">About</a>
-        <a href="/cv">CV</a>
+        {footer.navLinks.map((link) => <a href={link.href}>{link.label}</a>)}
       </nav>
 
       <div class="site-footer__profiles">
-        <a href={`mailto:${CONTACT_EMAIL}`}>Email</a>
-        <a href="https://github.com/Slaymish" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://www.linkedin.com/in/hamish-burke-2301669a" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        {footer.profileLinks.map((link) => (
+          <a
+            href={link.href}
+            target={link.external ? '_blank' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
       </div>
 
-      <p class="site-footer__copyright">&copy; {currentYear} Hamish Burke</p>
+      <p class="site-footer__copyright">&copy; {currentYear} {SITE_AUTHOR}</p>
     </div>
   </div>
 </footer>

@@ -1,7 +1,4 @@
 {
-  "env": {
-    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8787"
-  },
   "permissions": {
     "allow": [
       "Bash(npx astro:*)",
@@ -9,7 +6,8 @@
       "Bash(xargs cat:*)",
       "Bash(grep -n \"prerender\\\\|cache\\\\|Cache\" /Users/hamish/Documents/Personal/astro-blog/src/pages/writing/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/projects/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/reading/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/tools/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/posts/[slug].astro)",
       "Bash(node:*)",
-      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__performance_start_trace"
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__performance_start_trace",
+      "WebFetch(domain:canvasui.dev)"
     ]
   },
   "disabledMcpjsonServers": [

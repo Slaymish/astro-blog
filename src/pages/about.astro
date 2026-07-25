@@ -2,29 +2,33 @@
 import Layout from '../components/layout/Layout.astro';
 import MediaFrame from '../components/ui/MediaFrame.astro';
 import ContactBand from '../components/work/ContactBand.astro';
+import { getAboutPage } from '../lib/pageContent';
+import { portableTextToHtml } from '../lib/portableText';
 import { SITE_URL, absoluteUrl } from '../lib/site';
+
+export const prerender = false;
+
+const copy = await getAboutPage();
+const { hero, portrait, capabilities, background } = copy;
+const largeCopyHtml = portableTextToHtml(portrait.largeCopy);
 ---
 
 <Layout
-  title="About Hamish Burke"
-  description="Software engineer in Wellington working across digital products, AI systems, infrastructure, and the interfaces that make them useful."
+  title={copy.seo.title}
+  description={copy.seo.description}
   canonicalURL={absoluteUrl('/about', SITE_URL)}
 >
   <article class="about">
     <header class="about__hero">
-      <p class="about__eyebrow">About · Wellington, New Zealand</p>
-      <h1>I like understanding the whole system.</h1>
-      <p class="about__intro">
-        I’m Hamish, a software engineer who works from the underlying problem through to the interface
-        people actually use. I’m most useful when the brief is complicated, the path is unclear, and a
-        practical result matters more than technical theatre.
-      </p>
+      <p class="about__eyebrow">{hero.eyebrow}</p>
+      <h1>{hero.heading}</h1>
+      <p class="about__intro">{hero.intro}</p>
     </header>
 
     <section class="about__portrait" aria-label="Introduction">
       <MediaFrame
         src="/images/headshot.jpg"
-        alt="Hamish Burke in Wellington"
+        alt={portrait.imageAlt}
         width={3264}
         height={4896}
         ratio="portrait"
@@ -32,55 +36,48 @@ import { SITE_URL, absoluteUrl } from '../lib/site';
         loading="eager"
       />
       <div>
-        <p class="about__label">Current context</p>
-        <p class="about__large-copy">
-          I work at <a href="https://www.alphero.com/" target="_blank" rel="noopener noreferrer">Alphero</a>
-          as a web developer and take on a small number of independent projects.
-        </p>
-        <p>
-          My public portfolio deliberately excludes NDA-covered client work. The work shown here is what
-          I can discuss honestly: finished freelance delivery, products I have built end to end, and
-          technical studies with enough evidence to inspect.
-        </p>
+        <p class="about__label">{portrait.label}</p>
+        <div class="about__large-copy" set:html={largeCopyHtml} />
+        <p>{portrait.body}</p>
       </div>
     </section>
 
     <section class="about__capabilities" aria-labelledby="capabilities-heading">
       <div class="about__section-heading">
-        <p class="about__label">What I bring</p>
-        <h2 id="capabilities-heading">Breadth with a point.</h2>
+        <p class="about__label">{capabilities.label}</p>
+        <h2 id="capabilities-heading">{capabilities.heading}</h2>
       </div>
       <ol>
-        <li><span>01</span><div><h3>Product delivery</h3><p>Responsive interfaces, content systems, integrations, and the release path needed to make them maintainable.</p></div></li>
-        <li><span>02</span><div><h3>Systems thinking</h3><p>Data models, APIs, infrastructure, security boundaries, and recovery plans shaped around the real constraint.</p></div></li>
-        <li><span>03</span><div><h3>Technical clarity</h3><p>Plain-language decisions, visible trade-offs, and enough documentation for someone else to operate the result.</p></div></li>
+        {capabilities.items.map((item, index) => (
+          <li>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <div><h3>{item.title}</h3><p>{item.body}</p></div>
+          </li>
+        ))}
       </ol>
     </section>
 
     <section class="about__background" aria-labelledby="background-heading">
-      <p class="about__label">Background</p>
+      <p class="about__label">{background.label}</p>
       <div>
-        <h2 id="background-heading">From research into shipping software.</h2>
-        <p>
-          I completed a Master of Computer Science at Victoria University of Wellington. My thesis studied
-          diffusion-based anomaly detection for electrical distribution networks. That work sharpened how I
-          frame uncertain problems, evaluate evidence, and separate an interesting result from a useful one.
-        </p>
-        <p>
-          Outside software, I boulder, play piano, and read widely. Those are good counterweights to work that
-          can otherwise become entirely screens and abstractions.
-        </p>
+        <h2 id="background-heading">{background.heading}</h2>
+        {background.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
         <nav aria-label="About links">
-          <a href="/cv">View CV →</a>
-          <a href="/work">Selected work →</a>
-          <a href="https://github.com/Slaymish" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-          <a href="https://www.linkedin.com/in/hamish-burke-2301669a" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+          {background.links.map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
+            >
+              {link.label}
+            </a>
+          ))}
         </nav>
       </div>
     </section>
   </article>
 
-  <ContactBand heading="Want to talk through a problem?" />
+  <ContactBand heading={copy.contactHeading} />
 
   <script type="application/ld+json" is:inline set:html={JSON.stringify({
     '@context': 'https://schema.org',
@@ -108,6 +105,8 @@ import { SITE_URL, absoluteUrl } from '../lib/site';
   .about__portrait :global(.media-frame) { max-width: 28rem; }
   .about__portrait p { color: var(--color-text-secondary); line-height: 1.7; }
   .about__portrait .about__large-copy { color: var(--color-text-primary); font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1.3; margin-top: 0; }
+  /* Large copy is portable text, so the rendered paragraph inherits the wrapper's type. */
+  .about__portrait .about__large-copy p { color: inherit; font-size: inherit; line-height: inherit; margin: 0; }
   .about__portrait a { color: var(--color-action); }
   .about__capabilities { margin-block: clamp(4rem, 10vw, 9rem); }
   .about__section-heading { margin-bottom: var(--spacing-8); }

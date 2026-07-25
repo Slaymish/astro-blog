@@ -3,33 +3,32 @@ import Layout from '../../components/layout/Layout.astro';
 import ContactBand from '../../components/work/ContactBand.astro';
 import WorkCard from '../../components/work/WorkCard.astro';
 import { getWorkStories } from '../../lib/workData';
+import { getWorkIndexPage } from '../../lib/pageContent';
 import { SITE_URL, absoluteUrl } from '../../lib/site';
 
 export const prerender = false;
 
-const stories = await getWorkStories();
+const [stories, copy] = await Promise.all([getWorkStories(), getWorkIndexPage()]);
 const leadStories = stories.filter((story) => story.status === 'lead');
 const supportStories = stories.filter((story) => story.status === 'support');
+const { hero, leadSection, supportSection } = copy;
 ---
 
 <Layout
-  title="Selected Work"
-  description="Websites, digital products, AI systems, and technical architecture built by Hamish Burke."
+  title={copy.seo.title}
+  description={copy.seo.description}
   canonicalURL={absoluteUrl('/work', SITE_URL)}
 >
   <header class="work-index__header">
-    <p class="work-index__eyebrow">Selected work · 2024–2026</p>
-    <h1>Useful systems,<br />built properly.</h1>
-    <p class="work-index__intro">
-      Client websites, digital products, AI systems, and technical architecture.
-      Each story starts with what changed—not a list of tools.
-    </p>
+    <p class="work-index__eyebrow">{hero.eyebrow}</p>
+    <h1>{hero.headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}</h1>
+    <p class="work-index__intro">{hero.intro}</p>
   </header>
 
   <section aria-labelledby="lead-work-heading">
     <div class="work-index__section-heading">
-      <h2 id="lead-work-heading">Lead work</h2>
-      <p>Finished client delivery and substantial products.</p>
+      <h2 id="lead-work-heading">{leadSection.heading}</h2>
+      <p>{leadSection.description}</p>
     </div>
     <div>
       {leadStories.map((story, index) => <WorkCard story={story} reverse={index % 2 === 1} />)}
@@ -38,15 +37,15 @@ const supportStories = stories.filter((story) => story.status === 'support');
 
   <section class="work-index__support" aria-labelledby="support-work-heading">
     <div class="work-index__section-heading">
-      <h2 id="support-work-heading">Technical studies</h2>
-      <p>Smaller systems that prove a specific engineering capability.</p>
+      <h2 id="support-work-heading">{supportSection.heading}</h2>
+      <p>{supportSection.description}</p>
     </div>
     <div>
       {supportStories.map((story) => <WorkCard story={story} variant="row" />)}
     </div>
   </section>
 
-  <ContactBand heading="What are you trying to make work?" />
+  <ContactBand heading={copy.contactHeading} />
 </Layout>
 
 <style>

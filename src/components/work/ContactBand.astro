@@ -1,18 +1,22 @@
 ---
 import ButtonLink from '../ui/ButtonLink.astro';
 import { BOOKING_URL, CONTACT_EMAIL } from '../../lib/site';
+import { getSiteSettings } from '../../lib/pageContent';
 
 interface Props { heading?: string; }
-const { heading = 'Have a complicated problem?' } = Astro.props;
+const { heading } = Astro.props;
+
+const { contactBand } = await getSiteSettings();
+const bandHeading = heading ?? contactBand.defaultHeading;
 ---
 
 <aside class="contact-band" aria-label="Work with Hamish">
   <div>
-    <p>Available for selected projects</p>
-    <h2>{heading}</h2>
+    <p>{contactBand.availabilityLabel}</p>
+    <h2>{bandHeading}</h2>
   </div>
   <div class="contact-band__actions">
-    <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">Book a call</ButtonLink>
+    <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">{contactBand.bookingLabel}</ButtonLink>
     <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
   </div>
 </aside>
