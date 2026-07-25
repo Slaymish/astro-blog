@@ -4,6 +4,7 @@ import "../../design-system/fonts.css";
 import "../../design-system/tokens.css";
 import "../../design-system/base.css";
 import "../../design-system/themes/dark.css";
+import "../../design-system/themes/light.css";
 import "../../styles/globals.css";
 
 
@@ -114,6 +115,21 @@ const structuredData = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Resolve the theme before first paint so there is no flash of the wrong
+         theme. Stored choice wins; otherwise follow the system preference. -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var stored = null;
+        try { stored = localStorage.getItem('theme'); } catch (e) {}
+        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        var theme = stored === 'light' || stored === 'dark' ? stored : (prefersLight ? 'light' : 'dark');
+        root.classList.remove('light', 'dark');
+        root.classList.add(theme);
+        root.dataset.themeSource = stored ? 'user' : 'system';
+      })();
+    </script>
     
     <!-- Basic Meta Tags -->
     <title>{fullTitle}</title>

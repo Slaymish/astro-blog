@@ -126,7 +126,7 @@ The site runs in Astro server output mode on Netlify. Many content routes set `e
 
 ### Theme and UX State
 
-Theme and accent are persisted in `localStorage` and applied early in `Layout.astro` to reduce flash-of-unstyled-theme behavior.
+Light and dark themes live in `src/design-system/themes/`, and each defines the same set of semantic roles so the two are interchangeable. An inline script in `Layout.astro` resolves the theme before first paint to avoid a flash: a stored `localStorage` choice wins, otherwise the system preference applies. The site keeps following the system until the visitor explicitly toggles, tracked via `data-theme-source` on the root element.
 
 ### Testing and CI
 

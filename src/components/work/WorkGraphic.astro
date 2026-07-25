@@ -179,11 +179,14 @@ const graphicAlt = graphicAlts[kind] ?? alt;
     padding: clamp(1rem, 3vw, 2rem);
   }
 
+  /* These sit on a dark scrim over a screenshot, so the text stays light in
+     both themes rather than following the theme's primary text colour. */
   .work-graphic__boundary,
   .work-graphic__pipeline {
     backdrop-filter: blur(12px);
     background: rgb(7 9 8 / 88%);
     border: 1px solid var(--color-stroke-strong);
+    color: var(--tile-image-text);
     display: flex;
     font-size: var(--type-label);
     gap: var(--spacing-3);
@@ -201,11 +204,10 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   .work-graphic--you-inc,
   .work-graphic--gpu-share,
   .work-graphic--home-lab {
-    background-color: #080b0a;
+    background-color: var(--color-bg-inset);
     container-type: inline-size;
     padding: clamp(.9rem, 3.4vw, 2.25rem);
   }
-  .work-graphic--home-lab { background-color: #111713; }
 
   .work-graphic__caption,
   .work-graphic__footnote {
@@ -243,13 +245,13 @@ const graphicAlt = graphicAlts[kind] ?? alt;
      text keeps its contrast against the background. */
   .work-graphic__cascade li { align-items: center; background: var(--surface); border: 1px solid var(--color-stroke-subtle); box-shadow: var(--shadow-xs); color: var(--color-text-secondary); display: grid; gap: clamp(.3rem, 1.1cqi, .7rem); grid-template-columns: auto auto minmax(0, 1fr); padding: clamp(.4rem, 1.3cqi, .7rem) clamp(.45rem, 1.5cqi, .85rem); transform: translateZ(2px); }
   /* The tier that actually matched lifts above the ones that were skipped. */
-  .work-graphic__cascade li.is-matched { background: var(--surface-2); border-color: var(--color-action); box-shadow: var(--shadow-md); color: var(--color-text-primary); transform: translateZ(14px); }
+  .work-graphic__cascade li.is-matched { background: var(--surface); border-color: var(--color-action); box-shadow: var(--shadow-md); color: var(--color-text-primary); transform: translateZ(14px); }
   .work-graphic__cascade i { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: clamp(.64rem, 1.5cqi, .74rem); font-style: normal; }
   .work-graphic__cascade li.is-matched i { color: var(--color-action); }
   .work-graphic__cascade span { font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .05em; text-transform: uppercase; }
   .work-graphic__cascade b { font-size: clamp(.7rem, 1.75cqi, .86rem); font-weight: var(--font-weight-medium); text-align: right; }
 
-  .work-graphic__journal { background: var(--surface-2); border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: .2em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(20px); }
+  .work-graphic__journal { background: var(--surface); border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: .2em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(20px); }
   .work-graphic__journal small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
   .work-graphic__journal div { display: flex; font-family: var(--font-mono); font-size: clamp(.72rem, 1.8cqi, .9rem); gap: .75em; justify-content: space-between; }
   .work-graphic__journal p { border-top: 1px solid var(--color-stroke-strong); display: flex; font-family: var(--font-mono); font-size: clamp(.72rem, 1.8cqi, .9rem); gap: .75em; justify-content: space-between; margin: .35em 0 0; padding-top: .4em; }
@@ -263,7 +265,7 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   .work-graphic__gpu-host { display: flex; flex-direction: column; gap: .2em; min-width: 0; padding: clamp(.6rem, 2cqi, 1.2rem); }
   .work-graphic__gpu-cloud { background: var(--surface); border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-sm); transform: translateZ(4px); }
   /* The host floats highest — it is the machine the whole thing hangs off. */
-  .work-graphic__gpu-host { background: var(--surface-2); border: 1px dashed var(--color-action); box-shadow: var(--shadow-lg); transform: translateZ(18px); }
+  .work-graphic__gpu-host { background: var(--surface); border: 1px dashed var(--color-action); box-shadow: var(--shadow-lg); transform: translateZ(18px); }
   .work-graphic__gpu small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
   .work-graphic__gpu strong { font-size: clamp(.9rem, 2.4cqi, 1.25rem); line-height: 1.3; }
   .work-graphic__gpu-cloud span,
@@ -289,7 +291,7 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   .work-graphic__lab-doors span { color: var(--color-text-secondary); font-size: clamp(.68rem, 1.6cqi, .8rem); line-height: 1.4; }
 
   /* The single host is the point of the story, so it sits highest. */
-  .work-graphic__lab-host { background: var(--surface-2); border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: .4em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(18px); }
+  .work-graphic__lab-host { background: var(--surface); border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: .4em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(18px); }
   .work-graphic__lab-host strong { font-size: clamp(.95rem, 2.5cqi, 1.3rem); }
   .work-graphic__lab-host span { color: var(--color-text-secondary); font-size: clamp(.68rem, 1.6cqi, .8rem); }
   .work-graphic__lab-memory { background: var(--color-stroke-subtle); height: clamp(.2rem, .8cqi, .4rem); overflow: hidden; width: 100%; }

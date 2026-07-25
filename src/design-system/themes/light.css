@@ -1,0 +1,47 @@
+/**
+ * LIGHT THEME
+ *
+ * Mirrors every semantic role defined in themes/dark.css so the two themes are
+ * interchangeable. The flat editorial treatment is kept deliberately: the
+ * neumorphic shadows stay off and surfaces are separated by strokes instead.
+ */
+
+.light {
+  color-scheme: light;
+
+  --color-bg-canvas: var(--color-paper-100);
+  --color-bg-raised: var(--color-paper-0);
+  --color-bg-inset: var(--color-paper-200);
+  --color-text-primary: var(--color-ink-100);
+  --color-text-secondary: var(--color-ink-500);
+  --color-stroke-subtle: var(--color-line-200);
+  --color-stroke-strong: var(--color-line-400);
+  --color-action: var(--color-signal-700);
+  --color-action-ink: var(--color-paper-0);
+  --color-focus-ring: var(--color-signal-700);
+
+  --bg: var(--color-bg-canvas);
+  --surface: var(--color-bg-raised);
+  --surface-2: var(--color-bg-inset);
+  --text: var(--color-text-primary);
+  --text-muted: var(--color-text-secondary);
+  --border: var(--color-stroke-subtle);
+  --border-strong: var(--color-stroke-strong);
+  --accent: var(--color-action);
+  --accent-contrast: var(--color-action-ink);
+  --focus: var(--color-focus-ring);
+
+  /* Keep the flat editorial look rather than reintroducing neumorphism. */
+  --shadow-neu: none;
+  --shadow-neu-inset: none;
+  --shadow-neu-hover: none;
+
+  /* Surfaces are close in value on light, so tiles need a stroke to read. */
+  --tile-border: 1px solid var(--color-stroke-subtle);
+  --tile-border-hover: 1px solid var(--color-stroke-strong);
+
+  /* Image overlays keep light text on a dark scrim in both themes. */
+  --tile-image-text: #ffffff;
+  --tile-image-label-text: #ffffff;
+  --tile-image-label-bg: rgb(7 9 8 / 0.62);
+}

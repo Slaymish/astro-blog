@@ -1,6 +1,7 @@
 ---
 import Logo from '../ui/Logo.astro';
 import ButtonLink from '../ui/ButtonLink.astro';
+import ThemeToggle from '../theme/ThemeToggle.astro';
 import { BOOKING_URL } from '../../lib/site';
 import { getSiteSettings } from '../../lib/pageContent';
 
@@ -45,6 +46,8 @@ function navLinkClasses(href: string) {
       </div>
 
       <div class="site-nav__actions">
+        <ThemeToggle />
+
         <ButtonLink
           href={BOOKING_URL}
           external

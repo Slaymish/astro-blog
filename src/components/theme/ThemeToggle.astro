@@ -1,0 +1,99 @@
+---
+// Theme switching is progressive: the markup renders a real button, and the
+// bootstrap script in Layout.astro has already resolved the theme before paint.
+---
+
+<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">
+  <svg class="theme-toggle__sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+  </svg>
+  <svg class="theme-toggle__moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+</button>
+
+<style>
+  .theme-toggle {
+    align-items: center;
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    padding: 0;
+    transition: color var(--motion-duration-interaction, 150ms) ease;
+  }
+
+  .theme-toggle:hover { color: var(--color-action); }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Show whichever icon represents the theme the button switches *to*. */
+  .theme-toggle__sun { display: none; }
+  .theme-toggle__moon { display: block; }
+  :global(.dark) .theme-toggle__sun { display: block; }
+  :global(.dark) .theme-toggle__moon { display: none; }
+</style>
+
+<script is:inline>
+  (function () {
+    var LIGHT_THEME_COLOR = '#f6f7f3';
+    var DARK_THEME_COLOR = '#0b0d0c';
+
+    function currentTheme() {
+      return document.documentElement.classList.contains('light') ? 'light' : 'dark';
+    }
+
+    function syncChrome(theme) {
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'light' ? LIGHT_THEME_COLOR : DARK_THEME_COLOR);
+
+      document.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
+        button.setAttribute('aria-label', theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
+      });
+    }
+
+    function applyTheme(theme, persist) {
+      var root = document.documentElement;
+      root.classList.remove('light', 'dark');
+      root.classList.add(theme);
+      if (persist) {
+        try { localStorage.setItem('theme', theme); } catch (e) {}
+        root.dataset.themeSource = 'user';
+      }
+      syncChrome(theme);
+    }
+
+    function initThemeToggle() {
+      syncChrome(currentTheme());
+
+      document.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
+        if (button.dataset.themeBound) return;
+        button.dataset.themeBound = 'true';
+        button.addEventListener('click', function () {
+          applyTheme(currentTheme() === 'light' ? 'dark' : 'light', true);
+        });
+      });
+    }
+
+    // Keep following the system while the visitor has not made an explicit choice.
+    var query = window.matchMedia('(prefers-color-scheme: light)');
+    if (!window.__themeSystemBound) {
+      window.__themeSystemBound = true;
+      query.addEventListener('change', function (event) {
+        if (document.documentElement.dataset.themeSource === 'user') return;
+        applyTheme(event.matches ? 'light' : 'dark', false);
+      });
+    }
+
+    initThemeToggle();
+  })();
+</script>
