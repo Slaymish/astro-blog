@@ -348,10 +348,32 @@ const structuredData = {
     <!-- Custom analytics events for UX success metrics -->
     <script is:inline>
       function initAnalytics() {
+        // Sequence buffer for the nightly synthesis. Umami Cloud keeps the
+        // dashboards; its query API is paid, so the ordered sequence is
+        // collected first-party and flushed once per session.
+        var sessionStart = Date.now();
+        var sequence = [{ t: 0, p: window.location.pathname }];
+
         function track(name, data) {
           if (typeof umami !== 'undefined' && umami.track) {
             umami.track(name, data);
           }
+          if (sequence.length < 100) {
+            sequence.push({ t: Date.now() - sessionStart, p: window.location.pathname, n: name });
+          }
+        }
+
+        var sequenceSent = false;
+        function flushSequence() {
+          if (sequenceSent || sequence.length === 0) return;
+          sequenceSent = true;
+          try {
+            // sendBeacon survives the page being torn down; fetch often does not.
+            navigator.sendBeacon(
+              '/api/collect',
+              new Blob([JSON.stringify({ e: sequence })], { type: 'application/json' })
+            );
+          } catch (e) {}
         }
 
         var maxScroll = 0;
@@ -430,8 +452,11 @@ const structuredData = {
           if (document.visibilityState === 'hidden') {
             track('scroll-depth-final', { depth: maxScroll, page: pathname });
             track('time-on-page', { seconds: Math.round((Date.now() - pageStart) / 1000), page: pathname });
+            flushSequence();
           }
         });
+        // pagehide covers the cases visibilitychange misses (bfcache, some iOS paths).
+        window.addEventListener('pagehide', flushSequence);
       }
 
       initAnalytics();

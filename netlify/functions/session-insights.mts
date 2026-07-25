@@ -13,39 +13,34 @@ import type { Config } from '@netlify/functions';
 import Anthropic from '@anthropic-ai/sdk';
 import { getStore } from '@netlify/blobs';
 
-const UMAMI_API = 'https://api.umami.is/v1';
-const WEBSITE_ID = '3b77a67f-19f6-4f3c-a7ab-8af0d58bfbc6';
 const LOOKBACK_DAYS = 7;
 const MAX_SESSIONS = 200;
 
-interface UmamiSession {
-  id: string;
+interface StoredSession {
+  day: string;
+  events: Array<{ t: number; p: string; n?: string }>;
 }
 
-interface UmamiActivity {
-  createdAt: string;
-  eventName?: string | null;
-  urlPath?: string | null;
-}
-
-async function umami<T>(path: string, apiKey: string): Promise<T> {
-  const response = await fetch(`${UMAMI_API}${path}`, {
-    headers: { 'x-umami-api-key': apiKey, accept: 'application/json' }
-  });
-
-  if (!response.ok) {
-    throw new Error(`Umami ${path} responded ${response.status}`);
+/** The last N days as YYYY-MM-DD, matching the collector's blob key prefix. */
+function recentDays(count: number): string[] {
+  const days: string[] = [];
+  for (let i = 0; i < count; i += 1) {
+    days.push(new Date(Date.now() - i * 86_400_000).toISOString().slice(0, 10));
   }
-
-  return response.json() as Promise<T>;
+  return days;
 }
 
-/** One line per session: the ordered path plus any named events. */
-function toSequence(activity: UmamiActivity[]): string {
-  return activity
+/** One line per session: ordered steps, with dwell time where it is meaningful. */
+function toSequence(session: StoredSession): string {
+  return session.events
     .slice()
-    .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
-    .map((entry) => entry.eventName ?? entry.urlPath ?? '?')
+    .sort((a, b) => a.t - b.t)
+    .map((event, index, all) => {
+      const label = event.n ? `${event.p} [${event.n}]` : event.p;
+      const next = all[index + 1];
+      const dwell = next ? Math.round((next.t - event.t) / 1000) : null;
+      return dwell !== null && dwell > 0 ? `${label} (${dwell}s)` : label;
+    })
     .join(' → ');
 }
 
@@ -69,37 +64,33 @@ thin to trust at this sample size, say so rather than inventing significance.
 Return concise markdown.`;
 
 export default async function handler(): Promise<Response> {
-  const umamiKey = process.env.UMAMI_API_KEY;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
-
-  if (!umamiKey || !anthropicKey) {
-    return new Response('UMAMI_API_KEY and ANTHROPIC_API_KEY must be set', { status: 503 });
+  if (!anthropicKey) {
+    return new Response('ANTHROPIC_API_KEY must be set', { status: 503 });
   }
 
-  const endAt = Date.now();
-  const startAt = endAt - LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
-
-  const { data: sessions } = await umami<{ data: UmamiSession[] }>(
-    `/websites/${WEBSITE_ID}/sessions?startAt=${startAt}&endAt=${endAt}&pageSize=${MAX_SESSIONS}`,
-    umamiKey
-  );
-
-  if (!sessions?.length) {
-    return new Response('No sessions in window', { status: 200 });
-  }
-
+  const store = getStore('sessions');
   const sequences: string[] = [];
-  for (const session of sessions) {
-    try {
-      const activity = await umami<UmamiActivity[]>(
-        `/websites/${WEBSITE_ID}/sessions/${session.id}/activity?startAt=${startAt}&endAt=${endAt}`,
-        umamiKey
-      );
-      const sequence = toSequence(activity ?? []);
-      if (sequence) sequences.push(sequence);
-    } catch {
-      // One unreadable session should not abandon the whole report.
+
+  for (const day of recentDays(LOOKBACK_DAYS)) {
+    if (sequences.length >= MAX_SESSIONS) break;
+
+    const { blobs } = await store.list({ prefix: `${day}/` });
+    for (const blob of blobs) {
+      if (sequences.length >= MAX_SESSIONS) break;
+      try {
+        const session = (await store.get(blob.key, { type: 'json' })) as StoredSession | null;
+        if (!session?.events?.length) continue;
+        const sequence = toSequence(session);
+        if (sequence) sequences.push(sequence);
+      } catch {
+        // One unreadable session should not abandon the whole report.
+      }
     }
+  }
+
+  if (sequences.length === 0) {
+    return new Response('No sessions in window', { status: 200 });
   }
 
   const anthropic = new Anthropic({ apiKey: anthropicKey });
@@ -129,9 +120,9 @@ export default async function handler(): Promise<Response> {
     .map((block) => block.text)
     .join('\n');
 
-  const store = getStore('session-insights');
+  const reportStore = getStore('session-insights');
   const generatedAt = new Date().toISOString();
-  await store.set(
+  await reportStore.set(
     'latest',
     JSON.stringify({ generatedAt, sessionCount: sequences.length, report })
   );
