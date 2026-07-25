@@ -143,9 +143,25 @@ const proxiedPdfPath = pdfPath?.startsWith('http')
 <script src="/vendor/pdfjs/3.11.174/pdf.min.js" is:inline></script>
 
 <script is:inline define:vars={{ pdfPath: proxiedPdfPath, title }}>
-  // Wait for PDF.js to be loaded
+  // Wait for PDF.js to be loaded. Bounded, so a runtime that never arrives
+  // surfaces the error state instead of spinning indefinitely.
+  var pdfjsWaitAttempts = 0;
+  var PDFJS_MAX_WAIT_ATTEMPTS = 100; // 100 x 100ms = 10s
+
+  function showPdfError(reason) {
+    console.error('PDF viewer:', reason);
+    var loading = document.getElementById('pdf-loading');
+    var error = document.getElementById('pdf-error');
+    if (loading) loading.style.display = 'none';
+    if (error) error.style.display = 'flex';
+  }
+
   function initPDFViewer() {
     if (typeof window.pdfjsLib === 'undefined') {
+      if (pdfjsWaitAttempts++ >= PDFJS_MAX_WAIT_ATTEMPTS) {
+        showPdfError('PDF.js runtime did not load');
+        return;
+      }
       setTimeout(initPDFViewer, 100);
       return;
     }
@@ -203,12 +219,18 @@ const proxiedPdfPath = pdfPath?.startsWith('http')
           pageRendering = false;
           loadingEl.style.display = 'none';
           canvas.style.display = 'block';
-          
+
           if (pageNumPending !== null) {
             renderPage(pageNumPending);
             pageNumPending = null;
           }
+        }).catch(error => {
+          pageRendering = false;
+          showPdfError(error);
         });
+      }).catch(error => {
+        pageRendering = false;
+        showPdfError(error);
       });
 
       pageNumEl.textContent = num;
@@ -455,7 +477,7 @@ const proxiedPdfPath = pdfPath?.startsWith('http')
     display: none;
     max-width: 100%;
     height: auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-md);
   }
 
   .pdf-loading,
@@ -500,14 +522,15 @@ const proxiedPdfPath = pdfPath?.startsWith('http')
     background: var(--accent);
   }
 
-  /* Fullscreen styles */
+  /* Fullscreen styles — match the inline container rather than forcing black,
+     which was jarring against a light theme. */
   .pdf-viewer-wrapper:fullscreen {
-    background: #000;
+    background: var(--bg);
   }
 
   .pdf-viewer-wrapper:fullscreen .pdf-container {
     max-height: calc(100vh - 60px);
-    background: #000;
+    background: var(--surface-2);
   }
 
   /* Mobile responsive */

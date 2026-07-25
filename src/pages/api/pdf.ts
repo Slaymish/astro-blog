@@ -91,10 +91,17 @@ export async function GET({ request, url }: { request: Request; url: URL }) {
     return new Response('Upstream PDF exceeds maximum allowed size', { status: 413 });
   }
 
+  if (!upstream.body) {
+    return new Response('Upstream returned an empty body', { status: 502 });
+  }
+
   const headers = new Headers();
   headers.set('content-type', 'application/pdf');
   headers.set('x-content-type-options', 'nosniff');
-  headers.set('content-length', String(contentLength));
+  // Deliberately no content-length. Sanity serves the file compressed and fetch
+  // decompresses it, so the upstream header describes the compressed size while
+  // we stream the decompressed bytes. Forwarding it made the response claim
+  // fewer bytes than it sent, and PDF.js waits forever for the shortfall.
 
   const rawFilename = parsed.pathname.split('/').pop() || 'document.pdf';
   const filename = rawFilename.replace(/[^\w.-]/g, '_');
@@ -103,7 +110,21 @@ export async function GET({ request, url }: { request: Request; url: URL }) {
   const cacheControl = upstream.headers.get('cache-control') ?? 'public, max-age=3600';
   headers.set('cache-control', cacheControl);
 
-  return new Response(upstream.body, {
+  // The upstream length check above sees the compressed size, so re-enforce the
+  // cap against the decompressed bytes actually streamed to the client.
+  let streamedBytes = 0;
+  const sizeGuard = new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      streamedBytes += chunk.byteLength;
+      if (streamedBytes > MAX_PDF_BYTES) {
+        controller.error(new Error('Upstream PDF exceeds maximum allowed size'));
+        return;
+      }
+      controller.enqueue(chunk);
+    }
+  });
+
+  return new Response(upstream.body.pipeThrough(sizeGuard), {
     status: upstream.status,
     headers
   });

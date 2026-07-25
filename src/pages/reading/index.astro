@@ -85,11 +85,7 @@ const statusLabel: Record<ReadingStatus, string> = {
                       class="w-full h-full object-cover border-0"
                     />
                   ) : (
-                    <div
-                      class="w-[70%] h-[70%] rounded-[0.35rem]"
-                      style="background: linear-gradient(135deg, rgba(246,82,160,0.2), rgba(99,102,241,0.15));"
-                      aria-hidden="true"
-                    />
+                    <div class="book-cover-placeholder w-[70%] h-[70%] rounded-[0.35rem]" aria-hidden="true" />
                   )}
                 </a>
               ) : (
@@ -102,11 +98,7 @@ const statusLabel: Record<ReadingStatus, string> = {
                       class="w-full h-full object-cover border-0"
                     />
                   ) : (
-                    <div
-                      class="w-[70%] h-[70%] rounded-[0.35rem]"
-                      style="background: linear-gradient(135deg, rgba(246,82,160,0.2), rgba(99,102,241,0.15));"
-                      aria-hidden="true"
-                    />
+                    <div class="book-cover-placeholder w-[70%] h-[70%] rounded-[0.35rem]" aria-hidden="true" />
                   )}
                 </>
               )}
@@ -126,3 +118,11 @@ const statusLabel: Record<ReadingStatus, string> = {
     </section>
   </div>
 </Layout>
+
+<style>
+  /* Stand-in for books with no cover art. Built from stroke tokens so it reads
+     against the tile surface in both themes. */
+  .book-cover-placeholder {
+    background: linear-gradient(135deg, var(--color-stroke-subtle), var(--color-stroke-strong));
+  }
+</style>
