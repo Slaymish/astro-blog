@@ -9,6 +9,8 @@
  * link (page path plus an opaque nonce) is forwarded.
  */
 
+import { getStore } from '@netlify/blobs';
+
 export const prerender = false;
 
 const UMAMI_ENDPOINT = 'https://cloud.umami.is/api/send';
@@ -75,6 +77,21 @@ export async function POST({ request }: { request: Request }) {
 
   const metadata = (event.payload?.metadata ?? {}) as Record<string, unknown>;
   const ref = parseRef(metadata.ref);
+
+  // Also record the conversion alongside the collected sessions. The nightly
+  // synthesis reads the blob store, not Umami, so a booking written only to
+  // Umami would be invisible to the analysis that exists to explain bookings.
+  try {
+    const day = new Date().toISOString().slice(0, 10);
+    await getStore('sessions').setJSON(`conversions/${day}/${crypto.randomUUID()}`, {
+      day,
+      visitor: ref?.nonce ?? null,
+      page: ref?.page ?? null,
+      confirmedAt: new Date().toISOString()
+    });
+  } catch {
+    // Never fail the webhook over analytics bookkeeping — Cal.com would retry.
+  }
 
   await fetch(UMAMI_ENDPOINT, {
     method: 'POST',

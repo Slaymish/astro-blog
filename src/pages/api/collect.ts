@@ -18,6 +18,7 @@ const MAX_BODY_BYTES = 8 * 1024;
 const MAX_EVENTS = 100;
 const PATH_PATTERN = /^\/[\w\-/.]*$/;
 const NAME_PATTERN = /^[a-z0-9-]{1,40}$/;
+const NONCE_PATTERN = /^[a-z0-9]{4,32}$/;
 
 interface IncomingEvent {
   t?: unknown;
@@ -73,12 +74,16 @@ export async function POST({ request }: { request: Request }) {
     return new Response(null, { status: 204 });
   }
 
+  // The same opaque nonce that is attached to booking links, so a confirmed
+  // booking can be joined back to the session that produced it.
+  const visitor = typeof payload.s === 'string' && NONCE_PATTERN.test(payload.s) ? payload.s : null;
+
   const day = new Date().toISOString().slice(0, 10);
   // One blob per session: concurrent sessions never contend for the same key.
   const key = `${day}/${crypto.randomUUID()}`;
 
   try {
-    await getStore('sessions').setJSON(key, { day, events });
+    await getStore('sessions').setJSON(key, { day, visitor, events });
   } catch {
     // Losing an analytics beacon must never surface to the visitor.
     return new Response(null, { status: 204 });

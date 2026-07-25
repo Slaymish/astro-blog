@@ -18,7 +18,12 @@ const MAX_SESSIONS = 200;
 
 interface StoredSession {
   day: string;
+  visitor?: string | null;
   events: Array<{ t: number; p: string; n?: string }>;
+}
+
+interface StoredConversion {
+  visitor?: string | null;
 }
 
 /** The last N days as YYYY-MM-DD, matching the collector's blob key prefix. */
@@ -47,15 +52,18 @@ function toSequence(session: StoredSession): string {
 const PROMPT = `You are analysing anonymised visitor sessions for a software engineer's
 portfolio site. The single conversion that matters is booking a call.
 
-Each line below is one session: an ordered sequence of page paths and named events.
-"book-call" means the visitor clicked through to the booking page.
-"booking-confirmed" means a booking actually completed.
+Each line below is one session: an ordered sequence of page paths, with dwell
+time in seconds between steps, and named events in square brackets.
+"[book-call]" means the visitor clicked through to the booking page.
+A line prefixed "[BOOKED]" is a session where a booking was actually confirmed —
+this is the outcome that matters, and it is rarer than a book-call click.
 
 Identify:
 1. The recurring session archetypes. Name each one for what the visitor appears
    to be doing, and say roughly how common it is.
-2. Specifically: where do sessions that reach book-call diverge from those that
-   do not? Name the pages or sequences that distinguish them.
+2. Specifically: where do [BOOKED] sessions diverge from sessions that clicked
+   [book-call] but did not book, and from sessions that did neither? Name the
+   pages, dwell patterns or sequences that distinguish them.
 3. Content gaps — what someone in a high-intent archetype seems to look for and
    not find.
 
@@ -70,9 +78,27 @@ export default async function handler(): Promise<Response> {
   }
 
   const store = getStore('sessions');
-  const sequences: string[] = [];
+  const days = recentDays(LOOKBACK_DAYS);
 
-  for (const day of recentDays(LOOKBACK_DAYS)) {
+  // Which visitors actually completed a booking. Without this join the analysis
+  // could only see booking-link clicks, not bookings.
+  const convertedVisitors = new Set<string>();
+  for (const day of days) {
+    const { blobs } = await store.list({ prefix: `conversions/${day}/` });
+    for (const blob of blobs) {
+      try {
+        const conversion = (await store.get(blob.key, { type: 'json' })) as StoredConversion | null;
+        if (conversion?.visitor) convertedVisitors.add(conversion.visitor);
+      } catch {
+        // Ignore an unreadable conversion record rather than losing the report.
+      }
+    }
+  }
+
+  const sequences: string[] = [];
+  let convertedSessions = 0;
+
+  for (const day of days) {
     if (sequences.length >= MAX_SESSIONS) break;
 
     const { blobs } = await store.list({ prefix: `${day}/` });
@@ -82,7 +108,11 @@ export default async function handler(): Promise<Response> {
         const session = (await store.get(blob.key, { type: 'json' })) as StoredSession | null;
         if (!session?.events?.length) continue;
         const sequence = toSequence(session);
-        if (sequence) sequences.push(sequence);
+        if (!sequence) continue;
+
+        const converted = Boolean(session.visitor && convertedVisitors.has(session.visitor));
+        if (converted) convertedSessions += 1;
+        sequences.push(converted ? `[BOOKED] ${sequence}` : sequence);
       } catch {
         // One unreadable session should not abandon the whole report.
       }
@@ -106,7 +136,9 @@ export default async function handler(): Promise<Response> {
     messages: [
       {
         role: 'user',
-        content: `${PROMPT}\n\nSessions (${sequences.length} over ${LOOKBACK_DAYS} days):\n\n${sequences.join('\n')}`
+        content:
+          `${PROMPT}\n\nSessions (${sequences.length} over ${LOOKBACK_DAYS} days, ` +
+          `${convertedSessions} of them confirmed bookings):\n\n${sequences.join('\n')}`
       }
     ]
   });

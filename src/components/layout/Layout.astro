@@ -367,11 +367,15 @@ const structuredData = {
         function flushSequence() {
           if (sequenceSent || sequence.length === 0) return;
           sequenceSent = true;
+          var visitorId = '';
+          try { visitorId = localStorage.getItem('booking-nonce') || ''; } catch (e) {}
           try {
             // sendBeacon survives the page being torn down; fetch often does not.
+            // `s` is the same nonce attached to booking links, so a confirmed
+            // booking can be joined back to the session that produced it.
             navigator.sendBeacon(
               '/api/collect',
-              new Blob([JSON.stringify({ e: sequence })], { type: 'application/json' })
+              new Blob([JSON.stringify({ s: visitorId, e: sequence })], { type: 'application/json' })
             );
           } catch (e) {}
         }
