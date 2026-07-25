@@ -14,9 +14,6 @@ const images: Partial<Record<GraphicKind, { src: string; position?: string }>> =
   brontehf: {
     src: '/images/work/bronte-projects.webp',
   },
-  'you-inc': {
-    src: '/images/work/youinc-demo-dashboard.png',
-  },
   'health-agent': {
     src: '/images/posts/status_screenshot.png',
     position: 'top center',
@@ -24,11 +21,18 @@ const images: Partial<Record<GraphicKind, { src: string; position?: string }>> =
 };
 
 const image = images[kind];
-const graphicAlt = kind === 'brontehf'
-  ? 'BrontëHF’s public projects page showing a filterable grid of portfolio work.'
-  : kind === 'you-inc'
-    ? 'The working YouInc demo dashboard showing a cashflow waterfall, operating statement, expense and income breakdowns, and recurring subscriptions using sample data.'
-  : alt;
+
+const graphicAlts: Partial<Record<GraphicKind, string>> = {
+  brontehf: 'BrontëHF’s public projects page showing a filterable grid of portfolio work.',
+  'you-inc':
+    'A bank transaction from the Akahu feed passing through three classification tiers — a declarative rule, an NZFCC category fallback, then a suspense account — and posting as a balanced double-entry journal where debits equal credits.',
+  'gpu-share':
+    'Two layers: an always-on cloud layer holding accounts, ledger and invoices, and a home GPU host running Ollama and Blender that connects outbound through a tunnel with no open ports. Pricing is derived from electricity rate multiplied by GPU wattage.',
+  'home-lab':
+    'A single 8GB Raspberry Pi reached by two separate paths — a Cloudflare Tunnel for public services and Tailscale for admin services — with 7.26 of 8GB of memory allocated and a disaster recovery restore measured at 1 hour 45 minutes against a 2 hour target.',
+};
+
+const graphicAlt = graphicAlts[kind] ?? alt;
 ---
 
 <div
@@ -36,30 +40,75 @@ const graphicAlt = kind === 'brontehf'
   role="img"
   aria-label={graphicAlt}
 >
-  {(kind === 'brontehf' || kind === 'you-inc') && image && (
+  {kind === 'brontehf' && image && (
     <img
       src={image.src}
       alt=""
-      width={kind === 'you-inc' ? '2462' : '2550'}
-      height={kind === 'you-inc' ? '1420' : '1231'}
+      width="2550"
+      height="1231"
       loading={priority ? 'eager' : 'lazy'}
       fetchpriority={priority ? 'high' : 'auto'}
       decoding="async"
     />
   )}
 
+  {kind === 'you-inc' && (
+    <div class="work-graphic__ledger">
+      <span class="work-graphic__caption">Akahu feed → double entry</span>
+
+      <div class="work-graphic__ledger-flow">
+        <div class="work-graphic__txn">
+          <small>Raw transaction</small>
+          <strong>NEW WORLD</strong>
+          <em>−$82.40</em>
+        </div>
+
+        <ol class="work-graphic__cascade">
+          <li class="is-matched"><i>1</i><span>Rule</span><b>Groceries</b></li>
+          <li><i>2</i><span>NZFCC</span><b>Fallback</b></li>
+          <li><i>3</i><span>Suspense</span><b>Never dropped</b></li>
+        </ol>
+
+        <div class="work-graphic__journal">
+          <small>Journal</small>
+          <div><span>Dr Groceries</span><b>82.40</b></div>
+          <div><span>Cr Cheque</span><b>82.40</b></div>
+          <p><span>Balance</span><b>0.00</b></p>
+        </div>
+      </div>
+
+      <span class="work-graphic__footnote">Idempotent on Akahu id · every entry balances</span>
+    </div>
+  )}
+
   {kind === 'gpu-share' && (
     <div class="work-graphic__gpu">
-      <div class="work-graphic__gpu-public">
-        <small>Public cloud</small>
-        <strong>Accounts · billing · cache</strong>
+      <span class="work-graphic__caption">Idle GPU → billed at cost</span>
+
+      <div class="work-graphic__gpu-split">
+        <div class="work-graphic__gpu-cloud">
+          <small>Always on</small>
+          <strong>Accounts · ledger · invoices</strong>
+          <span>Reachable with your PC off</span>
+        </div>
+
+        <div class="work-graphic__gpu-link">
+          <b>←</b>
+          <span>Outbound tunnel</span>
+          <span>No open ports</span>
+        </div>
+
+        <div class="work-graphic__gpu-host">
+          <small>Your machine</small>
+          <strong>Ollama · Blender</strong>
+          <span>Only while powered on</span>
+        </div>
       </div>
-      <div class="work-graphic__gpu-tunnel"><span>Encrypted tunnel</span><b>→</b></div>
-      <div class="work-graphic__gpu-private">
-        <small>Private host</small>
-        <strong>Ollama · Blender · RTX GPU</strong>
-      </div>
-      <p>One explicit trust boundary.</p>
+
+      <p class="work-graphic__gpu-price">
+        <span>kWh rate</span><b>×</b><span>GPU watts</span><b>=</b><em>price</em>
+        <i>No markup</i>
+      </p>
     </div>
   )}
 
@@ -73,13 +122,24 @@ const graphicAlt = kind === 'brontehf'
   )}
 
   {kind === 'home-lab' && (
-    <div class="work-graphic__architecture">
-      <div><small>Public</small><strong>Cloudflare</strong></div>
-      <b>→</b>
-      <div class="work-graphic__pi"><small>8GB · 1TB</small><strong>Raspberry Pi</strong></div>
-      <b>→</b>
-      <div><small>Encrypted</small><strong>B2 backup</strong></div>
-      <p><span>Restore tested</span><strong>1h 45m</strong></p>
+    <div class="work-graphic__lab">
+      <span class="work-graphic__caption">One 5W host · two doors</span>
+
+      <div class="work-graphic__lab-doors">
+        <div><small>Public</small><strong>Cloudflare Tunnel</strong><span>Photos · files · calendar</span></div>
+        <div><small>Admin</small><strong>Tailscale</strong><span>SSH · Postgres · SMB</span></div>
+      </div>
+
+      <div class="work-graphic__lab-host">
+        <strong>Raspberry Pi 4 · 8GB</strong>
+        <div class="work-graphic__lab-memory" aria-hidden="true"><i></i></div>
+        <span>7.26 GB allocated · 9.25% headroom</span>
+      </div>
+
+      <div class="work-graphic__lab-restore">
+        <div class="work-graphic__lab-bar" aria-hidden="true"><i></i><u></u></div>
+        <p><span>Restore tested</span><b>1h 45m</b><em>under a 2h target</em></p>
+      </div>
     </div>
   )}
 
@@ -137,39 +197,112 @@ const graphicAlt = kind === 'brontehf'
   .work-graphic__boundary b { color: var(--color-action); font-weight: var(--font-weight-medium); }
   .work-graphic__pipeline b { color: var(--color-action); }
 
-  .work-graphic--gpu-share {
-    background-color: #080b0a;
-    background-image: linear-gradient(var(--color-stroke-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-stroke-subtle) 1px, transparent 1px);
-    background-position: center;
-    background-size: clamp(1.5rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.5rem);
-    padding: clamp(1rem, 4vw, 3rem);
-  }
-  .work-graphic__gpu { align-content: center; display: grid; gap: clamp(.5rem, 2vw, 1.25rem); grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); height: 100%; position: relative; }
-  .work-graphic__gpu-public,
-  .work-graphic__gpu-private { border: 1px solid var(--color-stroke-strong); display: flex; flex-direction: column; gap: var(--spacing-2); min-width: 0; padding: clamp(.75rem, 2.5vw, 2rem); }
-  .work-graphic__gpu-private { border-color: var(--color-action); }
-  .work-graphic__gpu small { color: var(--color-text-secondary); font-size: clamp(.5rem, 1vw, .7rem); letter-spacing: .08em; text-transform: uppercase; }
-  .work-graphic__gpu strong { font-size: clamp(.65rem, 1.5vw, 1rem); line-height: 1.35; }
-  .work-graphic__gpu-tunnel { align-items: center; color: var(--color-action); display: flex; flex-direction: column; font-size: clamp(.6rem, 1vw, .75rem); text-align: center; text-transform: uppercase; }
-  .work-graphic__gpu-tunnel b { font-size: clamp(1rem, 2.5vw, 2rem); }
-  .work-graphic__gpu p { bottom: clamp(.35rem, 1.2vw, .8rem); color: var(--color-text-secondary); font-size: clamp(.55rem, 1.2vw, .8rem); grid-column: 1 / -1; line-height: 1.4; margin: 0; position: absolute; }
-
+  /* ---- Shared scaffolding for the three composed graphics ---- */
+  .work-graphic--you-inc,
+  .work-graphic--gpu-share,
   .work-graphic--home-lab {
-    background-color: #111713;
-    background-image: linear-gradient(var(--color-stroke-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-stroke-subtle) 1px, transparent 1px);
-    background-position: center;
-    background-size: clamp(1.5rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.5rem);
-    padding: clamp(1rem, 4vw, 3rem);
+    background-color: #080b0a;
+    container-type: inline-size;
+    padding: clamp(.9rem, 3.4vw, 2.25rem);
   }
-  .work-graphic__architecture { align-items: center; display: grid; gap: clamp(.3rem, 2vw, 1rem); grid-template-columns: 1fr auto 1.2fr auto 1fr; height: 100%; text-align: center; }
-  .work-graphic__architecture div { border: 1px solid var(--color-stroke-strong); display: flex; flex-direction: column; padding: clamp(.65rem, 2vw, 1.5rem) .4rem; }
-  .work-graphic__architecture small { color: var(--color-text-secondary); font-size: clamp(.5rem, 1vw, .7rem); text-transform: uppercase; }
-  .work-graphic__architecture strong { font-size: clamp(.65rem, 1.5vw, 1rem); }
-  .work-graphic__architecture > b { color: var(--color-action); }
-  .work-graphic__architecture .work-graphic__pi { border-color: var(--color-action); }
-  .work-graphic__architecture p { align-items: center; bottom: clamp(.75rem, 2vw, 1.5rem); display: flex; font-size: clamp(.6rem, 1.2vw, .8rem); justify-content: space-between; left: clamp(1rem, 4vw, 3rem); margin: 0; position: absolute; right: clamp(1rem, 4vw, 3rem); }
-  .work-graphic__architecture p span { color: var(--color-text-secondary); text-transform: uppercase; }
-  .work-graphic__architecture p strong { color: var(--color-action); }
+  .work-graphic--home-lab { background-color: #111713; }
+
+  .work-graphic__caption,
+  .work-graphic__footnote {
+    color: var(--color-text-secondary);
+    font-size: clamp(.68rem, 1.7cqi, .8rem);
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  .work-graphic__footnote { color: var(--color-action); }
+
+  /* Panels sit at three slight elevations so the composition reads as layered
+     rather than flat. Depth is small on purpose; the shadows carry most of it. */
+  .work-graphic__ledger,
+  .work-graphic__gpu,
+  .work-graphic__lab { perspective: 1200px; }
+
+  .work-graphic__ledger-flow,
+  .work-graphic__cascade,
+  .work-graphic__gpu-split,
+  .work-graphic__lab-doors { transform-style: preserve-3d; }
+
+  /* ---- YouInc: one transaction, classified then balanced ---- */
+  .work-graphic__ledger { display: flex; flex-direction: column; gap: clamp(.75rem, 2.6cqi, 1.5rem); height: 100%; justify-content: space-between; }
+  /* flex:1 lets the row own the spare height while align-items keeps the panels
+     sized to their content rather than stretching. */
+  .work-graphic__ledger-flow { align-items: center; display: grid; flex: 1; gap: clamp(.5rem, 2cqi, 1.25rem); grid-template-columns: minmax(0, .85fr) minmax(0, 1fr) minmax(0, 1fr); }
+
+  .work-graphic__txn { background: var(--surface); border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: .15em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(4px); }
+  .work-graphic__txn small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
+  .work-graphic__txn strong { font-size: clamp(.95rem, 2.6cqi, 1.35rem); letter-spacing: -.01em; }
+  .work-graphic__txn em { color: var(--color-action); font-family: var(--font-mono); font-size: clamp(.9rem, 2.4cqi, 1.25rem); font-style: normal; }
+
+  .work-graphic__cascade { display: flex; flex-direction: column; gap: clamp(.2rem, .8cqi, .45rem); justify-content: center; list-style: none; margin: 0; padding: 0; }
+  /* Unmatched tiers are distinguished by colour and border, not opacity, so all
+     text keeps its contrast against the background. */
+  .work-graphic__cascade li { align-items: center; background: var(--surface); border: 1px solid var(--color-stroke-subtle); box-shadow: var(--shadow-xs); color: var(--color-text-secondary); display: grid; gap: clamp(.3rem, 1.1cqi, .7rem); grid-template-columns: auto auto minmax(0, 1fr); padding: clamp(.4rem, 1.3cqi, .7rem) clamp(.45rem, 1.5cqi, .85rem); transform: translateZ(2px); }
+  /* The tier that actually matched lifts above the ones that were skipped. */
+  .work-graphic__cascade li.is-matched { background: var(--surface-2); border-color: var(--color-action); box-shadow: var(--shadow-md); color: var(--color-text-primary); transform: translateZ(14px); }
+  .work-graphic__cascade i { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: clamp(.64rem, 1.5cqi, .74rem); font-style: normal; }
+  .work-graphic__cascade li.is-matched i { color: var(--color-action); }
+  .work-graphic__cascade span { font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .05em; text-transform: uppercase; }
+  .work-graphic__cascade b { font-size: clamp(.7rem, 1.75cqi, .86rem); font-weight: var(--font-weight-medium); text-align: right; }
+
+  .work-graphic__journal { background: var(--surface-2); border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: .2em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(20px); }
+  .work-graphic__journal small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
+  .work-graphic__journal div { display: flex; font-family: var(--font-mono); font-size: clamp(.72rem, 1.8cqi, .9rem); gap: .75em; justify-content: space-between; }
+  .work-graphic__journal p { border-top: 1px solid var(--color-stroke-strong); display: flex; font-family: var(--font-mono); font-size: clamp(.72rem, 1.8cqi, .9rem); gap: .75em; justify-content: space-between; margin: .35em 0 0; padding-top: .4em; }
+  .work-graphic__journal p span { color: var(--color-text-secondary); }
+  .work-graphic__journal p b { color: var(--color-action); }
+
+  /* ---- GPUShare: what stays up, and what only runs when the host does ---- */
+  .work-graphic__gpu { display: flex; flex-direction: column; gap: clamp(.75rem, 2.6cqi, 1.5rem); height: 100%; justify-content: space-between; }
+  .work-graphic__gpu-split { align-items: center; display: grid; flex: 1; gap: clamp(.5rem, 1.8cqi, 1.1rem); grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .work-graphic__gpu-cloud,
+  .work-graphic__gpu-host { display: flex; flex-direction: column; gap: .2em; min-width: 0; padding: clamp(.6rem, 2cqi, 1.2rem); }
+  .work-graphic__gpu-cloud { background: var(--surface); border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-sm); transform: translateZ(4px); }
+  /* The host floats highest — it is the machine the whole thing hangs off. */
+  .work-graphic__gpu-host { background: var(--surface-2); border: 1px dashed var(--color-action); box-shadow: var(--shadow-lg); transform: translateZ(18px); }
+  .work-graphic__gpu small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
+  .work-graphic__gpu strong { font-size: clamp(.9rem, 2.4cqi, 1.25rem); line-height: 1.3; }
+  .work-graphic__gpu-cloud span,
+  .work-graphic__gpu-host span { color: var(--color-text-secondary); font-size: clamp(.68rem, 1.65cqi, .82rem); line-height: 1.4; }
+  .work-graphic__gpu-link { align-items: center; color: var(--color-action); display: flex; flex-direction: column; gap: .2em; justify-content: center; text-align: center; }
+  .work-graphic__gpu-link b { font-size: clamp(1.1rem, 3.2cqi, 1.9rem); line-height: 1; }
+  .work-graphic__gpu-link span { font-size: clamp(.62rem, 1.45cqi, .72rem); letter-spacing: .05em; text-transform: uppercase; }
+  .work-graphic__gpu-link span:last-child { color: var(--color-text-secondary); }
+  .work-graphic__gpu-price { align-items: center; border-top: 1px solid var(--color-stroke-subtle); display: flex; flex-wrap: wrap; font-size: clamp(.68rem, 1.65cqi, .82rem); gap: .55em; margin: 0; padding-top: clamp(.45rem, 1.5cqi, .8rem); }
+  .work-graphic__gpu-price span { color: var(--color-text-secondary); letter-spacing: .06em; text-transform: uppercase; }
+  .work-graphic__gpu-price b { color: var(--color-action); }
+  .work-graphic__gpu-price em { color: var(--color-text-primary); font-style: normal; font-weight: var(--font-weight-medium); letter-spacing: .06em; text-transform: uppercase; }
+  .work-graphic__gpu-price i { color: var(--color-action); font-style: normal; letter-spacing: .06em; margin-left: auto; text-transform: uppercase; }
+
+  /* ---- Home lab: two access paths, one host, one measured restore ---- */
+  .work-graphic__lab { display: flex; flex-direction: column; gap: clamp(.6rem, 2.2cqi, 1.25rem); height: 100%; justify-content: space-between; }
+  .work-graphic__lab-doors { align-items: center; display: grid; gap: clamp(.5rem, 1.8cqi, 1.1rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .work-graphic__lab-doors div { display: flex; flex-direction: column; gap: .15em; padding: clamp(.5rem, 1.8cqi, 1rem); }
+  .work-graphic__lab-doors div:first-child { background: var(--surface); border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-xs); transform: translateZ(2px); }
+  .work-graphic__lab-doors div:last-child { background: var(--surface); border: 1px dashed var(--color-action); box-shadow: var(--shadow-sm); transform: translateZ(8px); }
+  .work-graphic__lab small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
+  .work-graphic__lab-doors strong { font-size: clamp(.9rem, 2.3cqi, 1.2rem); }
+  .work-graphic__lab-doors span { color: var(--color-text-secondary); font-size: clamp(.68rem, 1.6cqi, .8rem); line-height: 1.4; }
+
+  /* The single host is the point of the story, so it sits highest. */
+  .work-graphic__lab-host { background: var(--surface-2); border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: .4em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(18px); }
+  .work-graphic__lab-host strong { font-size: clamp(.95rem, 2.5cqi, 1.3rem); }
+  .work-graphic__lab-host span { color: var(--color-text-secondary); font-size: clamp(.68rem, 1.6cqi, .8rem); }
+  .work-graphic__lab-memory { background: var(--color-stroke-subtle); height: clamp(.2rem, .8cqi, .4rem); overflow: hidden; width: 100%; }
+  .work-graphic__lab-memory i { background: var(--color-action); display: block; height: 100%; width: 90.75%; }
+
+  .work-graphic__lab-restore { display: flex; flex-direction: column; gap: .35em; }
+  .work-graphic__lab-bar { height: clamp(.2rem, .8cqi, .4rem); position: relative; width: 100%; }
+  .work-graphic__lab-bar i { background: var(--color-action); display: block; height: 100%; width: 87.5%; }
+  .work-graphic__lab-bar u { background: var(--color-text-secondary); bottom: -25%; position: absolute; right: 0; top: -25%; width: 1px; }
+  .work-graphic__lab-restore p { align-items: baseline; display: flex; flex-wrap: wrap; font-size: clamp(.68rem, 1.6cqi, .8rem); gap: .55em; margin: 0; }
+  .work-graphic__lab-restore span { color: var(--color-text-secondary); letter-spacing: .05em; text-transform: uppercase; }
+  .work-graphic__lab-restore b { color: var(--color-action); font-family: var(--font-mono); font-size: clamp(.95rem, 2.5cqi, 1.3rem); }
+  .work-graphic__lab-restore em { color: var(--color-text-secondary); font-style: normal; margin-left: auto; }
 
   .work-graphic--wildfire { background: #efece4; color: #111713; padding: clamp(1rem, 4vw, 3rem); }
   .work-graphic__experiment { display: flex; flex-direction: column; height: 100%; }

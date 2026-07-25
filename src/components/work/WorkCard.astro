@@ -51,5 +51,7 @@ const { story, variant = 'featured', reverse = false } = Astro.props;
     .work-card--row .work-card__link { grid-template-columns: minmax(15rem, .75fr) minmax(0, 1.25fr); padding-block: clamp(2rem, 4vw, 3.5rem); }
     .work-card--row h3 { font-size: clamp(2.1rem, 4vw, 3.8rem); }
     .work-card--reverse .work-card__visual { order: 2; }
+    /* Mirror the tracks when reversed so the visual keeps the wide column. */
+    .work-card--featured.work-card--reverse .work-card__link { grid-template-columns: minmax(18rem, .85fr) minmax(0, 1.45fr); }
   }
 </style>
