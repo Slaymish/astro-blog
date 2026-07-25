@@ -117,8 +117,11 @@ const structuredData = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Resolve the theme before first paint so there is no flash of the wrong
-         theme. Stored choice wins; otherwise follow the system preference. -->
-    <script is:inline>
+         theme. Stored choice wins; otherwise follow the system preference.
+         data-cfasync="false" is required: Cloudflare Rocket Loader otherwise
+         rewrites the type attribute and defers this until after first paint,
+         which reintroduces the flash. -->
+    <script is:inline data-cfasync="false">
       (function () {
         var root = document.documentElement;
         var stored = null;
@@ -128,6 +131,10 @@ const structuredData = {
         root.classList.remove('light', 'dark');
         root.classList.add(theme);
         root.dataset.themeSource = stored ? 'user' : 'system';
+        // Set inline so the browser paints the right canvas even before the
+        // theme stylesheet has parsed.
+        root.style.colorScheme = theme;
+        root.style.backgroundColor = theme === 'light' ? '#f6f7f3' : '#0b0d0c';
       })();
     </script>
     
