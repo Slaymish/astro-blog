@@ -230,20 +230,30 @@ const structuredData = {
         width: 100%;
       }
 
-      /* Bend owns the scroll container, so the document itself must not scroll. */
-      html, body.bend-host {
+      /* Containing block for Bend's canvases: astro-island is display:contents
+         and so cannot be one itself. */
+      .bend-shell {
+        position: relative;
+        width: 100%;
+      }
+
+      /* Default to an ordinary scrolling document. Bend is a desktop-only
+         enhancement and sets data-bend-active once its canvas has taken over;
+         only then does it own the scroll container and the document must not
+         scroll. Touch browsers never get here, so they keep native scrolling. */
+      html[data-bend-active],
+      html[data-bend-active] body.bend-host {
         height: 100%;
         overflow: hidden;
       }
 
-      body.bend-host {
+      html[data-bend-active] body.bend-host {
         display: flex;
         flex-direction: column;
       }
 
       /* The header sits outside Bend so it never folds; Bend takes the rest. */
-      .bend-shell {
-        width: 100%;
+      html[data-bend-active] .bend-shell {
         flex: 1;
         min-height: 0;
       }
@@ -261,21 +271,13 @@ const structuredData = {
 
     <Header />
 
-    <Bend
-      client:load
-      zone={160}
-      angle={16}
-      rounding={480}
-      perspective={1800}
-      ease={90}
-      smoothing={0.12}
-      tumble={0.03}
-      tilt={0}
-      direction="out"
-      top
-      bottom
-      className="bend-shell"
-    >
+    <!-- The page is ordinary server-rendered markup and stays that way. Bend
+         renders no content of its own: it adopts .bend-page into its canvas
+         only once it activates, so a client-side failure can never blank the
+         page. It also hydrates on desktop pointers only, so phones never run
+         the React or WebGL path. Keep the query in step with DESKTOP_QUERY in
+         Bend.tsx. -->
+    <div class="bend-shell">
       <div class="bend-page">
         <div class="site-shell">
           <main
@@ -288,7 +290,23 @@ const structuredData = {
           <Footer />
         </div>
       </div>
-    </Bend>
+
+      <Bend
+        client:media="(min-width: 1024px) and (hover: hover) and (pointer: fine)"
+        target=".bend-page"
+        zone={160}
+        angle={16}
+        rounding={480}
+        perspective={1800}
+        ease={90}
+        smoothing={0.12}
+        tumble={0.03}
+        tilt={0}
+        direction="out"
+        top
+        bottom
+      />
+    </div>
     {article && (
       <script is:inline>
         function initCodeCopy() {

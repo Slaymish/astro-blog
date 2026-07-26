@@ -2,10 +2,10 @@
 
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
-  type ReactNode,
 } from "react";
 
 export interface BendOptions {
@@ -956,76 +956,122 @@ export function createBend(
 }
 
 export interface BendProps extends BendOptions {
-  children: ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
+  /** Selector for the element Bend adopts into its canvas once it activates.
+   *  That element is server-rendered and lives in the document on its own, so
+   *  the page still reads normally if this component never runs. */
+  target: string;
 }
 
-const emptySubscribe = () => () => {};
+/** Bend hijacks scrolling and hover, and leans on an experimental API, so it is
+ *  limited to desktop-class pointers. Touch devices get an ordinary page. */
+const DESKTOP_QUERY = "(min-width: 1024px) and (hover: hover) and (pointer: fine)";
 
-export function Bend({ children, className, style, ...options }: BendProps) {
+function subscribeToEnvironment(onChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const query = window.matchMedia(DESKTOP_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+/** Whether this browser should run the effect at all. Anything else leaves the
+ *  page alone: no canvas, no WebGL context and no scroll container. */
+export function supportsBend(): boolean {
+  if (typeof window === "undefined") return false;
+  if (!window.matchMedia(DESKTOP_QUERY).matches) return false;
+  return supportsHtmlInCanvas();
+}
+
+// The adoption has to land before the browser paints, otherwise the page is
+// visible in normal flow for a frame before the canvas takes over.
+const useAdoptionEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+export function Bend({ target, ...options }: BendProps) {
   const sourceRef = useRef<HTMLCanvasElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const outputRef = useRef<HTMLCanvasElement>(null);
   const instanceRef = useRef<BendInstance | null>(null);
+  const lastScrollRef = useRef(0);
   const [initialOptions] = useState(options);
   const [failed, setFailed] = useState(false);
 
   const supported = useSyncExternalStore(
-    emptySubscribe,
-    supportsHtmlInCanvas,
+    subscribeToEnvironment,
+    supportsBend,
     () => false,
   );
-  const native = supported && !failed;
+  const active = supported && !failed;
 
-  useEffect(() => {
+  useAdoptionEffect(() => {
+    if (!active) return;
     const source = sourceRef.current;
     const content = contentRef.current;
     const output = outputRef.current;
     if (!source || !content || !output) return;
-    instanceRef.current = createBend(
-      { source, content, output },
-      initialOptions,
-    );
-    if (native && !instanceRef.current) setFailed(true);
-    return () => {
-      instanceRef.current?.destroy();
-      instanceRef.current = null;
+
+    const page = document.querySelector<HTMLElement>(target);
+    const home = page?.parentElement;
+    if (!page || !home) return;
+    const anchor = page.nextSibling;
+
+    const instance = createBend({ source, content, output }, initialOptions);
+    if (!instance) {
+      setFailed(true);
+      return;
+    }
+    instanceRef.current = instance;
+
+    // Read the document scroll before the shell locks, then hand it to the
+    // scroller Bend owns, so hash links and restored positions survive.
+    const offset = window.scrollY;
+    document.documentElement.dataset.bendActive = "";
+    content.appendChild(page);
+    // The instance measured an empty scroller at construction time.
+    instance.resize();
+    if (offset > 0) content.scrollTop = offset;
+    lastScrollRef.current = offset;
+
+    // A viewport resize resets the canvas-hosted subtree's scroll before React
+    // tears this effect down, so keep a snapshot taken while it is still good.
+    const rememberScroll = () => {
+      lastScrollRef.current = content.scrollTop;
     };
-  }, [initialOptions, native]);
+    content.addEventListener("scroll", rememberScroll, { passive: true });
+    window.addEventListener("resize", rememberScroll);
+
+    return () => {
+      // Put the page back before React unmounts the canvas it now sits in.
+      const restored = content.scrollTop || lastScrollRef.current;
+      content.removeEventListener("scroll", rememberScroll);
+      window.removeEventListener("resize", rememberScroll);
+      home.insertBefore(page, anchor);
+      delete document.documentElement.dataset.bendActive;
+      instance.destroy();
+      instanceRef.current = null;
+      if (restored > 0) {
+        // Force layout first: until the document regains its full height the
+        // target is clamped to the scroll range it had while locked.
+        void document.documentElement.scrollHeight;
+        window.scrollTo(0, restored);
+      }
+    };
+  }, [initialOptions, active, target]);
 
   useEffect(() => {
     instanceRef.current?.setOptions(options);
   });
 
+  if (!active) return null;
+
   return (
-    <div className={className} style={{ position: "relative", ...style }}>
+    <>
       <canvas
         ref={sourceRef}
         // @ts-expect-error experimental html-in-canvas attribute
         layoutsubtree="true"
         suppressHydrationWarning
-        style={
-          native
-            ? { position: "absolute", inset: 0, width: "100%", height: "100%" }
-            : { display: "none" }
-        }
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
       >
-        {native ? (
-          <div
-            ref={contentRef}
-            style={{
-              position: "relative",
-              width: "100%",
-              height: "100%",
-              overflow: "auto",
-            }}
-          >
-            {children}
-          </div>
-        ) : null}
-      </canvas>
-      {!native ? (
         <div
           ref={contentRef}
           style={{
@@ -1034,10 +1080,8 @@ export function Bend({ children, className, style, ...options }: BendProps) {
             height: "100%",
             overflow: "auto",
           }}
-        >
-          {children}
-        </div>
-      ) : null}
+        />
+      </canvas>
       <canvas
         ref={outputRef}
         aria-hidden
@@ -1049,7 +1093,7 @@ export function Bend({ children, className, style, ...options }: BendProps) {
           pointerEvents: "none",
         }}
       />
-    </div>
+    </>
   );
 }
 
