@@ -65,6 +65,11 @@ const DEFAULTS: Required<BendOptions> = {
   tilt: 0.5,
 };
 
+/** Both canvases are allocated at this multiple of CSS pixels, capped so a
+ *  large window on a high-density display does not blow up the per-frame
+ *  capture and texture upload. */
+const MAX_PIXEL_RATIO = 2;
+
 type PaintableCanvas = HTMLCanvasElement & {
   onpaint?: (() => void) | null;
   requestPaint?: () => void;
@@ -394,7 +399,7 @@ export function createBend(
   }
 
   function syncCanvasSize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
     const width = Math.max(1, Math.round(output.clientWidth * dpr));
     const height = Math.max(1, Math.round(output.clientHeight * dpr));
     if (output.width !== width || output.height !== height) {
@@ -406,11 +411,15 @@ export function createBend(
       Math.max(0.05, content.clientWidth / Math.max(output.clientWidth, 1)),
     );
     if (htmlInCanvas) {
-      const cssWidth = Math.max(1, Math.round(source.clientWidth));
-      const cssHeight = Math.max(1, Math.round(source.clientHeight));
-      if (source.width !== cssWidth || source.height !== cssHeight) {
-        source.width = cssWidth;
-        source.height = cssHeight;
+      // drawElementImage stretches the element's CSS box across the whole
+      // backing store, so the store's size is the capture resolution. Both
+      // canvases cover the same box, so matching them at the same ratio makes
+      // the unbent parts of the page sample the texture one texel per pixel.
+      const sourceWidth = Math.max(1, Math.round(source.clientWidth * dpr));
+      const sourceHeight = Math.max(1, Math.round(source.clientHeight * dpr));
+      if (source.width !== sourceWidth || source.height !== sourceHeight) {
+        source.width = sourceWidth;
+        source.height = sourceHeight;
       }
       paintable.requestPaint!();
     }
