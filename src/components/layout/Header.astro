@@ -1,8 +1,6 @@
 ---
 import Logo from '../ui/Logo.astro';
-import ButtonLink from '../ui/ButtonLink.astro';
 import ThemeToggle from '../theme/ThemeToggle.astro';
-import { BOOKING_URL } from '../../lib/site';
 import { getSiteSettings } from '../../lib/pageContent';
 
 const pathname = Astro.url.pathname;
@@ -47,16 +45,6 @@ function navLinkClasses(href: string) {
 
       <div class="site-nav__actions">
         <ThemeToggle />
-
-        <ButtonLink
-          href={BOOKING_URL}
-          external
-          ariaLabel="Book a call on Cal.com"
-          class="site-nav__booking"
-        >
-          <span class="site-nav__booking-long">{header.bookingLabel}</span>
-          <span class="site-nav__booking-short">{header.bookingLabelShort}</span>
-        </ButtonLink>
 
         <details class="site-nav__mobile">
           <summary aria-label="Open navigation menu">
@@ -132,10 +120,6 @@ function navLinkClasses(href: string) {
     gap: var(--spacing-2);
   }
 
-  .site-nav__booking-long {
-    display: none;
-  }
-
   .site-nav__mobile {
     position: relative;
   }
@@ -185,11 +169,6 @@ function navLinkClasses(href: string) {
       display: flex;
     }
 
-    .site-nav__booking-long {
-      display: inline;
-    }
-
-    .site-nav__booking-short,
     .site-nav__mobile {
       display: none;
     }
