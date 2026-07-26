@@ -57,6 +57,7 @@ const canonicalHref = canonicalFromAstro(Astro.url, Astro.site, canonicalURL);
 const imageURL = absoluteUrl(image, siteURL);
 const personId = absoluteUrl("/#person", siteURL);
 const websiteId = absoluteUrl("/#website", siteURL);
+const showPageCircuit = Astro.url.pathname !== "/";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -310,6 +311,10 @@ const structuredData = {
         z-index: 1;
       }
 
+      #main-content {
+        position: relative;
+      }
+
       @media (prefers-reduced-motion: reduce) {
         .ambient-background {
           transform: none;
@@ -338,6 +343,21 @@ const structuredData = {
             class={`grow w-full mx-auto pt-8 pb-8 sm:pt-10 sm:pb-12 md:pt-10 md:pb-16 ${fullWidth ? '' : 'max-w-[var(--content-max-width)]'}`}
             tabindex="-1"
           >
+            {showPageCircuit && (
+              <div class="page-circuit-motif" data-circuit="PAGE_BUS" data-circuit-tone="quiet" aria-hidden="true">
+                <span class="page-circuit-motif__anchor page-circuit-motif__anchor--source" data-circuit-source></span>
+                <span
+                  class="page-circuit-motif__anchor page-circuit-motif__anchor--middle"
+                  data-circuit-node="middle"
+                  data-circuit-edge="left"
+                ></span>
+                <span
+                  class="page-circuit-motif__anchor page-circuit-motif__anchor--end"
+                  data-circuit-node="end"
+                  data-circuit-edge="left"
+                ></span>
+              </div>
+            )}
             <slot />
           </main>
           <Footer />

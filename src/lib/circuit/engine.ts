@@ -36,11 +36,11 @@ import {
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 /** Ceiling on packets in flight document-wide. The bus stays legible, not busy. */
-const MAX_LIVE_PACKETS = 6;
+const MAX_LIVE_PACKETS = 3;
 /** Minimum spacing between two packets triggered on the same node. */
-const NODE_COOLDOWN = 420;
-/** Gap between packets in a sequence, so arrivals read in order. */
-const SEQUENCE_STAGGER = 150;
+const NODE_COOLDOWN = 1800;
+/** A source hover emits at most one packet in this window. */
+const SOURCE_COOLDOWN = 2800;
 /** A region goes live once its top reaches this fraction of the viewport. */
 const ENTER_RATIO = 0.86;
 /** Viewport pixels of a region that must be showing for its heartbeat to run. */
@@ -49,6 +49,8 @@ const VISIBLE_SLACK = 40;
 const LABEL_MIN_GUTTER = 16;
 const PACKET_MIN_DURATION = 200;
 const PACKET_MAX_DURATION = 1500;
+const TOUCH_RAIL_HOLD = 900;
+const TOUCH_RAIL_FADE = 420;
 /**
  * Fraction of a glyph box that sits below the baseline. Lifting a client rect's
  * bottom by this lands on the baseline itself, which is the line every run that
@@ -128,6 +130,8 @@ interface CircuitRegion {
   heartbeat: number;
   cursor: number;
   sourceHold: number;
+  sourceCooldownUntil: number;
+  quiet: boolean;
 }
 
 const regions: CircuitRegion[] = [];
@@ -304,6 +308,8 @@ function buildRegion(el: HTMLElement): CircuitRegion | null {
     heartbeat: 0,
     cursor: 0,
     sourceHold: 0,
+    sourceCooldownUntil: 0,
+    quiet: el.dataset.circuitTone === 'quiet',
   };
 }
 
@@ -612,21 +618,20 @@ function sendPacket(region: CircuitRegion, node: CircuitNode, direction: Directi
   travel.finished.then(settle, settle);
 }
 
-function sequence(region: CircuitRegion, nodes: CircuitNode[], direction: Direction): void {
-  nodes.forEach((node, index) => {
-    if (index === 0) {
-      sendPacket(region, node, direction);
-      return;
-    }
-    window.setTimeout(() => sendPacket(region, node, direction), index * SEQUENCE_STAGGER);
-  });
-}
-
 function triggerNode(region: CircuitRegion, node: CircuitNode, direction: Direction): void {
   const now = performance.now();
   if (now < node.cooldownUntil) return;
   node.cooldownUntil = now + NODE_COOLDOWN;
   sendPacket(region, node, direction);
+}
+
+function triggerSource(region: CircuitRegion): void {
+  const now = performance.now();
+  if (now < region.sourceCooldownUntil || region.nodes.length === 0) return;
+  region.sourceCooldownUntil = now + SOURCE_COOLDOWN;
+  const node = region.nodes[region.cursor % region.nodes.length];
+  region.cursor += 1;
+  if (node) sendPacket(region, node, 'out');
 }
 
 function startHeartbeat(region: CircuitRegion): void {
@@ -651,32 +656,88 @@ function energise(region: CircuitRegion): void {
   drawPipes(region);
 
   if (reducedMotion()) return;
-  window.setTimeout(
-    () => sequence(region, region.nodes, 'out'),
-    region.metrics.drawDuration * 0.55,
-  );
+  if (!region.quiet) window.setTimeout(() => triggerSource(region), region.metrics.drawDuration * 0.55);
   startHeartbeat(region);
 }
 
 function wireRegion(region: CircuitRegion): void {
-  // Interacting with the source pushes work outward to everything it feeds.
-  region.source.addEventListener('pointerenter', () => sequence(region, region.nodes, 'out'));
+  // A source hover advances one packet around the bus. Sending every branch on
+  // each entry made large headings feel like continuous emitters.
+  region.source.addEventListener('pointerenter', (event) => {
+    if (event.pointerType !== 'touch') triggerSource(region);
+  });
 
   for (const node of region.nodes) {
     const flash = node.el.dataset.circuitFlash;
     if (!flash) node.el.dataset.circuitFlash = 'ring';
 
-    node.el.addEventListener('pointerenter', () => triggerNode(region, node, 'back'));
-    node.el.addEventListener('focusin', () => triggerNode(region, node, 'back'));
-    node.el.addEventListener('click', () => {
-      triggerNode(region, node, 'back');
-      sequence(
-        region,
-        region.nodes.filter((sibling) => sibling !== node),
-        'out',
-      );
+    node.el.addEventListener('pointerenter', (event) => {
+      if (event.pointerType !== 'touch') triggerNode(region, node, 'back');
     });
+    node.el.addEventListener('focusin', () => triggerNode(region, node, 'back'));
+    node.el.addEventListener('click', () => triggerNode(region, node, 'back'));
   }
+}
+
+/**
+ * Touch has no stable hover target. Draw a short-lived rail through the contact
+ * point instead, with one packet travelling toward each viewport edge.
+ */
+function emitTouchRail(event: PointerEvent): void {
+  if (event.pointerType !== 'touch' || !event.isPrimary || reducedMotion()) return;
+
+  const host = document.querySelector<HTMLElement>('.bend-page') ?? document.body;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  if (width < 1 || height < 1) return;
+
+  const svg = svgNode('svg', 'circuit circuit--touch');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  svg.setAttribute('preserveAspectRatio', 'none');
+
+  const paths = [
+    `M ${round(event.clientX)} ${round(event.clientY)} H 0`,
+    `M ${round(event.clientX)} ${round(event.clientY)} H ${width}`,
+  ];
+  const packets: Animation[] = [];
+  let longestTravel = 0;
+
+  for (const d of paths) {
+    const wall = svgNode('path', 'circuit__wall');
+    const bore = svgNode('path', 'circuit__bore');
+    wall.setAttribute('d', d);
+    bore.setAttribute('d', d);
+    svg.append(wall, bore);
+
+    const length = Math.abs(d.endsWith('H 0') ? event.clientX : width - event.clientX);
+    if (length < 1) continue;
+    for (const pipe of [wall, bore]) {
+      pipe.style.strokeDasharray = `${round(length)}`;
+      pipe.animate(
+        { strokeDashoffset: [`${round(length)}`, '0'] },
+        { duration: 260, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'forwards' },
+      );
+    }
+
+    const core = createPacket(d, 24, length, 'core');
+    const halo = createPacket(d, 58, length, 'halo');
+    svg.append(halo, core);
+    const duration = Math.min(PACKET_MAX_DURATION, Math.max(PACKET_MIN_DURATION, length * 1.4));
+    longestTravel = Math.max(longestTravel, duration);
+    const timing: KeyframeAnimationOptions = { duration, easing: 'linear', fill: 'forwards' };
+    packets.push(
+      halo.animate({ strokeDashoffset: ['58', `${round(-length)}`] }, timing),
+      core.animate({ strokeDashoffset: ['24', `${round(-length)}`] }, timing),
+    );
+  }
+
+  host.append(svg);
+  window.setTimeout(() => {
+    packets.forEach((packet) => packet.cancel());
+    const fade = svg.animate({ opacity: ['1', '0'] }, { duration: TOUCH_RAIL_FADE, fill: 'forwards' });
+    fade.finished.then(() => svg.remove(), () => svg.remove());
+  }, Math.max(TOUCH_RAIL_HOLD, longestTravel));
 }
 
 function sync(): void {
@@ -721,6 +782,7 @@ export function initCircuit(): void {
   // its canvas activates, so listen in the capture phase rather than binding to
   // a node that may be replaced.
   document.addEventListener('scroll', scheduleSync, { passive: true, capture: true });
+  document.addEventListener('pointerdown', emitTouchRail, { passive: true });
   window.addEventListener('resize', scheduleLayout, { passive: true });
   reduceMotionQuery?.addEventListener('change', scheduleLayout);
 

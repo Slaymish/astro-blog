@@ -45,8 +45,8 @@ const { hero, workSection, approach } = copy;
   <section class="home-work" aria-labelledby="selected-work-heading" data-circuit="BUS_02">
     <div class="home-section-heading">
       <div>
-        <p data-circuit-source>{workSection.eyebrow}</p>
-        <h2 id="selected-work-heading">{workSection.heading}</h2>
+        <p>{workSection.eyebrow}</p>
+        <h2 id="selected-work-heading" data-circuit-source>{workSection.heading}</h2>
       </div>
       <a href={workSection.link.href}><IconText>{workSection.link.label}</IconText></a>
     </div>

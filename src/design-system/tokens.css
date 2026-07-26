@@ -245,12 +245,12 @@
   --circuit-lane: 30px;             /* furthest outside the content edge the spine sits */
   --circuit-drop: 38px;             /* vertical run below the source before the trunk turns */
   --circuit-rail-gap: 20px;         /* clearance above the element a rail branch travels over */
-  --circuit-top-lane: 26px;         /* clearance above a node fed from directly overhead */
+  --circuit-top-lane: 20px;         /* matching clearance above a node fed from overhead */
   --circuit-text-run: 30px;         /* how far a run travels along a baseline where it meets text */
   --circuit-pin-gap: 12px;          /* how far past a node's leading corner a run lands on it */
   --circuit-min-branch: 16px;       /* shortest run a branch may take off the spine */
   --circuit-bend-radius: 16px;      /* sweep on turns; capped per bend by the runs it joins */
-  --circuit-origin-gap: 3px;        /* clearance a baseline run keeps below the type it serves */
+  --circuit-origin-gap: 20px;       /* matches the lane clearance on the other side of text */
 
   /* Section. The wall reads as the two edges it shows either side of the bore,
      and the packet weight matches the bore so light travels inside the pipe. */
@@ -272,7 +272,7 @@
   --circuit-packet-speed: 1250;     /* px per second; unitless so the engine can read it */
   --circuit-draw-duration: 620ms;   /* trace draw-in when a bus goes live */
   --circuit-node-hold: 520ms;       /* how long a node stays acknowledged */
-  --circuit-heartbeat: 5600ms;      /* idle interval between packets on a live bus */
+  --circuit-heartbeat: 11000ms;     /* restrained idle interval between packets on a live bus */
   --circuit-label-size: 0.5625rem;  /* 9px */
   --circuit-node-bloom: 20px;       /* reach of the glow on an acknowledged node */
 
