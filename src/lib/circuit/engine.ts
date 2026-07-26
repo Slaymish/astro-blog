@@ -1,9 +1,9 @@
 /**
  * CIRCUIT ENGINE
  *
- * Wires DOM elements together with a data bus: a trace overlay that routes from
- * a source to a set of nodes, packets that travel those routes, and an
- * acknowledgement on the node each packet reaches.
+ * Wires DOM elements together with a data bus: pipework routed from a source to
+ * a set of nodes, packets that travel those runs, and an acknowledgement on the
+ * node each packet reaches.
  *
  * Markup contract:
  *
@@ -13,14 +13,25 @@
  *     <a data-circuit-node="book" data-circuit-edge="rail" data-circuit-flash="ring">…</a>
  *   </section>
  *
- * data-circuit-edge  left | top | rail   (see geometry.ts, default left)
- * data-circuit-flash ring | edge | underline  (see circuit.css, default ring)
- * data-circuit-rail  marks the element whose top defines the rail lane.
+ * data-circuit-edge   left | top | rail   (see geometry.ts, default left)
+ * data-circuit-flash  ring | edge | underline  (see circuit.css, default ring)
+ * data-circuit-attach box | rule | text   (see geometry.ts; defaults off flash,
+ *                     which already says what the node presents: an edge is a
+ *                     rule, an underline is text, anything else is a box)
+ * data-circuit-rail   marks the element whose top defines the rail lane.
  *
  * Every node dispatches a bubbling `circuit:arrive` event when a packet lands.
  */
 
-import { busRoute, type Box, type NodeEdge, type Point, type RouteSpec } from './geometry';
+import {
+  busRoute,
+  type Attach,
+  type Box,
+  type Fitting,
+  type NodeEdge,
+  type Point,
+  type RouteSpec,
+} from './geometry';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -38,18 +49,32 @@ const VISIBLE_SLACK = 40;
 const LABEL_MIN_GUTTER = 16;
 const PACKET_MIN_DURATION = 200;
 const PACKET_MAX_DURATION = 1500;
+/**
+ * Fraction of a glyph box that sits below the baseline. Lifting a client rect's
+ * bottom by this lands on the baseline itself, which is the line every run that
+ * meets text rests on — at the source and at a text node alike.
+ */
+const BASELINE_LIFT = 0.22;
 
 type Direction = 'out' | 'back';
 
 interface Metrics {
   lane: number;
-  edgeGap: number;
   pinGap: number;
   bendRadius: number;
   minBranch: number;
+  fittingClearance: number;
   drop: number;
   railGap: number;
   topLane: number;
+  textRun: number;
+  originGap: number;
+  collarLength: number;
+  collarWeight: number;
+  teeLength: number;
+  teeSpread: number;
+  flangeLength: number;
+  flangeWeight: number;
   pulseLength: number;
   speed: number;
   drawDuration: number;
@@ -57,14 +82,23 @@ interface Metrics {
   heartbeat: number;
 }
 
+/**
+ * A run of pipe: an outer wall and an inner bore on identical path data. The two
+ * edges the wall shows either side of the bore are what give the run its
+ * section, and a packet travelling the bore reads as light inside the pipe.
+ */
+interface Pipe {
+  wall: SVGPathElement;
+  bore: SVGPathElement;
+}
+
 interface CircuitNode {
   el: HTMLElement;
   id: string;
   /** `auto` resolves per layout, so one markup contract works at every width. */
   edge: NodeEdge | 'auto';
-  spur: SVGPathElement;
+  spur: Pipe;
   junction: SVGCircleElement;
-  tick: SVGRectElement;
   lamp: SVGCircleElement;
   /** Full route path data: the track a packet travels. */
   track: string;
@@ -78,9 +112,12 @@ interface CircuitRegion {
   name: string;
   source: HTMLElement;
   svg: SVGSVGElement;
-  traceLayer: SVGGElement;
+  wallLayer: SVGGElement;
+  boreLayer: SVGGElement;
+  /** Rebuilt on every layout: which fittings a route needs depends on its shape. */
+  fittingLayer: SVGGElement;
   packetLayer: SVGGElement;
-  trunks: SVGPathElement[];
+  trunks: Pipe[];
   measure: SVGPathElement;
   originLamp: SVGCircleElement;
   label: SVGTextElement;
@@ -118,14 +155,22 @@ function readMetrics(el: Element): Metrics {
   };
 
   return {
-    lane: value('--circuit-lane', 28),
-    edgeGap: value('--circuit-edge-gap', 4),
-    pinGap: value('--circuit-pin-gap', 10),
-    bendRadius: value('--circuit-bend-radius', 8),
-    minBranch: value('--circuit-min-branch', 14),
-    drop: value('--circuit-drop', 34),
-    railGap: value('--circuit-rail-gap', 16),
-    topLane: value('--circuit-top-lane', 16),
+    lane: value('--circuit-lane', 30),
+    pinGap: value('--circuit-pin-gap', 12),
+    bendRadius: value('--circuit-bend-radius', 16),
+    minBranch: value('--circuit-min-branch', 16),
+    fittingClearance: value('--circuit-fitting-clearance', 14),
+    drop: value('--circuit-drop', 38),
+    railGap: value('--circuit-rail-gap', 20),
+    topLane: value('--circuit-top-lane', 26),
+    textRun: value('--circuit-text-run', 30),
+    originGap: value('--circuit-origin-gap', 3),
+    collarLength: value('--circuit-collar-length', 9),
+    collarWeight: value('--circuit-collar-weight', 1),
+    teeLength: value('--circuit-tee-length', 11),
+    teeSpread: value('--circuit-tee-spread', 5),
+    flangeLength: value('--circuit-flange-length', 14),
+    flangeWeight: value('--circuit-flange-weight', 2),
     pulseLength: value('--circuit-pulse-length', 26),
     speed: value('--circuit-packet-speed', 1150),
     drawDuration: value('--circuit-draw-duration', 620),
@@ -144,11 +189,19 @@ function svgNode<K extends keyof SVGElementTagNameMap>(
 }
 
 /**
- * Where the trace leaves the source. Anchored to the final glyph rather than the
- * element box, so a trace leaving a word starts under its last character even
- * when the text wraps.
+ * The line a run rests on where it meets text: the baseline of `rect`, cleared
+ * by the pipe's own wall so the section never crowds the type.
  */
-function sourceOrigin(source: HTMLElement, regionBox: DOMRect): Point {
+function textBaseline(rect: DOMRect, originGap: number): number {
+  return rect.bottom - rect.height * BASELINE_LIFT + originGap;
+}
+
+/**
+ * Where the pipe leaves the source. Anchored to the final glyph rather than the
+ * element box, so a run leaving a word starts under its last character even when
+ * the text wraps.
+ */
+function sourceOrigin(source: HTMLElement, regionBox: DOMRect, originGap: number): Point {
   const fragments = source.getClientRects();
   let box: DOMRect | undefined = fragments[fragments.length - 1];
   const text = source.firstChild;
@@ -164,8 +217,7 @@ function sourceOrigin(source: HTMLElement, regionBox: DOMRect): Point {
 
   return {
     x: box.left - regionBox.left + box.width / 2,
-    // The glyph box bottom sits below the baseline; lift back onto it.
-    y: box.bottom - regionBox.top - box.height * 0.22,
+    y: textBaseline(box, originGap) - regionBox.top,
   };
 }
 
@@ -178,15 +230,26 @@ function buildRegion(el: HTMLElement): CircuitRegion | null {
   svg.setAttribute('aria-hidden', 'true');
   svg.setAttribute('preserveAspectRatio', 'none');
 
-  const traceLayer = svgNode('g', 'circuit__trace');
+  // Walls and bores are grouped rather than paired per run, so a bore is always
+  // painted over every wall and crossings keep their section.
+  const wallLayer = svgNode('g', 'circuit__walls');
+  const boreLayer = svgNode('g', 'circuit__bores');
+  const fittingLayer = svgNode('g', 'circuit__fittings');
   const detailLayer = svgNode('g', 'circuit__detail');
   const packetLayer = svgNode('g', 'circuit__packets');
   const measure = svgNode('path', 'circuit__measure');
 
+  const addPipe = (variant: string): Pipe => {
+    const wall = svgNode('path', `circuit__wall circuit__wall--${variant}`);
+    const bore = svgNode('path', `circuit__bore circuit__bore--${variant}`);
+    wallLayer.append(wall);
+    boreLayer.append(bore);
+    return { wall, bore };
+  };
+
   // Two arms cover every topology busRoute can return: down from the turn, and
   // up when a junction sits above it.
-  const trunks = [svgNode('path', 'circuit__trunk'), svgNode('path', 'circuit__trunk')];
-  trunks.forEach((trunk) => traceLayer.append(trunk));
+  const trunks = [addPipe('trunk'), addPipe('trunk')];
 
   const originLamp = svgNode('circle', 'circuit__lamp circuit__lamp--origin');
   originLamp.setAttribute('r', '2.6');
@@ -196,17 +259,12 @@ function buildRegion(el: HTMLElement): CircuitRegion | null {
   label.textContent = el.dataset.circuit || '';
 
   const nodes: CircuitNode[] = nodeEls.map((nodeEl, index) => {
-    const spur = svgNode('path', 'circuit__spur');
+    const spur = addPipe('spur');
     const junction = svgNode('circle', 'circuit__junction');
-    junction.setAttribute('r', '1.8');
-
-    // The tick is the terminal pin; the lamp over it lights on arrival.
-    const tick = svgNode('rect', 'circuit__pin-tick');
+    junction.setAttribute('r', '1.6');
     const lamp = svgNode('circle', 'circuit__lamp');
-    lamp.setAttribute('r', '2.6');
-
-    traceLayer.append(spur);
-    detailLayer.append(junction, tick, lamp);
+    lamp.setAttribute('r', '3');
+    detailLayer.append(junction, lamp);
 
     const edge = nodeEl.dataset.circuitEdge;
     return {
@@ -215,7 +273,6 @@ function buildRegion(el: HTMLElement): CircuitRegion | null {
       edge: edge === 'top' || edge === 'rail' || edge === 'left' ? edge : 'auto',
       spur,
       junction,
-      tick,
       lamp,
       track: '',
       length: 0,
@@ -224,7 +281,7 @@ function buildRegion(el: HTMLElement): CircuitRegion | null {
     };
   });
 
-  svg.append(traceLayer, detailLayer, label, packetLayer, measure);
+  svg.append(wallLayer, boreLayer, fittingLayer, detailLayer, label, packetLayer, measure);
   el.prepend(svg);
 
   return {
@@ -232,7 +289,9 @@ function buildRegion(el: HTMLElement): CircuitRegion | null {
     name: el.dataset.circuit || 'BUS',
     source,
     svg,
-    traceLayer,
+    wallLayer,
+    boreLayer,
+    fittingLayer,
     packetLayer,
     trunks,
     measure,
@@ -248,14 +307,45 @@ function buildRegion(el: HTMLElement): CircuitRegion | null {
   };
 }
 
-function localBox(el: Element, regionBox: DOMRect): Box {
-  const box = el.getBoundingClientRect();
+function localRect(rect: DOMRect, regionBox: DOMRect): Box {
   return {
-    left: box.left - regionBox.left,
-    top: box.top - regionBox.top,
-    width: box.width,
-    height: box.height,
+    left: rect.left - regionBox.left,
+    top: rect.top - regionBox.top,
+    width: rect.width,
+    height: rect.height,
   };
+}
+
+function localBox(el: Element, regionBox: DOMRect): Box {
+  return localRect(el.getBoundingClientRect(), regionBox);
+}
+
+/**
+ * The box a run attaches to. Text is measured from its first line and squared
+ * off at the baseline, so a run meets a label where its underline would sit
+ * rather than at the bottom of a block that may have wrapped.
+ */
+function attachBox(el: HTMLElement, attach: Attach, regionBox: DOMRect, originGap: number): Box {
+  if (attach !== 'text') return localBox(el, regionBox);
+
+  const rect = el.getClientRects()[0] ?? el.getBoundingClientRect();
+  const box = localRect(rect, regionBox);
+  return { ...box, height: textBaseline(rect, originGap) - rect.top };
+}
+
+/**
+ * What the node presents for a run to land on. `data-circuit-attach` decides it
+ * outright; otherwise the flash already says — a node acknowledging on its own
+ * top rule is a divider, one acknowledging with an underline is text.
+ */
+function resolveAttach(el: HTMLElement): Attach {
+  const declared = el.dataset.circuitAttach;
+  if (declared === 'box' || declared === 'rule' || declared === 'text') return declared;
+
+  const flash = el.dataset.circuitFlash;
+  if (flash === 'edge') return 'rule';
+  if (flash === 'underline') return 'text';
+  return 'box';
 }
 
 /**
@@ -271,6 +361,61 @@ function resolveEdge(edge: NodeEdge | 'auto', box: Box, metrics: Metrics): NodeE
   return box.left <= metrics.lane * 2 ? 'top' : 'rail';
 }
 
+function setPipe(pipe: Pipe, d: string): void {
+  pipe.wall.setAttribute('d', d);
+  pipe.bore.setAttribute('d', d);
+}
+
+/**
+ * One fitting bar, drawn across the pipe it dresses. Geometry is authored as if
+ * the pipe ran along +x and then rotated onto its real bearing, so a single
+ * primitive serves every kind of joint.
+ */
+function fittingBar(
+  fitting: Fitting,
+  length: number,
+  weight: number,
+  along: number,
+  variant: string,
+): SVGRectElement {
+  const bar = svgNode('rect', `circuit__fitting circuit__fitting--${variant}`);
+  bar.setAttribute('x', `${round(fitting.at.x + along - weight / 2)}`);
+  bar.setAttribute('y', `${round(fitting.at.y - length / 2)}`);
+  bar.setAttribute('width', `${round(weight)}`);
+  bar.setAttribute('height', `${round(length)}`);
+  bar.setAttribute(
+    'transform',
+    `rotate(${fitting.angle} ${round(fitting.at.x)} ${round(fitting.at.y)})`,
+  );
+  return bar;
+}
+
+/**
+ * Dress every joint the route reported. A tee gets a band either side of the
+ * split, so a branch reads as tapped into the spine rather than crossing it. A
+ * flange is set back by its own thickness: the route ends on the face it serves,
+ * so the plate has to sit outside that face rather than sink into it.
+ */
+function paintFittings(region: CircuitRegion, fittings: readonly Fitting[]): void {
+  const { collarLength, collarWeight, teeLength, teeSpread, flangeLength, flangeWeight } =
+    region.metrics;
+
+  region.fittingLayer.replaceChildren(
+    ...fittings.flatMap((fitting) => {
+      if (fitting.kind === 'tee') {
+        return [
+          fittingBar(fitting, teeLength, collarWeight, -teeSpread, 'tee'),
+          fittingBar(fitting, teeLength, collarWeight, teeSpread, 'tee'),
+        ];
+      }
+      if (fitting.kind === 'terminal') {
+        return [fittingBar(fitting, flangeLength, flangeWeight, -flangeWeight / 2, 'flange')];
+      }
+      return [fittingBar(fitting, collarLength, collarWeight, 0, fitting.kind)];
+    }),
+  );
+}
+
 function layoutRegion(region: CircuitRegion): void {
   // Measure against the overlay, not the region: as an absolutely positioned
   // child the overlay fills its region's padding box, and every coordinate the
@@ -282,32 +427,37 @@ function layoutRegion(region: CircuitRegion): void {
   const metrics = readMetrics(region.el);
   region.metrics = metrics;
 
-  // The spine runs in the page gutter, pulled in only far enough to stay on
-  // screen on narrow viewports.
-  const spineX = Math.max(metrics.edgeGap - regionBox.left, -metrics.lane);
+  // The spine runs down the middle of the page gutter, and no further out than
+  // one lane. Centring rather than clamping to a minimum edge gap is what keeps
+  // the run off the screen edge on tablet and mobile, where the gutter narrows
+  // to less than a lane and there is nowhere inboard to put it.
+  const spineX = -Math.min(metrics.lane, regionBox.left / 2);
   const railEl = region.el.querySelector<HTMLElement>('[data-circuit-rail]');
   const railY = railEl
     ? localBox(railEl, regionBox).top - metrics.railGap
     : metrics.railGap;
 
   const specs: RouteSpec[] = region.nodes.map((node) => {
-    const box = localBox(node.el, regionBox);
-    return { id: node.id, edge: resolveEdge(node.edge, box, metrics), box };
+    const attach = resolveAttach(node.el);
+    const box = attachBox(node.el, attach, regionBox, metrics.originGap);
+    return { id: node.id, edge: resolveEdge(node.edge, box, metrics), box, attach };
   });
 
-  const layout = busRoute(sourceOrigin(region.source, regionBox), specs, {
+  const layout = busRoute(sourceOrigin(region.source, regionBox, metrics.originGap), specs, {
     width: regionBox.width,
     spineX,
     railY,
     topLane: metrics.topLane,
     drop: metrics.drop,
+    textRun: metrics.textRun,
     pinGap: metrics.pinGap,
     bendRadius: metrics.bendRadius,
     minBranch: metrics.minBranch,
+    fittingClearance: metrics.fittingClearance,
   });
 
   region.svg.setAttribute('viewBox', `0 0 ${round(regionBox.width)} ${round(regionBox.height)}`);
-  region.trunks.forEach((trunk, index) => trunk.setAttribute('d', layout.trunks[index] ?? ''));
+  region.trunks.forEach((trunk, index) => setPipe(trunk, layout.trunks[index] ?? ''));
   region.originLamp.setAttribute('cx', `${round(layout.origin.x)}`);
   region.originLamp.setAttribute('cy', `${round(layout.origin.y)}`);
 
@@ -315,16 +465,9 @@ function layoutRegion(region: CircuitRegion): void {
     const node = region.nodes[index];
     if (!node) return;
 
-    node.spur.setAttribute('d', branch.spur);
+    setPipe(node.spur, branch.spur);
     node.junction.setAttribute('cx', `${round(branch.junction.x)}`);
     node.junction.setAttribute('cy', `${round(branch.junction.y)}`);
-
-    // The pin tick is drawn across the axis the branch arrives along.
-    const across = branch.axis === 'x';
-    node.tick.setAttribute('x', `${round(branch.terminal.x - (across ? 0.5 : 4))}`);
-    node.tick.setAttribute('y', `${round(branch.terminal.y - (across ? 4 : 0.5))}`);
-    node.tick.setAttribute('width', across ? '1' : '8');
-    node.tick.setAttribute('height', across ? '8' : '1');
     node.lamp.setAttribute('cx', `${round(branch.terminal.x)}`);
     node.lamp.setAttribute('cy', `${round(branch.terminal.y)}`);
 
@@ -333,36 +476,38 @@ function layoutRegion(region: CircuitRegion): void {
     node.length = region.measure.getTotalLength();
   });
 
-  const labelX = layout.spineX - 4;
+  paintFittings(region, layout.fittings);
+
+  const labelX = layout.spineX - 8;
   const hasLabelRoom = regionBox.left + labelX >= LABEL_MIN_GUTTER && region.label.textContent !== '';
   region.label.setAttribute('x', `${round(labelX)}`);
   region.label.setAttribute('y', `${round(layout.label.y)}`);
   region.label.setAttribute('transform', `rotate(-90 ${round(labelX)} ${round(layout.label.y)})`);
   region.label.style.display = hasLabelRoom ? '' : 'none';
 
-  paintTraceLengths(region);
+  paintPipeLengths(region);
 }
 
-function tracePaths(region: CircuitRegion): SVGPathElement[] {
-  return Array.from(region.traceLayer.querySelectorAll<SVGPathElement>('path')).filter((path) =>
-    Boolean(path.getAttribute('d')),
-  );
+function pipePaths(region: CircuitRegion): SVGPathElement[] {
+  return [region.wallLayer, region.boreLayer]
+    .flatMap((layer) => Array.from(layer.querySelectorAll<SVGPathElement>('path')))
+    .filter((path) => Boolean(path.getAttribute('d')));
 }
 
 /**
- * Traces are hidden by a full dash offset until the bus is energised, then drawn
+ * Pipes are held back by a full dash offset until the bus is energised, then run
  * in once. Re-measured on every layout so a resize cannot leave a stale gap.
  */
-function paintTraceLengths(region: CircuitRegion): void {
-  for (const path of tracePaths(region)) {
+function paintPipeLengths(region: CircuitRegion): void {
+  for (const path of pipePaths(region)) {
     const length = path.getTotalLength();
     path.style.strokeDasharray = `${round(length)}`;
     path.style.strokeDashoffset = region.energised ? '0' : `${round(length)}`;
   }
 }
 
-function drawTraces(region: CircuitRegion): void {
-  const paths = tracePaths(region);
+function drawPipes(region: CircuitRegion): void {
+  const paths = pipePaths(region);
   paths.forEach((path, index) => {
     const length = path.getTotalLength();
     path.style.strokeDashoffset = '0';
@@ -371,7 +516,8 @@ function drawTraces(region: CircuitRegion): void {
       { strokeDashoffset: [`${round(length)}`, '0'] },
       {
         duration: region.metrics.drawDuration,
-        delay: index * 60,
+        // Wall then bore, so a run reads as being laid rather than drawn.
+        delay: index * 45,
         easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
         fill: 'backwards',
       },
@@ -502,7 +648,7 @@ function energise(region: CircuitRegion): void {
   if (region.energised) return;
   region.energised = true;
   region.el.classList.add('is-circuit-live');
-  drawTraces(region);
+  drawPipes(region);
 
   if (reducedMotion()) return;
   window.setTimeout(

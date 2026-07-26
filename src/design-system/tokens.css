@@ -239,18 +239,36 @@
      or unitless: relative units would resolve against the wrong box. Colours
      are per-theme and live in themes/dark.css and themes/light.css. */
 
-  --circuit-lane: 28px;             /* how far outside the content edge the spine sits */
-  --circuit-edge-gap: 4px;          /* smallest gap kept between the spine and the viewport */
-  --circuit-drop: 34px;             /* vertical run below the source before the trunk turns */
-  --circuit-rail-gap: 16px;         /* clearance above the element a rail branch travels over */
-  --circuit-top-lane: 22px;         /* clearance above a node fed from directly overhead */
-  --circuit-pin-gap: 10px;          /* space between a terminal pin and the node it serves */
-  --circuit-min-branch: 14px;       /* shortest run a branch may take off the spine */
-  --circuit-bend-radius: 8px;       /* corner rounding on right-angle turns */
-  --circuit-trace-weight: 1px;
+  /* Routing. The spine centres in the page gutter and never sits further out
+     than one lane, which is what keeps it off the screen edge once the gutter
+     narrows on tablet and mobile. */
+  --circuit-lane: 30px;             /* furthest outside the content edge the spine sits */
+  --circuit-drop: 38px;             /* vertical run below the source before the trunk turns */
+  --circuit-rail-gap: 20px;         /* clearance above the element a rail branch travels over */
+  --circuit-top-lane: 26px;         /* clearance above a node fed from directly overhead */
+  --circuit-text-run: 30px;         /* how far a run travels along a baseline where it meets text */
+  --circuit-pin-gap: 12px;          /* how far past a node's leading corner a run lands on it */
+  --circuit-min-branch: 16px;       /* shortest run a branch may take off the spine */
+  --circuit-bend-radius: 16px;      /* sweep on turns; capped per bend by the runs it joins */
+  --circuit-origin-gap: 3px;        /* clearance a baseline run keeps below the type it serves */
+
+  /* Section. The wall reads as the two edges it shows either side of the bore,
+     and the packet weight matches the bore so light travels inside the pipe. */
+  --circuit-wall-weight: 4px;
+  --circuit-bore-weight: 2px;
   --circuit-packet-weight: 2px;
-  --circuit-packet-halo-weight: 7px;
-  --circuit-pulse-length: 26px;     /* dash length of a travelling packet */
+  --circuit-packet-halo-weight: 8px;
+  --circuit-pulse-length: 30px;     /* dash length of a travelling packet */
+
+  /* Fittings: a union either side of a sweep, a tee at a split, a flange at a
+     termination. Bars are drawn across the pipe they dress. */
+  --circuit-collar-length: 10px;
+  --circuit-collar-weight: 1px;
+  --circuit-tee-length: 12px;
+  --circuit-tee-spread: 6px;        /* how far each tee band sits from the split */
+  --circuit-flange-length: 15px;
+  --circuit-flange-weight: 2px;
+  --circuit-fitting-clearance: 15px; /* closest two fittings sit before a collar is dropped */
   --circuit-packet-speed: 1250;     /* px per second; unitless so the engine can read it */
   --circuit-draw-duration: 620ms;   /* trace draw-in when a bus goes live */
   --circuit-node-hold: 520ms;       /* how long a node stays acknowledged */
@@ -299,8 +317,11 @@
   --reading-width: 68ch;
   --toc-width: 270px;              /* 240-300px TOC */
 
-  /* Fluid shell and section rhythm. */
-  --page-gutter: clamp(1.25rem, 4vw, 4rem);
+  /* Fluid shell and section rhythm. The gutter floor is raised above what the
+     type alone would need: the circuit spine runs down the middle of it, so on
+     tablet and mobile the gutter has to stay wide enough to seat the pipework
+     clear of the screen edge. */
+  --page-gutter: clamp(2.25rem, 4vw, 4rem);
   --section-space: clamp(4.5rem, 10vw, 9rem);
   --hero-top-space: 0rem;
   --hero-bottom-space: clamp(3.5rem, 7vw, 6rem);
@@ -351,4 +372,27 @@
   --tile-min-height-medium: 12.5rem;
   --tile-min-height-large: 15rem;
   --tile-min-height-wide: 17rem;
+}
+
+/* A narrower gutter carries a lighter pipe. Below the tablet breakpoint the
+   spine has roughly a third of the room it has on desktop, so the section,
+   fittings, and sweeps all come down a size rather than crowding the run
+   against the screen edge. */
+@media (max-width: 47.9375rem) {
+  :root {
+    --circuit-lane: 26px;
+    --circuit-bend-radius: 12px;
+    --circuit-drop: 30px;
+    --circuit-text-run: 24px;
+    --circuit-wall-weight: 3px;
+    --circuit-bore-weight: 1.5px;
+    --circuit-packet-weight: 1.5px;
+    --circuit-packet-halo-weight: 6px;
+    --circuit-pulse-length: 22px;
+    --circuit-collar-length: 8px;
+    --circuit-tee-length: 9px;
+    --circuit-tee-spread: 5px;
+    --circuit-flange-length: 12px;
+    --circuit-fitting-clearance: 13px;
+  }
 }

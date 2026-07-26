@@ -34,14 +34,24 @@
 }
 
 /* ============================================
-   TRACES
-   ============================================ */
+   PIPE SECTION
+   ============================================
+   A run is a wall with a bore laid over it. The wall shows as the two edges it
+   leaves either side of the bore, which is what gives the run its section. Butt
+   caps square off every open end so a flange can finish it. */
 
-.circuit__trace path {
-  stroke: var(--circuit-trace);
+.circuit__wall {
+  stroke: var(--circuit-wall);
   stroke-linecap: butt;
   stroke-linejoin: round;
-  stroke-width: var(--circuit-trace-weight);
+  stroke-width: var(--circuit-wall-weight);
+}
+
+.circuit__bore {
+  stroke: var(--circuit-bore);
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  stroke-width: var(--circuit-bore-weight);
 }
 
 /* Kept out of the paint so the engine can measure route lengths against a real
@@ -51,12 +61,23 @@
 }
 
 /* ============================================
-   STRUCTURE
+   FITTINGS
    ============================================
-   Junctions where a branch leaves the spine, and a pin where it terminates. */
+   Unions either side of a sweep, a tee band either side of a split, and at the
+   ends whatever suits what the run has met: a flange plate closing it against a
+   component's face, a tee laid across a divider it taps into, a stop where it
+   has run out along a line of text. */
 
-.circuit__junction,
-.circuit__pin-tick {
+.circuit__fitting {
+  fill: var(--circuit-fitting);
+}
+
+.circuit__fitting--flange,
+.circuit__fitting--origin {
+  fill: var(--circuit-detail);
+}
+
+.circuit__junction {
   fill: var(--circuit-detail);
   transition: fill var(--transition-slow) var(--easing-expressive);
 }
@@ -82,11 +103,11 @@
 /* ============================================
    PACKETS
    ============================================
-   A packet is a short dash travelling its route. The halo trails the core on a
+   A packet is a short dash travelling the bore. The halo trails the core on a
    shared leading edge; the engine offsets it to keep the two locked together. */
 
 .circuit__packet {
-  stroke-linecap: round;
+  stroke-linecap: butt;
 }
 
 .circuit__packet--core {
@@ -103,7 +124,8 @@
    NODES
    ============================================
    How a component acknowledges the packet that reaches it. Default is `ring`;
-   `edge` suits a node whose top rule is its own border; `underline` suits text. */
+   `edge` suits a node whose top rule is its own border; `underline` suits text.
+   Each also tells the engine what the run lands on — see resolveAttach. */
 
 [data-circuit-node] {
   transition:
@@ -121,32 +143,16 @@
   border-top-color: var(--circuit-node-edge);
 }
 
-[data-circuit-flash='underline'] {
-  position: relative;
-}
-
-[data-circuit-flash='underline']::after {
-  background: var(--circuit-node-edge);
-  bottom: -0.3em;
-  content: '';
-  height: 1px;
-  left: 0;
-  position: absolute;
-  right: 0;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--transition-slow) var(--easing-expressive);
-}
-
-[data-circuit-flash='underline'].is-energised::after {
-  transform: scaleX(1);
-}
-
-/* The source acknowledges packets sent back to it by a user interaction. */
+/* Text ends carry no rule of their own to light: the run already draws one along
+   the baseline, and a second under the same words would read as a doubled line.
+   So text blooms instead — the same acknowledgement the source gives, because
+   both are the same kind of end. */
+[data-circuit-flash='underline'],
 [data-circuit-source] {
   transition: text-shadow var(--transition-slow) var(--easing-expressive);
 }
 
+[data-circuit-flash='underline'].is-energised,
 [data-circuit-source].is-energised {
   text-shadow: 0 0 var(--circuit-node-bloom) var(--circuit-node-glow);
 }
@@ -156,15 +162,14 @@
    ============================================ */
 
 @media (prefers-reduced-motion: reduce) {
-  /* The traces are structure and stay. The motion layer does not. */
+  /* The pipework is structure and stays. The motion layer does not. */
   .circuit__packets,
   .circuit__lamp {
     display: none;
   }
 
   [data-circuit-node],
-  [data-circuit-source],
-  [data-circuit-flash='underline']::after {
+  [data-circuit-source] {
     transition: none;
   }
 }
