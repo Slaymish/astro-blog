@@ -57,7 +57,7 @@ const { hero, academic } = copy;
 <style>
   .cv__hero { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
   .cv__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  .cv__hero h1 { font-size: var(--type-display); letter-spacing: -.065em; line-height: .88; margin: 0; }
+  .cv__hero h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; }
   .cv__hero > p:not(.cv__eyebrow) { color: var(--color-text-secondary); font-size: clamp(1.15rem, 2.2vw, 1.5rem); line-height: 1.5; max-width: 43rem; }
   .cv__actions { align-items: center; display: flex; flex-wrap: wrap; gap: var(--spacing-3) var(--spacing-5); margin-top: var(--spacing-8); }
   .cv__facts { border-top: 1px solid var(--color-stroke-subtle); }
@@ -65,7 +65,7 @@ const { hero, academic } = copy;
   .cv__facts span { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
   .cv__facts strong { font-size: clamp(1.05rem, 2vw, 1.35rem); font-weight: 600; }
   .cv__academic { display: grid; gap: var(--spacing-8); margin-block: clamp(5rem, 12vw, 10rem); }
-  .cv__academic h2 { font-size: clamp(2.5rem, 6vw, 5rem); letter-spacing: -.055em; margin: 0; }
+  .cv__academic h2 { font-size: clamp(2.5rem, 6vw, 5rem); letter-spacing: var(--tracking-heading); margin: 0; }
   .cv__academic div > p:not(.cv__eyebrow) { color: var(--color-text-secondary); font-size: clamp(1.05rem, 1.5vw, 1.2rem); line-height: 1.7; max-width: 42rem; }
   .cv__academic .cv__actions > a:last-child { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; min-height: 2.75rem; }
   @media (min-width: 48rem) {

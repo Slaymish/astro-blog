@@ -38,7 +38,7 @@ const { story, variant = 'featured', reverse = false } = Astro.props;
   .work-card__content { align-self: center; }
   .work-card__meta { align-items: start; color: var(--color-text-secondary); display: flex; font-size: var(--type-label); font-weight: 600; gap: var(--spacing-4); justify-content: space-between; letter-spacing: .09em; line-height: 1.4; text-transform: uppercase; }
   .work-card__meta span:last-child { flex-shrink: 0; text-align: right; }
-  h3 { font-size: clamp(2.5rem, 6vw, 5.5rem); letter-spacing: -.055em; margin: var(--spacing-5) 0 var(--spacing-4); }
+  h3 { font-size: clamp(2.5rem, 6vw, 5.5rem); letter-spacing: var(--tracking-heading); margin: var(--spacing-5) 0 var(--spacing-4); }
   .work-card__summary { color: var(--color-text-primary); font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.4; margin: 0; max-width: 32rem; }
   .work-card__result { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.55; margin: var(--spacing-5) 0 0; max-width: 36rem; }
   .work-card__result strong { color: var(--color-action); display: block; font-size: var(--type-label); letter-spacing: .08em; margin-bottom: var(--spacing-1); text-transform: uppercase; }
