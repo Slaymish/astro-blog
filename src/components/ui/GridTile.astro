@@ -6,6 +6,8 @@
  * Supports different sizes and includes hover effects with arrow indicator.
  */
 
+import Icon from './Icon.astro';
+
 interface TileProps {
   title: string;
   description: string;
@@ -56,7 +58,7 @@ const resolvedTypeHref = typeHref ?? inferredTypeHref;
 ---
 
 <article class={`grid-tile ${containerClass}`}>
-  <div class="group relative h-full w-full overflow-hidden rounded-[var(--tile-radius)] bg-[var(--tile-bg)] transition-all duration-300">
+  <div class="group relative h-full w-full overflow-hidden rounded-[var(--tile-radius)] bg-[var(--tile-bg)] transition-all duration-300" data-icon-hover>
     <div class="flex h-full w-full flex-col">
 
       <!-- Meta row -->
@@ -84,15 +86,7 @@ const resolvedTypeHref = typeHref ?? inferredTypeHref;
           class={`flex h-8 w-8 items-center justify-center rounded-full transition-colors no-underline border-b-0 focus-visible:ring-4 focus-visible:ring-[var(--focus)] group-focus-within:bg-[var(--text)] group-focus-within:text-[var(--bg)] group-hover:bg-[var(--text)] group-hover:text-[var(--bg)] ${cursorClass}`}
           aria-label={external ? 'Open external link' : 'Open item'}
         >
-          {external ? (
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-              <path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"/>
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-              <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.69l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/>
-            </svg>
-          )}
+          <Icon name={external ? 'arrow-up-right' : 'arrow-right'} size="1rem" />
         </a>
       </div>
 

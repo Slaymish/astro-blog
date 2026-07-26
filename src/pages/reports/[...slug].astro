@@ -1,4 +1,5 @@
 ---
+import IconText from "../../components/ui/IconText.astro";
 import Layout from '../../components/layout/Layout.astro';
 import Breadcrumb from '../../components/features/Breadcrumb.astro';
 import PDFViewer from '../../components/features/PDFViewer.astro';
@@ -154,7 +155,7 @@ const publishedTime = new Date(report.publishedAt).toISOString();
     <footer class="mt-12 pt-8 border-t border-[var(--border)]">
       <nav aria-label="Report navigation">
         <a href="/" class="text-[var(--accent)] hover:underline no-underline border-b-0">
-          ← Back to home
+          <IconText icon="arrow-left" position="start">Back to home</IconText>
         </a>
       </nav>
     </footer>

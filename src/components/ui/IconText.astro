@@ -1,0 +1,47 @@
+---
+/**
+ * A label with an icon set inline beside it — the standard "Read more →" /
+ * "Live demo ↗" affordance. Owns the gap and the optical alignment; the hover
+ * nudge lives in Icon.astro so standalone icons behave the same way.
+ */
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+interface Props {
+  icon?: IconName;
+  position?: 'start' | 'end';
+  /** Element to render. Use 'span' inside an existing link. */
+  as?: 'span' | 'div' | 'strong' | 'p';
+  motion?: 'auto' | 'none';
+  iconSize?: string;
+  strokeWidth?: number | string;
+  class?: string;
+}
+
+const {
+  icon = 'arrow-right',
+  position = 'end',
+  as: Tag = 'span',
+  motion = 'auto',
+  iconSize,
+  strokeWidth,
+  class: className,
+  ...rest
+} = Astro.props as Props & Record<string, unknown>;
+
+const iconProps = { name: icon, size: iconSize, strokeWidth, motion, class: 'icon-text__icon' };
+---
+
+<Tag {...rest} class:list={['icon-text', className]}>
+  {position === 'start' && <Icon {...iconProps} />}
+  <span class="icon-text__label"><slot /></span>
+  {position === 'end' && <Icon {...iconProps} />}
+</Tag>
+
+<style>
+  .icon-text {
+    align-items: center;
+    display: inline-flex;
+    gap: var(--icon-gap);
+  }
+</style>

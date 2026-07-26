@@ -1,6 +1,7 @@
 ---
 import Layout from '../components/layout/Layout.astro';
 import ButtonLink from '../components/ui/ButtonLink.astro';
+import IconText from '../components/ui/IconText.astro';
 import ContactBand from '../components/work/ContactBand.astro';
 import WorkCard from '../components/work/WorkCard.astro';
 import { getWorkStories } from '../lib/workData';
@@ -42,11 +43,11 @@ const { hero, workSection, approach } = copy;
         <p>{workSection.eyebrow}</p>
         <h2 id="selected-work-heading">{workSection.heading}</h2>
       </div>
-      <a href={workSection.link.href}>{workSection.link.label} <span aria-hidden="true">→</span></a>
+      <a href={workSection.link.href}><IconText>{workSection.link.label}</IconText></a>
     </div>
     {leadStories.map((story, index) => <WorkCard story={story} reverse={index % 2 === 1} />)}
     <div class="home-work__footer">
-      <a href={workSection.link.href}>{workSection.link.label} <span aria-hidden="true">→</span></a>
+      <a href={workSection.link.href}><IconText>{workSection.link.label}</IconText></a>
     </div>
   </section>
 
@@ -55,7 +56,7 @@ const { hero, workSection, approach } = copy;
     <div>
       <h2 id="approach-heading">{approach.heading}</h2>
       <p>{approach.body}</p>
-      <a href={approach.link.href}>{approach.link.label} <span aria-hidden="true">→</span></a>
+      <a href={approach.link.href}><IconText>{approach.link.label}</IconText></a>
     </div>
   </section>
 
@@ -79,10 +80,13 @@ const { hero, workSection, approach } = copy;
   .home-section-heading h2 { font-size: clamp(2.3rem, 5vw, 4.5rem); margin: 0; }
   .home-section-heading a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
   .home-section-heading a:hover { color: var(--color-action); }
-  .home-work__footer { border-top: 1px solid var(--color-stroke-subtle); padding-block: var(--spacing-6); }
+  /* No rule of its own: the approach section's rule below is the divider. */
+  .home-work__footer { padding-block: var(--spacing-6); }
   .home-work__footer a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
   .home-work__footer a:hover { color: var(--color-action); }
-  .home-approach { border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); margin-block: clamp(5rem, 12vw, 10rem); padding-block: clamp(3rem, 7vw, 6rem); }
+  .home-approach { border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); margin-block: clamp(5rem, 12vw, 10rem) 0; padding-block: var(--band-inset); }
+  /* The inset below already supplies the band's leading space. */
+  .home-approach + :global(.contact-band) { margin-block-start: 0; }
   .home-approach h2 { font-size: clamp(2.5rem, 6vw, 5.5rem); letter-spacing: var(--tracking-heading); margin: 0; text-wrap: balance; }
   .home-approach div > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.6; max-width: 43rem; }
   .home-approach a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }

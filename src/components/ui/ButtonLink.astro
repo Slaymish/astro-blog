@@ -1,4 +1,6 @@
 ---
+import IconText from './IconText.astro';
+
 interface Props {
   href: string;
   variant?: 'primary' | 'secondary' | 'text';
@@ -23,8 +25,7 @@ const {
   rel={external ? 'noopener noreferrer' : undefined}
   aria-label={ariaLabel}
 >
-  <span><slot /></span>
-  <span class="button-link__arrow" aria-hidden="true">{external ? '↗' : '→'}</span>
+  <IconText icon={external ? 'arrow-up-right' : 'arrow-right'} class="button-link__label"><slot /></IconText>
 </a>
 
 <style>
@@ -101,19 +102,13 @@ const {
     transform: none;
   }
 
-  .button-link__arrow {
-    color: currentColor;
-    font-size: 1.05em;
-    transition: transform var(--motion-duration-interaction) var(--easing-expressive);
-  }
-
-  .button-link:hover .button-link__arrow {
-    transform: translate(0.1rem, -0.1rem);
+  /* Buttons want more air between label and icon than inline links do. */
+  .button-link__label {
+    --icon-gap: var(--spacing-3);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .button-link:hover,
-    .button-link:hover .button-link__arrow {
+    .button-link:hover {
       transform: none;
     }
   }

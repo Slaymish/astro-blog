@@ -1,6 +1,7 @@
 ---
 import Layout from "../../components/layout/Layout.astro";
 import { fetchSanity, urlFor } from "../../lib/sanity";
+import Icon from "../../components/ui/Icon.astro";
 
 type ReadingStatus = 'reading' | 'read' | 'to-read';
 
@@ -59,7 +60,7 @@ const statusLabel: Record<ReadingStatus, string> = {
             <span>Reading · Books</span>
             <span>
               {item.link ? (
-                <a href={item.link} target="_blank" rel="noopener noreferrer" class="no-underline border-b-0 hover:text-[var(--accent)]" aria-label={`View ${item.title}`}>↗</a>
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="no-underline border-b-0 hover:text-[var(--accent)]" aria-label={`View ${item.title}`}><Icon name="arrow-up-right" /></a>
               ) : (
                 <span aria-hidden="true">•</span>
               )}

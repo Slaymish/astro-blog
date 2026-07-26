@@ -11,6 +11,8 @@ import { portableTextToHtml, portableTextToPlainText } from "../../lib/portableT
 import { markdownToHtml, markdownToPlainText } from "../../lib/markdown";
 import { splitHtmlAtInteractive, stripInteractivePlaceholder } from "../../utils/split-html";
 import InteractiveElement from "../../components/interactive/InteractiveElement.astro";
+import Icon from "../../components/ui/Icon.astro";
+import IconText from "../../components/ui/IconText.astro";
 import { contentPostSlug, legacyRoutePolicy, publicPostSlug } from "../../lib/legacyRoutes";
 
 type RelatedProjectDoc = {
@@ -159,10 +161,10 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
           <span class="project-callout-title">{relatedProject.title}</span>
           <div class="project-callout-links">
             {relatedProject.link && (
-              <a href={relatedProject.link} target="_blank" rel="noopener noreferrer">Live Demo →</a>
+              <a href={relatedProject.link} target="_blank" rel="noopener noreferrer"><IconText icon="arrow-up-right">Live Demo</IconText></a>
             )}
             {relatedProject.github && (
-              <a href={relatedProject.github} target="_blank" rel="noopener noreferrer">GitHub →</a>
+              <a href={relatedProject.github} target="_blank" rel="noopener noreferrer"><IconText icon="arrow-up-right">GitHub</IconText></a>
             )}
           </div>
         </div>
@@ -226,9 +228,7 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
       <footer class="post-footer" data-reveal>
         <nav aria-label="Post navigation">
           <a href={backHref} class="back-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-              <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd"/>
-            </svg>
+            <Icon name="arrow-left" />
             <span data-back-text>Back to work</span>
           </a>
         </nav>

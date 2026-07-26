@@ -220,6 +220,18 @@
   --z-tooltip: 1070;
 
   /* ============================================
+     ICONS
+     ============================================
+     Everything the Icon / IconText components need to change shape site-wide.
+     Sizes are in em so icons track whatever text they sit beside. */
+
+  --icon-size: 1.05em;          /* optical match for text — strokes read lighter than glyphs */
+  --icon-stroke-width: 2;       /* on the 24x24 icon grid, not px on screen */
+  --icon-gap: 0.45em;           /* space between label and icon in IconText */
+  --icon-nudge: 0em;            /* permanent vertical offset for baseline tuning */
+  --icon-hover-shift: 0.2em;    /* how far the icon travels on hover/focus */
+
+  /* ============================================
      TRANSITIONS
      ============================================ */
 

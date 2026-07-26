@@ -1,6 +1,7 @@
 ---
 import type { WorkStory } from '../../lib/work';
 import { workStoryHref } from '../../lib/work';
+import IconText from '../ui/IconText.astro';
 import WorkGraphic from './WorkGraphic.astro';
 
 interface Props {
@@ -25,7 +26,7 @@ const { story, variant = 'featured', reverse = false } = Astro.props;
       <h3>{story.title}</h3>
       <p class="work-card__summary">{story.summary}</p>
       <p class="work-card__result"><strong>Result</strong> {story.result}</p>
-      <span class="work-card__action">View case study <span aria-hidden="true">→</span></span>
+      <IconText class="work-card__action">View case study</IconText>
     </div>
   </a>
 </article>
@@ -42,9 +43,7 @@ const { story, variant = 'featured', reverse = false } = Astro.props;
   .work-card__summary { color: var(--color-text-primary); font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.4; margin: 0; max-width: 32rem; }
   .work-card__result { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.55; margin: var(--spacing-5) 0 0; max-width: 36rem; }
   .work-card__result strong { color: var(--color-action); display: block; font-size: var(--type-label); letter-spacing: .08em; margin-bottom: var(--spacing-1); text-transform: uppercase; }
-  .work-card__action { color: var(--color-action); display: inline-flex; font-size: var(--type-body-small); font-weight: 700; gap: var(--spacing-2); margin-top: var(--spacing-6); }
-  .work-card__action span { transition: transform var(--motion-duration-interaction) var(--easing-expressive); }
-  .work-card__link:hover .work-card__action span { transform: translateX(.25rem); }
+  .work-card__action { --icon-gap: var(--spacing-2); color: var(--color-action); font-size: var(--type-body-small); font-weight: 700; margin-top: var(--spacing-6); }
 
   @media (min-width: 52rem) {
     .work-card--featured .work-card__link { grid-template-columns: minmax(0, 1.45fr) minmax(18rem, .85fr); }

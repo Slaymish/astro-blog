@@ -1,6 +1,8 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
 import ButtonLink from '../../components/ui/ButtonLink.astro';
+import Icon from '../../components/ui/Icon.astro';
+import IconText from '../../components/ui/IconText.astro';
 import MediaFrame from '../../components/ui/MediaFrame.astro';
 import ContactBand from '../../components/work/ContactBand.astro';
 import WorkGraphic from '../../components/work/WorkGraphic.astro';
@@ -97,7 +99,7 @@ function isExternal(url: string) {
       <dl>
         <div><dt>Problem</dt><dd>{story.problem}</dd></div>
         <div><dt>My role</dt><dd>{story.role}</dd></div>
-        <div><dt>What I changed</dt><dd><ul>{story.interventions.map((item) => <li>{item}</li>)}</ul></dd></div>
+        <div><dt>What I changed</dt><dd><ul>{story.interventions.map((item) => <li><Icon name="arrow-right" class="case-snapshot__bullet" />{item}</li>)}</ul></dd></div>
         <div class="case-snapshot__result"><dt>Result</dt><dd>{story.result}</dd></div>
       </dl>
     </section>
@@ -131,13 +133,13 @@ function isExternal(url: string) {
         <ul>
           {artifacts.map((artifact) => {
             const url = artifactUrl(artifact!);
-            return <li><a href={url} target={isExternal(url) ? '_blank' : undefined} rel={isExternal(url) ? 'noopener noreferrer' : undefined}>{artifact!.title} <span aria-hidden="true">{isExternal(url) ? '↗' : '→'}</span></a></li>;
+            return <li><a href={url} target={isExternal(url) ? '_blank' : undefined} rel={isExternal(url) ? 'noopener noreferrer' : undefined}><IconText icon={isExternal(url) ? 'arrow-up-right' : 'arrow-right'}>{artifact!.title}</IconText></a></li>;
           })}
         </ul>
       </section>
     )}
 
-    <a class="case-study__back" href="/work">← All work</a>
+    <a class="case-study__back" href="/work"><IconText icon="arrow-left" position="start">All work</IconText></a>
   </article>
 
   <ContactBand heading="Need a system like this?" />
@@ -160,8 +162,9 @@ function isExternal(url: string) {
   .case-snapshot dt { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
   .case-snapshot dd { color: var(--color-text-primary); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.5; margin: 0; max-width: 48rem; }
   .case-snapshot ul { display: grid; gap: var(--spacing-3); list-style: none; margin: 0; padding: 0; }
-  .case-snapshot li { padding-left: var(--spacing-5); position: relative; }
-  .case-snapshot li::before { color: var(--color-action); content: '→'; left: 0; position: absolute; }
+  .case-snapshot li { display: grid; gap: var(--spacing-3); grid-template-columns: auto minmax(0, 1fr); }
+  /* Centre the bullet on the first line rather than on the whole block. */
+  .case-snapshot__bullet { color: var(--color-action); margin-block-start: calc((1.5em - var(--icon-size)) / 2); }
   .case-snapshot__result dd { color: var(--color-action); }
   .case-study__story { display: grid; gap: var(--spacing-8); margin-block: clamp(5rem, 12vw, 10rem); }
   .case-study__body { max-width: 48rem; }
