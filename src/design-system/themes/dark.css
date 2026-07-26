@@ -30,6 +30,12 @@
   --accent-contrast: var(--color-action-ink);
   --focus: var(--color-focus-ring);
 
+  /* Broad, low-chroma atmosphere rather than a visible decorative gradient. */
+  --ambient-accent: rgb(233 107 80 / 0.085);
+  --ambient-neutral: rgb(170 179 172 / 0.055);
+  --ambient-highlight: rgb(105 115 107 / 0.06);
+  --ambient-noise-opacity: 0.035;
+
   --shadow-neu: none;
   --shadow-neu-inset: none;
   --shadow-neu-hover: none;
