@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+node_version="22.22.0"
+pnpm_version="10.34.5"
+node_dir="$HOME/.local/node-v$node_version"
+local_bin="$HOME/.local/bin"
+
+echo "Setting up Node.js $node_version and pnpm $pnpm_version..."
+mkdir -p "$HOME/.local" "$local_bin"
+
+if [[ ! -x "$node_dir/bin/node" ]]; then
+  case "$(uname -m)" in
+    x86_64) node_arch="x64" ;;
+    aarch64|arm64) node_arch="arm64" ;;
+    *)
+      echo "Unsupported architecture: $(uname -m)" >&2
+      exit 1
+      ;;
+  esac
+
+  archive="$(mktemp --suffix=.tar.xz)"
+  trap 'rm -f "$archive"' EXIT
+  curl --fail --location --silent --show-error \
+    "https://nodejs.org/dist/v$node_version/node-v$node_version-linux-$node_arch.tar.xz" \
+    --output "$archive"
+  mkdir -p "$node_dir"
+  tar -xJf "$archive" --strip-components=1 -C "$node_dir"
+  rm -f "$archive"
+  trap - EXIT
+fi
+
+for command_name in node npm npx corepack; do
+  ln -sfn "$node_dir/bin/$command_name" "$local_bin/$command_name"
+done
+export PATH="$local_bin:$PATH"
+
+if [[ "$(node --version)" != "v$node_version" ]]; then
+  echo "Expected Node.js v$node_version, found $(node --version)" >&2
+  exit 1
+fi
+
+if [[ ! -x "$node_dir/bin/pnpm" ]] || [[ "$($node_dir/bin/pnpm --version 2>/dev/null || true)" != "$pnpm_version" ]]; then
+  "$node_dir/bin/npm" install --global --prefix "$node_dir" "pnpm@$pnpm_version"
+fi
+ln -sfn "$node_dir/bin/pnpm" "$local_bin/pnpm"
+ln -sfn "$node_dir/bin/pnpx" "$local_bin/pnpx"
+
+profile_marker="# astro-blog orb toolchain"
+if ! grep -Fqx "$profile_marker" "$HOME/.bash_profile" 2>/dev/null; then
+  cat >> "$HOME/.bash_profile" <<'EOF'
+
+# astro-blog orb toolchain
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$HOME/.local/bin:$PATH" ;;
+esac
+EOF
+fi
+
+cd "$repo_root"
+if [[ ! -f .env ]]; then
+  cp -- .env.example .env
+fi
+
+ensure_env_value() {
+  local key="$1"
+  local value="$2"
+
+  if grep -Eq "^${key}=.+$" .env; then
+    return
+  fi
+  if grep -q "^${key}=" .env; then
+    sed -i "s|^${key}=.*$|${key}=${value}|" .env
+  else
+    printf '%s=%s\n' "$key" "$value" >> .env
+  fi
+}
+
+# These public values match CI and let a fresh orb build without private credentials.
+ensure_env_value SANITY_PROJECT_ID qnuj1c4o
+ensure_env_value SANITY_DATASET production
+ensure_env_value SANITY_API_VERSION 2024-01-01
+
+echo "Installing root dependencies..."
+pnpm install --frozen-lockfile
+
+echo "Installing standalone Sanity Studio dependencies..."
+npm ci --prefix studio-production
+
+echo "Orb setup complete."

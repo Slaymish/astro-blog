@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export PATH="$HOME/.local/bin:$PATH"
+
+node_major="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || true)"
+pnpm_major="$(pnpm --version 2>/dev/null | cut -d. -f1 || true)"
+
+if [[ "$node_major" != "22" || "$pnpm_major" != "10" ]]; then
+  echo "Orb toolchain is unavailable; rerun .agents/setup." >&2
+  exit 1
+fi
+
+echo "Orb toolchain ready (Node $(node --version), pnpm $(pnpm --version))."
