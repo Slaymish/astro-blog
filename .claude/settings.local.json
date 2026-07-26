@@ -7,7 +7,16 @@
       "Bash(grep -n \"prerender\\\\|cache\\\\|Cache\" /Users/hamish/Documents/Personal/astro-blog/src/pages/writing/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/projects/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/reading/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/tools/index.astro /Users/hamish/Documents/Personal/astro-blog/src/pages/posts/[slug].astro)",
       "Bash(node:*)",
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__performance_start_trace",
-      "WebFetch(domain:canvasui.dev)"
+      "WebFetch(domain:canvasui.dev)",
+      "Bash(perl -0pi -e 's/reduceMotion\\\\.matches/reducedMotion\\(\\)/g; s/reduceMotion\\\\.addEventListener\\\\?\\\\.\\\\\\(/reduceMotionQuery?.addEventListener\\(/g' src/lib/circuit/engine.ts)",
+      "Bash(python3 -)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4321/ --max-time 3)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__resize_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__evaluate_script",
+      "Bash(npx tsx *)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot"
     ]
   },
   "disabledMcpjsonServers": [
