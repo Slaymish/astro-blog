@@ -13,7 +13,7 @@ This blog is my space to document thoughts on:
 
 ## Tech Stack
 
-- **Astro** - Static site generator with server-side rendering
+- **Astro** - Static site generator; content routes are prerendered at build time
 - **Sanity** - Headless CMS for storing posts, books, and projects
 - **Tailwind CSS** - Utility-first CSS framework
 - **TypeScript** - Type-safe JavaScript
@@ -23,7 +23,8 @@ This blog is my space to document thoughts on:
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) v18.14+
+- [Node.js](https://nodejs.org/) v22 (the version CI builds against)
+- [pnpm](https://pnpm.io/) v10
 - [Sanity account](https://www.sanity.io/)
 
 ### Setup
@@ -31,32 +32,35 @@ This blog is my space to document thoughts on:
 1. Clone this repository
 2. Install dependencies:
    ```bash
-   npm install
+   pnpm install
    ```
 3. Create a new Sanity project (use the defaults) and grab the Project ID + dataset name
 4. Copy `.env.example` to `.env` and add your Sanity credentials
 5. Start development server:
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 6. Start Sanity Studio (separate app):
    ```bash
-   npm run studio:dev
+   pnpm run studio:dev
    ```
 
 ### Available Commands
 
 | Command | Action |
 |---------|--------|
-| `npm run dev` | Start local dev server at `localhost:4321` |
-| `npm run build` | Build production site to `./dist/` |
-| `npm run preview` | Preview build locally |
-| `npm run studio:dev` | Start Sanity Studio locally |
-| `npm run studio:build` | Build Sanity Studio for deployment |
+| `pnpm run dev` | Start local dev server at `localhost:4321` |
+| `pnpm run build` | Type-check and build the production site to `./dist/` |
+| `pnpm run test` | Run the test suite |
+| `pnpm run preview` | Preview build locally |
+| `pnpm run studio:dev` | Start Sanity Studio locally |
+| `pnpm run studio:build` | Build Sanity Studio for deployment |
 
 ## Writing Posts
 
-Posts are managed in Sanity Studio. Run the Studio with `npm run studio:dev` (served by the Studio app).
+Posts are managed in Sanity Studio. Run the Studio with `pnpm run studio:dev` (served by the Studio app).
+
+Because the site is prerendered, publishing in Sanity only reaches the live site once a Netlify build runs.
 
 ## License
 

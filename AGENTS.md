@@ -14,7 +14,7 @@ Use this file to route coding-agent work in this repo.
 - Routes and endpoints: `src/pages/*`
 - Shared layout + global metadata: `src/components/layout/*`
 - Feature components: `src/components/features/*`
-- Theme/accent controls: `src/theme/*`, `src/components/theme/*`
+- Theme controls: `src/components/theme/*`; theme CSS: `src/design-system/themes/*`
 - Data access + transforms + canonical helpers: `src/lib/*`
 - Astro local content definitions: `src/content.config.ts`, `src/content/*`
 - Canonical Sanity schemas: `src/sanity/schemaTypes/*`
@@ -37,12 +37,12 @@ Use this file to route coding-agent work in this repo.
 
 Run from repo root unless noted.
 
-- Install: `npm ci`
-- Dev: `npm run dev`
-- Build: `npm run build`
-- Test: `npm run test`
-- Preview: `npm run preview`
-- Studio dev/build: `npm run studio:dev`, `npm run studio:build`
+- Install: `pnpm install --frozen-lockfile`
+- Dev: `pnpm run dev`
+- Build: `pnpm run build`
+- Test: `pnpm run test`
+- Preview: `pnpm run preview`
+- Studio dev/build: `pnpm run studio:dev`, `pnpm run studio:build`
 
 ## Environment + Config
 
@@ -64,7 +64,7 @@ Key config files:
 Allowed without asking:
 
 - Read/search files
-- Run `npm run test` and `npm run build`
+- Run `pnpm run test` and `pnpm run build`
 
 Ask first:
 
@@ -89,6 +89,7 @@ Never:
 ## Footguns
 
 - Missing `SANITY_PROJECT_ID` fails config load early.
-- Many routes are server-rendered (`output: 'server'`; many use `prerender = false`), so do not assume static behavior.
+- Content routes are prerendered (`output: 'static'`; only `src/pages/api/*` opts out with `prerender = false`), so request-time inputs such as query params are unavailable on pages and must be resolved client-side.
+- Publishing in Sanity only reaches the live site once a Netlify build runs.
 - `src/content.config.ts` exists, but published runtime content is fetched from Sanity in routes.
-- CI runs Node 20 with Sanity env vars; local failures are often env/version mismatch.
+- CI runs Node 22 and pnpm 10 with Sanity env vars; local failures are often env/version mismatch.

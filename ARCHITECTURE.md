@@ -146,7 +146,7 @@ Light and dark themes live in `src/design-system/themes/`, and each defines the 
 ### Testing and CI
 
 - Tests live in `tests/` and currently cover escape helpers, markdown safety expectation, PDF route hardening, and circuit routing geometry.
-- CI workflow in `.github/workflows/ci.yml` runs `npm ci`, `npm run test`, and `npm run build`.
+- CI workflow in `.github/workflows/ci.yml` runs `pnpm install --frozen-lockfile`, `pnpm run test`, and `pnpm run build` on Node 22.
 
 ## What To Read First (New Contributor)
 
