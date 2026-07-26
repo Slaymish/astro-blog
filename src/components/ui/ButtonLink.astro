@@ -7,6 +7,9 @@ interface Props {
   external?: boolean;
   class?: string;
   ariaLabel?: string;
+  /** Wires the button onto the page's data bus as a named node (src/lib/circuit). */
+  circuitNode?: string;
+  circuitFlash?: 'ring' | 'edge' | 'underline';
 }
 
 const {
@@ -15,6 +18,8 @@ const {
   external = false,
   class: className = '',
   ariaLabel,
+  circuitNode,
+  circuitFlash,
 } = Astro.props;
 ---
 
@@ -24,6 +29,8 @@ const {
   target={external ? '_blank' : undefined}
   rel={external ? 'noopener noreferrer' : undefined}
   aria-label={ariaLabel}
+  data-circuit-node={circuitNode}
+  data-circuit-flash={circuitNode ? circuitFlash : undefined}
 >
   <IconText icon={external ? 'arrow-up-right' : 'arrow-right'} class="button-link__label"><slot /></IconText>
 </a>

@@ -37,6 +37,18 @@
   --ambient-highlight: rgb(255 255 255 / 0.72);
   --ambient-noise-opacity: 0.025;
 
+  /* Circuit traces stay neutral so only the packets carry the signal colour.
+     Everything is a shade heavier than on dark: thin low-contrast strokes
+     disappear against paper. */
+  --circuit-trace: rgb(84 92 82 / 0.3);
+  --circuit-detail: rgb(84 92 82 / 0.45);
+  --circuit-detail-live: rgb(180 68 42 / 0.8);
+  --circuit-packet: rgb(180 68 42 / 0.95);
+  --circuit-packet-halo: rgb(180 68 42 / 0.16);
+  --circuit-label: rgb(84 92 82 / 0.45);
+  --circuit-node-edge: rgb(180 68 42 / 0.6);
+  --circuit-node-glow: rgb(180 68 42 / 0.12);
+
   /* Keep the flat editorial look rather than reintroducing neumorphism. */
   --shadow-neu: none;
   --shadow-neu-inset: none;

@@ -232,6 +232,33 @@
   --icon-hover-shift: 0.2em;    /* how far the icon travels on hover/focus */
 
   /* ============================================
+     CIRCUIT
+     ============================================
+     Geometry and timing for the data bus in src/lib/circuit. The engine reads
+     these off the region's computed style, so every value must stay in px, ms,
+     or unitless: relative units would resolve against the wrong box. Colours
+     are per-theme and live in themes/dark.css and themes/light.css. */
+
+  --circuit-lane: 28px;             /* how far outside the content edge the spine sits */
+  --circuit-edge-gap: 4px;          /* smallest gap kept between the spine and the viewport */
+  --circuit-drop: 34px;             /* vertical run below the source before the trunk turns */
+  --circuit-rail-gap: 16px;         /* clearance above the element a rail branch travels over */
+  --circuit-top-lane: 22px;         /* clearance above a node fed from directly overhead */
+  --circuit-pin-gap: 10px;          /* space between a terminal pin and the node it serves */
+  --circuit-min-branch: 14px;       /* shortest run a branch may take off the spine */
+  --circuit-bend-radius: 8px;       /* corner rounding on right-angle turns */
+  --circuit-trace-weight: 1px;
+  --circuit-packet-weight: 2px;
+  --circuit-packet-halo-weight: 7px;
+  --circuit-pulse-length: 26px;     /* dash length of a travelling packet */
+  --circuit-packet-speed: 1250;     /* px per second; unitless so the engine can read it */
+  --circuit-draw-duration: 620ms;   /* trace draw-in when a bus goes live */
+  --circuit-node-hold: 520ms;       /* how long a node stays acknowledged */
+  --circuit-heartbeat: 5600ms;      /* idle interval between packets on a live bus */
+  --circuit-label-size: 0.5625rem;  /* 9px */
+  --circuit-node-bloom: 20px;       /* reach of the glow on an acknowledged node */
+
+  /* ============================================
      TRANSITIONS
      ============================================ */
 

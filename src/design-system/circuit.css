@@ -1,0 +1,176 @@
+/**
+ * CIRCUIT
+ *
+ * Presentation for the data bus built by src/lib/circuit. Geometry and timing
+ * come from the tokens in tokens.css; colours come from the theme files. The
+ * overlay itself is created by the engine, so nothing here is authored per page.
+ */
+
+[data-circuit] {
+  isolation: isolate;
+  position: relative;
+}
+
+/* Authored content sits above the overlay. The overlay is out of flow, so it
+   never takes a slot in a grid or flex region. */
+[data-circuit] > *:not(.circuit) {
+  position: relative;
+  z-index: 1;
+}
+
+.circuit {
+  height: 100%;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 0;
+}
+
+.circuit path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ============================================
+   TRACES
+   ============================================ */
+
+.circuit__trace path {
+  stroke: var(--circuit-trace);
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  stroke-width: var(--circuit-trace-weight);
+}
+
+/* Kept out of the paint so the engine can measure route lengths against a real
+   layout without stroking them. */
+.circuit__measure {
+  visibility: hidden;
+}
+
+/* ============================================
+   STRUCTURE
+   ============================================
+   Junctions where a branch leaves the spine, and a pin where it terminates. */
+
+.circuit__junction,
+.circuit__pin-tick {
+  fill: var(--circuit-detail);
+  transition: fill var(--transition-slow) var(--easing-expressive);
+}
+
+.is-circuit-live .circuit__junction {
+  fill: var(--circuit-detail-live);
+}
+
+.circuit__lamp {
+  fill: var(--circuit-packet);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.circuit__label {
+  fill: var(--circuit-label);
+  font-family: var(--font-mono);
+  font-size: var(--circuit-label-size);
+  letter-spacing: 0.18em;
+}
+
+/* ============================================
+   PACKETS
+   ============================================
+   A packet is a short dash travelling its route. The halo trails the core on a
+   shared leading edge; the engine offsets it to keep the two locked together. */
+
+.circuit__packet {
+  stroke-linecap: round;
+}
+
+.circuit__packet--core {
+  stroke: var(--circuit-packet);
+  stroke-width: var(--circuit-packet-weight);
+}
+
+.circuit__packet--halo {
+  stroke: var(--circuit-packet-halo);
+  stroke-width: var(--circuit-packet-halo-weight);
+}
+
+/* ============================================
+   NODES
+   ============================================
+   How a component acknowledges the packet that reaches it. Default is `ring`;
+   `edge` suits a node whose top rule is its own border; `underline` suits text. */
+
+[data-circuit-node] {
+  transition:
+    border-color var(--transition-slow) var(--easing-expressive),
+    box-shadow var(--transition-slow) var(--easing-expressive);
+}
+
+[data-circuit-flash='ring'].is-energised {
+  box-shadow:
+    0 0 0 1px var(--circuit-node-edge),
+    0 0 var(--circuit-node-bloom) var(--circuit-node-glow);
+}
+
+[data-circuit-flash='edge'].is-energised {
+  border-top-color: var(--circuit-node-edge);
+}
+
+[data-circuit-flash='underline'] {
+  position: relative;
+}
+
+[data-circuit-flash='underline']::after {
+  background: var(--circuit-node-edge);
+  bottom: -0.3em;
+  content: '';
+  height: 1px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--transition-slow) var(--easing-expressive);
+}
+
+[data-circuit-flash='underline'].is-energised::after {
+  transform: scaleX(1);
+}
+
+/* The source acknowledges packets sent back to it by a user interaction. */
+[data-circuit-source] {
+  transition: text-shadow var(--transition-slow) var(--easing-expressive);
+}
+
+[data-circuit-source].is-energised {
+  text-shadow: 0 0 var(--circuit-node-bloom) var(--circuit-node-glow);
+}
+
+/* ============================================
+   FALLBACKS
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* The traces are structure and stay. The motion layer does not. */
+  .circuit__packets,
+  .circuit__lamp {
+    display: none;
+  }
+
+  [data-circuit-node],
+  [data-circuit-source],
+  [data-circuit-flash='underline']::after {
+    transition: none;
+  }
+}
+
+@media print {
+  .circuit {
+    display: none;
+  }
+}

@@ -23,7 +23,7 @@ Deployment target is Netlify server output.
 
 - `src/pages`: route entrypoints (UI pages + API/text endpoints).
 - `src/components`: main-site UI building blocks (`layout`, `features`, `theme`, `ui`).
-- `src/lib`: integration and transformation helpers (`sanity`, `portableText`, `markdown`, `site`, `escape`).
+- `src/lib`: integration and transformation helpers (`sanity`, `portableText`, `markdown`, `site`, `escape`), plus `circuit` (the data bus overlay).
 - `src/sanity/schemaTypes`: canonical schema definitions used by Sanity Studio configs.
 - `studio-production`: standalone Sanity Studio app with duplicate schema definitions.
 - `public`: static assets (images, audio, PDFs, icons, manifest).
@@ -134,9 +134,18 @@ The site is prerendered. `output: 'static'` with the Netlify adapter bakes every
 
 Light and dark themes live in `src/design-system/themes/`, and each defines the same set of semantic roles so the two are interchangeable. An inline script in `Layout.astro` resolves the theme before first paint to avoid a flash: a stored `localStorage` choice wins, otherwise the system preference applies. The site keeps following the system until the visitor explicitly toggles, tracked via `data-theme-source` on the root element.
 
+### Circuit (Data Bus Overlay)
+
+`src/lib/circuit` wires DOM elements together with a trace overlay: a trunk leaves a source, turns onto a shared spine in the page gutter, and each node branches off that spine at its own junction. Packets travel those routes and the node they reach acknowledges arrival.
+
+- `geometry.ts` is pure routing maths in region-local pixels and is unit tested. `engine.ts` owns the DOM, SVG, and lifecycle. `circuit.css` owns presentation; geometry and timing tokens live in `tokens.css`, colours in the theme files.
+- Regions opt in through markup only (`data-circuit`, `data-circuit-source`, `data-circuit-node`, `data-circuit-rail`) and `Layout.astro` boots the engine once per page. Nodes dispatch a bubbling `circuit:arrive` event.
+- Two invariants worth knowing before changing it. **Coordinates are measured against the overlay, not the region**, because as an out-of-flow child the overlay fills the region's padding box and would otherwise be offset by it — and because region-local geometry stays correct under Bend's transforms. **A node's approach edge resolves per layout** from where the node actually sits, so one markup contract works at every breakpoint.
+- Because Bend swaps the scroll container when its canvas activates, the engine listens for scroll in the capture phase rather than binding to a node that may be replaced. Under `prefers-reduced-motion` the traces still draw — they are structure — but packets, lamps, and the idle heartbeat do not run.
+
 ### Testing and CI
 
-- Tests live in `tests/` and currently cover escape helpers, markdown safety expectation, and PDF route hardening.
+- Tests live in `tests/` and currently cover escape helpers, markdown safety expectation, PDF route hardening, and circuit routing geometry.
 - CI workflow in `.github/workflows/ci.yml` runs `npm ci`, `npm run test`, and `npm run build`.
 
 ## What To Read First (New Contributor)

@@ -36,6 +36,18 @@
   --ambient-highlight: rgb(105 115 107 / 0.06);
   --ambient-noise-opacity: 0.035;
 
+  /* Circuit traces stay neutral so only the packets carry the signal colour.
+     Dedicated tokens rather than opacity on the semantic roles: these are
+     tinted strokes over the canvas, not variants of a text or border colour. */
+  --circuit-trace: rgb(105 115 107 / 0.42);
+  --circuit-detail: rgb(170 179 172 / 0.5);
+  --circuit-detail-live: rgb(233 107 80 / 0.72);
+  --circuit-packet: rgb(255 186 168 / 0.95);
+  --circuit-packet-halo: rgb(233 107 80 / 0.2);
+  --circuit-label: rgb(170 179 172 / 0.38);
+  --circuit-node-edge: rgb(233 107 80 / 0.62);
+  --circuit-node-glow: rgb(233 107 80 / 0.14);
+
   --shadow-neu: none;
   --shadow-neu-inset: none;
   --shadow-neu-hover: none;

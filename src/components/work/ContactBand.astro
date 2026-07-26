@@ -10,13 +10,15 @@ const { contactBand } = await getSiteSettings();
 const bandHeading = heading ?? contactBand.defaultHeading;
 ---
 
-<aside class="contact-band" aria-label="Work with Hamish">
+<aside class="contact-band" aria-label="Work with Hamish" data-circuit="BUS_03">
   <div>
-    <p>{contactBand.availabilityLabel}</p>
+    <p data-circuit-source>{contactBand.availabilityLabel}</p>
     <h2>{bandHeading}</h2>
   </div>
   <div class="contact-band__actions">
-    <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">{contactBand.bookingLabel}</ButtonLink>
+    <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com" circuitNode="booking">
+      {contactBand.bookingLabel}
+    </ButtonLink>
     <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
   </div>
 </aside>

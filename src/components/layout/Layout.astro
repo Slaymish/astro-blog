@@ -5,6 +5,7 @@ import "../../design-system/tokens.css";
 import "../../design-system/base.css";
 import "../../design-system/themes/dark.css";
 import "../../design-system/themes/light.css";
+import "../../design-system/circuit.css";
 import "../../styles/globals.css";
 
 
@@ -359,6 +360,12 @@ const structuredData = {
         bottom
       />
     </div>
+    <!-- Wires [data-circuit] regions into a bus overlay. Regions opt in through
+         markup only; a page with none pays nothing but the module. -->
+    <script>
+      import { initCircuit } from "../../lib/circuit";
+      initCircuit();
+    </script>
     <script is:inline data-cfasync="false">
       (function () {
         var root = document.documentElement;

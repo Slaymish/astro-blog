@@ -8,12 +8,18 @@ interface Props {
   story: WorkStory;
   variant?: 'featured' | 'row';
   reverse?: boolean;
+  /** Wires the card onto the page's data bus as a named node (src/lib/circuit). */
+  circuitNode?: string;
 }
 
-const { story, variant = 'featured', reverse = false } = Astro.props;
+const { story, variant = 'featured', reverse = false, circuitNode } = Astro.props;
 ---
 
-<article class:list={['work-card', `work-card--${variant}`, reverse && 'work-card--reverse']}>
+<article
+  class:list={['work-card', `work-card--${variant}`, reverse && 'work-card--reverse']}
+  data-circuit-node={circuitNode}
+  data-circuit-flash={circuitNode ? 'edge' : undefined}
+>
   <a href={workStoryHref(story.slug)} class="work-card__link" aria-label={`Read the ${story.title} case study`}>
     <div class="work-card__visual">
       <WorkGraphic kind={story.graphic.kind} alt={story.graphic.alt} compact={variant === 'row'} />

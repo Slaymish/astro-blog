@@ -13,30 +13,18 @@ const { hero, workSection, approach } = copy;
 ---
 
 <Layout title={copy.seo.title} description={copy.seo.description}>
-  <section class="home-hero">
+  <section class="home-hero" data-circuit="BUS_01">
     <p class="home-hero__eyebrow">{hero.eyebrow}</p>
-    <h1>{hero.headline} <span class="home-hero__accent" data-evolution-origin>{hero.headlineAccent}</span></h1>
-    <svg class="home-hero__trail" data-evolution-trail aria-hidden="true">
-      <path class="home-hero__trail-signal" data-evolution-path></path>
-      <circle class="home-hero__trail-packet" r="2.5">
-        <animateMotion
-          data-packet-motion
-          begin="indefinite"
-          calcMode="linear"
-          dur="7s"
-          keyPoints="0; 0; .025; 1; 1"
-          keyTimes="0; .12; .16; .61; 1"
-          repeatCount="indefinite"
-        />
-      </circle>
-      <g class="home-hero__trail-nodes">
-        <circle data-trail-node="1" r="2.5"></circle>
-      </g>
-    </svg>
-    <div class="home-hero__lower">
+    <h1>{hero.headline} <span class="home-hero__accent" data-circuit-source>{hero.headlineAccent}</span></h1>
+    <div class="home-hero__lower" data-circuit-rail>
       <p>{hero.lede}</p>
       <div class="home-hero__actions">
-        <ButtonLink href={hero.primaryCta.href} external={hero.primaryCta.external} ariaLabel={hero.primaryCta.ariaLabel}>
+        <ButtonLink
+          href={hero.primaryCta.href}
+          external={hero.primaryCta.external}
+          ariaLabel={hero.primaryCta.ariaLabel}
+          circuitNode="brief"
+        >
           {hero.primaryCta.label}
         </ButtonLink>
         <ButtonLink
@@ -49,20 +37,22 @@ const { hero, workSection, approach } = copy;
         </ButtonLink>
       </div>
     </div>
-    <ul class="home-hero__services" aria-label="Capabilities">
+    <ul class="home-hero__services" aria-label="Capabilities" data-circuit-node="services" data-circuit-flash="edge">
       {copy.services.map((service) => <li>{service}</li>)}
     </ul>
   </section>
 
-  <section class="home-work" aria-labelledby="selected-work-heading">
+  <section class="home-work" aria-labelledby="selected-work-heading" data-circuit="BUS_02">
     <div class="home-section-heading">
       <div>
-        <p>{workSection.eyebrow}</p>
+        <p data-circuit-source>{workSection.eyebrow}</p>
         <h2 id="selected-work-heading">{workSection.heading}</h2>
       </div>
       <a href={workSection.link.href}><IconText>{workSection.link.label}</IconText></a>
     </div>
-    {leadStories.map((story, index) => <WorkCard story={story} reverse={index % 2 === 1} />)}
+    {leadStories.map((story, index) => (
+      <WorkCard story={story} reverse={index % 2 === 1} circuitNode={story.slug} />
+    ))}
     <div class="home-work__footer">
       <a href={workSection.link.href}><IconText>{workSection.link.label}</IconText></a>
     </div>
@@ -81,22 +71,12 @@ const { hero, workSection, approach } = copy;
 </Layout>
 
 <style>
-  .home-hero { display: flex; flex-direction: column; isolation: isolate; min-height: clamp(32rem, calc(82svh - 8rem), 40rem); padding-block: var(--hero-top-space) var(--spacing-8); position: relative; }
-  .home-hero > :not(.home-hero__trail) { position: relative; z-index: 1; }
+  .home-hero { display: flex; flex-direction: column; min-height: clamp(32rem, calc(82svh - 8rem), 40rem); padding-block: var(--hero-top-space) var(--spacing-8); }
   .home-hero__eyebrow,
   .home-section-heading p,
   .home-approach__label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
   .home-hero h1 { font-size: clamp(3.35rem, 9.8vw, 9rem); letter-spacing: var(--tracking-display); line-height: .86; margin: 0; max-width: 14ch; }
   .home-hero__accent { color: var(--color-action); }
-  .home-hero__trail { color: var(--color-action); height: 100%; inset: 0; opacity: 0; overflow: visible; pointer-events: none; position: absolute; width: 100%; z-index: 0; }
-  .home-hero__trail path { fill: none; vector-effect: non-scaling-stroke; }
-  .home-hero__trail-signal { stroke: currentColor; stroke-dasharray: var(--trail-length) var(--trail-length); stroke-dashoffset: var(--trail-length); stroke-linecap: butt; stroke-linejoin: round; stroke-width: 2; }
-  .home-hero__trail-packet { fill: currentColor; opacity: 0; will-change: opacity; }
-  .home-hero__trail-nodes circle { fill: currentColor; opacity: 0; transform-box: fill-box; transform-origin: center; }
-  .home-hero.is-evolving .home-hero__trail { opacity: 1; }
-  .home-hero.is-evolving .home-hero__trail-signal { animation: trail-draw 7s linear infinite; }
-  .home-hero.is-evolving .home-hero__trail-packet { animation: trail-packet 7s linear infinite; }
-  .home-hero.is-evolving .home-hero__trail-nodes circle { animation: trail-terminal 7s ease infinite; }
   .home-hero__lower { align-items: end; display: grid; gap: var(--spacing-6); margin-block: clamp(2rem, 6vw, 5rem); }
   .home-hero__lower > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; margin: 0; max-width: 38rem; }
   .home-hero__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-3); }
@@ -118,22 +98,6 @@ const { hero, workSection, approach } = copy;
   .home-approach div > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.6; max-width: 43rem; }
   .home-approach a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
   .home-approach a:hover { color: var(--color-action); }
-  @keyframes trail-draw {
-    0% { stroke-dashoffset: var(--trail-length); }
-    7% { stroke-dashoffset: var(--trail-length); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
-    46% { stroke-dashoffset: 0; }
-    59% { stroke-dashoffset: 0; animation-timing-function: linear; }
-    88%, 100% { stroke-dashoffset: calc(var(--trail-length) * -1); }
-  }
-  @keyframes trail-packet {
-    0%, 8% { opacity: 0; }
-    12%, 61% { opacity: .9; }
-    68%, 100% { opacity: 0; }
-  }
-  @keyframes trail-terminal {
-    0%, 58%, 90%, 100% { opacity: 0; transform: scale(.5); }
-    66%, 79% { opacity: 1; transform: scale(1); }
-  }
   @media (min-width: 48rem) {
     .home-hero__lower { grid-template-columns: minmax(0, 1.3fr) minmax(20rem, .7fr); }
     .home-hero__services { grid-template-columns: repeat(3, 1fr); }
@@ -145,90 +109,4 @@ const { hero, workSection, approach } = copy;
     .home-hero h1 { min-height: 3.44em; }
     .home-hero__lower { margin-block-start: 3rem; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .home-hero__trail { display: none; }
-  }
 </style>
-
-<script>
-  const hero = document.querySelector<HTMLElement>('.home-hero');
-  const origin = hero?.querySelector<HTMLElement>('[data-evolution-origin]');
-  const trail = hero?.querySelector<SVGSVGElement>('[data-evolution-trail]');
-  const paths = trail?.querySelectorAll<SVGPathElement>('[data-evolution-path]');
-  const nodes = trail?.querySelectorAll<SVGCircleElement>('[data-trail-node]');
-  const packetMotion = trail?.querySelector<SVGAnimateMotionElement>('[data-packet-motion]');
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  if (hero && origin && trail && paths && nodes && packetMotion && !reduceMotion.matches) {
-    const layoutTrail = () => {
-      const heroBox = hero.getBoundingClientRect();
-      const headingBox = hero.querySelector('h1')!.getBoundingClientRect();
-      const originFragments = origin.getClientRects();
-      let originBox = originFragments[originFragments.length - 1];
-      const originText = origin.firstChild;
-      if (originText?.nodeType === Node.TEXT_NODE && originText.textContent) {
-        const finalCharacter = document.createRange();
-        finalCharacter.setStart(originText, originText.textContent.length - 1);
-        finalCharacter.setEnd(originText, originText.textContent.length);
-        originBox = finalCharacter.getBoundingClientRect();
-      }
-      const lowerBox = hero.querySelector('.home-hero__lower')!.getBoundingClientRect();
-      const width = heroBox.width;
-      const height = heroBox.height;
-      const left = Math.max(4 - heroBox.left, headingBox.left - heroBox.left - 28);
-      const top = headingBox.top - heroBox.top - 12;
-      const bottom = Math.min(
-        height - 24,
-        headingBox.bottom - heroBox.top + 34,
-        lowerBox.top - heroBox.top - 14,
-      );
-      const startX = Math.min(width - 4, originBox.left - heroBox.left + originBox.width / 2);
-      const startY = originBox.bottom - heroBox.top - originBox.height * .25;
-      const turnX = Math.min(width - 4, startX + 30);
-      const verticalRun = Math.max(1, bottom - startY);
-      const horizontalRun = Math.max(1, turnX - left);
-      const radius = Math.max(1, Math.min(18, verticalRun / 3, horizontalRun / 3));
-      const usesCompactRoute = width < 640;
-
-      const data = usesCompactRoute
-        ? [
-            `M ${startX} ${startY}`,
-            `C ${Math.min(width - 4, startX + 36)} ${startY}, ${Math.min(width - 4, startX + 38)} ${bottom}, ${left + 18} ${bottom}`,
-            `Q ${left} ${bottom}, ${left} ${bottom - radius}`,
-            `L ${left} ${top + radius}`,
-            `Q ${left} ${top}, ${left + radius} ${top}`,
-          ].join(' ')
-        : [
-            `M ${startX} ${startY}`,
-            `C ${startX + 16} ${startY}, ${turnX} ${startY + radius / 3}, ${turnX} ${startY + radius}`,
-            `L ${turnX} ${bottom - radius}`,
-            `Q ${turnX} ${bottom}, ${turnX - radius} ${bottom}`,
-            `L ${left + radius} ${bottom}`,
-            `Q ${left} ${bottom}, ${left} ${bottom - radius}`,
-            `L ${left} ${top + radius}`,
-            `Q ${left} ${top}, ${left + radius} ${top}`,
-          ].join(' ');
-
-      trail.setAttribute('viewBox', `0 0 ${width} ${height}`);
-      paths.forEach((path) => path.setAttribute('d', data));
-      packetMotion.setAttribute('path', data);
-
-      const length = paths[0].getTotalLength();
-      trail.style.setProperty('--trail-length', `${length}px`);
-      nodes.forEach((node) => {
-        const point = paths[0].getPointAtLength(length * Number(node.dataset.trailNode));
-        node.setAttribute('cx', `${point.x}`);
-        node.setAttribute('cy', `${point.y}`);
-      });
-    };
-
-    const playTrail = () => {
-      layoutTrail();
-      hero.classList.add('is-evolving');
-      packetMotion.beginElement();
-    };
-
-    document.fonts.ready.then(() => window.setTimeout(playTrail, 1100));
-    window.addEventListener('resize', layoutTrail, { passive: true });
-  }
-</script>
