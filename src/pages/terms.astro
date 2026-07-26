@@ -1,0 +1,123 @@
+---
+import Layout from '../components/layout/Layout.astro';
+import { CONTACT_EMAIL, SITE_URL, absoluteUrl } from '../lib/site';
+---
+
+<Layout
+  title="Terms of Use"
+  description="Terms that apply when using hamishburke.dev."
+  canonicalURL={absoluteUrl('/terms', SITE_URL)}
+>
+  <article class="legal-page">
+    <header>
+      <p class="legal-page__eyebrow">Legal</p>
+      <h1>Terms of Use</h1>
+      <p class="legal-page__updated">Last updated 26 July 2026</p>
+    </header>
+
+    <div class="legal-page__content">
+      <p>
+        These terms apply when you use hamishburke.dev. By using the site, you agree
+        to these terms. If you do not agree, please do not use the site.
+      </p>
+
+      <section aria-labelledby="site-purpose">
+        <h2 id="site-purpose">About this site</h2>
+        <p>
+          This is the personal website and portfolio of Hamish Burke. It provides articles,
+          project information, reports, tools, and general information about my work. Nothing
+          on the site is professional, legal, financial, or security advice, and no client or
+          professional relationship is created by your use of it.
+        </p>
+      </section>
+
+      <section aria-labelledby="permitted-use">
+        <h2 id="permitted-use">Permitted use</h2>
+        <p>You may browse and link to the site for lawful purposes. You must not:</p>
+        <ul>
+          <li>interfere with the site’s operation or security;</li>
+          <li>attempt to gain unauthorised access to the site or its systems;</li>
+          <li>use automated requests in a way that unreasonably burdens the site; or</li>
+          <li>use the site or its content to break the law or infringe another person’s rights.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="intellectual-property">
+        <h2 id="intellectual-property">Intellectual property</h2>
+        <p>
+          Unless stated otherwise, the site and its original content are owned by me and are
+          protected by applicable intellectual property laws. You may quote short excerpts
+          with clear attribution and a link to the source. Any third-party names, trademarks,
+          code, or content remain the property of their respective owners and may have their
+          own licence terms.
+        </p>
+      </section>
+
+      <section aria-labelledby="external-services">
+        <h2 id="external-services">External links and services</h2>
+        <p>
+          The site links to third-party websites and services that I do not control. A link is
+          not an endorsement, and I am not responsible for third-party content, availability,
+          security, or practices. Your use of those services is governed by their own terms.
+        </p>
+      </section>
+
+      <section aria-labelledby="availability-disclaimers">
+        <h2 id="availability-disclaimers">Availability and disclaimers</h2>
+        <p>
+          I try to keep the site useful and accurate, but it is provided “as is” and “as
+          available”. To the extent permitted by law, I make no guarantees that the site will
+          always be available, error-free, complete, or current. You use any articles, code,
+          downloads, tools, and examples at your own risk.
+        </p>
+      </section>
+
+      <section aria-labelledby="liability">
+        <h2 id="liability">Liability</h2>
+        <p>
+          To the extent permitted by law, I am not liable for indirect, incidental, special,
+          or consequential loss arising from your use of, or inability to use, the site. Nothing
+          in these terms excludes rights or liability that cannot lawfully be excluded.
+        </p>
+      </section>
+
+      <section aria-labelledby="privacy-terms">
+        <h2 id="privacy-terms">Privacy</h2>
+        <p>
+          The <a href="/privacy">Privacy Policy</a> explains how information is handled when
+          you use the site.
+        </p>
+      </section>
+
+      <section aria-labelledby="terms-changes-law">
+        <h2 id="terms-changes-law">Changes and governing law</h2>
+        <p>
+          I may update these terms as the site changes. The date above shows the latest
+          revision. These terms are governed by New Zealand law, and disputes are subject to
+          the non-exclusive jurisdiction of the New Zealand courts.
+        </p>
+      </section>
+
+      <section aria-labelledby="terms-contact">
+        <h2 id="terms-contact">Contact</h2>
+        <p>Questions about these terms can be sent to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+      </section>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .legal-page { margin-inline: auto; max-width: 48rem; padding-block: var(--hero-top-space) clamp(4rem, 10vw, 8rem); }
+  .legal-page header { border-bottom: 1px solid var(--color-stroke-subtle); padding-bottom: clamp(2rem, 6vw, 4rem); }
+  .legal-page__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  .legal-page h1 { font-size: clamp(3rem, 8vw, 6rem); letter-spacing: var(--tracking-display); line-height: .95; margin: 0; }
+  .legal-page__updated { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: var(--spacing-6) 0 0; }
+  .legal-page__content { padding-top: clamp(2rem, 6vw, 4rem); }
+  .legal-page__content > p:first-child { color: var(--color-text-primary); font-size: clamp(1.2rem, 2vw, 1.45rem); line-height: 1.6; }
+  .legal-page section { margin-top: clamp(2.5rem, 6vw, 4rem); }
+  .legal-page h2 { font-size: clamp(1.65rem, 3vw, 2.25rem); letter-spacing: var(--tracking-heading); margin: 0 0 var(--spacing-4); }
+  .legal-page p, .legal-page li { color: var(--color-text-secondary); line-height: 1.75; }
+  .legal-page ul { padding-inline-start: 1.3rem; }
+  .legal-page li + li { margin-top: var(--spacing-3); }
+  .legal-page a { color: var(--color-action); overflow-wrap: anywhere; }
+</style>

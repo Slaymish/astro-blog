@@ -1,0 +1,117 @@
+---
+import Layout from '../components/layout/Layout.astro';
+import { CONTACT_EMAIL, SITE_URL, absoluteUrl } from '../lib/site';
+---
+
+<Layout
+  title="Privacy Policy"
+  description="How hamishburke.dev collects, uses, and protects information about visitors."
+  canonicalURL={absoluteUrl('/privacy', SITE_URL)}
+>
+  <article class="legal-page">
+    <header>
+      <p class="legal-page__eyebrow">Legal</p>
+      <h1>Privacy Policy</h1>
+      <p class="legal-page__updated">Last updated 26 July 2026</p>
+    </header>
+
+    <div class="legal-page__content">
+      <p>
+        This policy explains how I, Hamish Burke, handle information when you visit
+        hamishburke.dev or contact me through the site.
+      </p>
+
+      <section aria-labelledby="information-collected">
+        <h2 id="information-collected">Information collected</h2>
+        <p>The site collects limited information in the following ways:</p>
+        <ul>
+          <li>
+            <strong>Site analytics:</strong> page paths, session timing, scroll milestones,
+            and interactions such as outbound, email, CV, and booking-link clicks.
+          </li>
+          <li>
+            <strong>Local storage:</strong> your theme choice and a random identifier used to
+            relate a visit to a completed Cal.com booking. This site does not use analytics
+            cookies.
+          </li>
+          <li>
+            <strong>Messages and bookings:</strong> information you choose to provide when
+            emailing me or booking a call, such as your name, email address, and message.
+          </li>
+          <li>
+            <strong>Technical data:</strong> hosting and analytics providers may process
+            standard request information, such as IP address, browser type, and device type,
+            to deliver and secure their services.
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="information-use">
+        <h2 id="information-use">How information is used</h2>
+        <p>I use this information to:</p>
+        <ul>
+          <li>operate, secure, and improve the site;</li>
+          <li>understand which content and contact paths are useful;</li>
+          <li>respond to messages and manage bookings; and</li>
+          <li>meet legal obligations and prevent misuse.</li>
+        </ul>
+        <p>I do not sell personal information.</p>
+      </section>
+
+      <section aria-labelledby="providers">
+        <h2 id="providers">Service providers</h2>
+        <p>
+          I use Netlify for hosting and first-party analytics storage, Umami Cloud for
+          aggregate analytics, Sanity for site content, and Cal.com for bookings. If you
+          follow an external link or book a call, that provider’s privacy policy also applies.
+          These providers may process information outside New Zealand.
+        </p>
+      </section>
+
+      <section aria-labelledby="retention-security">
+        <h2 id="retention-security">Retention and security</h2>
+        <p>
+          I keep personal information only for as long as it is reasonably needed for the
+          purposes described above or to meet legal requirements. I use reasonable safeguards,
+          but no website or transmission method is completely secure.
+        </p>
+      </section>
+
+      <section aria-labelledby="privacy-rights">
+        <h2 id="privacy-rights">Your choices and rights</h2>
+        <p>
+          You can block analytics scripts or clear this site’s local storage in your browser.
+          Under the New Zealand Privacy Act 2020, you may ask to access or correct personal
+          information I hold about you. You may also raise a concern with the
+          <a href="https://www.privacy.org.nz/" rel="noopener noreferrer" target="_blank">Office of the Privacy Commissioner</a>.
+        </p>
+      </section>
+
+      <section aria-labelledby="privacy-contact">
+        <h2 id="privacy-contact">Contact</h2>
+        <p>
+          For a privacy request or question, email
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. I may update this policy as
+          the site changes; the date above shows the latest revision.
+        </p>
+      </section>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .legal-page { margin-inline: auto; max-width: 48rem; padding-block: var(--hero-top-space) clamp(4rem, 10vw, 8rem); }
+  .legal-page header { border-bottom: 1px solid var(--color-stroke-subtle); padding-bottom: clamp(2rem, 6vw, 4rem); }
+  .legal-page__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  .legal-page h1 { font-size: clamp(3rem, 8vw, 6rem); letter-spacing: var(--tracking-display); line-height: .95; margin: 0; }
+  .legal-page__updated { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: var(--spacing-6) 0 0; }
+  .legal-page__content { padding-top: clamp(2rem, 6vw, 4rem); }
+  .legal-page__content > p:first-child { color: var(--color-text-primary); font-size: clamp(1.2rem, 2vw, 1.45rem); line-height: 1.6; }
+  .legal-page section { margin-top: clamp(2.5rem, 6vw, 4rem); }
+  .legal-page h2 { font-size: clamp(1.65rem, 3vw, 2.25rem); letter-spacing: var(--tracking-heading); margin: 0 0 var(--spacing-4); }
+  .legal-page p, .legal-page li { color: var(--color-text-secondary); line-height: 1.75; }
+  .legal-page ul { padding-inline-start: 1.3rem; }
+  .legal-page li + li { margin-top: var(--spacing-3); }
+  .legal-page strong { color: var(--color-text-primary); }
+  .legal-page a { color: var(--color-action); overflow-wrap: anywhere; }
+</style>

@@ -88,7 +88,9 @@ export const GET: APIRoute = async () => {
     { loc: absoluteUrl('/work', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.9' },
     { loc: absoluteUrl('/writing', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.8' },
     { loc: absoluteUrl('/reading', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.7' },
-    { loc: absoluteUrl('/cv', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.5' }
+    { loc: absoluteUrl('/cv', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.5' },
+    { loc: absoluteUrl('/privacy', SITE_URL), lastmod: now, changefreq: 'yearly', priority: '0.3' },
+    { loc: absoluteUrl('/terms', SITE_URL), lastmod: now, changefreq: 'yearly', priority: '0.3' }
   ];
 
   for (const post of posts) {
