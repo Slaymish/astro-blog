@@ -277,6 +277,9 @@
   --section-space: clamp(4.5rem, 10vw, 9rem);
   --hero-top-space: 0rem;
   --hero-bottom-space: clamp(3.5rem, 7vw, 6rem);
+  /* Applied as symmetric padding so a rule-topped band centres its content
+     between its own rule and the next one. */
+  --band-inset: clamp(5.5rem, 13vw, 11.25rem);
   --grid-gap: clamp(0.75rem, 2vw, 1.5rem);
   --padding-mobile: var(--page-gutter);
   --padding-tablet: var(--page-gutter);

@@ -230,6 +230,11 @@ const structuredData = {
         width: 100%;
       }
 
+      /* The contact band owns the space between itself and the footer rule. */
+      .site-shell main:has(> .contact-band) {
+        padding-block-end: 0;
+      }
+
       /* Containing block for Bend's canvases: astro-island is display:contents
          and so cannot be one itself. */
       .bend-shell {

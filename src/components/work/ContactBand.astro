@@ -22,7 +22,7 @@ const bandHeading = heading ?? contactBand.defaultHeading;
 </aside>
 
 <style>
-  .contact-band { align-items: end; border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); margin-block: clamp(4rem, 10vw, 9rem); padding-block: clamp(2.5rem, 6vw, 5rem); }
+  .contact-band { align-items: end; border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); margin-block: clamp(4rem, 10vw, 9rem) 0; padding-block: var(--band-inset); }
   .contact-band p { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }
   .contact-band h2 { font-size: clamp(2.4rem, 7vw, 6rem); letter-spacing: var(--tracking-heading); margin: 0; max-width: 13ch; }
   .contact-band__actions { align-items: start; display: flex; flex-direction: column; gap: var(--spacing-3); }
