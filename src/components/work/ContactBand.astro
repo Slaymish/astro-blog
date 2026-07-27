@@ -19,9 +19,7 @@ const bandHeading = heading ?? contactBand.defaultHeading;
     <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com" circuitNode="booking">
       {contactBand.bookingLabel}
     </ButtonLink>
-    <a href={`mailto:${CONTACT_EMAIL}`} data-circuit-node="email" data-circuit-flash="underline">
-      {CONTACT_EMAIL}
-    </a>
+    <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
   </div>
 </aside>
 
