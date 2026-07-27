@@ -270,7 +270,6 @@
   --circuit-flange-weight: 2px;
   --circuit-fitting-clearance: 15px; /* closest two fittings sit before a collar is dropped */
   --circuit-packet-speed: 1250;     /* px per second; unitless so the engine can read it */
-  --circuit-draw-duration: 620ms;   /* trace draw-in when a bus goes live */
   --circuit-node-hold: 520ms;       /* how long a node stays acknowledged */
   --circuit-heartbeat: 11000ms;     /* restrained idle interval between packets on a live bus */
   --circuit-label-size: 0.5625rem;  /* 9px */

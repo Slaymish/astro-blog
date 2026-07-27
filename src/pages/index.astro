@@ -105,6 +105,9 @@ const { hero, workSection, approach } = copy;
     .home-hero__services li:first-child { padding-left: 0; }
     .home-approach { grid-template-columns: minmax(10rem, .45fr) minmax(0, 1.55fr); }
   }
+  @media (max-width: 47.9375rem) {
+    .home-hero { --circuit-heartbeat: 22000ms; }
+  }
   @media (max-width: 30rem) {
     .home-hero h1 { min-height: 3.44em; }
     .home-hero__lower { margin-block-start: 3rem; }

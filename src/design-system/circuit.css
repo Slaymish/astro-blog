@@ -64,17 +64,6 @@
   display: none;
 }
 
-/* Touch pulses are transient viewport overlays created by the engine. They add
-   packets to the existing gutter spine without drawing any new pipework. */
-.circuit--touch {
-  height: 100dvh;
-  inset: 0;
-  pointer-events: none;
-  position: fixed;
-  width: 100vw;
-  z-index: 0;
-}
-
 .circuit path {
   fill: none;
   vector-effect: non-scaling-stroke;
@@ -215,13 +204,17 @@
     display: none;
   }
 
-  .circuit--touch {
-    display: none;
-  }
-
   [data-circuit-node],
   [data-circuit-source] {
     transition: none;
+  }
+}
+
+@media (max-width: 47.9375rem) {
+  /* Two CTA branches crowd the narrow contact band. The content remains fully
+     interactive; only its decorative bus is omitted at this breakpoint. */
+  [data-circuit-mobile='off'] .circuit {
+    display: none;
   }
 }
 

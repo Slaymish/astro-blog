@@ -49,8 +49,6 @@ const VISIBLE_SLACK = 40;
 const LABEL_MIN_GUTTER = 16;
 const PACKET_MIN_DURATION = 200;
 const PACKET_MAX_DURATION = 1500;
-const TOUCH_PULSE_HOLD = 900;
-const TOUCH_PULSE_FADE = 420;
 /**
  * Fraction of a glyph box that sits below the baseline. Lifting a client rect's
  * bottom by this lands on the baseline itself, which is the line every run that
@@ -79,7 +77,6 @@ interface Metrics {
   flangeWeight: number;
   pulseLength: number;
   speed: number;
-  drawDuration: number;
   hold: number;
   heartbeat: number;
 }
@@ -131,7 +128,6 @@ interface CircuitRegion {
   cursor: number;
   sourceHold: number;
   sourceCooldownUntil: number;
-  quiet: boolean;
 }
 
 const regions: CircuitRegion[] = [];
@@ -177,7 +173,6 @@ function readMetrics(el: Element): Metrics {
     flangeWeight: value('--circuit-flange-weight', 2),
     pulseLength: value('--circuit-pulse-length', 26),
     speed: value('--circuit-packet-speed', 1150),
-    drawDuration: value('--circuit-draw-duration', 620),
     hold: value('--circuit-node-hold', 520),
     heartbeat: value('--circuit-heartbeat', 5200),
   };
@@ -309,7 +304,6 @@ function buildRegion(el: HTMLElement): CircuitRegion | null {
     cursor: 0,
     sourceHold: 0,
     sourceCooldownUntil: 0,
-    quiet: el.dataset.circuitTone === 'quiet',
   };
 }
 
@@ -490,45 +484,6 @@ function layoutRegion(region: CircuitRegion): void {
   region.label.setAttribute('y', `${round(layout.label.y)}`);
   region.label.setAttribute('transform', `rotate(-90 ${round(labelX)} ${round(layout.label.y)})`);
   region.label.style.display = hasLabelRoom ? '' : 'none';
-
-  paintPipeLengths(region);
-}
-
-function pipePaths(region: CircuitRegion): SVGPathElement[] {
-  return [region.wallLayer, region.boreLayer]
-    .flatMap((layer) => Array.from(layer.querySelectorAll<SVGPathElement>('path')))
-    .filter((path) => Boolean(path.getAttribute('d')));
-}
-
-/**
- * Pipes are held back by a full dash offset until the bus is energised, then run
- * in once. Re-measured on every layout so a resize cannot leave a stale gap.
- */
-function paintPipeLengths(region: CircuitRegion): void {
-  for (const path of pipePaths(region)) {
-    const length = path.getTotalLength();
-    path.style.strokeDasharray = `${round(length)}`;
-    path.style.strokeDashoffset = region.energised ? '0' : `${round(length)}`;
-  }
-}
-
-function drawPipes(region: CircuitRegion): void {
-  const paths = pipePaths(region);
-  paths.forEach((path, index) => {
-    const length = path.getTotalLength();
-    path.style.strokeDashoffset = '0';
-    if (reducedMotion()) return;
-    path.animate(
-      { strokeDashoffset: [`${round(length)}`, '0'] },
-      {
-        duration: region.metrics.drawDuration,
-        // Wall then bore, so a run reads as being laid rather than drawn.
-        delay: index * 45,
-        easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-        fill: 'backwards',
-      },
-    );
-  });
 }
 
 function pulseLamp(lamp: SVGCircleElement, hold: number): void {
@@ -581,6 +536,10 @@ function createPacket(track: string, pulse: number, length: number, variant: str
  */
 function sendPacket(region: CircuitRegion, node: CircuitNode, direction: Direction): void {
   if (reducedMotion() || !region.energised) return;
+  if (
+    region.el.dataset.circuitMobile === 'off' &&
+    window.matchMedia('(max-width: 47.9375rem)').matches
+  ) return;
   if (livePackets >= MAX_LIVE_PACKETS || node.length < 1 || !node.track) return;
 
   const { pulseLength, speed } = region.metrics;
@@ -653,10 +612,8 @@ function energise(region: CircuitRegion): void {
   if (region.energised) return;
   region.energised = true;
   region.el.classList.add('is-circuit-live');
-  drawPipes(region);
 
   if (reducedMotion()) return;
-  if (!region.quiet) window.setTimeout(() => triggerSource(region), region.metrics.drawDuration * 0.55);
   startHeartbeat(region);
 }
 
@@ -677,67 +634,6 @@ function wireRegion(region: CircuitRegion): void {
     node.el.addEventListener('focusin', () => triggerNode(region, node, 'back'));
     node.el.addEventListener('click', () => triggerNode(region, node, 'back'));
   }
-}
-
-function touchSpineX(clientY: number): number {
-  let nearest: { distance: number; x: number } | undefined;
-
-  for (const region of regions) {
-    const box = region.el.getBoundingClientRect();
-    const distance = clientY < box.top ? box.top - clientY : clientY > box.bottom ? clientY - box.bottom : 0;
-    const x = box.left - Math.min(region.metrics.lane, box.left / 2);
-    if (!nearest || distance < nearest.distance) nearest = { distance, x };
-  }
-
-  return Math.max(0, Math.min(window.innerWidth, nearest?.x ?? 0));
-}
-
-/**
- * Touch has no stable hover target. Use its y coordinate as a launch point on
- * the existing left-gutter spine, then send one packet up and one packet down.
- */
-function emitTouchPulse(event: PointerEvent): void {
-  if (event.pointerType !== 'touch' || !event.isPrimary || reducedMotion()) return;
-
-  const host = document.querySelector<HTMLElement>('.bend-page') ?? document.body;
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  if (width < 1 || height < 1) return;
-  const x = touchSpineX(event.clientY);
-  const y = Math.max(0, Math.min(height, event.clientY));
-
-  const svg = svgNode('svg', 'circuit circuit--touch');
-  svg.setAttribute('aria-hidden', 'true');
-  svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-  svg.setAttribute('preserveAspectRatio', 'none');
-
-  const routes = [
-    { d: `M ${round(x)} ${round(y)} V 0`, length: y },
-    { d: `M ${round(x)} ${round(y)} V ${height}`, length: height - y },
-  ];
-  const packets: Animation[] = [];
-  let longestTravel = 0;
-
-  for (const { d, length } of routes) {
-    if (length < 1) continue;
-    const core = createPacket(d, 24, length, 'core');
-    const halo = createPacket(d, 58, length, 'halo');
-    svg.append(halo, core);
-    const duration = Math.min(PACKET_MAX_DURATION, Math.max(PACKET_MIN_DURATION, length * 1.4));
-    longestTravel = Math.max(longestTravel, duration);
-    const timing: KeyframeAnimationOptions = { duration, easing: 'linear', fill: 'forwards' };
-    packets.push(
-      halo.animate({ strokeDashoffset: ['58', `${round(-length)}`] }, timing),
-      core.animate({ strokeDashoffset: ['24', `${round(-length)}`] }, timing),
-    );
-  }
-
-  host.append(svg);
-  window.setTimeout(() => {
-    packets.forEach((packet) => packet.cancel());
-    const fade = svg.animate({ opacity: ['1', '0'] }, { duration: TOUCH_PULSE_FADE, fill: 'forwards' });
-    fade.finished.then(() => svg.remove(), () => svg.remove());
-  }, Math.max(TOUCH_PULSE_HOLD, longestTravel));
 }
 
 function sync(): void {
@@ -782,7 +678,6 @@ export function initCircuit(): void {
   // its canvas activates, so listen in the capture phase rather than binding to
   // a node that may be replaced.
   document.addEventListener('scroll', scheduleSync, { passive: true, capture: true });
-  document.addEventListener('pointerdown', emitTouchPulse, { passive: true });
   window.addEventListener('resize', scheduleLayout, { passive: true });
   reduceMotionQuery?.addEventListener('change', scheduleLayout);
 
@@ -791,6 +686,8 @@ export function initCircuit(): void {
     for (const region of regions) observer.observe(region.el);
   }
 
-  // Text metrics decide where every trace starts, so wait for the real faces.
+  // Paint immediately with fallback metrics, then refine once the real faces
+  // are ready. Waiting for fonts here made the complete circuit pop in late.
+  scheduleLayout();
   document.fonts.ready.then(scheduleLayout, scheduleLayout);
 }

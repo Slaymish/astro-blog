@@ -10,7 +10,7 @@ const { contactBand } = await getSiteSettings();
 const bandHeading = heading ?? contactBand.defaultHeading;
 ---
 
-<aside class="contact-band" aria-label="Work with Hamish" data-circuit="BUS_03">
+<aside class="contact-band" aria-label="Work with Hamish" data-circuit="BUS_03" data-circuit-mobile="off">
   <div>
     <p>{contactBand.availabilityLabel}</p>
     <h2 data-circuit-source>{bandHeading}</h2>
