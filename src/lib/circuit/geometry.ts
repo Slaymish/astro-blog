@@ -366,7 +366,11 @@ export function busRoute(
   // which would dress the shared trunk head once per node. Joints that carry
   // meaning are listed first: the clearance pass keeps those and thins the
   // collars around them.
-  const joints: Fitting[] = [{ kind: 'origin', at: origin, angle: angleOf(origin, stub) }];
+  // When the source is too close to the spine for a baseline stub, its first
+  // real segment is vertical. Dress that bearing rather than asking angleOf to
+  // infer a direction from two identical points (which incorrectly yields 0°).
+  const originBearing = isSamePoint(origin, stub) ? { x: origin.x, y: turnY } : stub;
+  const joints: Fitting[] = [{ kind: 'origin', at: origin, angle: angleOf(origin, originBearing) }];
   const collars: Fitting[] = collarsFor(downArm, bendRadius);
   for (const { spec, shape } of shapes) {
     const spur = [shape.junction, ...shape.tail];

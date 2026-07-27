@@ -47,8 +47,6 @@ const ENTER_RATIO = 0.86;
 const VISIBLE_SLACK = 40;
 /** Space needed left of the spine before a bus label is worth drawing. */
 const LABEL_MIN_GUTTER = 16;
-const PACKET_MIN_DURATION = 200;
-const PACKET_MAX_DURATION = 1500;
 /**
  * Fraction of a glyph box that sits below the baseline. Lifting a client rect's
  * bottom by this lands on the baseline itself, which is the line every run that
@@ -350,15 +348,16 @@ function resolveAttach(el: HTMLElement): Attach {
 
 /**
  * Which way a branch should come in, given where the node actually sits at this
- * width. A node starting at the content edge is approached from just above it,
- * where the lane runs through the page gutter and crosses nothing. A node in a
- * right-hand column has content beside it, so it is fed from the region's rail
- * instead. Responsive by construction: the same node resolves differently once
- * a breakpoint moves it.
+ * width. A compact node starting at the content edge connects directly from the
+ * gutter; a rule-topped card is tapped from above so its own divider remains the
+ * terminal. A node in a right-hand column has content beside it, so it is fed
+ * from the region's rail instead. Responsive by construction: the same node
+ * resolves differently once a breakpoint moves it.
  */
-function resolveEdge(edge: NodeEdge | 'auto', box: Box, metrics: Metrics): NodeEdge {
+function resolveEdge(edge: NodeEdge | 'auto', box: Box, attach: Attach, metrics: Metrics): NodeEdge {
   if (edge !== 'auto') return edge;
-  return box.left <= metrics.lane * 2 ? 'top' : 'rail';
+  if (box.left > metrics.lane * 2) return 'rail';
+  return attach === 'rule' ? 'top' : 'left';
 }
 
 function setPipe(pipe: Pipe, d: string): void {
@@ -416,6 +415,22 @@ function paintFittings(region: CircuitRegion, fittings: readonly Fitting[]): voi
   );
 }
 
+/**
+ * A packet owns a snapshot of its route. Once layout changes that snapshot is
+ * invalid, so remove and cancel it rather than letting light travel beside the
+ * newly painted pipe. The packet's completion handler sees that it was detached
+ * and releases its slot without acknowledging an endpoint it never reached.
+ */
+function cancelPackets(region: CircuitRegion): void {
+  const packets = Array.from(region.packetLayer.querySelectorAll<SVGPathElement>('.circuit__packet'));
+  if (packets.length === 0) return;
+
+  region.packetLayer.replaceChildren();
+  for (const packet of packets) {
+    for (const animation of packet.getAnimations()) animation.cancel();
+  }
+}
+
 function layoutRegion(region: CircuitRegion): void {
   // Measure against the overlay, not the region: as an absolutely positioned
   // child the overlay fills its region's padding box, and every coordinate the
@@ -423,6 +438,8 @@ function layoutRegion(region: CircuitRegion): void {
   // padding (the contact band) would otherwise be offset by it.
   const regionBox = region.svg.getBoundingClientRect();
   if (regionBox.width < 1 || regionBox.height < 1) return;
+
+  cancelPackets(region);
 
   const metrics = readMetrics(region.el);
   region.metrics = metrics;
@@ -440,7 +457,7 @@ function layoutRegion(region: CircuitRegion): void {
   const specs: RouteSpec[] = region.nodes.map((node) => {
     const attach = resolveAttach(node.el);
     const box = attachBox(node.el, attach, regionBox, metrics.originGap);
-    return { id: node.id, edge: resolveEdge(node.edge, box, metrics), box, attach };
+    return { id: node.id, edge: resolveEdge(node.edge, box, attach, metrics), box, attach };
   });
 
   const layout = busRoute(sourceOrigin(region.source, regionBox, metrics.originGap), specs, {
@@ -536,10 +553,6 @@ function createPacket(track: string, pulse: number, length: number, variant: str
  */
 function sendPacket(region: CircuitRegion, node: CircuitNode, direction: Direction): void {
   if (reducedMotion() || !region.energised) return;
-  if (
-    region.el.dataset.circuitMobile === 'off' &&
-    window.matchMedia('(max-width: 47.9375rem)').matches
-  ) return;
   if (livePackets >= MAX_LIVE_PACKETS || node.length < 1 || !node.track) return;
 
   const { pulseLength, speed } = region.metrics;
@@ -555,22 +568,30 @@ function sendPacket(region: CircuitRegion, node: CircuitNode, direction: Directi
 
   const start = direction === 'out' ? pulseLength : -node.length;
   const end = direction === 'out' ? -node.length : pulseLength;
-  const duration = Math.min(
-    PACKET_MAX_DURATION,
-    Math.max(PACKET_MIN_DURATION, ((node.length + pulseLength) / speed) * 1000),
-  );
+  const duration = ((node.length + pulseLength) / speed) * 1000;
   const timing: KeyframeAnimationOptions = { duration, easing: 'linear', fill: 'forwards' };
 
-  halo.animate({ strokeDashoffset: [`${round(start + trail)}`, `${round(end + trail)}`] }, timing);
+  // The leading edge is the high-coordinate end outbound and the low-coordinate
+  // end on return, so only an outbound halo needs shifting by its extra length.
+  const haloShift = direction === 'out' ? trail : 0;
+  halo.animate(
+    { strokeDashoffset: [`${round(start + haloShift)}`, `${round(end + haloShift)}`] },
+    timing,
+  );
   const travel = core.animate(
     { strokeDashoffset: [`${round(start)}`, `${round(end)}`] },
     timing,
   );
 
+  let settled = false;
   const settle = () => {
+    if (settled) return;
+    settled = true;
+    const arrived = core.isConnected;
     halo.remove();
     core.remove();
     livePackets = Math.max(0, livePackets - 1);
+    if (!arrived) return;
     if (direction === 'out') acknowledge(region, node);
     else acknowledgeSource(region);
   };
@@ -679,11 +700,27 @@ export function initCircuit(): void {
   // a node that may be replaced.
   document.addEventListener('scroll', scheduleSync, { passive: true, capture: true });
   window.addEventListener('resize', scheduleLayout, { passive: true });
-  reduceMotionQuery?.addEventListener('change', scheduleLayout);
+  reduceMotionQuery?.addEventListener('change', () => {
+    scheduleLayout();
+    // A region energised while motion was reduced never started a heartbeat.
+    // Start it if the preference is later relaxed; existing timers are guarded
+    // by startHeartbeat and continue to no-op while reduction is enabled.
+    if (!reducedMotion()) {
+      for (const region of regions) {
+        if (region.energised) startHeartbeat(region);
+      }
+    }
+  });
 
   if (typeof ResizeObserver !== 'undefined') {
     const observer = new ResizeObserver(scheduleLayout);
-    for (const region of regions) observer.observe(region.el);
+    for (const region of regions) {
+      observer.observe(region.el);
+      observer.observe(region.source);
+      for (const node of region.nodes) observer.observe(node.el);
+      const rail = region.el.querySelector<HTMLElement>('[data-circuit-rail]');
+      if (rail) observer.observe(rail);
+    }
   }
 
   // Paint immediately with fallback metrics, then refine once the real faces

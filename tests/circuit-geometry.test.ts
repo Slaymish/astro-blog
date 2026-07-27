@@ -261,6 +261,7 @@ test('busRoute drops the source stub when the spine is already within reach', ()
 
   // Assert: straight down off the origin, with no sideways jog before the drop.
   assert.ok(layout.trunks[0]?.startsWith(`M ${origin.x} 100 L ${origin.x} `));
+  assert.deepEqual(layout.fittings[0], { kind: 'origin', at: origin, angle: 90 });
 });
 
 test('busRoute fits an origin, a tee per split and a flange per termination', () => {

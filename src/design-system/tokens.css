@@ -250,7 +250,7 @@
   --circuit-pin-gap: 12px;          /* how far past a node's leading corner a run lands on it */
   --circuit-min-branch: 16px;       /* shortest run a branch may take off the spine */
   --circuit-bend-radius: 16px;      /* sweep on turns; capped per bend by the runs it joins */
-  --circuit-origin-gap: 20px;       /* matches the lane clearance on the other side of text */
+  --circuit-origin-gap: 3px;        /* optical clearance below a text baseline */
 
   /* Section. The wall reads as the two edges it shows either side of the bore,
      and the packet weight matches the bore so light travels inside the pipe. */

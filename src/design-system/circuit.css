@@ -210,14 +210,6 @@
   }
 }
 
-@media (max-width: 47.9375rem) {
-  /* Two CTA branches crowd the narrow contact band. The content remains fully
-     interactive; only its decorative bus is omitted at this breakpoint. */
-  [data-circuit-mobile='off'] .circuit {
-    display: none;
-  }
-}
-
 @media print {
   .circuit {
     display: none;
