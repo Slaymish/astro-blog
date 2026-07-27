@@ -47,7 +47,7 @@
 }
 
 .page-circuit-motif__anchor--source {
-  left: 22%;
+  left: 0;
   top: var(--spacing-8);
 }
 
@@ -64,8 +64,8 @@
   display: none;
 }
 
-/* Touch rails are transient viewport overlays created by the engine. They sit
-   below page content and never capture input. */
+/* Touch pulses are transient viewport overlays created by the engine. They add
+   packets to the existing gutter spine without drawing any new pipework. */
 .circuit--touch {
   height: 100dvh;
   inset: 0;
@@ -73,11 +73,6 @@
   position: fixed;
   width: 100vw;
   z-index: 0;
-}
-
-.circuit--touch .circuit__wall,
-.circuit--touch .circuit__bore {
-  opacity: 0.42;
 }
 
 .circuit path {

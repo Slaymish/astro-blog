@@ -49,8 +49,8 @@ const VISIBLE_SLACK = 40;
 const LABEL_MIN_GUTTER = 16;
 const PACKET_MIN_DURATION = 200;
 const PACKET_MAX_DURATION = 1500;
-const TOUCH_RAIL_HOLD = 900;
-const TOUCH_RAIL_FADE = 420;
+const TOUCH_PULSE_HOLD = 900;
+const TOUCH_PULSE_FADE = 420;
 /**
  * Fraction of a glyph box that sits below the baseline. Lifting a client rect's
  * bottom by this lands on the baseline itself, which is the line every run that
@@ -679,47 +679,47 @@ function wireRegion(region: CircuitRegion): void {
   }
 }
 
+function touchSpineX(clientY: number): number {
+  let nearest: { distance: number; x: number } | undefined;
+
+  for (const region of regions) {
+    const box = region.el.getBoundingClientRect();
+    const distance = clientY < box.top ? box.top - clientY : clientY > box.bottom ? clientY - box.bottom : 0;
+    const x = box.left - Math.min(region.metrics.lane, box.left / 2);
+    if (!nearest || distance < nearest.distance) nearest = { distance, x };
+  }
+
+  return Math.max(0, Math.min(window.innerWidth, nearest?.x ?? 0));
+}
+
 /**
- * Touch has no stable hover target. Draw a short-lived rail through the contact
- * point instead, with one packet travelling toward each viewport edge.
+ * Touch has no stable hover target. Use its y coordinate as a launch point on
+ * the existing left-gutter spine, then send one packet up and one packet down.
  */
-function emitTouchRail(event: PointerEvent): void {
+function emitTouchPulse(event: PointerEvent): void {
   if (event.pointerType !== 'touch' || !event.isPrimary || reducedMotion()) return;
 
   const host = document.querySelector<HTMLElement>('.bend-page') ?? document.body;
   const width = window.innerWidth;
   const height = window.innerHeight;
   if (width < 1 || height < 1) return;
+  const x = touchSpineX(event.clientY);
+  const y = Math.max(0, Math.min(height, event.clientY));
 
   const svg = svgNode('svg', 'circuit circuit--touch');
   svg.setAttribute('aria-hidden', 'true');
   svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
   svg.setAttribute('preserveAspectRatio', 'none');
 
-  const paths = [
-    `M ${round(event.clientX)} ${round(event.clientY)} H 0`,
-    `M ${round(event.clientX)} ${round(event.clientY)} H ${width}`,
+  const routes = [
+    { d: `M ${round(x)} ${round(y)} V 0`, length: y },
+    { d: `M ${round(x)} ${round(y)} V ${height}`, length: height - y },
   ];
   const packets: Animation[] = [];
   let longestTravel = 0;
 
-  for (const d of paths) {
-    const wall = svgNode('path', 'circuit__wall');
-    const bore = svgNode('path', 'circuit__bore');
-    wall.setAttribute('d', d);
-    bore.setAttribute('d', d);
-    svg.append(wall, bore);
-
-    const length = Math.abs(d.endsWith('H 0') ? event.clientX : width - event.clientX);
+  for (const { d, length } of routes) {
     if (length < 1) continue;
-    for (const pipe of [wall, bore]) {
-      pipe.style.strokeDasharray = `${round(length)}`;
-      pipe.animate(
-        { strokeDashoffset: [`${round(length)}`, '0'] },
-        { duration: 260, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'forwards' },
-      );
-    }
-
     const core = createPacket(d, 24, length, 'core');
     const halo = createPacket(d, 58, length, 'halo');
     svg.append(halo, core);
@@ -735,9 +735,9 @@ function emitTouchRail(event: PointerEvent): void {
   host.append(svg);
   window.setTimeout(() => {
     packets.forEach((packet) => packet.cancel());
-    const fade = svg.animate({ opacity: ['1', '0'] }, { duration: TOUCH_RAIL_FADE, fill: 'forwards' });
+    const fade = svg.animate({ opacity: ['1', '0'] }, { duration: TOUCH_PULSE_FADE, fill: 'forwards' });
     fade.finished.then(() => svg.remove(), () => svg.remove());
-  }, Math.max(TOUCH_RAIL_HOLD, longestTravel));
+  }, Math.max(TOUCH_PULSE_HOLD, longestTravel));
 }
 
 function sync(): void {
@@ -782,7 +782,7 @@ export function initCircuit(): void {
   // its canvas activates, so listen in the capture phase rather than binding to
   // a node that may be replaced.
   document.addEventListener('scroll', scheduleSync, { passive: true, capture: true });
-  document.addEventListener('pointerdown', emitTouchRail, { passive: true });
+  document.addEventListener('pointerdown', emitTouchPulse, { passive: true });
   window.addEventListener('resize', scheduleLayout, { passive: true });
   reduceMotionQuery?.addEventListener('change', scheduleLayout);
 
