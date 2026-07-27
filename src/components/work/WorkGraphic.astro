@@ -320,4 +320,63 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   @media (max-width: 30rem) {
     .work-graphic__pipeline b { display: none; }
   }
+
+  /* The composed diagrams need more vertical space than a 16:10 crop provides
+     on phones. Stack each narrative in reading order instead of shrinking its
+     labels into desktop columns. */
+  @media (max-width: 34rem) {
+    .work-graphic--you-inc,
+    .work-graphic--gpu-share,
+    .work-graphic--home-lab {
+      aspect-ratio: auto;
+      max-height: none;
+      padding: 1rem;
+    }
+
+    .work-graphic__ledger,
+    .work-graphic__gpu,
+    .work-graphic__lab {
+      gap: 1rem;
+    }
+
+    .work-graphic__footnote {
+      font-size: .66rem;
+      letter-spacing: .045em;
+      text-wrap: balance;
+    }
+
+    .work-graphic__ledger-flow,
+    .work-graphic__gpu-split,
+    .work-graphic__lab-doors {
+      gap: .75rem;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .work-graphic__txn,
+    .work-graphic__journal,
+    .work-graphic__gpu-cloud,
+    .work-graphic__gpu-host,
+    .work-graphic__lab-doors div,
+    .work-graphic__lab-host {
+      padding: .75rem;
+    }
+
+    .work-graphic__gpu-link {
+      display: grid;
+      gap: .1rem .6rem;
+      grid-template-columns: auto minmax(0, 1fr);
+      text-align: left;
+    }
+
+    .work-graphic__gpu-link b {
+      grid-row: 1 / 3;
+      transform: rotate(-90deg);
+    }
+
+    .work-graphic__gpu-price i,
+    .work-graphic__lab-restore em {
+      flex-basis: 100%;
+      margin-left: 0;
+    }
+  }
 </style>
