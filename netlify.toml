@@ -37,6 +37,12 @@
 # Retired URLs. force=true is required so these win over any generated file.
 # Mirrors projectSuccessors / publicPostSlugs in src/lib/legacyRoutes.ts.
 [[redirects]]
+  from = "/projects/sprint-coach"
+  to = "/work/sprint-coach"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/projects/brontehf"
   to = "/work/brontehf"
   status = 301

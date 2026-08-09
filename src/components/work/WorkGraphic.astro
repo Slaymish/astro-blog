@@ -11,6 +11,9 @@ interface Props {
 const { kind, alt, compact = false, priority = false } = Astro.props;
 
 const images: Partial<Record<GraphicKind, { src: string; position?: string }>> = {
+  'sprint-coach': {
+    src: '/images/work/sprint-coach-home.webp',
+  },
   brontehf: {
     src: '/images/work/bronte-projects.webp',
   },
@@ -40,6 +43,24 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   role="img"
   aria-label={graphicAlt}
 >
+  {kind === 'sprint-coach' && image && (
+    <>
+      <img
+        src={image.src}
+        alt=""
+        width="2400"
+        height="1250"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        decoding="async"
+      />
+      <p class="work-graphic__brand">
+        <img class="work-graphic__mark" src="/images/work/sprint-coach-mark.svg" alt="" width="24" height="24" loading="lazy" decoding="async" />
+        <span>sprintcoach.co.nz</span>
+      </p>
+    </>
+  )}
+
   {kind === 'brontehf' && image && (
     <img
       src={image.src}
@@ -200,7 +221,58 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   .work-graphic__boundary b { color: var(--color-action); font-weight: var(--font-weight-medium); }
   .work-graphic__pipeline b { color: var(--color-action); }
 
-  /* ---- Shared scaffolding for the three composed graphics ---- */
+  /* Sprint Coach's own mark, sat on a dark scrim over the site screenshot, so
+     it keeps its brand lime in both themes. */
+  .work-graphic__brand {
+    align-items: center;
+    backdrop-filter: blur(12px);
+    background: rgb(7 9 8 / 88%);
+    border: 1px solid var(--color-stroke-strong);
+    bottom: var(--spacing-4);
+    color: var(--tile-image-text);
+    display: flex;
+    font-size: var(--type-label);
+    gap: var(--spacing-3);
+    left: var(--spacing-4);
+    letter-spacing: .06em;
+    margin: 0;
+    padding: var(--spacing-3) var(--spacing-4);
+    position: absolute;
+    text-transform: uppercase;
+  }
+
+  /* Two classes deep so it beats the `.work-graphic img` cover rule above,
+     which would otherwise stretch the mark across the whole frame. */
+  .work-graphic__brand .work-graphic__mark {
+    display: block;
+    flex: none;
+    height: 1.35em;
+    object-fit: contain;
+    width: auto;
+  }
+
+  /* The frame gets small on phones and in the row-variant card, so the chip
+     shrinks with it rather than covering the screenshot it sits on. */
+  .work-graphic--compact .work-graphic__brand,
+  .work-graphic--sprint-coach .work-graphic__brand {
+    bottom: var(--spacing-3);
+    font-size: .6rem;
+    gap: var(--spacing-2);
+    left: var(--spacing-3);
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  @media (min-width: 48rem) {
+    .work-graphic--sprint-coach:not(.work-graphic--compact) .work-graphic__brand {
+      bottom: var(--spacing-4);
+      font-size: var(--type-label);
+      gap: var(--spacing-3);
+      left: var(--spacing-4);
+      padding: var(--spacing-3) var(--spacing-4);
+    }
+  }
+
+  /* ---- Shared scaffolding for the composed graphics ---- */
   .work-graphic--you-inc,
   .work-graphic--gpu-share,
   .work-graphic--home-lab {
@@ -319,6 +391,11 @@ const graphicAlt = graphicAlts[kind] ?? alt;
 
   @media (max-width: 30rem) {
     .work-graphic__pipeline b { display: none; }
+
+    /* At phone width the domain is wider than the frame can carry, so the
+       mark stands alone. The URL is still the primary link in the hero. */
+    .work-graphic__brand span { display: none; }
+    .work-graphic__brand { padding: var(--spacing-2); }
   }
 
   /* The composed diagrams need more vertical space than a 16:10 crop provides

@@ -7,6 +7,7 @@ export type LegacyRoutePolicy =
   | null;
 
 export const projectSuccessors: Record<string, string> = {
+  'sprint-coach': '/work/sprint-coach',
   brontehf: '/work/brontehf',
   'you-inc': '/work/you-inc',
   'gpu-share': '/work/gpu-share',

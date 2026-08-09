@@ -4,6 +4,7 @@ export type WorkStatus = 'lead' | 'support';
 export type WorkService = 'ai-automation' | 'digital-products' | 'technical-direction';
 export type ArtifactType = 'project' | 'post' | 'report';
 export type GraphicKind =
+  | 'sprint-coach'
   | 'brontehf'
   | 'you-inc'
   | 'gpu-share'

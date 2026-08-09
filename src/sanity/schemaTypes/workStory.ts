@@ -122,6 +122,7 @@ export const workStory = defineType({
           type: 'string',
           options: {
             list: [
+              { title: 'Sprint Coach release path', value: 'sprint-coach' },
               { title: 'BrontëHF publishing path', value: 'brontehf' },
               { title: 'You Inc ledger flow', value: 'you-inc' },
               { title: 'GPUShare trust boundary', value: 'gpu-share' },

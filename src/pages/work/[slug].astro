@@ -109,6 +109,23 @@ function isExternal(url: string) {
       <div class="prose case-study__body" set:html={body} />
     </section>
 
+    {story.graphic.kind === 'sprint-coach' && (
+      <section class="case-study__evidence" aria-labelledby="enquiry-flow-heading">
+        <div class="case-study__evidence-heading">
+          <p class="case-study__section-label">Enquiry flow</p>
+          <h2 id="enquiry-flow-heading">The one moving part on a static site</h2>
+        </div>
+        <MediaFrame
+          src="/images/work/sprint-coach-contact.webp"
+          alt="The Sprint Coach enquiry form, with name, email, enquiry type, and message fields beside the coach’s contact details."
+          width={2400}
+          height={1250}
+          caption="Every page is prerendered. The enquiry form is the only route that reaches a server, sending notification and confirmation email over authenticated SMTP."
+          ratio="natural"
+        />
+      </section>
+    )}
+
     {story.graphic.kind === 'brontehf' && (
       <section class="case-study__evidence" aria-labelledby="publishing-workflow-heading">
         <div class="case-study__evidence-heading">
@@ -154,6 +171,7 @@ function isExternal(url: string) {
   .case-study__links { display: flex; flex-wrap: wrap; gap: var(--spacing-3); margin-top: var(--spacing-8); }
   .case-study__graphic :global(.work-graphic) { margin-inline: auto; max-width: 54rem; }
   .case-study__graphic :global(.work-graphic--brontehf) { aspect-ratio: 2550 / 1231; max-height: none; }
+  .case-study__graphic :global(.work-graphic--sprint-coach) { aspect-ratio: 2400 / 1250; max-height: none; }
   .case-study__graphic-caption { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: var(--spacing-3) auto 0; max-width: 54rem; }
   .case-snapshot { margin-block: clamp(4rem, 10vw, 9rem); }
   .case-snapshot > h2 { font-size: clamp(2.3rem, 5vw, 4.5rem); margin: 0 0 var(--spacing-8); }
