@@ -19,6 +19,9 @@ Run a single test file: `pnpm exec tsx --test tests/circuit-geometry.test.ts`.
 
 The glob is `tests/*.test.ts`, not `tests/**` — tests in subdirectories will not run.
 
+`pnpm exec knip` checks for dead code and unused dependencies (config in `knip.json`); there is
+no package.json script for it.
+
 ## Environment
 
 `SANITY_PROJECT_ID` is required and validated at config load, so a missing `.env` fails
@@ -44,7 +47,9 @@ runtime path. Published content comes from Sanity through `fetchSanity` in `src/
 
 `ARCHITECTURE.md` is the authoritative and current description of boundaries and invariants —
 read it for anything structural. `AGENTS.md` is a file-level "where do I change X" map, and
-`PLANS.md` defines the ExecPlan format expected for substantial features.
+`PLANS.md` defines the ExecPlan format expected for substantial features. Actual ExecPlan
+instances live in `docs/exec-plans/`, design docs in `docs/design-docs/`, and known technical
+debt (with evidence and next actions) in `docs/tech-debt-tracker.md`.
 
 Layers: routes (`src/pages/`) own request-level fetching and page assembly; components
 (`src/components/`) own presentation; `src/lib/` owns external clients and content transforms;
