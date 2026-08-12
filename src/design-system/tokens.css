@@ -105,16 +105,17 @@
      TYPOGRAPHY
      ============================================ */
 
-  /* Familjen Grotesk provides identity; Figtree handles navigation and long reading. */
-  --font-sans: 'Figtree', 'Figtree fallback', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Familjen Grotesk', 'Familjen Grotesk fallback', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Geist carries both display and interface — one variable face, so the display and
+     body scales stay in the same voice. Instrument Serif is emphasis only. */
+  --font-sans: 'Geist', 'Geist fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: var(--font-sans);
+  --font-serif: 'Instrument Serif', 'Instrument Serif fallback', Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', 'JetBrains Mono fallback', 'Fira Code', Consolas, Monaco, monospace;
 
   /* Semantic font usage */
   --font-body: var(--font-sans);
   --font-heading: var(--font-display);
   --font-code: var(--font-mono);
-  --font-serif: var(--font-display); /* compatibility alias */
 
   /* Font sizes - simplified to match UPDATE.md spec */
   --font-size-xs: 0.8125rem;   /* 13px - small/meta */
@@ -169,9 +170,11 @@
 
   /* Optical tracking for the display face. Large type needs tighter tracking than
      small, so these are keyed to size rather than to a generic scale. Tuned to
-     Familjen Grotesk; revisit both if --font-display changes. */
-  --tracking-display: -0.045em;  /* hero and page-title scale, 3rem and up */
-  --tracking-heading: -0.03em;   /* section headings, 2.4rem to 6rem */
+     Geist, which sets looser than the Familjen Grotesk it replaced and so needs
+     less negative tracking to read as one word at hero scale. Revisit both if
+     --font-display changes. */
+  --tracking-display: -0.035em;  /* hero and page-title scale, 3rem and up */
+  --tracking-heading: -0.025em;  /* section headings, 2.4rem to 6rem */
 
   /* ============================================
      BORDER RADIUS
@@ -333,44 +336,12 @@
   --padding-desktop: var(--page-gutter);
 
   /* ============================================
-     GRID & TILES
-     ============================================ */
+     WORK GRAPHIC
+     ============================================
+     The only survivor of the retired tile system: WorkGraphic draws label text
+     over dark imagery and needs a fixed light colour rather than a theme role. */
 
-  /* Grid system */
-  --grid-columns: 12;
-  --grid-gap-legacy: 1rem;
-  --grid-row-height: 18px;
-
-  /* Tile styling — neumorphic */
-  --tile-border: none;
-  --tile-border-hover: none;
-  --tile-radius: var(--radius-md);
-  --tile-padding: 1.75rem;
-  --tile-bg: var(--surface);
-  --tile-bg-hover: var(--surface-2);
   --tile-image-text: #f8fafc;
-  --tile-image-label-text: #ffffff;
-  --tile-image-label-bg: rgba(0, 0, 0, 0.45);
-  --tile-image-text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-  --tile-image-label-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
-
-  /* Tile sizes */
-  --tile-span-small: 3; /* 3 columns = 25% */
-  --tile-span-medium: 4; /* 4 columns = 33% */
-  --tile-span-large: 6; /* 6 columns = 50% */
-  --tile-span-wide: 8; /* 8 columns = 66% */
-
-  /* Tile heights (row spans for masonry-style grid) */
-  --tile-row-span-small: 12;
-  --tile-row-span-medium: 16;
-  --tile-row-span-large: 20;
-  --tile-row-span-wide: 22;
-
-  /* Tile minimum heights */
-  --tile-min-height-small: 9.5rem;
-  --tile-min-height-medium: 12.5rem;
-  --tile-min-height-large: 15rem;
-  --tile-min-height-wide: 17rem;
 }
 
 /* A narrower gutter carries a lighter pipe. Below the tablet breakpoint the

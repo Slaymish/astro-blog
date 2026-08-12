@@ -1,190 +1,83 @@
 ---
-import IconText from "../../components/ui/IconText.astro";
-import Layout from "../../components/layout/Layout.astro";
-import { fetchSanity } from "../../lib/sanity";
-import { createSlug } from "../../utils/slug";
-
-type TagPath = { tag: string };
-
-type PostDoc = {
-  title: string;
-  slug: string;
-  publishedAt: string;
-  excerpt?: string;
-  tags?: string[];
-};
-
-type ReportDoc = {
-  title: string;
-  slug: string;
-  publishedAt: string;
-  description?: string;
-  tags?: string[];
-};
+import Layout from '../../components/layout/Layout.astro';
+import IconText from '../../components/ui/IconText.astro';
+import { fetchSanity } from '../../lib/sanity';
+import { getWriting } from '../../lib/writingData';
+import { createSlug } from '../../utils/slug';
 
 export async function getStaticPaths() {
   const tags = await fetchSanity<string[]>(`
     array::unique(*[_type in ["post", "report"]].tags[])
   `);
-  return (tags ?? [])
-    .filter(Boolean)
-    .map((tag) => ({ params: { tag: createSlug(tag) } }));
+  return (tags ?? []).filter(Boolean).map((tag) => ({ params: { tag: createSlug(tag) } }));
 }
 
-const { tag } = Astro.params as TagPath;
+const { tag } = Astro.params as { tag: string };
 
-const allTags = await fetchSanity<string[]>(`
-  array::unique(*[_type in ["post", "report"]].tags[])
-`);
-
-const tagLabel = allTags.find((entry) => createSlug(entry) === tag) ?? tag ?? '';
-
-const posts = tagLabel
-  ? await fetchSanity<PostDoc[]>(`
-      *[_type == "post" && $tag in tags] | order(publishedAt desc){
-        title,
-        "slug": slug.current,
-        publishedAt,
-        excerpt,
-        tags
-      }
-    `, { tag: tagLabel })
-  : [];
-
-const reports = tagLabel
-  ? await fetchSanity<ReportDoc[]>(`
-      *[_type == "report" && $tag in tags] | order(publishedAt desc){
-        title,
-        "slug": slug.current,
-        publishedAt,
-        description,
-        tags
-      }
-    `, { tag: tagLabel })
-  : [];
-
-const totalItems = posts.length + reports.length;
-const displayTag = tagLabel || tag || '';
+// Entries carry their own correct hrefs, including the public-slug aliasing for posts.
+const entries = await getWriting();
+const label = entries.flatMap((entry) => entry.tags).find((entry) => createSlug(entry) === tag) ?? tag;
+const matches = entries.filter((entry) => entry.tags.some((entryTag) => createSlug(entryTag) === tag));
 ---
 
 <Layout
-  title={`Content tagged "${displayTag}"`}
-  description={`Browse writing and reports tagged ${displayTag} on Hamish Burke's site.`}
+  title={`Writing tagged “${label}”`}
+  description={`Writing and reports tagged ${label} on Hamish Burke's site.`}
 >
-  <div class="max-w-4xl mx-auto">
-    <div class="mb-12">
-      <h1 class="text-4xl font-bold mb-4 text-[var(--text)]">
-        Content tagged "{displayTag}"
-      </h1>
-      <p class="mb-4 text-[var(--text-muted)]">
-        {totalItems} {totalItems === 1 ? 'item' : 'items'} found
-      </p>
-      <a href="/" class="text-[var(--accent)] hover:underline no-underline border-b-0">
-        <IconText icon="arrow-left" position="start">Back to home</IconText>
-      </a>
-    </div>
+  <header class="tag-page__header">
+    <p class="tag-page__eyebrow">Tagged</p>
+    <h1>{label}</h1>
+    <p class="tag-page__count">
+      {matches.length} {matches.length === 1 ? 'entry' : 'entries'}
+    </p>
+    <a class="tag-page__back" href="/writing">
+      <IconText icon="arrow-left" position="start">All writing</IconText>
+    </a>
+  </header>
 
-    {reports.length > 0 && (
-      <section class="mb-12">
-        <h2 class="text-3xl font-bold mb-6 text-[var(--text)]">
-          Reports ({reports.length})
-        </h2>
-        <div class="space-y-8">
-          {reports.map((report) => (
-            <article class="pb-8 border-b border-[var(--border)]">
-              <h3 class="text-2xl font-bold mb-2">
-                <a
-                  href={`/reports/${report.slug}`}
-                  class="text-[var(--text)] hover:text-[var(--accent)] no-underline border-b-0 transition-colors"
-                >
-                  {report.title}
-                </a>
-              </h3>
-              <p class="mb-4 text-[var(--text-muted)]">
-                {new Date(report.publishedAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric"
-                })}
-              </p>
-              {report.description && (
-                <p class="mb-4 text-[var(--text-muted)]">
-                  {report.description}
-                </p>
-              )}
-              {report.tags && report.tags.length > 0 && (
-                <div class="flex flex-wrap gap-2">
-                  {report.tags.map((t) => (
-                    <a
-                      href={`/tags/${createSlug(t)}`}
-                      class="text-sm px-3 py-1 rounded-full bg-[var(--surface-2)] text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors"
-                    >
-                      {t}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </article>
-          ))}
-        </div>
-      </section>
-    )}
-
-    {posts.length > 0 && (
-      <section>
-        <h2 class="text-3xl font-bold mb-6 text-[var(--text)]">
-          Posts ({posts.length})
-        </h2>
-        <div class="space-y-8">
-          {posts.map((post) => (
-            <article class="pb-8 border-b border-[var(--border)]">
-              <h3 class="text-2xl font-bold mb-2">
-                <a
-                  href={`/posts/${post.slug}`}
-                  class="text-[var(--text)] hover:text-[var(--accent)] no-underline border-b-0 transition-colors"
-                >
-                  {post.title}
-                </a>
-              </h3>
-              <p class="mb-4 text-[var(--text-muted)]">
-                {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric"
-                })}
-              </p>
-              {post.excerpt && (
-                <p class="mb-4 text-[var(--text-muted)]">
-                  {post.excerpt}
-                </p>
-              )}
-              {post.tags && post.tags.length > 0 && (
-                <div class="flex flex-wrap gap-2">
-                  {post.tags.map((t) => (
-                    <a
-                      href={`/tags/${createSlug(t)}`}
-                      class="text-sm px-3 py-1 rounded-full bg-[var(--surface-2)] text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors"
-                    >
-                      {t}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </article>
-          ))}
-        </div>
-      </section>
-    )}
-
-    {totalItems === 0 && (
-      <div class="text-center py-12">
-        <h2 class="text-2xl font-bold mb-4 text-[var(--text)]">
-          No content found
-        </h2>
-        <p class="text-[var(--text-muted)]">
-          There is no content tagged with "{displayTag}" yet.
-        </p>
-      </div>
-    )}
-  </div>
+  {matches.length > 0 ? (
+    <ul class="tag-page__list">
+      {matches.map((entry) => (
+        <li>
+          <a href={entry.href}>
+            <span class="tag-page__meta">
+              <span class="tag-page__date">{entry.displayDate}</span>
+              {entry.type === 'report' && <span class="tag-page__type">Report</span>}
+            </span>
+            <span>
+              <span class="tag-page__title">{entry.title}</span>
+              {entry.excerpt && <span class="tag-page__excerpt">{entry.excerpt}</span>}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="tag-page__empty">Nothing is tagged “{label}” yet.</p>
+  )}
 </Layout>
+
+<style>
+  .tag-page__header { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
+  .tag-page__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  .tag-page__header h1 { font-size: var(--type-heading-1); letter-spacing: var(--tracking-display); line-height: .9; margin: 0; }
+  .tag-page__count { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: var(--spacing-6) 0 0; }
+  .tag-page__back { color: var(--color-text-primary); display: inline-block; font-size: var(--type-body-small); font-weight: 700; margin-top: var(--spacing-6); }
+  .tag-page__back:hover { color: var(--color-action); }
+
+  .tag-page__list { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }
+  .tag-page__list li { border-bottom: 1px solid var(--color-stroke-subtle); }
+  .tag-page__list a { align-items: baseline; color: var(--color-text-primary); display: grid; gap: var(--spacing-2) var(--spacing-8); padding-block: clamp(1.5rem, 3.5vw, 2.5rem); }
+  .tag-page__list a:hover .tag-page__title { color: var(--color-action); }
+  .tag-page__meta { align-items: baseline; display: flex; gap: var(--spacing-3); }
+  .tag-page__date { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--type-label); }
+  .tag-page__type { border: 1px solid var(--color-stroke-subtle); color: var(--color-text-secondary); font-size: var(--type-label); letter-spacing: .08em; padding: .1rem .4rem; text-transform: uppercase; }
+  .tag-page__title { display: block; font-size: clamp(1.35rem, 2.6vw, 2.1rem); letter-spacing: var(--tracking-heading); line-height: 1.2; }
+  .tag-page__excerpt { color: var(--color-text-secondary); display: block; font-size: var(--type-body-small); line-height: 1.6; margin-top: var(--spacing-2); max-width: 54rem; }
+
+  .tag-page__empty { color: var(--color-text-secondary); padding-block: var(--spacing-16); }
+
+  @media (min-width: 48rem) {
+    .tag-page__list a { grid-template-columns: 9rem minmax(0, 1fr); }
+  }
+</style>

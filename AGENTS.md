@@ -32,6 +32,9 @@ Use this file to route coding-agent work in this repo.
 - PDF proxy (security-sensitive): `src/pages/api/pdf.ts`
 - Content rendering/sanitization: `src/lib/portableText.ts`, `src/lib/markdown.ts`, `src/lib/escape.ts`
 - Sanity schema updates: change both `src/sanity/schemaTypes/*` and `studio-production/schemaTypes/*`
+- Page copy (no hardcoded user-facing strings): the singleton schemas plus `src/lib/pageContent.ts` and `scripts/seed-page-copy.ts`
+- Work vs project classification and the reflection fields: `src/sanity/schemaTypes/workStory.ts` and `src/lib/work.ts`
+- The posts-plus-reports stream shared by `/writing`, `/tags/[tag]` and the homepage: `src/lib/writingData.ts`
 
 ## Commands
 
@@ -89,6 +92,10 @@ Never:
 ## Footguns
 
 - Missing `SANITY_PROJECT_ID` fails config load early.
+- `fetchSanity` reads through Sanity's edge CDN, so content written to Sanity takes up to ~2 minutes to reach a build. A build run immediately after a write silently produces the old content. Use `fetchFreshSanity` only where staleness is unacceptable (currently RSS).
+- The dev server caches the Sanity client at module scope. After changing page-copy singletons, restart `pnpm run dev`; a browser reload is not enough.
+- `pnpm run seed:copy` uses `createOrReplace` and will overwrite copy edited in Studio. Reconcile Studio values into `scripts/seed-page-copy.ts` before running it.
+- The circuit overlay is a markup contract with no test coverage. A bus (`data-circuit`) needs both a `data-circuit-source` and at least one `data-circuit-node` inside the same region or it renders nothing, silently. Check the page visually after moving those attributes.
 - Content routes are prerendered (`output: 'static'`; only `src/pages/api/*` opts out with `prerender = false`), so request-time inputs such as query params are unavailable on pages and must be resolved client-side.
 - Publishing in Sanity only reaches the live site once a Netlify build runs.
 - `src/content.config.ts` exists, but published runtime content is fetched from Sanity in routes.

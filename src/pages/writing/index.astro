@@ -1,148 +1,125 @@
 ---
-import Layout from "../../components/layout/Layout.astro";
-import GridTile from "../../components/ui/GridTile.astro";
-import { fetchSanity } from "../../lib/sanity";
+import Layout from '../../components/layout/Layout.astro';
+import { getWriting, filterableTags } from '../../lib/writingData';
+import { getWritingIndexPage } from '../../lib/pageContent';
+import { SITE_URL, absoluteUrl } from '../../lib/site';
 
-type PostDoc = {
-  title: string;
-  excerpt?: string;
-  publishedAt: string;
-  slug: string;
-  tags?: string[];
-};
-
-type ReportDoc = {
-  title: string;
-  description?: string;
-  publishedAt: string;
-  slug: string;
-  tags?: string[];
-};
-
-type DisplayItem = (PostDoc & { _type: 'post' }) | (ReportDoc & { _type: 'report' } & { excerpt?: string });
-
-const posts = await fetchSanity<PostDoc[]>(`
-  *[_type == "post" && slug.current != "gpu-share"] | order(publishedAt desc){
-    title,
-    excerpt,
-    publishedAt,
-    "slug": slug.current,
-    tags
-  }
-`);
-
-const reports = await fetchSanity<ReportDoc[]>(`
-  *[_type == "report"] | order(publishedAt desc){
-    title,
-    description,
-    publishedAt,
-    "slug": slug.current,
-    tags
-  }
-`);
-
-const displayPosts: DisplayItem[] = [
-  ...posts.map(p => ({ ...p, _type: 'post' as const })),
-  ...reports.map(r => ({ ...r, excerpt: r.description, _type: 'report' as const }))
-].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-
-// Count occurrences of each tag, only keep those with 2+ results
-const tagCounts = new Map<string, number>();
-displayPosts.forEach(post => (post.tags || []).forEach(t => tagCounts.set(t, (tagCounts.get(t) || 0) + 1)));
-const allTags = [...tagCounts.entries()]
-  .filter(([, count]) => count >= 2)
-  .map(([tag]) => tag)
-  .sort();
-
-const postTiles = displayPosts.map((post) => {
-  const prefix = post._type === 'report' ? 'reports' : 'posts';
-  return {
-    title: post.title || 'Untitled',
-    description: post.excerpt || '',
-    href: `/${prefix}/${post.slug}`,
-    size: 'square' as const,
-    tags: post.tags || [],
-    date: post.publishedAt
-      ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
-      : '',
-    type: post._type,
-    transitionName: `title-${prefix}-${post.slug}`,
-  };
-});
+const [entries, copy] = await Promise.all([getWriting(), getWritingIndexPage()]);
+const tags = filterableTags(entries);
+const { hero } = copy;
 ---
 
 <Layout
-  title="Writing"
-  description="Essays, tutorials, and thoughts on technology, software engineering, and more."
+  title={copy.seo.title}
+  description={copy.seo.description}
+  canonicalURL={absoluteUrl('/writing', SITE_URL)}
 >
-  <div class="max-w-[var(--container-xl)] mx-auto">
-    <header class="mb-12">
-      <h1 class="font-serif text-[clamp(3rem,7vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)]" transition:name="page-heading">
-        writing.
-      </h1>
-      <p class="max-w-[40rem] text-xl text-[var(--text-muted)] leading-[1.6]">
-        Essays, tutorials, and thoughts on technology, software engineering, and more.
-      </p>
-    </header>
+  <header class="writing-index__header">
+    <p class="writing-index__eyebrow">{hero.eyebrow}</p>
+    <h1 transition:name="page-heading">
+      {hero.headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}
+    </h1>
+    <p class="writing-index__intro">{hero.intro}</p>
+  </header>
 
-    {allTags.length > 0 && (
-      <div class="mb-12">
-        <span class="block text-xs font-medium uppercase tracking-[0.1em] mb-4 text-[var(--text-muted)]">Filter by tag</span>
-        <div class="flex flex-wrap gap-2">
-          <button class="filter-tag active" data-tag="all">All</button>
-          {allTags.map(tag => (
-            <button class="filter-tag" data-tag={tag}>{tag}</button>
-          ))}
-        </div>
+  {tags.length > 0 && (
+    <div class="writing-filter">
+      <p id="writing-filter-label">{copy.filterLabel}</p>
+      <div class="writing-filter__tags" role="group" aria-labelledby="writing-filter-label">
+        <button type="button" class="writing-filter__tag is-active" data-tag="all" aria-pressed="true">All</button>
+        {tags.map((tag) => (
+          <button type="button" class="writing-filter__tag" data-tag={tag} aria-pressed="false">{tag}</button>
+        ))}
       </div>
-    )}
-
-    <div class="mb-8 grid grid-cols-1 gap-3 sm:grid-flow-row-dense sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3" id="posts-grid">
-      {postTiles.map(tile => <GridTile {...tile} />)}
     </div>
+  )}
 
-    {displayPosts.length === 0 && (
-      <div class="text-center py-16 px-8 text-[var(--text-muted)]">
-        <p>No posts yet. Check back soon!</p>
-      </div>
-    )}
-  </div>
+  <ul class="writing-list" id="writing-list">
+    {entries.map((entry) => (
+      <li class="writing-list__item" data-tags={entry.tags.join('|').toLowerCase()}>
+        <a href={entry.href}>
+          <span class="writing-list__meta">
+            <span class="writing-list__date">{entry.displayDate}</span>
+            {entry.type === 'report' && <span class="writing-list__type">Report</span>}
+          </span>
+          <span class="writing-list__body">
+            <span class="writing-list__title" transition:name={`title-${entry.href}`}>{entry.title}</span>
+            {entry.excerpt && <span class="writing-list__excerpt">{entry.excerpt}</span>}
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <p class="writing-empty" id="writing-empty" hidden={entries.length > 0}>{copy.emptyMessage}</p>
 </Layout>
 
 <script>
   function initTagFilter() {
-    const grid = document.getElementById('posts-grid');
-    if (!grid || grid.dataset.filterInit) return;
-    grid.dataset.filterInit = 'true';
+    const list = document.getElementById('writing-list');
+    if (!list || list.dataset.filterInit) return;
+    list.dataset.filterInit = 'true';
 
-    const tagButtons = document.querySelectorAll('.filter-tag[data-tag]');
-    const allTiles = grid.querySelectorAll('.grid-tile');
-    if (!tagButtons.length) return;
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.writing-filter__tag');
+    const items = list.querySelectorAll<HTMLElement>('.writing-list__item');
+    const empty = document.getElementById('writing-empty');
+    if (!buttons.length) return;
 
-    tagButtons.forEach(button => {
+    buttons.forEach((button) => {
       button.addEventListener('click', () => {
-        const tag = button.getAttribute('data-tag');
+        const tag = button.dataset.tag;
         if (!tag) return;
 
-        tagButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-
-        allTiles.forEach(tile => {
-          const htmlTile = tile as HTMLElement;
-          if (tag === 'all') {
-            htmlTile.style.display = '';
-          } else {
-            const tags = tile.querySelectorAll('.tile-filter-tag');
-            const hasTag = Array.from(tags).some(
-              t => t.textContent?.toLowerCase() === tag.toLowerCase()
-            );
-            htmlTile.style.display = hasTag ? '' : 'none';
-          }
+        buttons.forEach((other) => {
+          const active = other === button;
+          other.classList.toggle('is-active', active);
+          other.setAttribute('aria-pressed', String(active));
         });
+
+        let visible = 0;
+        items.forEach((item) => {
+          const tags = (item.dataset.tags || '').split('|');
+          const show = tag === 'all' || tags.includes(tag.toLowerCase());
+          item.hidden = !show;
+          if (show) visible += 1;
+        });
+
+        if (empty) empty.hidden = visible > 0;
       });
     });
   }
 
   initTagFilter();
+  // Astro's view transitions replace the document, so rebind on every page load.
   document.addEventListener('astro:page-load', initTagFilter);
 </script>
+
+<style>
+  .writing-index__header { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
+  .writing-index__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  .writing-index__header h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 16ch; }
+  .writing-index__intro { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.45; margin: var(--spacing-8) 0 0; max-width: 40rem; }
+
+  .writing-filter { border-top: 1px solid var(--color-stroke-subtle); padding-block: var(--spacing-6); }
+  .writing-filter p { color: var(--color-text-secondary); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }
+  .writing-filter__tags { display: flex; flex-wrap: wrap; gap: var(--spacing-2) var(--spacing-5); }
+  .writing-filter__tag { background: none; border: 0; color: var(--color-text-secondary); cursor: pointer; font: inherit; font-size: var(--type-body-small); min-height: 2.75rem; padding: 0; }
+  .writing-filter__tag:hover { color: var(--color-text-primary); }
+  .writing-filter__tag.is-active { color: var(--color-action); font-weight: 700; }
+
+  .writing-list { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }
+  .writing-list__item { border-bottom: 1px solid var(--color-stroke-subtle); }
+  .writing-list__item a { align-items: baseline; color: var(--color-text-primary); display: grid; gap: var(--spacing-2) var(--spacing-8); padding-block: clamp(1.5rem, 3.5vw, 2.5rem); }
+  .writing-list__item a:hover .writing-list__title { color: var(--color-action); }
+  .writing-list__meta { align-items: baseline; display: flex; gap: var(--spacing-3); }
+  .writing-list__date { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--type-label); }
+  .writing-list__type { border: 1px solid var(--color-stroke-subtle); color: var(--color-text-secondary); font-size: var(--type-label); letter-spacing: .08em; padding: .1rem .4rem; text-transform: uppercase; }
+  .writing-list__title { display: block; font-size: clamp(1.35rem, 2.6vw, 2.1rem); letter-spacing: var(--tracking-heading); line-height: 1.2; }
+  .writing-list__excerpt { color: var(--color-text-secondary); display: block; font-size: var(--type-body-small); line-height: 1.6; margin-top: var(--spacing-2); max-width: 54rem; }
+
+  .writing-empty { color: var(--color-text-secondary); padding-block: var(--spacing-16); text-align: center; }
+
+  @media (min-width: 48rem) {
+    .writing-list__item a { grid-template-columns: 9rem minmax(0, 1fr); }
+  }
+</style>

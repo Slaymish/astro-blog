@@ -7,8 +7,10 @@ import { getWorkIndexPage } from '../../lib/pageContent';
 import { SITE_URL, absoluteUrl } from '../../lib/site';
 
 const [stories, copy] = await Promise.all([getWorkStories(), getWorkIndexPage()]);
-const leadStories = stories.filter((story) => story.status === 'lead');
-const supportStories = stories.filter((story) => story.status === 'support');
+// Independent builds have their own index at /projects; this page is professional work.
+const professional = stories.filter((story) => story.kind === 'professional');
+const leadStories = professional.filter((story) => story.status === 'lead');
+const supportStories = professional.filter((story) => story.status === 'support');
 const { hero, leadSection, supportSection } = copy;
 ---
 
@@ -43,7 +45,7 @@ const { hero, leadSection, supportSection } = copy;
     </div>
   </section>
 
-  <ContactBand heading={copy.contactHeading} />
+  <ContactBand heading={copy.contactHeading} booking />
 </Layout>
 
 <style>

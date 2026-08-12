@@ -2,9 +2,9 @@
  * Icon path registry — the single source of truth for icon geometry.
  *
  * Shapes follow Lucide (ISC): a 24x24 grid with a 2px stroke and round caps
- * and joins. That open, geometric construction sits well next to Familjen
- * Grotesk and Figtree, and every icon inherits weight and colour from the
- * surrounding text rather than baking either into the markup.
+ * and joins. That open, geometric construction sits well next to Geist, and
+ * every icon inherits weight and colour from the surrounding text rather than
+ * baking either into the markup.
  *
  * To restyle every arrow on the site, edit the `--icon-*` tokens in
  * `src/design-system/tokens.css`. To change a shape, edit it here.

@@ -1,0 +1,70 @@
+---
+import Layout from '../components/layout/Layout.astro';
+import Icon from '../components/ui/Icon.astro';
+import { getContactPage } from '../lib/pageContent';
+import { SITE_URL, absoluteUrl } from '../lib/site';
+
+const copy = await getContactPage();
+const { hero } = copy;
+---
+
+<Layout
+  title={copy.seo.title}
+  description={copy.seo.description}
+  canonicalURL={absoluteUrl('/contact', SITE_URL)}
+>
+  <header class="contact__header">
+    <p class="contact__eyebrow">{hero.eyebrow}</p>
+    <h1>{hero.headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}</h1>
+    <p class="contact__intro">{hero.intro}</p>
+  </header>
+
+  <section class="contact__channels" aria-label="Ways to get in touch">
+    <ul>
+      {copy.channels.map((channel) => (
+        <li>
+          <a
+            href={channel.link.href}
+            target={channel.link.external ? '_blank' : undefined}
+            rel={channel.link.external ? 'noopener noreferrer' : undefined}
+            aria-label={channel.link.ariaLabel}
+          >
+            <span class="contact__label">{channel.label}</span>
+            <span class="contact__value">
+              {channel.link.label}
+              <Icon name={channel.link.external ? 'arrow-up-right' : 'arrow-right'} />
+            </span>
+            <span class="contact__note">{channel.note}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="contact__availability" aria-label="Availability">
+    <p>{copy.availabilityNote}</p>
+  </section>
+</Layout>
+
+<style>
+  .contact__header { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
+  .contact__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  .contact__header h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 14ch; }
+  .contact__intro { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.45; margin: var(--spacing-8) 0 0; max-width: 38rem; }
+
+  .contact__channels ul { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }
+  .contact__channels li { border-bottom: 1px solid var(--color-stroke-subtle); }
+  .contact__channels a { align-items: baseline; color: var(--color-text-primary); display: grid; gap: var(--spacing-2) var(--spacing-8); padding-block: clamp(1.5rem, 3.5vw, 2.25rem); }
+  .contact__channels a:hover .contact__value { color: var(--color-action); }
+  .contact__label { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--type-label); letter-spacing: .08em; text-transform: uppercase; }
+  .contact__value { align-items: baseline; display: inline-flex; font-size: clamp(1.2rem, 2.4vw, 1.9rem); gap: var(--icon-gap); letter-spacing: var(--tracking-heading); }
+  .contact__note { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.6; max-width: 44rem; }
+
+  .contact__availability { border-top: 1px solid var(--color-stroke-subtle); margin-top: clamp(3rem, 8vw, 6rem); padding-block: var(--spacing-8); }
+  .contact__availability p { color: var(--color-text-secondary); font-size: var(--type-body); line-height: 1.7; margin: 0; max-width: 44rem; }
+
+  @media (min-width: 48rem) {
+    .contact__channels a { grid-template-columns: 9rem minmax(0, 1fr); }
+    .contact__label { grid-row: span 2; }
+  }
+</style>

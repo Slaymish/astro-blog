@@ -1,47 +1,29 @@
 ---
 import Layout from '../components/layout/Layout.astro';
+import IconText from '../components/ui/IconText.astro';
 import { getNotFoundPage } from '../lib/pageContent';
 
 const copy = await getNotFoundPage();
 ---
 
 <Layout title={copy.seo.title} description={copy.seo.description}>
-  <div class="min-h-[50vh] flex flex-col items-center justify-center text-center px-4">
-    <h1 class="font-serif text-[8rem] sm:text-[10rem] font-bold leading-none text-[var(--accent)] mb-2 tracking-tight">
-      {copy.code}
-    </h1>
+  <div class="not-found">
+    <p class="not-found__code">{copy.code}</p>
+    <h1>{copy.heading}</h1>
+    <p class="not-found__body">{copy.body}</p>
 
-    <h2 class="font-serif text-2xl sm:text-3xl font-semibold mb-4 text-[var(--text)] tracking-tight">
-      {copy.heading}
-    </h2>
-
-    <p class="text-lg mb-8 max-w-md text-[var(--text-muted)] leading-relaxed">
-      {copy.body}
-    </p>
-
-    <div class="flex flex-col sm:flex-row gap-3">
-      <a
-        href="/"
-        class="cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-[var(--accent)] border border-[var(--accent)] rounded-[var(--radius-md)] no-underline font-medium transition-colors"
-      >
-        {copy.homeLabel}
-      </a>
-      <button
-        type="button"
-        id="go-back-button"
-        class="inline-flex items-center justify-center gap-2 px-6 py-3 text-[var(--text)] border border-[var(--border)] rounded-[var(--radius-md)] font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] bg-transparent cursor-pointer"
-      >
-        {copy.backLabel}
+    <div class="not-found__actions">
+      <a href="/"><IconText>{copy.homeLabel}</IconText></a>
+      <button type="button" id="go-back-button">
+        <IconText icon="arrow-left" position="start">{copy.backLabel}</IconText>
       </button>
     </div>
 
-    <div class="mt-16 pt-8 border-t border-[var(--border)] w-full max-w-md">
-      <p class="text-sm font-medium text-[var(--text-muted)] mb-4">{copy.suggestionsLabel}</p>
-      <div class="flex flex-wrap justify-center gap-4 text-sm">
-        {copy.suggestions.map((link) => (
-          <a href={link.href} class="text-[var(--text-muted)] no-underline border-b-0 hover:text-[var(--accent)] transition-colors">{link.label}</a>
-        ))}
-      </div>
+    <div class="not-found__suggestions">
+      <p>{copy.suggestionsLabel}</p>
+      <nav aria-label="Suggested pages">
+        {copy.suggestions.map((link) => <a href={link.href}>{link.label}</a>)}
+      </nav>
     </div>
   </div>
 </Layout>
@@ -59,4 +41,24 @@ const copy = await getNotFoundPage();
   }
 
   initGoBack();
+  document.addEventListener('astro:page-load', initGoBack);
 </script>
+
+<style>
+  .not-found { padding-block: var(--hero-top-space) var(--section-space); }
+  .not-found__code { color: var(--color-action); font-family: var(--font-mono); font-size: var(--type-label); letter-spacing: .1em; margin: 0 0 var(--spacing-5); }
+  .not-found h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 12ch; }
+  .not-found__body { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.5; margin: var(--spacing-8) 0 0; max-width: 36rem; }
+
+  .not-found__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-6); margin-top: var(--spacing-10); }
+  .not-found__actions a,
+  .not-found__actions button { align-items: center; background: none; border: 0; color: var(--color-text-primary); cursor: pointer; display: inline-flex; font: inherit; font-size: var(--type-body-small); font-weight: 700; min-height: 2.75rem; padding: 0; }
+  .not-found__actions a:hover,
+  .not-found__actions button:hover { color: var(--color-action); }
+
+  .not-found__suggestions { border-top: 1px solid var(--color-stroke-subtle); margin-top: clamp(3rem, 8vw, 6rem); padding-top: var(--spacing-6); }
+  .not-found__suggestions p { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }
+  .not-found__suggestions nav { display: flex; flex-wrap: wrap; gap: var(--spacing-3) var(--spacing-6); }
+  .not-found__suggestions nav a { align-items: center; color: var(--color-text-secondary); display: inline-flex; font-size: var(--type-body-small); min-height: 2.75rem; }
+  .not-found__suggestions nav a:hover { color: var(--color-action); }
+</style>

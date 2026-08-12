@@ -1,15 +1,21 @@
 ---
 import Layout from '../components/layout/Layout.astro';
-import ButtonLink from '../components/ui/ButtonLink.astro';
 import IconText from '../components/ui/IconText.astro';
 import ContactBand from '../components/work/ContactBand.astro';
 import WorkCard from '../components/work/WorkCard.astro';
 import { getWorkStories } from '../lib/workData';
 import { getHomePage } from '../lib/pageContent';
+import { getRecentWriting } from '../lib/writingData';
 
-const [stories, copy] = await Promise.all([getWorkStories(), getHomePage()]);
-const leadStories = stories.filter((story) => story.status === 'lead');
-const { hero, workSection, approach } = copy;
+const [stories, writing, copy] = await Promise.all([
+  getWorkStories(),
+  getRecentWriting(4),
+  getHomePage()
+]);
+
+const projects = stories.filter((story) => story.kind === 'independent').slice(0, 2);
+const work = stories.filter((story) => story.kind === 'professional' && story.status === 'lead');
+const { hero, interests, currently, projectsSection, workSection, writingSection } = copy;
 ---
 
 <Layout title={copy.seo.title} description={copy.seo.description}>
@@ -18,98 +24,151 @@ const { hero, workSection, approach } = copy;
     <h1>{hero.headline} <span class="home-hero__accent" data-circuit-source>{hero.headlineAccent}</span></h1>
     <div class="home-hero__lower" data-circuit-rail>
       <p>{hero.lede}</p>
-      <div class="home-hero__actions">
-        <ButtonLink
-          href={hero.primaryCta.href}
-          external={hero.primaryCta.external}
-          ariaLabel={hero.primaryCta.ariaLabel}
-          circuitNode="brief"
-        >
-          {hero.primaryCta.label}
-        </ButtonLink>
-        <ButtonLink
-          href={hero.secondaryCta.href}
-          external={hero.secondaryCta.external}
-          variant="text"
-          ariaLabel={hero.secondaryCta.ariaLabel}
-        >
-          {hero.secondaryCta.label}
-        </ButtonLink>
-      </div>
+      <!-- The bus originating at the headline accent needs a node inside this region
+           to route to, so the hero links are it. -->
+      <nav
+        class="home-hero__links"
+        aria-label="Start here"
+        data-circuit-node="start"
+        data-circuit-flash="edge"
+      >
+        {hero.links.map((link) => (
+          <a href={link.href} aria-label={link.ariaLabel}><IconText>{link.label}</IconText></a>
+        ))}
+      </nav>
     </div>
-    <ul class="home-hero__services" aria-label="Capabilities" data-circuit-node="services" data-circuit-flash="edge">
-      {copy.services.map((service) => <li>{service}</li>)}
-    </ul>
   </section>
 
-  <section class="home-work" aria-labelledby="selected-work-heading" data-circuit="BUS_02">
+  <section class="home-interests" aria-labelledby="interests-heading">
+    <p class="home-section-label">{interests.label}</p>
+    <div>
+      <h2 id="interests-heading">{interests.statement}</h2>
+      <ul class="home-interests__list">
+        {interests.items.map((item) => (
+          <li>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="home-currently" aria-labelledby="currently-heading">
+    <p class="home-section-label">{currently.label}</p>
+    <div>
+      <h2 id="currently-heading">{currently.heading}</h2>
+      <p>{currently.body}</p>
+      <a href={currently.link.href}><IconText>{currently.link.label}</IconText></a>
+    </div>
+  </section>
+
+  <section class="home-work" aria-labelledby="projects-heading" data-circuit="BUS_02">
     <div class="home-section-heading">
       <div>
-        <p>{workSection.eyebrow}</p>
-        <h2 id="selected-work-heading" data-circuit-source>{workSection.heading}</h2>
+        <p>{projectsSection.eyebrow}</p>
+        <h2 id="projects-heading" data-circuit-source>{projectsSection.heading}</h2>
       </div>
-      <a href={workSection.link.href}><IconText>{workSection.link.label}</IconText></a>
+      <a href={projectsSection.link.href}><IconText>{projectsSection.link.label}</IconText></a>
     </div>
-    {leadStories.map((story, index) => (
+    {projects.map((story, index) => (
       <WorkCard story={story} reverse={index % 2 === 1} circuitNode={story.slug} />
     ))}
     <div class="home-work__footer">
-      <a href={workSection.link.href}><IconText>{workSection.link.label}</IconText></a>
+      <a href={projectsSection.link.href}><IconText>{projectsSection.link.label}</IconText></a>
     </div>
   </section>
 
-  <section class="home-approach" aria-labelledby="approach-heading">
-    <p class="home-approach__label">{approach.label}</p>
-    <div>
-      <h2 id="approach-heading">{approach.heading}</h2>
-      <p>{approach.body}</p>
-      <a href={approach.link.href}><IconText>{approach.link.label}</IconText></a>
+  <section class="home-work home-work--secondary" aria-labelledby="work-heading">
+    <div class="home-section-heading">
+      <div>
+        <p>{workSection.eyebrow}</p>
+        <h2 id="work-heading">{workSection.heading}</h2>
+      </div>
+      <a href={workSection.link.href}><IconText>{workSection.link.label}</IconText></a>
     </div>
+    {work.map((story) => <WorkCard story={story} variant="row" />)}
+  </section>
+
+  <section class="home-writing" aria-labelledby="writing-heading">
+    <div class="home-section-heading">
+      <div>
+        <p>{writingSection.eyebrow}</p>
+        <h2 id="writing-heading">{writingSection.heading}</h2>
+      </div>
+      <a href={writingSection.link.href}><IconText>{writingSection.link.label}</IconText></a>
+    </div>
+    <ul class="home-writing__list">
+      {writing.map((entry) => (
+        <li>
+          <a href={entry.href}>
+            <span class="home-writing__date">{entry.displayDate}</span>
+            <span class="home-writing__title">{entry.title}</span>
+            {entry.excerpt && <span class="home-writing__excerpt">{entry.excerpt}</span>}
+          </a>
+        </li>
+      ))}
+    </ul>
   </section>
 
   <ContactBand heading={copy.contactHeading} />
 </Layout>
 
 <style>
-  .home-hero { display: flex; flex-direction: column; min-height: clamp(32rem, calc(82svh - 8rem), 40rem); padding-block: var(--hero-top-space) var(--spacing-8); }
+  .home-hero { display: flex; flex-direction: column; min-height: clamp(30rem, calc(78svh - 8rem), 38rem); padding-block: var(--hero-top-space) var(--spacing-8); }
   .home-hero__eyebrow,
   .home-section-heading p,
-  .home-approach__label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  .home-hero h1 { font-size: clamp(3.35rem, 9.8vw, 9rem); letter-spacing: var(--tracking-display); line-height: .86; margin: 0; max-width: 14ch; }
+  .home-section-label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  .home-hero h1 { font-size: clamp(2.9rem, 8vw, 7rem); letter-spacing: var(--tracking-display); line-height: .92; margin: 0; max-width: 18ch; }
   .home-hero__accent { color: var(--color-action); }
-  .home-hero__lower { align-items: end; display: grid; gap: var(--spacing-6); margin-block: clamp(2rem, 6vw, 5rem); }
-  .home-hero__lower > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; margin: 0; max-width: 38rem; }
-  .home-hero__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-3); }
-  .home-hero__services { border-top: 1px solid var(--color-stroke-subtle); display: grid; list-style: none; margin: auto 0 0; padding: 0; }
-  .home-hero__services li { border-bottom: 1px solid var(--color-stroke-subtle); color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 600; padding-block: var(--spacing-3); }
-  .home-work { margin-block-start: clamp(1.5rem, 3vw, 3rem); }
+  .home-hero__lower { align-items: end; display: grid; gap: var(--spacing-6); margin-block: clamp(2rem, 6vw, 4.5rem) 0; }
+  .home-hero__lower > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; margin: 0; max-width: 40rem; }
+  .home-hero__links { display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-6); }
+  .home-hero__links a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
+  .home-hero__links a:hover { color: var(--color-action); }
+
+  /* Areas of investigation, deliberately not a skills grid: no icons, no badges. */
+  .home-interests { border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); padding-block: var(--band-inset); }
+  .home-interests h2 { font-size: clamp(1.6rem, 3vw, 2.6rem); font-weight: var(--font-weight-normal); letter-spacing: var(--tracking-heading); line-height: 1.25; margin: 0; max-width: 34ch; text-wrap: balance; }
+  .home-interests__list { display: grid; gap: var(--spacing-6); list-style: none; margin: clamp(2.5rem, 6vw, 4rem) 0 0; padding: 0; }
+  .home-interests__list h3 { font-size: var(--type-body); margin: 0 0 var(--spacing-2); }
+  .home-interests__list p { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.6; margin: 0; }
+  .home-interests__list li { border-top: 1px solid var(--color-stroke-subtle); padding-top: var(--spacing-4); }
+
+  .home-currently { border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); padding-block: var(--band-inset); }
+  .home-currently h2 { font-size: clamp(2rem, 4.5vw, 3.6rem); letter-spacing: var(--tracking-heading); margin: 0; max-width: 20ch; text-wrap: balance; }
+  .home-currently div > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 1.6vw, 1.2rem); line-height: 1.7; margin: var(--spacing-6) 0 0; max-width: 44rem; }
+  .home-currently a { color: var(--color-text-primary); display: inline-block; font-size: var(--type-body-small); font-weight: 700; margin-top: var(--spacing-6); }
+  .home-currently a:hover { color: var(--color-action); }
+
+  .home-work { border-top: 1px solid var(--color-stroke-subtle); margin-block-start: 0; }
   .home-section-heading { align-items: end; display: flex; justify-content: space-between; padding-block: var(--spacing-8); }
-  .home-section-heading h2 { font-size: clamp(2.3rem, 5vw, 4.5rem); margin: 0; }
-  .home-section-heading a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
-  .home-section-heading a:hover { color: var(--color-action); }
-  /* No rule of its own: the approach section's rule below is the divider. */
-  .home-work__footer { padding-block: var(--spacing-6); }
+  .home-section-heading h2 { font-size: clamp(2.3rem, 5vw, 4.5rem); letter-spacing: var(--tracking-heading); margin: 0; }
+  .home-section-heading a,
   .home-work__footer a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
+  .home-section-heading a:hover,
   .home-work__footer a:hover { color: var(--color-action); }
-  .home-approach { border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); margin-block: clamp(5rem, 12vw, 10rem) 0; padding-block: var(--band-inset); }
-  /* The inset below already supplies the band's leading space. */
-  .home-approach + :global(.contact-band) { margin-block-start: 0; }
-  .home-approach h2 { font-size: clamp(2.5rem, 6vw, 5.5rem); letter-spacing: var(--tracking-heading); margin: 0; text-wrap: balance; }
-  .home-approach div > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.6; max-width: 43rem; }
-  .home-approach a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
-  .home-approach a:hover { color: var(--color-action); }
+  .home-work__footer { padding-block: var(--spacing-6); }
+  .home-work--secondary { margin-block-start: clamp(3rem, 8vw, 6rem); }
+
+  .home-writing { border-top: 1px solid var(--color-stroke-subtle); margin-block-start: clamp(3rem, 8vw, 6rem); }
+  .home-writing__list { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }
+  .home-writing__list li { border-bottom: 1px solid var(--color-stroke-subtle); }
+  .home-writing__list a { align-items: baseline; color: var(--color-text-primary); display: grid; gap: var(--spacing-1) var(--spacing-6); padding-block: clamp(1.25rem, 3vw, 2rem); }
+  .home-writing__list a:hover .home-writing__title { color: var(--color-action); }
+  .home-writing__date { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--type-label); }
+  .home-writing__title { font-size: clamp(1.2rem, 2.2vw, 1.75rem); letter-spacing: var(--tracking-heading); }
+  .home-writing__excerpt { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.6; max-width: 52rem; }
+
   @media (min-width: 48rem) {
-    .home-hero__lower { grid-template-columns: minmax(0, 1.3fr) minmax(20rem, .7fr); }
-    .home-hero__services { grid-template-columns: repeat(3, 1fr); }
-    .home-hero__services li { padding-inline: var(--spacing-4); }
-    .home-hero__services li:first-child { padding-left: 0; }
-    .home-approach { grid-template-columns: minmax(10rem, .45fr) minmax(0, 1.55fr); }
+    .home-hero__lower { grid-template-columns: minmax(0, 1.3fr) minmax(16rem, .7fr); }
+    .home-interests,
+    .home-currently { grid-template-columns: minmax(10rem, .45fr) minmax(0, 1.55fr); }
+    .home-interests__list { grid-template-columns: repeat(3, 1fr); gap: var(--spacing-8); }
+    .home-writing__list a { grid-template-columns: 7rem minmax(0, 1fr); }
+    .home-writing__date { grid-row: span 2; }
   }
   @media (max-width: 47.9375rem) {
     .home-hero { --circuit-heartbeat: 22000ms; }
-  }
-  @media (max-width: 30rem) {
-    .home-hero h1 { min-height: 3.44em; }
-    .home-hero__lower { margin-block-start: 3rem; }
   }
 </style>

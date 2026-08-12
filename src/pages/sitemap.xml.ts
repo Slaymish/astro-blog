@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { fetchSanity } from '../lib/sanity';
 import { SITE_URL, absoluteUrl } from '../lib/site';
+import { publicPostSlug } from '../lib/legacyRoutes';
 import { createSlug } from '../utils/slug';
 
 type SitemapEntry = {
@@ -59,7 +60,7 @@ export const GET: APIRoute = async () => {
 
   const [posts, workStories, reports, tags] = await Promise.all([
     safeFetch<PostSitemapDoc>(`
-      *[_type == "post" && defined(slug.current) && slug.current != "gpu-share"] | order(coalesce(updatedAt, publishedAt) desc){
+      *[_type == "post" && defined(slug.current)] | order(coalesce(updatedAt, publishedAt) desc){
         "slug": slug.current,
         publishedAt,
         updatedAt
@@ -84,10 +85,12 @@ export const GET: APIRoute = async () => {
 
   const entries: SitemapEntry[] = [
     { loc: absoluteUrl('/', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '1.0' },
-    { loc: absoluteUrl('/about', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.6' },
-    { loc: absoluteUrl('/work', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.9' },
-    { loc: absoluteUrl('/writing', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.8' },
-    { loc: absoluteUrl('/reading', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.7' },
+    { loc: absoluteUrl('/projects', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.9' },
+    { loc: absoluteUrl('/writing', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.9' },
+    { loc: absoluteUrl('/about', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.7' },
+    { loc: absoluteUrl('/work', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.7' },
+    { loc: absoluteUrl('/reading', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.6' },
+    { loc: absoluteUrl('/contact', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.5' },
     { loc: absoluteUrl('/cv', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.5' },
     { loc: absoluteUrl('/privacy', SITE_URL), lastmod: now, changefreq: 'yearly', priority: '0.3' },
     { loc: absoluteUrl('/terms', SITE_URL), lastmod: now, changefreq: 'yearly', priority: '0.3' }
@@ -95,7 +98,9 @@ export const GET: APIRoute = async () => {
 
   for (const post of posts) {
     entries.push({
-      loc: absoluteUrl(`/posts/${post.slug}`, SITE_URL),
+      // Posts are built under their public slug, which for some differs from the
+      // content slug held in Sanity.
+      loc: absoluteUrl(`/posts/${publicPostSlug(post.slug)}`, SITE_URL),
       lastmod: new Date(post.updatedAt || post.publishedAt).toISOString(),
       changefreq: 'monthly',
       priority: '0.8'

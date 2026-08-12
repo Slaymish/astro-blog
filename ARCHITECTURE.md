@@ -33,9 +33,10 @@ Deployment target is Netlify server output.
 
 - `astro.config.ts`: production Astro config, Netlify adapter, Sanity integration, canonical site URL.
 - `astro.config.dev.ts`: local dev config without Netlify adapter.
-- `src/pages/index.astro`: homepage aggregation of projects/posts/reports/reading.
-- `src/pages/writing/index.astro`, `src/pages/projects/index.astro`, `src/pages/reading/index.astro`: list/index pages.
-- `src/pages/posts/[slug].astro`, `src/pages/projects/[slug].astro`, `src/pages/reports/[...slug].astro`: dynamic detail routes.
+- `src/pages/index.astro`: homepage. Hero, areas of interest, a current-state statement, then projects, professional work, and recent writing.
+- `src/pages/projects/index.astro`, `src/pages/work/index.astro`, `src/pages/writing/index.astro`, `src/pages/reading/index.astro`: list/index pages.
+- `src/pages/work/[slug].astro`, `src/pages/posts/[slug].astro`, `src/pages/reports/[...slug].astro`: dynamic detail routes.
+- `src/pages/projects/[slug].astro`: redirect-only, retained for retired project URLs. It does not serve project detail pages.
 
 ### Layout and UI Composition
 
@@ -45,7 +46,8 @@ Deployment target is Netlify server output.
 
 ### Content and Data Access
 
-- `src/lib/sanity.ts`: Sanity client creation and `fetchSanity` query helper.
+- `src/lib/sanity.ts`: Sanity client creation and `fetchSanity` query helper. Reads through Sanity's edge CDN (bounded eventual consistency, roughly two minutes); `fetchFreshSanity` bypasses it and is used only by RSS.
+- `src/lib/writingData.ts`: the single posts-plus-reports stream behind `/writing`, `/tags/[tag]`, and the homepage writing section. Owns the mapping from Sanity content slug to public post slug, so no caller should build a `/posts/...` href by hand.
 - `src/lib/portableText.ts`: Sanity Portable Text -> HTML/plaintext conversion.
 - `src/lib/markdown.ts`: markdown -> HTML/plaintext conversion.
 - `src/lib/site.ts`: canonical site constants and URL helpers used across metadata/feed/crawl endpoints.
@@ -76,7 +78,7 @@ Core document types are defined in `src/sanity/schemaTypes`:
 Static page copy lives in singleton documents written by fixed ID, one per page:
 
 - `siteSettings`: header nav, footer, and contact-band copy.
-- `homePage`, `aboutPage`, `cvPage`, `workIndexPage`, `notFoundPage`.
+- `homePage`, `aboutPage`, `cvPage`, `workIndexPage`, `projectsIndexPage`, `writingIndexPage`, `contactPage`, `notFoundPage`.
 
 `scripts/seed-page-copy.ts` (`npm run seed:copy`) publishes the initial copy for these and is safe to re-run.
 
@@ -94,6 +96,11 @@ Static page copy lives in singleton documents written by fixed ID, one per page:
 
 3. Canonical URL logic is centralized.
 - Route-level canonical and absolute URL generation should use helpers/constants from `src/lib/site.ts`.
+
+3a. `/work` and `/projects` are two indexes over one content type, not two content types.
+- A `workStory` carries a `kind` of `professional` or `independent`. `/work` lists the former, `/projects` the latter, and `status` (`lead`/`support`) independently controls presentation within an index.
+- **Every case-study detail page canonically lives at `/work/[slug]`, including independent projects.** This is deliberate: splitting detail URLs would mean issuing 301s from `/work/[slug]`, reversing redirects that already point `/projects/[slug]` at `/work/[slug]` in `netlify.toml`. Do not "fix" the apparent inconsistency.
+- An independent story must answer all four reflection questions (`question`, `built`, `learned`, `differently`). This is enforced conditionally in the Sanity schema for editor feedback and in `validateWorkStories` in `src/lib/work.ts` for the build.
 
 4. PDF fetching is constrained by allowlist and content checks.
 - Do not bypass `src/pages/api/pdf.ts` safety checks when handling remote PDFs.

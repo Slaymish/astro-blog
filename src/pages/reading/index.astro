@@ -1,7 +1,8 @@
 ---
-import Layout from "../../components/layout/Layout.astro";
-import { fetchSanity, urlFor } from "../../lib/sanity";
-import Icon from "../../components/ui/Icon.astro";
+import Layout from '../../components/layout/Layout.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { fetchSanity, urlFor } from '../../lib/sanity';
+import { SITE_URL, absoluteUrl } from '../../lib/site';
 
 type ReadingStatus = 'reading' | 'read' | 'to-read';
 
@@ -9,12 +10,12 @@ type ReadingItem = {
   title: string;
   author: string;
   status: ReadingStatus;
-  coverImage?: any;
+  coverImage?: unknown;
   link?: string;
 };
 
 const readingItems = await fetchSanity<ReadingItem[]>(`
-  *[_type == "book"] | order(status asc, title asc){
+  *[_type == "book"] | order(title asc){
     title,
     author,
     status,
@@ -23,105 +24,91 @@ const readingItems = await fetchSanity<ReadingItem[]>(`
   }
 `);
 
-const statusLabel: Record<ReadingStatus, string> = {
-  reading: 'Reading',
-  read: 'Read',
-  'to-read': 'To read'
-};
+/** Currently reading first, then the queue, then the archive. */
+const groups: { status: ReadingStatus; heading: string }[] = [
+  { status: 'reading', heading: 'Reading now' },
+  { status: 'to-read', heading: 'Next' },
+  { status: 'read', heading: 'Read' }
+];
+
+const grouped = groups
+  .map((group) => ({ ...group, items: readingItems.filter((item) => item.status === group.status) }))
+  .filter((group) => group.items.length > 0);
 ---
 
 <Layout
   title="Reading"
-  description="What I'm reading, what I've read, and what I hope to read next."
+  description="What Hamish Burke is reading, has read, and hopes to read next."
+  canonicalURL={absoluteUrl('/reading', SITE_URL)}
 >
-  <div class="max-w-[var(--container-xl)] mx-auto">
-    <header class="mb-10">
-      <h1 class="font-serif text-[clamp(3rem,7vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--text)]" transition:name="page-heading">
-        reading.
-      </h1>
-      <p class="max-w-[40rem] text-xl text-[var(--text-muted)] leading-[1.6]">
-        What I'm reading, what I've read, and what I hope to read next.
-        Recommendations are always welcome.
-      </p>
-    </header>
+  <header class="reading__header">
+    <p class="reading__eyebrow">Reading</p>
+    <h1 transition:name="page-heading">Books, mostly.</h1>
+    <p class="reading__intro">
+      What I am reading now, what is queued, and what I have finished. Recommendations are always welcome.
+    </p>
+  </header>
 
-    <section
-      class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-5"
-      aria-label="Reading list"
-    >
-      {readingItems.sort((a, b) => {
-        const order = ['to-read', 'reading', 'read'];
-        return order.indexOf(a.status) - order.indexOf(b.status);
-      }).map((item) => (
-        <article class="bg-[var(--surface)] rounded-[var(--tile-radius)] p-4 grid gap-3 min-h-64" style="box-shadow: var(--shadow-neu);">
-
-          <!-- Meta row -->
-          <div class="flex justify-between text-xs text-[var(--text-muted)] uppercase tracking-[0.08em]">
-            <span>Reading · Books</span>
-            <span>
-              {item.link ? (
-                <a href={item.link} target="_blank" rel="noopener noreferrer" class="no-underline border-b-0 hover:text-[var(--accent)]" aria-label={`View ${item.title}`}><Icon name="arrow-up-right" /></a>
+  {grouped.map((group) => (
+    <section class="reading__group" aria-labelledby={`reading-${group.status}`}>
+      <h2 id={`reading-${group.status}`}>{group.heading}</h2>
+      <ul>
+        {group.items.map((item) => (
+          <li class="reading__item">
+            <div class="reading__cover" aria-hidden={item.coverImage ? undefined : 'true'}>
+              {item.coverImage ? (
+                <img
+                  src={urlFor(item.coverImage).width(160).height(240).fit('crop').url()}
+                  alt={`Cover of ${item.title}`}
+                  width="80"
+                  height="120"
+                  loading="lazy"
+                />
               ) : (
-                <span aria-hidden="true">•</span>
-              )}
-            </span>
-          </div>
-
-          <!-- Body -->
-          <div class="grid grid-cols-[80px_1fr] gap-[0.9rem] items-start max-sm:grid-cols-[72px_1fr]">
-            <div
-              class="w-full rounded-[0.2rem] overflow-hidden bg-[var(--surface-2)] flex items-center justify-center transition-transform duration-200"
-              data-has-cover={item.coverImage ? 'true' : 'false'}
-              style="data-has-cover='true' && 'hover:rotate-[2deg] hover:scale-[1.03]'"
-            >
-              {item.link ? (
-                <a href={item.link} target="_blank" rel="noopener noreferrer" class="block w-full h-full no-underline border-b-0 text-inherit">
-                  {item.coverImage ? (
-                    <img
-                      src={urlFor(item.coverImage).width(240).height(320).fit('crop').url()}
-                      alt={`Cover of ${item.title}`}
-                      loading="lazy"
-                      class="w-full h-full object-cover border-0"
-                    />
-                  ) : (
-                    <div class="book-cover-placeholder w-[70%] h-[70%] rounded-[0.35rem]" aria-hidden="true" />
-                  )}
-                </a>
-              ) : (
-                <>
-                  {item.coverImage ? (
-                    <img
-                      src={urlFor(item.coverImage).width(240).height(320).fit('crop').url()}
-                      alt={`Cover of ${item.title}`}
-                      loading="lazy"
-                      class="w-full h-full object-cover border-0"
-                    />
-                  ) : (
-                    <div class="book-cover-placeholder w-[70%] h-[70%] rounded-[0.35rem]" aria-hidden="true" />
-                  )}
-                </>
+                <div class="reading__cover-placeholder" />
               )}
             </div>
-
-            <div>
-              <span class="status-chip" data-status={item.status}>
-                {statusLabel[item.status]}
-              </span>
-              <h2 class="mt-[0.6rem] mb-1 text-[var(--text)]" style="font-size: 1rem; font-weight: 600; line-height: 1.4; letter-spacing: normal;">{item.title}</h2>
-              <p class="m-0 text-[var(--text-muted)] text-[0.9rem]">{item.author}</p>
+            <div class="reading__detail">
+              <h3>{item.title}</h3>
+              <p>{item.author}</p>
             </div>
-          </div>
-
-        </article>
-      ))}
+            {item.link && (
+              <a href={item.link} target="_blank" rel="noopener noreferrer" aria-label={`View ${item.title}`}>
+                <Icon name="arrow-up-right" />
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
     </section>
-  </div>
+  ))}
 </Layout>
 
 <style>
+  .reading__header { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
+  .reading__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  .reading__header h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 14ch; }
+  .reading__intro { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.45; margin: var(--spacing-8) 0 0; max-width: 38rem; }
+
+  .reading__group { border-top: 1px solid var(--color-stroke-subtle); padding-block: var(--spacing-8) var(--spacing-4); }
+  .reading__group h2 { font-size: clamp(1.4rem, 2.4vw, 2rem); letter-spacing: var(--tracking-heading); margin: 0 0 var(--spacing-6); }
+  .reading__group ul { display: grid; gap: var(--spacing-6) var(--spacing-8); list-style: none; margin: 0; padding: 0; }
+
+  .reading__item { align-items: start; display: grid; gap: var(--spacing-4); grid-template-columns: 5rem minmax(0, 1fr) auto; }
+  .reading__cover img,
+  .reading__cover-placeholder { display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; }
   /* Stand-in for books with no cover art. Built from stroke tokens so it reads
-     against the tile surface in both themes. */
-  .book-cover-placeholder {
-    background: linear-gradient(135deg, var(--color-stroke-subtle), var(--color-stroke-strong));
+     against the canvas in both themes. */
+  .reading__cover-placeholder { background: linear-gradient(135deg, var(--color-stroke-subtle), var(--color-stroke-strong)); }
+  .reading__detail h3 { font-size: var(--type-body); line-height: 1.4; margin: 0 0 var(--spacing-1); }
+  .reading__detail p { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: 0; }
+  .reading__item > a { align-items: center; color: var(--color-text-secondary); display: inline-flex; min-height: 2.75rem; }
+  .reading__item > a:hover { color: var(--color-action); }
+
+  @media (min-width: 48rem) {
+    .reading__group ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 75rem) {
+    .reading__group ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 </style>

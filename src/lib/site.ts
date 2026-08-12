@@ -1,7 +1,7 @@
 export const SITE_URL = 'https://hamishburke.dev';
 export const SITE_NAME = 'Hamish Burke';
 export const SITE_DESCRIPTION =
-  'Software engineer in Wellington building useful websites, digital products, AI automation, and technical systems.';
+  'Hamish Burke is a software developer in Wellington. This is what he builds, what he writes, and what he is trying to figure out.';
 export const SITE_AUTHOR = 'Hamish Burke';
 export const CONTACT_EMAIL = 'hamishapps@gmail.com';
 export const BOOKING_URL = 'https://cal.com/hamishburke/30min';

@@ -2,10 +2,44 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 
 const artifactTypes = [{ type: 'project' }, { type: 'post' }, { type: 'report' }];
 
+const isIndependent = (document: unknown): boolean =>
+  (document as { kind?: string } | undefined)?.kind === 'independent';
+
+/**
+ * The four reflection questions an independent project has to answer. They are
+ * conditionally rather than unconditionally required: a plain `required()` fires
+ * even while the field is hidden, which would block editors saving professional
+ * stories. `src/lib/work.ts` enforces the same rule at build time.
+ */
+function reflectionField(name: string, title: string) {
+  return defineField({
+    name,
+    title,
+    type: 'text',
+    rows: 3,
+    fieldset: 'reflection',
+    hidden: ({ document }) => !isIndependent(document),
+    validation: (rule) =>
+      rule.max(400).custom((value, context) => {
+        if (!isIndependent(context.document)) return true;
+        return typeof value === 'string' && value.trim().length > 0
+          ? true
+          : 'Required for independent projects.';
+      })
+  });
+}
+
 export const workStory = defineType({
   name: 'workStory',
   title: 'Work Story',
   type: 'document',
+  fieldsets: [
+    {
+      name: 'reflection',
+      title: 'Reflection (independent projects)',
+      options: { collapsible: true, collapsed: false }
+    }
+  ],
   fields: [
     defineField({
       name: 'title',
@@ -28,9 +62,26 @@ export const workStory = defineType({
       validation: (rule) => rule.required()
     }),
     defineField({
+      name: 'kind',
+      title: 'Kind',
+      type: 'string',
+      description:
+        'Which index this story appears on. Professional shows on /work, independent on /projects. Detail pages live at /work/<slug> either way.',
+      options: {
+        list: [
+          { title: 'Professional', value: 'professional' },
+          { title: 'Independent', value: 'independent' }
+        ],
+        layout: 'radio'
+      },
+      initialValue: 'professional',
+      validation: (rule) => rule.required()
+    }),
+    defineField({
       name: 'status',
       title: 'Portfolio status',
       type: 'string',
+      description: 'Presentation within an index: lead stories get a full card, support stories a compact row.',
       options: {
         list: [
           { title: 'Lead', value: 'lead' },
@@ -111,6 +162,10 @@ export const workStory = defineType({
       rows: 3,
       validation: (rule) => rule.required().max(280)
     }),
+    reflectionField('question', 'What was the question?'),
+    reflectionField('built', 'What did I build?'),
+    reflectionField('learned', 'What did I learn?'),
+    reflectionField('differently', 'What would I do differently?'),
     defineField({
       name: 'graphic',
       title: 'Editorial graphic',
@@ -171,9 +226,9 @@ export const workStory = defineType({
     }
   ],
   preview: {
-    select: { title: 'title', descriptor: 'descriptor', status: 'status' },
-    prepare({ title, descriptor, status }) {
-      return { title, subtitle: `${status ?? 'Unclassified'} · ${descriptor ?? ''}` };
+    select: { title: 'title', descriptor: 'descriptor', status: 'status', kind: 'kind' },
+    prepare({ title, descriptor, status, kind }) {
+      return { title, subtitle: `${kind ?? 'professional'} · ${status ?? 'Unclassified'} · ${descriptor ?? ''}` };
     }
   }
 });

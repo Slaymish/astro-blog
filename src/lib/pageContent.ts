@@ -20,6 +20,13 @@ export interface Seo {
   description: string;
 }
 
+/** A homepage section header with its own "see all" link. */
+export interface IndexSection {
+  eyebrow: string;
+  heading: string;
+  link: CtaLink;
+}
+
 export interface HomePage {
   seo: Seo;
   hero: {
@@ -27,12 +34,17 @@ export interface HomePage {
     headline: string;
     headlineAccent: string;
     lede: string;
-    primaryCta: CtaLink;
-    secondaryCta: CtaLink;
+    links: CtaLink[];
   };
-  services: string[];
-  workSection: { eyebrow: string; heading: string; link: CtaLink };
-  approach: { label: string; heading: string; body: string; link: CtaLink };
+  interests: {
+    label: string;
+    statement: string;
+    items: { title: string; body: string }[];
+  };
+  currently: { label: string; heading: string; body: string; link: CtaLink };
+  projectsSection: IndexSection;
+  workSection: IndexSection;
+  writingSection: IndexSection;
   contactHeading: string;
 }
 
@@ -80,6 +92,26 @@ export interface WorkIndexPage {
   contactHeading: string;
 }
 
+export interface ProjectsIndexPage {
+  seo: Seo;
+  hero: { eyebrow: string; headlineLines: string[]; intro: string };
+  contactHeading: string;
+}
+
+export interface WritingIndexPage {
+  seo: Seo;
+  hero: { eyebrow: string; headlineLines: string[]; intro: string };
+  filterLabel: string;
+  emptyMessage: string;
+}
+
+export interface ContactPage {
+  seo: Seo;
+  hero: { eyebrow: string; headlineLines: string[]; intro: string };
+  channels: { label: string; note: string; link: CtaLink }[];
+  availabilityNote: string;
+}
+
 export interface NotFoundPage {
   seo: Seo;
   code: string;
@@ -92,9 +124,9 @@ export interface NotFoundPage {
 }
 
 export interface SiteSettings {
-  header: { navLinks: CtaLink[]; bookingLabel: string; bookingLabelShort: string };
+  header: { navLinks: CtaLink[] };
   footer: { tagline: string; navLinks: CtaLink[]; profileLinks: CtaLink[] };
-  contactBand: { availabilityLabel: string; defaultHeading: string; bookingLabel: string };
+  contactBand: { label: string; defaultHeading: string; contactLabel: string; bookingLabel: string };
 }
 
 async function fetchSingleton<T>(documentId: string): Promise<T> {
@@ -114,5 +146,8 @@ export const getHomePage = () => fetchSingleton<HomePage>('homePage');
 export const getAboutPage = () => fetchSingleton<AboutPage>('aboutPage');
 export const getCvPage = () => fetchSingleton<CvPage>('cvPage');
 export const getWorkIndexPage = () => fetchSingleton<WorkIndexPage>('workIndexPage');
+export const getProjectsIndexPage = () => fetchSingleton<ProjectsIndexPage>('projectsIndexPage');
+export const getWritingIndexPage = () => fetchSingleton<WritingIndexPage>('writingIndexPage');
+export const getContactPage = () => fetchSingleton<ContactPage>('contactPage');
 export const getNotFoundPage = () => fetchSingleton<NotFoundPage>('notFoundPage');
 export const getSiteSettings = () => fetchSingleton<SiteSettings>('siteSettings');

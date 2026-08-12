@@ -1,6 +1,6 @@
 # Tech Debt Tracker
 
-Last updated: 2026-02-12
+Last updated: 2026-08-12
 
 This document tracks known technical debt in the codebase with evidence and next actions.
 
@@ -12,22 +12,6 @@ This document tracks known technical debt in the codebase with evidence and next
 - `P3`: Cleanup / quality improvements.
 
 ## Active Debt
-
-### TD-001 (`P0`) - Markdown safety behavior and test mismatch
-
-- Area: Content rendering security.
-- Evidence:
-  - `npm run test` currently fails: `tests/markdown-safety.test.ts`.
-  - Test expects escaped script tags: `tests/markdown-safety.test.ts:5-10`.
-  - Current implementation does not sanitize/escape scripts in markdown pipeline: `src/lib/markdown.ts`.
-- Risk:
-  - Unclear and potentially unsafe markdown handling contract.
-  - CI remains red until behavior and test expectations are aligned.
-- Recommended fix:
-  - Decide the contract explicitly:
-    - Either sanitize markdown output in `markdownToHtml`, or
-    - Keep raw HTML behavior and rewrite tests + callsites to sanitize at render boundary.
-  - Add regression tests for `<script>`, event handlers, and mixed markdown+HTML payloads.
 
 ### TD-002 (`P1`) - Raw `innerHTML` writes in feature component
 
@@ -50,9 +34,13 @@ This document tracks known technical debt in the codebase with evidence and next
 - Risk:
   - Future schema edits can diverge between copies.
   - Silent runtime/editor mismatch risk.
+- Observed (2026-08-12): this risk materialised. `src/sanity/schemaTypes/project.ts` had a
+  `relatedPost` reference field that the studio copy lacked, so the standalone Studio could
+  not edit it. Both copies are now byte-identical.
 - Recommended fix:
   - Extract shared schema package/module and import from both app and standalone studio.
-  - Add CI check to fail if schema directories diverge.
+  - Add CI check to fail if schema directories diverge. Until then, the cheap manual check is:
+    `for f in $(ls src/sanity/schemaTypes/); do diff -q "src/sanity/schemaTypes/$f" "studio-production/schemaTypes/$f"; done`
 
 ### TD-004 (`P1`) - Dependency vulnerability backlog
 
@@ -120,7 +108,10 @@ This document tracks known technical debt in the codebase with evidence and next
 
 ## Closed Debt
 
-- None yet.
+- **TD-001 (`P0`) - Markdown safety behavior and test mismatch.** Closed 2026-08-12.
+  `src/lib/markdown.ts` now strips script tags and `javascript:` links, and
+  `tests/markdown-safety.test.ts` passes. The entry had been left open in this file after
+  the fix landed; the whole suite is green (44/44). No further action.
 
 ## Notes
 

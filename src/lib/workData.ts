@@ -6,6 +6,9 @@ const workStoryFields = `
   title,
   descriptor,
   "slug": slug.current,
+  // Documents predating the kind field have no value for it, so default rather
+  // than let the validator reject the whole collection before they are edited.
+  "kind": coalesce(kind, 'professional'),
   status,
   order,
   service,
@@ -16,6 +19,10 @@ const workStoryFields = `
   timeframe,
   interventions,
   result,
+  question,
+  built,
+  learned,
+  differently,
   graphic,
   body,
   "primaryArtifact": primaryArtifact->{

@@ -39,20 +39,25 @@ const documents: SeedDocument[] = [
     _id: 'siteSettings',
     _type: 'siteSettings',
     header: {
+      // Order leaves room for /now to be inserted after Writing without rebalancing.
       navLinks: [
-        { _key: 'home', _type: 'ctaLink', label: 'Home', href: '/' },
-        { _key: 'work', _type: 'ctaLink', label: 'Work', href: '/work' },
-        { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' }
-      ],
-      bookingLabel: 'Book a call',
-      bookingLabelShort: 'Book'
-    },
-    footer: {
-      tagline: 'Independent software work from Wellington, NZ.',
-      navLinks: [
+        { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
+        { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
         { _key: 'work', _type: 'ctaLink', label: 'Work', href: '/work' },
         { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' },
-        { _key: 'cv', _type: 'ctaLink', label: 'CV', href: '/cv' }
+        { _key: 'contact', _type: 'ctaLink', label: 'Contact', href: '/contact' }
+      ]
+    },
+    footer: {
+      tagline: 'Building things and writing about them, from Wellington, NZ.',
+      navLinks: [
+        { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
+        { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
+        { _key: 'work', _type: 'ctaLink', label: 'Work', href: '/work' },
+        { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' },
+        { _key: 'reading', _type: 'ctaLink', label: 'Reading', href: '/reading' },
+        { _key: 'cv', _type: 'ctaLink', label: 'CV', href: '/cv' },
+        { _key: 'contact', _type: 'ctaLink', label: 'Contact', href: '/contact' }
       ],
       profileLinks: [
         { _key: 'email', _type: 'ctaLink', label: 'Email', href: `mailto:${CONTACT_EMAIL}` },
@@ -67,8 +72,9 @@ const documents: SeedDocument[] = [
       ]
     },
     contactBand: {
-      availabilityLabel: 'Available for selected projects',
-      defaultHeading: 'Have a complicated problem?',
+      label: 'Get in touch',
+      defaultHeading: 'Working on something interesting?',
+      contactLabel: 'Contact',
       bookingLabel: 'Book a call'
     }
   },
@@ -78,35 +84,68 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'Hamish Burke',
       description:
-        'Wellington web developer turning unclear requirements and manual processes into digital products, internal tools, and practical automation.'
+        'Software developer at Alphero in Wellington. I build things and write about technology, AI, systems, and the problems worth solving.'
     },
     hero: {
-      eyebrow: 'Hamish Burke / Web developer at Alphero in Wellington, NZ',
-      headline: 'Software for work that has outgrown the',
-      headlineAccent: 'workaround.',
-      lede: 'I turn unclear requirements and manual processes into digital products, internal tools, and practical automation.',
-      primaryCta: { _type: 'ctaLink', label: 'View selected work', href: '/work' },
-      secondaryCta: {
-        _type: 'ctaLink',
-        label: 'Discuss a project',
-        href: BOOKING_URL,
-        external: true,
-        ariaLabel: 'Discuss a project on Cal.com'
-      }
+      eyebrow: 'Hamish Burke / Wellington, New Zealand',
+      headline: 'I build things, and I want to understand what',
+      headlineAccent: 'they’re capable of.',
+      lede: 'Software developer at Alphero. Exploring technology, AI, systems, business, and the problems worth solving.',
+      links: [
+        { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
+        { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
+        { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' }
+      ]
     },
-    services: ['Product engineering', 'Workflow automation', 'Technical direction'],
+    interests: {
+      label: 'What I’m interested in',
+      statement:
+        'I’m interested in what happens when technology stops being just a tool and starts changing what organisations and people are capable of doing. Particularly AI, software systems, business, decision-making, and the strange space where those things overlap.',
+      items: [
+        { _key: 'technology', title: 'Technology', body: 'How things work.' },
+        { _key: 'systems', title: 'Systems', body: 'How complicated things interact.' },
+        { _key: 'strategy', title: 'Strategy', body: 'What is actually worth doing.' }
+      ]
+    },
+    currently: {
+      label: 'Currently',
+      heading: 'Learning how software actually gets made.',
+      body: 'I’m working as a junior software developer at Alphero, where I’m learning how software gets designed, built, shipped, maintained, and used by real organisations. That is the part you cannot get from side projects alone, and it is most of what I am doing right now.',
+      link: { _type: 'ctaLink', label: 'Professional work', href: '/work' }
+    },
+    projectsSection: {
+      eyebrow: 'Independent',
+      heading: 'Things I built',
+      link: { _type: 'ctaLink', label: 'All projects', href: '/projects' }
+    },
     workSection: {
-      eyebrow: '2024-2026',
-      heading: 'Selected work',
+      eyebrow: 'Professional',
+      heading: 'Client work',
       link: { _type: 'ctaLink', label: 'All work', href: '/work' }
     },
-    approach: {
-      label: 'How I work',
-      heading: 'I work from the problem outward.',
-      body: 'Define what matters, choose the smallest sound system that solves it, and make the result understandable to the people who have to use it. The case studies show the constraints and trade-offs, not just the finished surface.',
-      link: { _type: 'ctaLink', label: 'More about me', href: '/about' }
+    writingSection: {
+      eyebrow: 'Writing',
+      heading: 'What I’ve been thinking about',
+      link: { _type: 'ctaLink', label: 'All writing', href: '/writing' }
     },
-    contactHeading: 'What are you trying to make work?'
+    contactHeading: 'Working on something interesting?'
+  },
+  {
+    _id: 'writingIndexPage',
+    _type: 'writingIndexPage',
+    seo: {
+      title: 'Writing',
+      description:
+        'Essays, technical explorations, and notes on AI, software systems, and the things Hamish Burke is trying to figure out.'
+    },
+    hero: {
+      eyebrow: 'Writing',
+      headlineLines: ['What I’ve been', 'thinking about.'],
+      intro:
+        'Technical explorations, things I have worked out, and questions I have not answered yet. Mostly AI, software systems, and the places where they meet everything else.'
+    },
+    filterLabel: 'Filter by tag',
+    emptyMessage: 'Nothing here yet.'
   },
   {
     _id: 'aboutPage',
@@ -120,7 +159,7 @@ const documents: SeedDocument[] = [
       eyebrow: 'About · Wellington, New Zealand',
       heading: 'I like understanding the whole system.',
       intro:
-        'I’m Hamish, a software engineer who works from the underlying problem through to the interface people actually use. I’m most useful when the brief is complicated, the path is unclear, and a practical result matters more than technical theatre.'
+        'I’m Hamish. I build software, and I am mostly interested in what happens at the edges of it: how organisations actually decide things, where AI genuinely changes what is possible, and which problems are worth the effort. I am early in working that out.'
     },
     portrait: {
       imageAlt: 'Hamish Burke in Wellington',
@@ -143,26 +182,26 @@ const documents: SeedDocument[] = [
           ]
         }
       ],
-      body: 'My public portfolio deliberately excludes NDA-covered client work. The work shown here is what I can discuss honestly: finished freelance delivery, products I have built end to end, and technical studies with enough evidence to inspect.'
+      body: 'This site deliberately excludes NDA-covered client work. What is here is what I can discuss honestly: things I built myself, finished freelance delivery, and technical studies with enough evidence to inspect and enough limitations to be worth reading.'
     },
     capabilities: {
-      label: 'What I bring',
-      heading: 'Breadth with a point.',
+      label: 'What I’m working on getting good at',
+      heading: 'Three things I keep coming back to.',
       items: [
         {
           _key: 'delivery',
-          title: 'Product delivery',
-          body: 'Responsive interfaces, content systems, integrations, and the release path needed to make them maintainable.'
+          title: 'Shipping things that last',
+          body: 'Interfaces, content systems, and integrations, plus the release path that decides whether any of it survives contact with real use.'
         },
         {
           _key: 'systems',
-          title: 'Systems thinking',
-          body: 'Data models, APIs, infrastructure, security boundaries, and recovery plans shaped around the real constraint.'
+          title: 'Seeing the whole system',
+          body: 'Data models, APIs, infrastructure, and trust boundaries. I find the constraints more interesting than the features.'
         },
         {
           _key: 'clarity',
-          title: 'Technical clarity',
-          body: 'Plain-language decisions, visible trade-offs, and enough documentation for someone else to operate the result.'
+          title: 'Saying what actually happened',
+          body: 'Visible trade-offs, honest limits, and results reported as they came out rather than as I would have liked them to.'
         }
       ]
     },
@@ -171,11 +210,12 @@ const documents: SeedDocument[] = [
       heading: 'From research into shipping software.',
       paragraphs: [
         'I completed a Master of Computer Science at Victoria University of Wellington. My thesis studied diffusion-based anomaly detection for electrical distribution networks. That work sharpened how I frame uncertain problems, evaluate evidence, and separate an interesting result from a useful one.',
-        'Outside software, I boulder, play piano, and read widely. Those are good counterweights to work that can otherwise become entirely screens and abstractions.'
+        'Outside software, I’m working on making more time for reading, playing the piano, and getting away from screens. They serve as essential counterweights to a day spent entirely in code and abstractions.'
       ],
       links: [
         { _key: 'cv', _type: 'ctaLink', label: 'View CV →', href: '/cv' },
-        { _key: 'work', _type: 'ctaLink', label: 'Selected work →', href: '/work' },
+        { _key: 'projects', _type: 'ctaLink', label: 'Projects →', href: '/projects' },
+        { _key: 'work', _type: 'ctaLink', label: 'Professional work →', href: '/work' },
         { _key: 'github', _type: 'ctaLink', label: 'GitHub ↗', href: 'https://github.com/Slaymish', external: true },
         {
           _key: 'linkedin',
@@ -237,7 +277,7 @@ const documents: SeedDocument[] = [
       eyebrow: 'Selected work · 2024–2026',
       headlineLines: ['Useful systems,', 'built properly.'],
       intro:
-        'Client websites, digital products, AI systems, and technical architecture. Each story starts with what changed—not a list of tools.'
+        'Client websites, digital products, AI systems, and technical architecture. Each story starts with what changed, not just a list of tools.'
     },
     leadSection: {
       heading: 'Lead work',
@@ -248,6 +288,75 @@ const documents: SeedDocument[] = [
       description: 'Smaller systems that prove a specific engineering capability.'
     },
     contactHeading: 'What are you trying to make work?'
+  },
+  {
+    _id: 'projectsIndexPage',
+    _type: 'projectsIndexPage',
+    seo: {
+      title: 'Projects',
+      description:
+        'Independent things Hamish Burke has built, each one written up around the question it started from and what it taught him.'
+    },
+    hero: {
+      eyebrow: 'Independent projects',
+      headlineLines: ['Things I built', 'to find out.'],
+      intro:
+        'Projects I started myself, usually because I wanted to know whether something was possible. Each one says what the question was, what I built, what I learned, and what I would do differently.'
+    },
+    contactHeading: 'Working on something similar?'
+  },
+  {
+    _id: 'contactPage',
+    _type: 'contactPage',
+    seo: {
+      title: 'Contact',
+      description: 'How to reach Hamish Burke: email, a call, GitHub, or LinkedIn.'
+    },
+    hero: {
+      eyebrow: 'Contact',
+      headlineLines: ['Say hello.'],
+      intro:
+        'I like hearing about interesting problems and from people working on ambitious things. Email is the surest way to reach me.'
+    },
+    channels: [
+      {
+        _key: 'email',
+        label: 'Email',
+        note: 'The best way to reach me. I read everything, and I reply to most things.',
+        link: { _type: 'ctaLink', label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` }
+      },
+      {
+        _key: 'call',
+        label: 'A call',
+        note: 'Thirty minutes, if a conversation would be faster than a thread.',
+        link: {
+          _type: 'ctaLink',
+          label: 'Book a time',
+          href: BOOKING_URL,
+          external: true,
+          ariaLabel: 'Book a call on Cal.com'
+        }
+      },
+      {
+        _key: 'github',
+        label: 'GitHub',
+        note: 'Most of what is on the projects page has source behind it.',
+        link: { _type: 'ctaLink', label: 'Slaymish', href: 'https://github.com/Slaymish', external: true }
+      },
+      {
+        _key: 'linkedin',
+        label: 'LinkedIn',
+        note: 'Current role and professional history.',
+        link: {
+          _type: 'ctaLink',
+          label: 'Hamish Burke',
+          href: 'https://www.linkedin.com/in/hamish-burke-2301669a',
+          external: true
+        }
+      }
+    ],
+    availabilityNote:
+      'I work full time at Alphero and take on a small number of independent projects alongside it. If you have something that fits, say what the problem is and I will tell you honestly whether I am the right person for it.'
   },
   {
     _id: 'notFoundPage',
@@ -263,9 +372,10 @@ const documents: SeedDocument[] = [
     backLabel: 'Go back',
     suggestionsLabel: 'Or try one of these:',
     suggestions: [
+      { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
+      { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
       { _key: 'work', _type: 'ctaLink', label: 'Work', href: '/work' },
       { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' },
-      { _key: 'cv', _type: 'ctaLink', label: 'CV', href: '/cv' },
       { _key: 'rss', _type: 'ctaLink', label: 'RSS Feed', href: '/rss.xml' }
     ]
   }

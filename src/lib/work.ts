@@ -1,5 +1,7 @@
 import { publicPostSlug } from './legacyRoutes';
 
+/** Which index a story appears on. Detail pages live at /work/<slug> for both. */
+export type WorkKind = 'professional' | 'independent';
 export type WorkStatus = 'lead' | 'support';
 export type WorkService = 'ai-automation' | 'digital-products' | 'technical-direction';
 export type ArtifactType = 'project' | 'post' | 'report';
@@ -28,6 +30,7 @@ export interface WorkStory {
   title: string;
   descriptor: string;
   slug: string;
+  kind: WorkKind;
   status: WorkStatus;
   order: number;
   service: WorkService;
@@ -38,6 +41,11 @@ export interface WorkStory {
   timeframe?: string;
   interventions: string[];
   result: string;
+  /** The four reflection answers. Required when kind is 'independent'. */
+  question?: string;
+  built?: string;
+  learned?: string;
+  differently?: string;
   graphic: {
     kind: GraphicKind;
     alt: string;
@@ -57,12 +65,27 @@ export function artifactHref(artifact: WorkArtifact): string {
   return `/${route}/${slug}`;
 }
 
+/** The reflection answers an independent project must give, in the order they render. */
+const REFLECTION_FIELDS = [
+  ['question', 'what was the question'],
+  ['built', 'what did I build'],
+  ['learned', 'what did I learn'],
+  ['differently', 'what would I do differently']
+] as const;
+
 export function validateWorkStories(stories: WorkStory[]): string[] {
   const errors: string[] = [];
 
   for (const story of stories) {
     if (!story.summary.trim()) {
       errors.push(`${story.title}: summary is required`);
+    }
+    if (story.kind === 'independent') {
+      for (const [field, question] of REFLECTION_FIELDS) {
+        if (!story[field]?.trim()) {
+          errors.push(`${story.title}: ${field} (${question}) is required for independent projects`);
+        }
+      }
     }
     if (story.interventions.length < 1 || story.interventions.length > 3) {
       errors.push(`${story.title}: interventions must contain 1 to 3 items`);

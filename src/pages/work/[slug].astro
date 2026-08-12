@@ -53,6 +53,12 @@ function artifactUrl(artifact: WorkArtifact) {
 function isExternal(url: string) {
   return url.startsWith('http');
 }
+
+// Detail pages are shared, so the back link returns to whichever index listed the story.
+const backLink =
+  story.kind === 'independent'
+    ? { href: '/projects', label: 'All projects' }
+    : { href: '/work', label: 'All work' };
 ---
 
 <Layout
@@ -103,6 +109,18 @@ function isExternal(url: string) {
         <div class="case-snapshot__result"><dt>Result</dt><dd>{story.result}</dd></div>
       </dl>
     </section>
+
+    {story.kind === 'independent' && (
+      <section class="case-snapshot case-reflection" aria-labelledby="case-reflection-heading">
+        <h2 id="case-reflection-heading">Reflection</h2>
+        <dl>
+          <div><dt>What was the question?</dt><dd>{story.question}</dd></div>
+          <div><dt>What did I build?</dt><dd>{story.built}</dd></div>
+          <div><dt>What did I learn?</dt><dd>{story.learned}</dd></div>
+          <div class="case-snapshot__result"><dt>What would I do differently?</dt><dd>{story.differently}</dd></div>
+        </dl>
+      </section>
+    )}
 
     <section class="case-study__story" aria-label="Case study detail">
       <p class="case-study__section-label">Context, decisions, and evidence</p>
@@ -156,10 +174,13 @@ function isExternal(url: string) {
       </section>
     )}
 
-    <a class="case-study__back" href="/work"><IconText icon="arrow-left" position="start">All work</IconText></a>
+    <a class="case-study__back" href={backLink.href}><IconText icon="arrow-left" position="start">{backLink.label}</IconText></a>
   </article>
 
-  <ContactBand heading="Need a system like this?" />
+  <ContactBand
+    heading={story.kind === 'independent' ? 'Working on something similar?' : 'Need a system like this?'}
+    booking={story.kind === 'professional'}
+  />
 </Layout>
 
 <style>

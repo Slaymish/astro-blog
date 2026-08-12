@@ -10,6 +10,9 @@ import { homePage } from './homePage';
 import { aboutPage } from './aboutPage';
 import { cvPage } from './cvPage';
 import { workIndexPage } from './workIndexPage';
+import { projectsIndexPage } from './projectsIndexPage';
+import { writingIndexPage } from './writingIndexPage';
+import { contactPage } from './contactPage';
 import { notFoundPage } from './notFoundPage';
 
 export const schemaTypes = [
@@ -25,5 +28,8 @@ export const schemaTypes = [
   aboutPage,
   cvPage,
   workIndexPage,
+  projectsIndexPage,
+  writingIndexPage,
+  contactPage,
   notFoundPage
 ];

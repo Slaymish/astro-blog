@@ -1,5 +1,20 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 
+/** A titled section header with its own "see all" link. Used three times on the homepage. */
+function indexSection(name: string, title: string) {
+  return defineField({
+    name,
+    title,
+    type: 'object',
+    fields: [
+      defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string', validation: (rule) => rule.required().max(40) }),
+      defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required().max(60) }),
+      defineField({ name: 'link', title: 'Section link', type: 'ctaLink', validation: (rule) => rule.required() })
+    ],
+    validation: (rule) => rule.required()
+  });
+}
+
 export const homePage = defineType({
   name: 'homePage',
   title: 'Home Page',
@@ -32,38 +47,53 @@ export const homePage = defineType({
           name: 'headlineAccent',
           title: 'Headline accent',
           type: 'string',
-          description: 'Rendered in the action colour at the end of the headline.',
+          description:
+            'Rendered in the action colour at the end of the headline. This element is also the origin of the homepage data bus, so it cannot be left empty.',
           validation: (rule) => rule.required().max(40)
         }),
         defineField({ name: 'lede', title: 'Lede', type: 'text', rows: 3, validation: (rule) => rule.required().max(260) }),
-        defineField({ name: 'primaryCta', title: 'Primary call to action', type: 'ctaLink', validation: (rule) => rule.required() }),
-        defineField({ name: 'secondaryCta', title: 'Secondary call to action', type: 'ctaLink', validation: (rule) => rule.required() })
+        defineField({
+          name: 'links',
+          title: 'Hero links',
+          type: 'array',
+          description: 'Plain links, not buttons. The homepage deliberately has no booking call to action.',
+          of: [defineArrayMember({ type: 'ctaLink' })],
+          validation: (rule) => rule.required().min(2).max(4)
+        })
       ],
       validation: (rule) => rule.required()
     }),
     defineField({
-      name: 'services',
-      title: 'Capabilities',
-      type: 'array',
-      description: 'The three-column list that sits at the foot of the hero.',
-      of: [defineArrayMember({ type: 'string', validation: (rule) => rule.required().max(40) })],
-      validation: (rule) => rule.required().min(1).max(4).unique()
-    }),
-    defineField({
-      name: 'workSection',
-      title: 'Selected work section',
+      name: 'interests',
+      title: 'What I am interested in',
       type: 'object',
+      description: 'Areas of investigation, not claims of expertise. Keep the copy off the language of a skills grid.',
       fields: [
-        defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string', validation: (rule) => rule.required().max(40) }),
-        defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required().max(60) }),
-        defineField({ name: 'link', title: 'Section link', type: 'ctaLink', validation: (rule) => rule.required() })
+        defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule) => rule.required().max(40) }),
+        defineField({ name: 'statement', title: 'Statement', type: 'text', rows: 4, validation: (rule) => rule.required().max(400) }),
+        defineField({
+          name: 'items',
+          title: 'Areas',
+          type: 'array',
+          of: [
+            defineArrayMember({
+              type: 'object',
+              fields: [
+                defineField({ name: 'title', title: 'Title', type: 'string', validation: (rule) => rule.required().max(30) }),
+                defineField({ name: 'body', title: 'Body', type: 'string', validation: (rule) => rule.required().max(90) })
+              ]
+            })
+          ],
+          validation: (rule) => rule.required().min(2).max(4)
+        })
       ],
       validation: (rule) => rule.required()
     }),
     defineField({
-      name: 'approach',
-      title: 'Approach section',
+      name: 'currently',
+      title: 'Currently',
       type: 'object',
+      description: 'The honest present-tense statement of where Hamish actually is. Do not dress this up.',
       fields: [
         defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule) => rule.required().max(40) }),
         defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required().max(90) }),
@@ -72,6 +102,9 @@ export const homePage = defineType({
       ],
       validation: (rule) => rule.required()
     }),
+    indexSection('projectsSection', 'Projects section'),
+    indexSection('workSection', 'Work section'),
+    indexSection('writingSection', 'Writing section'),
     defineField({
       name: 'contactHeading',
       title: 'Contact band heading',
