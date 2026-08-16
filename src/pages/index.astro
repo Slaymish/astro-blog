@@ -126,7 +126,9 @@ const { hero, interests, currently, projectsSection, workSection, writingSection
   .home-section-label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
   .home-hero h1 { font-size: clamp(2.9rem, 8vw, 7rem); letter-spacing: var(--tracking-display); line-height: .92; margin: 0; max-width: 18ch; }
   .home-hero__accent { color: var(--color-action); }
-  .home-hero__lower { align-items: end; display: grid; gap: var(--spacing-6); margin-block: clamp(2rem, 6vw, 4.5rem) 0; }
+  /* Auto top margin drops this row onto the hero's bottom edge, so a short
+     headline leaves composed space under the h1 rather than a dead tail. */
+  .home-hero__lower { align-items: end; display: grid; gap: var(--spacing-6); margin-block: auto 0; padding-block-start: clamp(2rem, 6vw, 4.5rem); }
   .home-hero__lower > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; margin: 0; max-width: 40rem; }
   .home-hero__links { display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-6); }
   .home-hero__links a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
