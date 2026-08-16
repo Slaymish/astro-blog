@@ -95,7 +95,7 @@ Never:
 - `fetchSanity` reads through Sanity's edge CDN, so content written to Sanity takes up to ~2 minutes to reach a build. A build run immediately after a write silently produces the old content. Use `fetchFreshSanity` only where staleness is unacceptable (currently RSS).
 - The dev server caches the Sanity client at module scope. After changing page-copy singletons, restart `pnpm run dev`; a browser reload is not enough.
 - `pnpm run seed:copy` uses `createOrReplace` and will overwrite copy edited in Studio. Reconcile Studio values into `scripts/seed-page-copy.ts` before running it.
-- The circuit overlay is a markup contract with no test coverage. A bus (`data-circuit`) needs both a `data-circuit-source` and at least one `data-circuit-node` inside the same region or it renders nothing, silently. Check the page visually after moving those attributes.
+- The circuit overlay's *markup contract* has no test coverage, though its routing maths does (`tests/circuit-geometry.test.ts`). A bus (`data-circuit`) needs both a `data-circuit-source` and at least one `data-circuit-node` inside the same region or it renders nothing, silently. Check the page visually after moving those attributes. Its grammar is `docs/design-docs/circuit-design-language.md`; routing decisions depend on real element boxes, so moving a source or a node changes the drawing.
 - Content routes are prerendered (`output: 'static'`; only `src/pages/api/*` opts out with `prerender = false`), so request-time inputs such as query params are unavailable on pages and must be resolved client-side.
 - Publishing in Sanity only reaches the live site once a Netlify build runs.
 - `src/content.config.ts` exists, but published runtime content is fetched from Sanity in routes.

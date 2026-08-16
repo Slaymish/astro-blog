@@ -36,18 +36,20 @@
   --ambient-highlight: rgb(105 115 107 / 0.06);
   --ambient-noise-opacity: 0.035;
 
-  /* Circuit pipework stays neutral so only the packets carry the signal colour.
-     Dedicated tokens rather than opacity on the semantic roles: these are tinted
-     strokes over the canvas, not variants of a text or border colour. The bore
-     is darker than the canvas so the run reads as hollow. */
-  --circuit-wall: rgb(120 131 122 / 0.58);
-  --circuit-bore: rgb(7 9 8 / 0.85);
-  --circuit-fitting: rgb(170 179 172 / 0.44);
-  --circuit-detail: rgb(170 179 172 / 0.5);
-  --circuit-detail-live: rgb(233 107 80 / 0.72);
-  --circuit-packet: rgb(255 190 172 / 0.95);
-  --circuit-packet-halo: rgb(233 107 80 / 0.22);
+  /* Circuit pipework stays neutral: coral touches a capsule and the dot it is
+     arriving at, and nothing else. Dedicated tokens rather than opacity on the
+     semantic roles, because these are tinted strokes over the canvas rather
+     than variants of a text or border colour. The bore is darker than the
+     canvas so the bus reads as hollow. Both theme files define these same seven
+     structure roles plus the two live ones; a role in one and not the other is
+     a bug. See docs/design-docs/circuit-design-language.md. */
+  --circuit-bus: rgb(120 131 122 / 0.58);
+  --circuit-bore: rgb(7 9 8 / 0.9);
+  --circuit-branch: rgb(150 160 152 / 0.46);
   --circuit-label: rgb(170 179 172 / 0.38);
+  --circuit-node: rgb(170 179 172 / 0.55);
+  --circuit-node-live: rgb(233 107 80 / 0.85);
+  --circuit-packet: rgb(255 176 152 / 0.95);
   --circuit-node-edge: rgb(233 107 80 / 0.62);
   --circuit-node-glow: rgb(233 107 80 / 0.14);
 

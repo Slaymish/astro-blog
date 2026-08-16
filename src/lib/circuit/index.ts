@@ -1,3 +1,3 @@
+// Layout.astro boots the overlay through this entry point. Routing maths is
+// imported straight from ./geometry by the engine and by tests.
 export { initCircuit } from './engine';
-export { busRoute, manhattanPath } from './geometry';
-export type { BusLayout, Branch, NodeEdge, Point, RouteOptions, RouteSpec } from './geometry';

@@ -1,9 +1,12 @@
 /**
  * CIRCUIT
  *
- * Presentation for the data bus built by src/lib/circuit. Geometry and timing
+ * Presentation for the pipework built by src/lib/circuit. Geometry and timing
  * come from the tokens in tokens.css; colours come from the theme files. The
  * overlay itself is created by the engine, so nothing here is authored per page.
+ *
+ * The grammar is docs/design-docs/circuit-design-language.md. Three weights,
+ * one radius, three terminators, and coral only on motion.
  */
 
 [data-circuit] {
@@ -11,14 +14,16 @@
   position: relative;
 }
 
-/* Authored content sits above the overlay. The overlay is out of flow, so it
-   never takes a slot in a grid or flex region. */
-[data-circuit] > *:not(.circuit):not(.page-circuit-motif__anchor) {
+/* Authored content sits above the overlay. Both overlay layers are out of flow,
+   so neither takes a slot in a grid or flex region and neither can shift the
+   page. */
+[data-circuit] > *:not(.circuit):not(.circuit__flow):not(.page-circuit-motif__anchor) {
   position: relative;
   z-index: 1;
 }
 
-.circuit {
+.circuit,
+.circuit__flow {
   height: 100%;
   inset: 0;
   overflow: visible;
@@ -28,13 +33,12 @@
   z-index: 0;
 }
 
-/* Internal pages inherit one layout-owned bus. It stays in the page gutter and
-   is quieter than the authored homepage buses, so it reads as atmosphere rather
-   than another content layer. */
+/* Internal pages inherit one layout-owned rail. Quieter than the authored
+   homepage buses, so it reads as atmosphere rather than another content layer,
+   and stripped back to structure alone per the density rule. */
 .page-circuit-motif {
-  --circuit-heartbeat: 18000ms;
   inset: 0;
-  opacity: 0.46;
+  opacity: 0.5;
   pointer-events: none;
   position: absolute;
 }
@@ -59,35 +63,57 @@
   top: 84%;
 }
 
-.page-circuit-motif .circuit__fittings,
-.page-circuit-motif .circuit__label {
+/* The density rule for internal pages: the rail and its caps, and nothing else.
+   No lane, no branches, no annotation, no motion. */
+.page-circuit-motif .circuit__trunk,
+.page-circuit-motif .circuit__branches,
+.page-circuit-motif .circuit__label,
+.page-circuit-motif .circuit__flow,
+.page-circuit-motif .circuit__node,
+.page-circuit-motif .circuit__fitting:not(.circuit__fitting--cap),
+.page-circuit-motif .circuit__fitting--on-trunk,
+.page-circuit-motif .circuit__fitting--on-branch {
   display: none;
 }
 
-.circuit path {
+/* ============================================
+   SECTION
+   ============================================
+   Three weights, each with a meaning. The bus is a hollow pipe: a 4px wall with
+   a 2px bore laid over it, so the run shows as two 1px edges. A branch is a
+   single 2px line, lighter than the bus it taps. Ticks are 1px.
+
+   Every weight is even or a single pixel, and the engine snaps geometry onto the
+   device pixel grid to match, which is what keeps the hairlines crisp. Do not
+   introduce a fractional weight here. */
+
+.circuit__pipe,
+.circuit__fitting {
   fill: none;
   vector-effect: non-scaling-stroke;
 }
 
-/* ============================================
-   PIPE SECTION
-   ============================================
-   A run is a wall with a bore laid over it. The wall shows as the two edges it
-   leaves either side of the bore, which is what gives the run its section. Butt
-   caps square off every open end so a flange can finish it. */
-
-.circuit__wall {
-  stroke: var(--circuit-wall);
+/* Butt caps square off every open end so a cap plate can finish it. Round joins
+   because the router hands over true circular corners and the join only shows
+   where a path terminates. */
+.circuit__pipe {
   stroke-linecap: butt;
   stroke-linejoin: round;
-  stroke-width: var(--circuit-wall-weight);
+}
+
+.circuit__wall {
+  stroke: var(--circuit-bus);
+  stroke-width: var(--circuit-weight-bus);
 }
 
 .circuit__bore {
   stroke: var(--circuit-bore);
-  stroke-linecap: butt;
-  stroke-linejoin: round;
-  stroke-width: var(--circuit-bore-weight);
+  stroke-width: var(--circuit-weight-bore);
+}
+
+.circuit__spur {
+  stroke: var(--circuit-branch);
+  stroke-width: var(--circuit-weight-branch);
 }
 
 /* Kept out of the paint so the engine can measure route lengths against a real
@@ -99,69 +125,112 @@
 /* ============================================
    FITTINGS
    ============================================
-   Unions either side of a sweep, a tee band either side of a split, and at the
-   ends whatever suits what the run has met: a flange plate closing it against a
-   component's face, a tee laid across a divider it taps into, a stop where it
-   has run out along a line of text. */
+   A tick either side of a sweep, two across a split, a plate closing an end, a
+   single longer mark where the pipe hands over to a rule the layout already
+   draws, and a dot on every terminal. Six parts, and nothing outside them. */
 
 .circuit__fitting {
-  fill: var(--circuit-fitting);
+  stroke: var(--circuit-branch);
+  stroke-linecap: butt;
+  stroke-width: var(--circuit-weight-tick);
 }
 
-.circuit__fitting--flange,
-.circuit__fitting--origin {
-  fill: var(--circuit-detail);
+/* A cap is the heavier of the marks: it closes a run rather than annotating one. */
+.circuit__fitting--cap {
+  stroke: var(--circuit-bus);
+  stroke-width: var(--circuit-cap-weight);
 }
 
-.circuit__junction {
-  fill: var(--circuit-detail);
+.circuit__node {
+  fill: var(--circuit-node);
+  stroke: none;
   transition: fill var(--transition-slow) var(--easing-expressive);
 }
 
-.is-circuit-live .circuit__junction {
-  fill: var(--circuit-detail-live);
-}
-
-.circuit__lamp {
-  fill: var(--circuit-packet);
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
+/* The only coral on the drawing, and only while something is arriving. */
+.circuit__node.is-live {
+  fill: var(--circuit-node-live);
 }
 
 .circuit__label {
   fill: var(--circuit-label);
   font-family: var(--font-mono);
   font-size: var(--circuit-label-size);
-  letter-spacing: 0.18em;
+  letter-spacing: var(--circuit-label-tracking);
+  text-transform: uppercase;
+}
+
+/* Below this width the gutter cannot seat the label clear of the screen edge:
+   the rail centres in half the gutter, the label sits a further 12px outboard,
+   and its rotated glyphs reach 7px past that again. At 1024px that leaves 1px of
+   margin. A declared breakpoint rather than a runtime fits/does-not-fit test, so
+   the label can never wink out at a width nobody chose. */
+@media (max-width: 79.9375rem) {
+  .circuit__label {
+    display: none;
+  }
 }
 
 /* ============================================
-   PACKETS
+   MOTION
    ============================================
-   A packet is a short dash travelling the bore. The halo trails the core on a
-   shared leading edge; the engine offsets it to keep the two locked together. */
+   One capsule per run, riding offset-path. transform and opacity only, so the
+   work stays on the compositor. The capsule is the bore's width, which is what
+   makes it read as light inside the pipe rather than a smudge on top of it.
 
-.circuit__packet {
-  stroke-linecap: butt;
+   The travel phase below is 40% of the cycle and must stay in step with
+   --circuit-packet-duty in tokens.css, which is what the engine divides by to
+   turn a travel time into a cycle length. */
+
+@keyframes circuit-flow {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  36% {
+    opacity: 1;
+  }
+  40% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
 }
 
-.circuit__packet--core {
-  stroke: var(--circuit-packet);
-  stroke-width: var(--circuit-packet-weight);
+.circuit__capsule {
+  animation: circuit-flow var(--circuit-cycle, 18s) linear infinite;
+  /* Paused until an IntersectionObserver says the region is on screen, so an
+     off-screen bus costs nothing at all. */
+  animation-play-state: paused;
+  background: var(--circuit-packet);
+  border-radius: calc(var(--circuit-weight-bore) / 2);
+  display: block;
+  height: var(--circuit-weight-bore);
+  left: 0;
+  offset-rotate: auto;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  width: var(--circuit-packet-length);
 }
 
-.circuit__packet--halo {
-  stroke: var(--circuit-packet-halo);
-  stroke-width: var(--circuit-packet-halo-weight);
+.is-circuit-live .circuit__capsule {
+  animation-play-state: running;
 }
 
 /* ============================================
    NODES
    ============================================
-   How a component acknowledges the packet that reaches it. Default is `ring`;
-   `edge` suits a node whose top rule is its own border; `underline` suits text.
-   Each also tells the engine what the run lands on — see resolveAttach. */
+   How a component acknowledges the capsule that reaches it. `edge` suits a node
+   whose top rule is its own border; `underline` suits text; `ring` is the
+   default. This is presentation only — what a run physically lands on is
+   declared separately with data-circuit-attach. */
 
 [data-circuit-node] {
   transition:
@@ -181,15 +250,12 @@
 
 /* Text ends carry no rule of their own to light: the run already draws one along
    the baseline, and a second under the same words would read as a doubled line.
-   So text blooms instead — the same acknowledgement the source gives, because
-   both are the same kind of end. */
-[data-circuit-flash='underline'],
-[data-circuit-source] {
+   So text blooms instead. */
+[data-circuit-flash='underline'] {
   transition: text-shadow var(--transition-slow) var(--easing-expressive);
 }
 
-[data-circuit-flash='underline'].is-energised,
-[data-circuit-source].is-energised {
+[data-circuit-flash='underline'].is-energised {
   text-shadow: 0 0 var(--circuit-node-bloom) var(--circuit-node-glow);
 }
 
@@ -198,20 +264,21 @@
    ============================================ */
 
 @media (prefers-reduced-motion: reduce) {
-  /* The pipework is structure and stays. The motion layer does not. */
-  .circuit__packets,
-  .circuit__lamp {
+  /* The pipework is structure and stays; traces render in their final state.
+     The motion layer does not exist. */
+  .circuit__flow {
     display: none;
   }
 
-  [data-circuit-node],
-  [data-circuit-source] {
+  .circuit__node,
+  [data-circuit-node] {
     transition: none;
   }
 }
 
 @media print {
-  .circuit {
+  .circuit,
+  .circuit__flow {
     display: none;
   }
 }

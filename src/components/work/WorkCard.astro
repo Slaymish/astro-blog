@@ -18,6 +18,7 @@ const { story, variant = 'featured', reverse = false, circuitNode } = Astro.prop
 <article
   class:list={['work-card', `work-card--${variant}`, reverse && 'work-card--reverse']}
   data-circuit-node={circuitNode}
+  data-circuit-attach={circuitNode ? 'rule' : undefined}
   data-circuit-flash={circuitNode ? 'edge' : undefined}
 >
   <a href={workStoryHref(story.slug)} class="work-card__link" aria-label={`Read the ${story.title} case study`}>

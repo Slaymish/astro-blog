@@ -21,13 +21,21 @@ const bandHeading = heading ?? contactBand.defaultHeading;
     <p>{contactBand.label}</p>
     <h2 data-circuit-source>{bandHeading}</h2>
   </div>
-  <div class="contact-band__actions">
+  <!-- The whole actions column is the node, not the link inside it: the run
+       rises from the lane onto the column's bottom edge, and landing on the link
+       instead would send it up through the email address below. -->
+  <div
+    class="contact-band__actions"
+    data-circuit-node="contact"
+    data-circuit-attach="box"
+    data-circuit-flash="underline"
+  >
     {booking ? (
-      <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com" circuitNode="booking">
+      <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">
         {contactBand.bookingLabel}
       </ButtonLink>
     ) : (
-      <a class="contact-band__primary" href="/contact" data-circuit-node="contact" data-circuit-flash="edge">
+      <a class="contact-band__primary" href="/contact">
         <IconText>{contactBand.contactLabel}</IconText>
       </a>
     )}

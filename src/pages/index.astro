@@ -22,15 +22,17 @@ const { hero, interests, currently, projectsSection, workSection, writingSection
   <section class="home-hero" data-circuit="BUS_01">
     <p class="home-hero__eyebrow">{hero.eyebrow}</p>
     <h1>{hero.headline} <span class="home-hero__accent" data-circuit-source>{hero.headlineAccent}</span></h1>
-    <div class="home-hero__lower" data-circuit-rail>
-      <p>{hero.lede}</p>
-      <!-- The bus originating at the headline accent needs a node inside this region
-           to route to, so the hero links are it. -->
+    <div class="home-hero__lower">
+      <!-- Two nodes rather than one: the hero is the page's focal point, so the
+           bus is denser here. The lede is met along its own baseline; the links
+           are dropped onto from the lane directly above them. -->
+      <p data-circuit-node="lede" data-circuit-attach="text" data-circuit-flash="underline">{hero.lede}</p>
       <nav
         class="home-hero__links"
         aria-label="Start here"
         data-circuit-node="start"
-        data-circuit-flash="edge"
+        data-circuit-attach="text"
+        data-circuit-flash="underline"
       >
         {hero.links.map((link) => (
           <a href={link.href} aria-label={link.ariaLabel}><IconText>{link.label}</IconText></a>
@@ -66,8 +68,11 @@ const { hero, interests, currently, projectsSection, workSection, writingSection
   <section class="home-work" aria-labelledby="projects-heading" data-circuit="BUS_02">
     <div class="home-section-heading">
       <div>
-        <p>{projectsSection.eyebrow}</p>
-        <h2 id="projects-heading" data-circuit-source>{projectsSection.heading}</h2>
+        <!-- The bus leaves the section label rather than the heading: the first
+             card's own rule sits barely below the heading's baseline, and a lane
+             dropped from there would run parallel to it a few pixels away. -->
+        <p data-circuit-source>{projectsSection.eyebrow}</p>
+        <h2 id="projects-heading">{projectsSection.heading}</h2>
       </div>
       <a href={projectsSection.link.href}><IconText>{projectsSection.link.label}</IconText></a>
     </div>
@@ -167,8 +172,5 @@ const { hero, interests, currently, projectsSection, workSection, writingSection
     .home-interests__list { grid-template-columns: repeat(3, 1fr); gap: var(--spacing-8); }
     .home-writing__list a { grid-template-columns: 7rem minmax(0, 1fr); }
     .home-writing__date { grid-row: span 2; }
-  }
-  @media (max-width: 47.9375rem) {
-    .home-hero { --circuit-heartbeat: 22000ms; }
   }
 </style>

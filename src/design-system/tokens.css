@@ -237,46 +237,73 @@
   /* ============================================
      CIRCUIT
      ============================================
-     Geometry and timing for the data bus in src/lib/circuit. The engine reads
+     Geometry and timing for the pipework in src/lib/circuit. The engine reads
      these off the region's computed style, so every value must stay in px, ms,
      or unitless: relative units would resolve against the wrong box. Colours
-     are per-theme and live in themes/dark.css and themes/light.css. */
+     are per-theme and live in themes/dark.css and themes/light.css. The grammar
+     these express is docs/design-docs/circuit-design-language.md.
 
-  /* Routing. The spine centres in the page gutter and never sits further out
+     Every routing value is a multiple of --circuit-grid, and the engine snaps
+     each vertex onto the device pixel grid on top of that. */
+
+  --circuit-grid: 4px;              /* the module every routed coordinate sits on */
+
+  /* Routing. The rail centres in the page gutter and never sits further out
      than one lane, which is what keeps it off the screen edge once the gutter
      narrows on tablet and mobile. */
-  --circuit-lane: 30px;             /* furthest outside the content edge the spine sits */
-  --circuit-drop: 38px;             /* vertical run below the source before the trunk turns */
-  --circuit-rail-gap: 20px;         /* clearance above the element a rail branch travels over */
-  --circuit-top-lane: 20px;         /* matching clearance above a node fed from overhead */
-  --circuit-text-run: 30px;         /* how far a run travels along a baseline where it meets text */
+  --circuit-lane: 28px;             /* furthest outside the content edge the rail sits */
+  --circuit-drop: 56px;             /* vertical run below the source down to the lane */
+  --circuit-text-run: 40px;         /* how far the trunk travels along the source's baseline before turning */
   --circuit-pin-gap: 12px;          /* how far past a node's leading corner a run lands on it */
-  --circuit-min-branch: 16px;       /* shortest run a branch may take off the spine */
-  --circuit-bend-radius: 16px;      /* sweep on turns; capped per bend by the runs it joins */
+  --circuit-min-branch: 16px;       /* shortest spur worth drawing off the rail */
+  --circuit-rail-inset: 24px;       /* how far the rail stops short of the region's own edges */
   --circuit-origin-gap: 3px;        /* optical clearance below a text baseline */
 
-  /* Section. The wall reads as the two edges it shows either side of the bore,
-     and the packet weight matches the bore so light travels inside the pipe. */
-  --circuit-wall-weight: 4px;
-  --circuit-bore-weight: 2px;
-  --circuit-packet-weight: 2px;
-  --circuit-packet-halo-weight: 8px;
-  --circuit-pulse-length: 30px;     /* dash length of a travelling packet */
+  /* One radius, everywhere, guaranteed. The router relaxes any leg shorter than
+     --circuit-min-leg rather than shrinking a sweep to fit it, so a corner is
+     either exactly this radius or it does not exist. 12px because at 390px the
+     rail sits 18px from the screen edge and a wider sweep pushes past it. */
+  --circuit-radius: 12px;
+  --circuit-min-leg: 32px;          /* 2 * radius + 8, so a step keeps a visible straight */
 
-  /* Fittings: a union either side of a sweep, a tee at a split, a flange at a
-     termination. Bars are drawn across the pipe they dress. */
-  --circuit-collar-length: 10px;
-  --circuit-collar-weight: 1px;
-  --circuit-tee-length: 12px;
-  --circuit-tee-spread: 6px;        /* how far each tee band sits from the split */
-  --circuit-flange-length: 15px;
-  --circuit-flange-weight: 2px;
-  --circuit-fitting-clearance: 15px; /* closest two fittings sit before a collar is dropped */
-  --circuit-packet-speed: 1250;     /* px per second; unitless so the engine can read it */
+  /* Section. Three weights, each with a meaning. The bus is a hollow pipe: the
+     wall shows as two 1px edges either side of the bore. Even weights centre on
+     whole pixels and the 1px tick centres on a half pixel, which is what keeps
+     hairlines crisp at 1x and 2x. Do not introduce a fractional weight. */
+  --circuit-weight-bus: 4px;        /* the trunk and the rail */
+  --circuit-weight-bore: 2px;       /* the hollow inside the bus */
+  --circuit-weight-branch: 2px;     /* a spur from the bus to one node */
+  --circuit-weight-tick: 1px;       /* fittings and registration marks; never a route */
+
+  /* Fittings: a tick either side of a sweep, two across a split, a plate closing
+     an end, one across a rule the pipe hands over to. Bars are drawn across the
+     run they dress. */
+  --circuit-tick-length: 10px;
+  --circuit-tap-spread: 6px;        /* how far each tap band sits from the split */
+  --circuit-port-length: 14px;
+  --circuit-cap-length: 14px;
+  --circuit-cap-weight: 2px;
+  --circuit-bracket-length: 8px;
+  --circuit-node-radius: 2px;
+  --circuit-tick-clearance: 15px;   /* closest two fittings sit before a tick is dropped */
+
+  /* Motion. Slow and mechanical: a capsule travels at a constant speed whatever
+     the length of its run, and is dark for most of its cycle. */
+  --circuit-packet-speed: 120;      /* px per second; unitless so the engine can read it */
+  /* Bounded by the corner radius, not by taste. A straight element riding a
+     curve leaves it: a bar of length L on radius R sits R - sqrt(R^2 - (L/2)^2)
+     off the arc at its tips, and is not a chord at all once L/2 > R. At 8px on
+     a 12px radius that error is 0.7px, inside the pipe's own wall. Raising this
+     without raising --circuit-radius throws the capsule off every corner. */
+  --circuit-packet-length: 8px;
+  --circuit-packet-duty: 0.4;       /* fraction of a cycle spent travelling */
   --circuit-node-hold: 520ms;       /* how long a node stays acknowledged */
-  --circuit-heartbeat: 11000ms;     /* restrained idle interval between packets on a live bus */
-  --circuit-label-size: 0.5625rem;  /* 9px */
   --circuit-node-bloom: 20px;       /* reach of the glow on an acknowledged node */
+
+  --circuit-label-size: 0.5625rem;  /* 9px */
+  --circuit-label-tracking: 0.18em;
+  --circuit-label-offset: 12px;     /* how far outboard of the rail the label sits */
+  --circuit-label-inset: 24px;      /* how far up the rail from its cap the label sits */
 
   /* ============================================
      TRANSITIONS
@@ -344,25 +371,16 @@
   --tile-image-text: #f8fafc;
 }
 
-/* A narrower gutter carries a lighter pipe. Below the tablet breakpoint the
-   spine has roughly a third of the room it has on desktop, so the section,
-   fittings, and sweeps all come down a size rather than crowding the run
-   against the screen edge. */
+/* Below the tablet breakpoint the gutter has roughly a third of the room it has
+   on desktop, so the rail moves inboard. The pipe section deliberately does NOT
+   change: a 4px wall is a 4px wall at every width, and the previous 3px / 1.5px
+   override could not render crisply at any device pixel ratio. What thins out on
+   a small screen is density, handled in circuit.css — the label is not drawn and
+   fittings are culled harder. */
 @media (max-width: 47.9375rem) {
   :root {
-    --circuit-lane: 26px;
-    --circuit-bend-radius: 12px;
-    --circuit-drop: 30px;
-    --circuit-text-run: 24px;
-    --circuit-wall-weight: 3px;
-    --circuit-bore-weight: 1.5px;
-    --circuit-packet-weight: 1.5px;
-    --circuit-packet-halo-weight: 6px;
-    --circuit-pulse-length: 22px;
-    --circuit-collar-length: 8px;
-    --circuit-tee-length: 9px;
-    --circuit-tee-spread: 5px;
-    --circuit-flange-length: 12px;
-    --circuit-fitting-clearance: 13px;
+    --circuit-lane: 20px;
+    --circuit-rail-inset: 16px;
+    --circuit-tick-clearance: 13px;
   }
 }

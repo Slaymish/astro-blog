@@ -1,18 +1,25 @@
 /**
  * CIRCUIT GEOMETRY
  *
- * Pure routing maths for the data-bus overlay. Everything works in region-local
- * pixels (an element's box measured against its region's box), so results stay
- * correct under any ancestor transform, including Bend's canvas scroller.
+ * Pure routing maths for the pipework overlay. Everything works in region-local
+ * pixels (an element's box measured against its region's overlay), so results
+ * stay correct under any ancestor transform, including Bend's canvas scroller.
  *
- * Topology is a bus, not a set of independent lines: one trunk leaves the
- * source, turns onto a shared spine, and every node branches off that spine at
- * its own junction. Alongside the path data, routes report their fittings —
- * unions at the bends, a tee at each split, a joint at each end — so the run
- * reads as assembled pipework rather than a drawn line.
+ * The grammar this implements is docs/design-docs/circuit-design-language.md.
+ * Three rules matter more than the rest:
  *
- * Both ends of a run land on the thing they serve rather than short of it, and
- * what a run meets decides how it is finished. See `Attach`.
+ * 1. One radius, guaranteed. A corner is exactly `radius` or it does not exist.
+ *    Legs shorter than `minLeg` are relaxed away rather than drawn with a
+ *    smaller sweep, so a run can never contain two radii.
+ * 2. Every vertex is snapped, by a snapper the caller supplies, onto the device
+ *    pixel grid. Even-weight strokes centre on whole pixels and one-pixel ticks
+ *    centre on half pixels, which is the whole reason hairlines read crisp.
+ * 3. A branch taps the nearest run that already exists — the lane if it sits
+ *    under it, the rail otherwise — rather than always routing via the rail.
+ *
+ * Topology is three parts. A `trunk` leaves the source and runs to the rail. A
+ * `rail` runs the full height of the region in the page gutter. Branches tap
+ * one or the other. Every open end carries a terminator.
  */
 
 export interface Point {
@@ -28,33 +35,30 @@ export interface Box {
 }
 
 /**
- * How a branch approaches its node.
- * - `left`  stub into the node's left edge at its vertical centre. Full-width nodes.
- * - `top`   run just above the node, then drop onto its top edge.
- * - `rail`  run along the region's rail lane, then drop onto the node's top edge.
- *           For nodes in a right-hand column, where a lane at the node's own top
- *           would cross the content beside it.
- */
-export type NodeEdge = 'left' | 'top' | 'rail';
-
-/**
  * What a run meets at the node end, and so how it is finished.
- * - `box`  a face to butt into. The run lands on the edge and takes a flange.
- * - `rule` a divider that is already a run in its own right. The branch taps
- *          into it and takes a tee laid across the rule, not a cap against it.
- * - `text` no edge at all. The run turns onto the node's baseline, travels it
- *          for `textRun`, and stops — becoming the rule the text has not got.
+ * - `box`  a face to butt into. The run lands on the edge and takes a cap.
+ * - `rule` a divider that is already a line in the layout. The run meets its
+ *          leading end and takes a port, so the rule reads as reaching the bus.
+ * - `text` no edge at all. The run lands on the node's baseline at its leading
+ *          edge — where an underline would begin — from either direction.
  */
 export type Attach = 'box' | 'rule' | 'text';
 
-/** Where the pipework is joined, sized and drawn by the engine per kind. */
-export type FittingKind = 'origin' | 'collar' | 'tee' | 'terminal';
+/** `rail` forces a rail tap for a node that would otherwise tap the lane. */
+export type Lane = 'auto' | 'rail';
+
+/** The closed set of connector parts. Everything is assembled from these. */
+export type FittingKind = 'elbow' | 'tap' | 'cap' | 'port' | 'node' | 'bracket';
+
+/** Which run a fitting belongs to, so density rules can thin one and not another. */
+export type FittingOn = 'trunk' | 'rail' | 'branch';
 
 export interface Fitting {
   kind: FittingKind;
   at: Point;
-  /** Degrees. The direction the pipe runs through the fitting; 0 is +x, 90 is +y. */
+  /** Degrees. The bearing the pipe runs through the fitting; 0 is +x, 90 is +y. */
   angle: number;
+  on: FittingOn;
 }
 
 export interface RouteSpec {
@@ -64,66 +68,106 @@ export interface RouteSpec {
    * squared off at the baseline: `top + height` is the line the run rests on.
    */
   box: Box;
-  edge: NodeEdge;
+  /**
+   * The node's full box, as the same object the caller put in
+   * `RouteOptions.obstacles`. Identity is what lets a stub ignore the node it is
+   * on its way to: a run meeting text ends on a baseline, which is inside the
+   * node's own box, so without this every text node blocks its own approach.
+   */
+  bounds: Box;
   attach: Attach;
+  lane: Lane;
+}
+
+/**
+ * Snapping onto the device pixel grid. The caller owns this because only it
+ * knows the overlay's own fractional offset. Even-weight geometry uses `x`/`y`;
+ * one-pixel ticks use `tickX`/`tickY`, which land on half pixels.
+ */
+export interface Snap {
+  x(value: number): number;
+  y(value: number): number;
+  tickX(value: number): number;
+  tickY(value: number): number;
 }
 
 export interface RouteOptions {
   /** Region width in region-local pixels. Terminals never route past it. */
   width: number;
-  /** x of the shared spine. Normally negative: the spine sits in the page gutter. */
-  spineX: number;
-  /** y of the rail lane used by `rail` branches. */
-  railY: number;
-  /** Clearance above a node for the lane a `top` branch travels along. */
-  topLane: number;
-  /** Ideal vertical drop below the source before the trunk turns onto the spine. */
+  /** x of the rail. Normally negative: the rail sits in the page gutter. */
+  railX: number;
+  /** y the rail starts at, inset from the region's top. */
+  railTop: number;
+  /** y the rail ends at, inset from the region's bottom. */
+  railBottom: number;
+  /** Vertical drop below the source baseline to the lane. */
   drop: number;
-  /** How far a run travels along a baseline where it meets text, at either end. */
-  textRun: number;
   /**
-   * Standoff along a node's own edge: how far past its leading corner a branch
-   * lands on it, and how far clear of the first glyph a text drop passes.
+   * How far the trunk travels along the source's own baseline before turning.
+   * Only the source end runs along a baseline: a branch meeting text stops at
+   * the leading edge rather than carrying on underneath the glyphs.
    */
+  textRun: number;
+  /** Standoff past a node's leading corner where a run lands on it. */
   pinGap: number;
-  /** Corner rounding on right-angle turns. Capped per bend by the runs it joins. */
-  bendRadius: number;
-  /** Shortest run a branch may take off the spine, so junctions stay legible. */
+  /** The one corner radius. Never reduced. */
+  radius: number;
+  /** Shortest leg the router may emit between two turns. Must exceed 2*radius. */
+  minLeg: number;
+  /** Shortest spur worth drawing, so a tap never reads as a nick on the rail. */
   minBranch: number;
+  /** How far up the rail from its cap the label and its bracket sit. */
+  labelInset: number;
   /** Closest two fittings may sit before the lesser of them is dropped. */
-  fittingClearance: number;
+  tickClearance: number;
+  /**
+   * Boxes a stub off the lane must not run through: every node's full box plus
+   * the source's. A stub ends on the face of the node it serves, so it never
+   * enters that node — but without this it will happily cross a paragraph
+   * sitting between the lane and whatever it is reaching for.
+   */
+  obstacles: readonly Box[];
+  snap: Snap;
 }
 
 export interface Branch {
   id: string;
-  /** Full source-to-node route. This is the track a packet travels. */
-  d: string;
-  /** Spine-to-node segment only, so the shared trunk is never stroked twice. */
+  /** Full source-to-node route. This is the track a capsule travels. */
+  route: string;
+  /** Tap-to-node segment only, so shared pipe is never stroked twice. */
   spur: string;
-  junction: Point;
+  tap: Point;
   terminal: Point;
-  /** Axis the branch arrives along. Terminal flanges are drawn across it. */
+  /** Axis the branch arrives along. Terminal plates are drawn across it. */
   axis: 'x' | 'y';
 }
 
 export interface BusLayout {
   origin: Point;
-  spineX: number;
-  /** One entry per stroked trunk arm: downward always, upward only when needed. */
-  trunks: string[];
+  railX: number;
+  /**
+   * Source to the lane. One path: the rail is never split into arms. When the
+   * lane is not extended past the source this run continues along it to the
+   * rail, and `lane` is empty.
+   */
+  trunk: string;
+  /** The lane, when it runs past its own feed to reach a node. May be empty. */
+  lane: string;
+  /** The full-height gutter run. Structural, drawn whether or not it is tapped. */
+  rail: string;
   branches: Branch[];
   fittings: Fitting[];
-  /** Anchor for the bus label, at the far end of the downward arm. */
+  /** Anchor for the bus label, on the rail near its lower cap. */
   label: Point;
 }
 
 const EPSILON = 0.01;
 
 /**
- * A bend tighter than this fraction of the requested radius gets no unions. On a
- * hard corner a collar reads as a mistake rather than a fitting.
+ * An elbow is dressed only when both its legs have room to be read. Below this
+ * multiple of the radius a tick sits on top of the sweep it is meant to mark.
  */
-const COLLAR_RADIUS_RATIO = 0.35;
+const ELBOW_DRESS_RATIO = 3;
 
 function round(value: number): number {
   return Math.round(value * 100) / 100;
@@ -154,46 +198,133 @@ function angleOf(from: Point, to: Point): number {
   return round((Math.atan2(to.y - from.y, to.x - from.x) * 180) / Math.PI);
 }
 
-function vertexList(points: readonly Point[]): Point[] {
+function dedupe(points: readonly Point[]): Point[] {
   return points.filter((point, index) => index === 0 || !isSamePoint(point, points[index - 1]));
 }
 
-interface Bend {
-  corner: Point;
-  entry: Point;
-  exit: Point;
-  radius: number;
+/** True when the leg leaving `index` runs horizontally. */
+function isHorizontalLeg(points: readonly Point[], index: number): boolean {
+  return Math.abs(points[index + 1]!.y - points[index]!.y) < EPSILON;
 }
 
 /**
- * The rounded corners a polyline turns through. Rounding is capped at half the
- * shorter adjacent run, so tight turns degrade to a hard corner rather than
- * overshooting. Shared by the path builder and the fitting placement so the two
- * can never disagree about where a bend begins and ends.
+ * How long the leg leaving `index` has to be. A leg has to carry `radius` of
+ * sweep for each of its ends that is a corner, so a leg with a free end — the
+ * source, or a terminal — needs only half what an interior leg needs. Charging
+ * every leg the full minimum would relax away perfectly good runs.
  */
-function bendsFor(vertices: readonly Point[], bendRadius: number): Bend[] {
-  const bends: Bend[] = [];
-  for (let index = 1; index < vertices.length - 1; index += 1) {
-    const previous = vertices[index - 1]!;
-    const corner = vertices[index]!;
-    const next = vertices[index + 1]!;
-    const radius = Math.max(
-      0,
-      Math.min(bendRadius, distance(previous, corner) / 2, distance(corner, next) / 2),
-    );
-    bends.push({
-      corner,
-      radius,
-      entry: towards(corner, previous, radius),
-      exit: towards(corner, next, radius),
-    });
-  }
-  return bends;
+function legMinimum(points: readonly Point[], index: number, minLeg: number): number {
+  const corners = (index > 0 ? 1 : 0) + (index + 1 < points.length - 1 ? 1 : 0);
+  return (minLeg * corners) / 2;
 }
 
-/** Path data through `points` with every interior vertex swept. */
-export function manhattanPath(points: readonly Point[], bendRadius: number): string {
-  const vertices = vertexList(points);
+/**
+ * Guarantee that every leg is at least `minLeg` long, so `orthogonalPath` can
+ * always sweep a full-radius corner without capping.
+ *
+ * This inverts the failure mode of the previous implementation, which capped the
+ * radius at half the shorter adjacent leg and so silently produced a different
+ * radius at nearly every corner. Here the polyline is changed instead of the
+ * radius: a leg too short to carry its corners is removed, and the run is
+ * re-squared onto whichever neighbouring axis survives.
+ *
+ * Only orthogonal polylines are supported, which is all the router emits.
+ */
+export function relaxLegs(points: readonly Point[], minLeg: number): Point[] {
+  let working = dedupe(points);
+
+  // Each pass removes at least one vertex, so the loop is bounded by the input.
+  for (let guard = 0; guard < points.length + 2; guard += 1) {
+    if (working.length < 3) return working;
+
+    const short = working.findIndex(
+      (point, index) =>
+        index < working.length - 1 &&
+        distance(point, working[index + 1]!) < legMinimum(working, index, minLeg),
+    );
+    if (short === -1) return working;
+
+    const last = working.length - 1;
+    const horizontal = isHorizontalLeg(working, short);
+
+    if (short === 0) {
+      // A short first leg means the stub off the source is not worth taking.
+      // Drop it and re-square the next vertex onto the source itself.
+      const next = { ...working[2]! };
+      if (horizontal) next.x = working[0]!.x;
+      else next.y = working[0]!.y;
+      working = dedupe([working[0]!, next, ...working.slice(3)]);
+      continue;
+    }
+
+    if (short === last - 1) {
+      // Same at the far end: keep the terminal where it is and re-square the
+      // vertex before it, so the run still arrives on the node's own axis.
+      const previous = { ...working[last - 2]! };
+      if (horizontal) previous.x = working[last]!.x;
+      else previous.y = working[last]!.y;
+      working = dedupe([...working.slice(0, last - 2), previous, working[last]!]);
+      continue;
+    }
+
+    // An interior jog: merge the two parallel runs either side of it onto the
+    // second one's axis, which keeps the destination and loses the wobble. The
+    // runs either side of a short horizontal are vertical, and vice versa, so
+    // the axis to re-square on is the opposite of the short leg's own.
+    const before = { ...working[short - 1]! };
+    if (horizontal) before.x = working[short + 1]!.x;
+    else before.y = working[short + 1]!.y;
+    working = dedupe([
+      ...working.slice(0, short - 1),
+      before,
+      ...working.slice(short + 2),
+    ]);
+  }
+
+  return working;
+}
+
+interface Corner {
+  corner: Point;
+  entry: Point;
+  exit: Point;
+  /** SVG arc sweep flag. 1 turns clockwise on screen, where y runs downward. */
+  sweep: 0 | 1;
+  /** Length of the shorter of the two legs the corner joins. */
+  room: number;
+}
+
+function cornersFor(points: readonly Point[], radius: number): Corner[] {
+  const corners: Corner[] = [];
+  for (let index = 1; index < points.length - 1; index += 1) {
+    const previous = points[index - 1]!;
+    const corner = points[index]!;
+    const next = points[index + 1]!;
+    const incoming = { x: corner.x - previous.x, y: corner.y - previous.y };
+    const outgoing = { x: next.x - corner.x, y: next.y - corner.y };
+    const cross = incoming.x * outgoing.y - incoming.y * outgoing.x;
+    corners.push({
+      corner,
+      entry: towards(corner, previous, radius),
+      exit: towards(corner, next, radius),
+      sweep: cross > 0 ? 1 : 0,
+      room: Math.min(distance(previous, corner), distance(corner, next)),
+    });
+  }
+  return corners;
+}
+
+/**
+ * Path data through `points`, every interior corner swept as a true circular
+ * quarter-arc. Arcs rather than quadratics: a quadratic through the corner has
+ * the right endpoints but the wrong curvature, so its apparent radius drifts
+ * with leg length even when the requested radius does not.
+ *
+ * Callers must pass a polyline already relaxed to `minLeg`; a leg shorter than
+ * twice the radius would make adjacent arcs overlap.
+ */
+export function orthogonalPath(points: readonly Point[], radius: number): string {
+  const vertices = dedupe(points);
   const start = vertices[0];
   if (!start) return '';
 
@@ -201,13 +332,11 @@ export function manhattanPath(points: readonly Point[], bendRadius: number): str
   if (vertices.length === 1) return move;
 
   const parts = [move];
-  for (const bend of bendsFor(vertices, bendRadius)) {
-    parts.push(`L ${round(bend.entry.x)} ${round(bend.entry.y)}`);
-    if (bend.radius > EPSILON) {
-      parts.push(
-        `Q ${round(bend.corner.x)} ${round(bend.corner.y)} ${round(bend.exit.x)} ${round(bend.exit.y)}`,
-      );
-    }
+  for (const corner of cornersFor(vertices, radius)) {
+    parts.push(`L ${round(corner.entry.x)} ${round(corner.entry.y)}`);
+    parts.push(
+      `A ${round(radius)} ${round(radius)} 0 0 ${corner.sweep} ${round(corner.exit.x)} ${round(corner.exit.y)}`,
+    );
   }
 
   const end = vertices[vertices.length - 1]!;
@@ -215,185 +344,310 @@ export function manhattanPath(points: readonly Point[], bendRadius: number): str
   return parts.join(' ');
 }
 
-/** A union either side of every bend worth dressing. */
-export function collarsFor(points: readonly Point[], bendRadius: number): Fitting[] {
-  const minRadius = bendRadius * COLLAR_RADIUS_RATIO;
-  const fittings: Fitting[] = [];
-  for (const bend of bendsFor(vertexList(points), bendRadius)) {
-    if (bend.radius < minRadius) continue;
-    fittings.push({ kind: 'collar', at: bend.entry, angle: angleOf(bend.entry, bend.corner) });
-    fittings.push({ kind: 'collar', at: bend.exit, angle: angleOf(bend.corner, bend.exit) });
+/** A tick either side of every corner with room to carry them. */
+export function elbowTicks(
+  points: readonly Point[],
+  radius: number,
+  snap: Snap,
+  on: FittingOn = 'trunk',
+): Fitting[] {
+  const ticks: Fitting[] = [];
+  for (const corner of cornersFor(dedupe(points), radius)) {
+    if (corner.room < radius * ELBOW_DRESS_RATIO) continue;
+    const entryAngle = angleOf(corner.entry, corner.corner);
+    const exitAngle = angleOf(corner.corner, corner.exit);
+    ticks.push(
+      { kind: 'elbow', at: snapTick(corner.entry, entryAngle, snap), angle: entryAngle, on },
+      { kind: 'elbow', at: snapTick(corner.exit, exitAngle, snap), angle: exitAngle, on },
+    );
   }
-  return fittings;
+  return ticks;
 }
 
 /**
- * Keep every joint, then admit collars only where there is room for them. Two
- * unions stacked on top of each other read as a mistake, and a sweep that lands
- * right on a tee does not need dressing twice.
+ * A one-pixel tick renders crisp only when its own stroke centres on a half
+ * pixel, which means snapping along the axis the pipe runs, not across it.
+ */
+function snapTick(at: Point, angle: number, snap: Snap): Point {
+  const horizontal = Math.abs(Math.abs(angle) - 90) > 45;
+  return horizontal
+    ? { x: snap.tickX(at.x), y: at.y }
+    : { x: at.x, y: snap.tickY(at.y) };
+}
+
+/**
+ * Keep every joint, then admit elbow ticks only where there is room. Two marks
+ * stacked on each other read as a mistake, and a sweep landing on a tap does
+ * not need dressing twice.
  */
 export function spaceFittings(
   joints: readonly Fitting[],
-  collars: readonly Fitting[],
+  ticks: readonly Fitting[],
   clearance: number,
 ): Fitting[] {
   const kept = [...joints];
-  for (const collar of collars) {
-    if (kept.some((fitting) => distance(fitting.at, collar.at) < clearance)) continue;
-    kept.push(collar);
+  for (const tick of ticks) {
+    if (kept.some((fitting) => distance(fitting.at, tick.at) < clearance)) continue;
+    kept.push(tick);
   }
   return kept;
 }
 
+interface Lanes {
+  y: number;
+  /** x the trunk joins the lane at. The lane runs from here to the rail. */
+  from: number;
+}
+
 interface BranchShape {
-  junction: Point;
-  /** Waypoints after the junction, ending at the terminal. */
+  tap: Point;
+  /** Bearing of the run being tapped, so the tap bands lie across it. */
+  tapAngle: number;
   tail: Point[];
   terminal: Point;
   axis: 'x' | 'y';
+  /**
+   * Set when this branch needs the lane to reach further right than the trunk
+   * does. The lane is then drawn past its own feed and capped, and the trunk
+   * tees into it — which is how a node sitting to the right of the source gets
+   * dropped onto instead of being dragged all the way round via the rail.
+   */
+  extendsLaneTo?: number;
 }
 
 /**
- * The lane a branch travels along before it turns down onto its node. `top` and
- * `rail` differ in nothing else.
+ * Where a branch leaves the bus and where it lands.
+ *
+ * Text and rules are always fed from the rail: text arrives along its own
+ * baseline, and a rule is met at its leading end so the divider reads as
+ * reaching out to the bus rather than being stabbed from above. A box is fed
+ * from the lane when it sits under it with room to drop, which is what stops
+ * the bus travelling to the gutter and back to reach something beside its own
+ * source.
  */
-function laneFor(spec: RouteSpec, options: RouteOptions): number {
-  return spec.edge === 'rail' ? options.railY : spec.box.top - options.topLane;
-}
+function branchShape(spec: RouteSpec, options: RouteOptions, lane: Lanes): BranchShape {
+  const { railX, pinGap, minLeg, minBranch, snap } = options;
+  const { box, attach } = spec;
+  const inboard = railX + minBranch;
+  /** The leading edge of the node, never inboard of the rail. */
+  const lead = snap.x(Math.max(box.left, inboard));
 
-function branchShape(spec: RouteSpec, options: RouteOptions): BranchShape {
-  const { spineX, pinGap, minBranch, width, textRun } = options;
-  const maxX = Math.max(spineX + minBranch, width - minBranch);
-  const inRegion = (x: number): number => clamp(x, spineX + minBranch, maxX);
+  // A rule is already a line in the layout, so it is met at its leading end and
+  // never approached from above: dropping onto a divider would mean crossing
+  // whatever sits over it.
+  if (attach === 'rule') {
+    const y = snap.y(box.top);
+    const terminal = { x: lead, y };
+    return { tap: { x: railX, y }, tapAngle: 90, tail: [terminal], terminal, axis: 'x' };
+  }
 
-  // Text is finished by running under it rather than stopping against it, so the
-  // approach only decides how the run reaches the baseline, not where it ends.
-  if (spec.attach === 'text') {
-    const baselineY = spec.box.top + spec.box.height;
-    const terminal = { x: inRegion(spec.box.left + textRun), y: baselineY };
+  // A box may be stubbed onto from the lane, but only when it sits clear of it
+  // by more than one leg. The clearance that matters is the sweep plus room for
+  // the tap's own bands, not a whole leg: charging a full leg here pushed nodes
+  // onto the rail over a couple of pixels, which is what produced a second
+  // full-width horizontal.
+  const clearance = options.radius + options.tickClearance;
+  // A node below the lane is stubbed onto at its top edge; one above it at its
+  // bottom edge. Same stub either way, so a bottom-aligned column beside a tall
+  // heading is served without dragging a run across it.
+  //
+  // Text is the exception at both ends. It has no edge to butt into, so a run
+  // meeting it lands on its baseline at its leading edge — where an underline
+  // would begin. Stopping on the line box's top left the run hanging in the gap
+  // above the type, and running on past the leading edge left a stray dash under
+  // the first few glyphs.
+  const below = box.top - lane.y >= minLeg;
+  const face =
+    attach === 'text' ? box.top + box.height : below ? box.top : box.top + box.height;
 
-    if (spec.edge === 'left') {
-      return { junction: { x: spineX, y: baselineY }, tail: [terminal], terminal, axis: 'x' };
-    }
-
-    const laneY = laneFor(spec, options);
-    const dropX = inRegion(spec.box.left - pinGap);
+  const stub = (x: number, extendsLaneTo?: number): BranchShape => {
+    const at = snap.x(x);
+    const terminal = { x: at, y: snap.y(face) };
     return {
-      junction: { x: spineX, y: laneY },
-      tail: [{ x: dropX, y: laneY }, { x: dropX, y: baselineY }, terminal],
+      tap: { x: at, y: lane.y },
+      tapAngle: 0,
+      tail: [terminal],
       terminal,
-      axis: 'x',
+      axis: 'y',
+      extendsLaneTo: extendsLaneTo === undefined ? undefined : snap.x(extendsLaneTo),
     };
-  }
-
-  if (spec.edge === 'left') {
-    const y = spec.box.top + spec.box.height / 2;
-    const terminal = { x: inRegion(spec.box.left), y };
-    return { junction: { x: spineX, y }, tail: [terminal], terminal, axis: 'x' };
-  }
-
-  const laneY = laneFor(spec, options);
-  const dropX = inRegion(spec.box.left + pinGap * 2);
-  const terminal = { x: dropX, y: spec.box.top };
-  return {
-    junction: { x: spineX, y: laneY },
-    tail: [{ x: dropX, y: laneY }, terminal],
-    terminal,
-    axis: 'y',
   };
+
+  // A box is landed on a standoff past its leading corner; text is met exactly
+  // at its leading edge, so the run plugs into where the type begins.
+  const wanted = attach === 'text' ? box.left : box.left + pinGap;
+  // The furthest right a stub can go on the lane as the trunk already draws it,
+  // leaving the trunk's own joint room to be read.
+  const limit = lane.from - clearance;
+  const headroom = spec.lane !== 'rail' && (below || lane.y - face >= minLeg);
+
+  const top = Math.min(lane.y, face);
+  const bottom = Math.max(lane.y, face);
+  // Obstacles are widened by the same standoff a run keeps from a node's leading
+  // corner. A stub sitting exactly on a paragraph's left edge does not cross it
+  // on paper, but on screen it runs down the face of the first character of
+  // every line, which reads as a collision.
+  const clears = (x: number): boolean =>
+    !options.obstacles.some(
+      (o) =>
+        o !== spec.bounds &&
+        x > o.left - pinGap &&
+        x < o.left + o.width + pinGap &&
+        top < o.top + o.height - EPSILON &&
+        bottom > o.top + EPSILON,
+    );
+
+  if (headroom && wanted >= inboard) {
+    // Inside the lane as drawn.
+    if (wanted <= limit && clears(wanted)) return stub(wanted);
+    // Just past it: nudge the stub inboard, as long as it still lands on the
+    // node. Testing the node's leading edge instead made the choice knife-edge —
+    // a column starting a fraction past the limit fell back to the rail and drew
+    // a second full-width horizontal for the sake of half a pixel.
+    if (limit + pinGap >= box.left && limit < box.left + box.width && clears(limit)) {
+      return stub(limit);
+    }
+    // Well past it: run the lane out to meet the node and cap it there. Only
+    // worth doing once the extension is longer than a leg, or the cap would
+    // crowd the tee that feeds it.
+    if (wanted >= lane.from + minLeg && clears(wanted)) return stub(wanted, wanted + clearance);
+  }
+
+  // Fed from the rail instead: text along its own baseline, a box into the
+  // middle of its leading face.
+  const y = attach === 'text' ? snap.y(face) : snap.y(box.top + box.height / 2);
+  const terminal = { x: lead, y };
+  return { tap: { x: railX, y }, tapAngle: 90, tail: [terminal], terminal, axis: 'x' };
 }
 
 /**
  * Route every node onto one bus leaving `origin`.
  *
- * The trunk taps the source's baseline, drops clear of its text, turns onto the
- * spine, then runs to the furthest junction. When a junction sits above the turn
- * — a source that is not the topmost element in its region — a second upward arm
- * is returned rather than doubling back over the first.
+ * The trunk taps the source's baseline, runs clear of its text, drops to the
+ * lane and runs to the rail. The rail runs the region's full height regardless,
+ * because it is structure rather than a connector: it is what makes the gutter
+ * read as an edge condition, and it is what the label hangs from. Branches then
+ * tap whichever of the two runs is nearest.
  */
 export function busRoute(
   origin: Point,
   specs: readonly RouteSpec[],
   options: RouteOptions,
 ): BusLayout {
-  const { spineX, bendRadius } = options;
-  const shapes = specs.map((spec) => ({ spec, shape: branchShape(spec, options) }));
-  const junctionYs = shapes.map(({ shape }) => shape.junction.y);
+  const { railX, railTop, railBottom, radius, minLeg, textRun, drop, pinGap, labelInset, snap } =
+    options;
 
-  // Keep the turn above the first junction so the spine has a run to travel,
-  // while still dropping clear of the source's own text.
-  const firstJunction = junctionYs.length > 0 ? Math.min(...junctionYs) : origin.y + options.drop;
-  let turnY = Math.max(
-    origin.y + bendRadius,
-    Math.min(origin.y + options.drop, firstJunction - bendRadius * 2),
+  // The lane sits `drop` below the source, but never lower than clear of the
+  // first node underneath it: a lane that crosses a node's own box strikes
+  // through the type it is meant to serve. On a narrow screen the hero's
+  // headline and lede leave nothing but a gap between them, and this is what
+  // puts the lane in that gap rather than through the paragraph.
+  const ceiling = specs.reduce(
+    (highest, spec) => (spec.box.top > origin.y ? Math.min(highest, spec.box.top - pinGap) : highest),
+    Number.POSITIVE_INFINITY,
   );
+  const floor = origin.y + minLeg / 2;
+  const laneY = snap.y(clamp(origin.y + drop, floor, Math.max(floor, ceiling)));
 
-  // Snap the turn onto a junction it all but touches. Without this, a source
-  // sitting a few px above its first junction yields a hairline second arm that
-  // reads as a doubled line rather than a route.
-  const snap = junctionYs.find(
-    (junctionY) => junctionY > origin.y && Math.abs(junctionY - turnY) <= bendRadius,
+  // The stub always runs towards the rail. A source already closer to the rail
+  // than a stub allows drops straight down rather than jogging outward first.
+  const stubX = snap.x(Math.min(origin.x, Math.max(origin.x - textRun, railX + minLeg)));
+  const lane: Lanes = { y: laneY, from: stubX };
+
+  const shapes = specs.map((spec) => ({ spec, shape: branchShape(spec, options, lane) }));
+
+  // A node to the right of the source runs the lane out past its own feed. The
+  // trunk then tees into the lane rather than elbowing onto its end, and the
+  // lane is capped where it stops.
+  const laneEnd = shapes.reduce(
+    (furthest, { shape }) => Math.max(furthest, shape.extendsLaneTo ?? furthest),
+    stubX,
   );
-  if (snap !== undefined) turnY = snap;
+  const extended = laneEnd > stubX + EPSILON;
 
-  // The source is a text end, and text ends run along the baseline. The stub
-  // gives out where it would otherwise reach past the spine, and never runs the
-  // other way to find room: a source that close to the content edge drops
-  // straight down rather than jogging outward first.
-  const stubX = Math.min(origin.x, Math.max(origin.x - options.textRun, spineX + options.minBranch));
-  const stub = { x: stubX, y: origin.y };
-  const turn = { x: spineX, y: turnY };
-  const head = [origin, stub, { x: stub.x, y: turnY }, turn];
+  const feed = [origin, { x: stubX, y: origin.y }, { x: stubX, y: laneY }];
+  const trunkPoints = relaxLegs(extended ? feed : [...feed, { x: railX, y: laneY }], minLeg);
+  const trunk = orthogonalPath(trunkPoints, radius);
+  const lanePoints = [
+    { x: laneEnd, y: laneY },
+    { x: railX, y: laneY },
+  ];
+  const laneRun = extended ? orthogonalPath(lanePoints, radius) : '';
 
-  const spineBottom = Math.max(turnY, ...junctionYs);
-  const spineTop = Math.min(turnY, ...junctionYs);
-  const downArm = [...head, { x: spineX, y: spineBottom }];
-  const trunks = [manhattanPath(downArm, bendRadius)];
-  if (spineTop < turnY - EPSILON) {
-    trunks.push(manhattanPath([turn, { x: spineX, y: spineTop }], bendRadius));
+  const railPoints = [
+    { x: railX, y: railTop },
+    { x: railX, y: railBottom },
+  ];
+  const rail = orthogonalPath(railPoints, radius);
+
+  /** Everything a capsule crosses to reach the lane at `x`. */
+  const alongLane = (x: number): Point[] =>
+    extended
+      ? [...trunkPoints, { x, y: laneY }]
+      : [...trunkPoints.slice(0, -1), { x, y: laneY }];
+
+  const branches: Branch[] = shapes.map(({ spec, shape }) => {
+    // A capsule travels the whole run, so the route re-treads the trunk and, for
+    // a rail tap, the stretch of rail between the lane and the tap.
+    const lead =
+      shape.tapAngle === 90
+        ? [...alongLane(railX), { x: railX, y: shape.tap.y }]
+        : alongLane(shape.tap.x);
+    return {
+      id: spec.id,
+      route: orthogonalPath(relaxLegs([...lead, ...shape.tail], minLeg), radius),
+      spur: orthogonalPath([shape.tap, ...shape.tail], radius),
+      tap: shape.tap,
+      terminal: shape.terminal,
+      axis: shape.axis,
+    };
+  });
+
+  const labelAt = { x: railX, y: snap.y(railBottom - labelInset) };
+
+  // Joints carry meaning and are kept unconditionally. Elbow ticks are
+  // decoration on top of them and get thinned wherever they would crowd one.
+  const joints: Fitting[] = [
+    {
+      kind: 'cap',
+      at: origin,
+      angle: angleOf(origin, trunkPoints[1] ?? { x: origin.x, y: laneY }),
+      on: 'trunk',
+    },
+    { kind: 'tap', at: snapTick({ x: railX, y: laneY }, 90, snap), angle: 90, on: 'rail' },
+    { kind: 'cap', at: { x: railX, y: railTop }, angle: 90, on: 'rail' },
+    { kind: 'cap', at: { x: railX, y: railBottom }, angle: 90, on: 'rail' },
+    { kind: 'bracket', at: snapTick(labelAt, 90, snap), angle: 90, on: 'rail' },
+  ];
+
+  if (extended) {
+    joints.push(
+      { kind: 'cap', at: { x: laneEnd, y: laneY }, angle: 180, on: 'trunk' },
+      { kind: 'tap', at: snapTick({ x: stubX, y: laneY }, 0, snap), angle: 0, on: 'trunk' },
+    );
   }
 
-  const branches = shapes.map(({ spec, shape }) => ({
-    id: spec.id,
-    d: manhattanPath([...head, shape.junction, ...shape.tail], bendRadius),
-    spur: manhattanPath([shape.junction, ...shape.tail], bendRadius),
-    junction: shape.junction,
-    terminal: shape.terminal,
-    axis: shape.axis,
-  }));
+  const ticks: Fitting[] = elbowTicks(trunkPoints, radius, snap, 'trunk');
 
-  // Collars come from the trunk and each spur rather than from the full routes,
-  // which would dress the shared trunk head once per node. Joints that carry
-  // meaning are listed first: the clearance pass keeps those and thins the
-  // collars around them.
-  // When the source is too close to the spine for a baseline stub, its first
-  // real segment is vertical. Dress that bearing rather than asking angleOf to
-  // infer a direction from two identical points (which incorrectly yields 0°).
-  const originBearing = isSamePoint(origin, stub) ? { x: origin.x, y: turnY } : stub;
-  const joints: Fitting[] = [{ kind: 'origin', at: origin, angle: angleOf(origin, originBearing) }];
-  const collars: Fitting[] = collarsFor(downArm, bendRadius);
   for (const { spec, shape } of shapes) {
-    const spur = [shape.junction, ...shape.tail];
-    const approach = spur[spur.length - 2] ?? shape.junction;
+    const approach = shape.tail[shape.tail.length - 2] ?? shape.tap;
     const angle = angleOf(approach, shape.terminal);
-    // A divider is a run in its own right, so the branch tees into it rather
-    // than capping against it: the bands turn a quarter off the approach to lie
-    // across the rule itself. Every other end is closed by the run's own joint.
-    const end: Fitting =
-      spec.attach === 'rule'
-        ? { kind: 'tee', at: shape.terminal, angle: angle + 90 }
-        : { kind: 'terminal', at: shape.terminal, angle };
-
-    joints.push({ kind: 'tee', at: shape.junction, angle: 90 }, end);
-    collars.push(...collarsFor(spur, bendRadius));
+    joints.push(
+      { kind: 'tap', at: snapTick(shape.tap, shape.tapAngle, snap), angle: shape.tapAngle, on: 'branch' },
+      { kind: spec.attach === 'rule' ? 'port' : 'cap', at: shape.terminal, angle, on: 'branch' },
+      { kind: 'node', at: shape.terminal, angle, on: 'branch' },
+    );
+    ticks.push(...elbowTicks([shape.tap, ...shape.tail], radius, snap, 'branch'));
   }
 
   return {
     origin,
-    spineX,
-    trunks,
+    railX,
+    trunk,
+    lane: laneRun,
+    rail,
     branches,
-    fittings: spaceFittings(joints, collars, options.fittingClearance),
-    label: { x: spineX, y: spineBottom },
+    fittings: spaceFittings(joints, ticks, options.tickClearance),
+    label: labelAt,
   };
 }

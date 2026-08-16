@@ -37,17 +37,18 @@
   --ambient-highlight: rgb(255 255 255 / 0.72);
   --ambient-noise-opacity: 0.025;
 
-  /* Circuit pipework stays neutral so only the packets carry the signal colour.
-     Everything is a shade heavier than on dark: thin low-contrast strokes
-     disappear against paper. The bore is the paper showing through the run. */
-  --circuit-wall: rgb(84 92 82 / 0.38);
-  --circuit-bore: rgb(253 253 251 / 0.92);
-  --circuit-fitting: rgb(84 92 82 / 0.42);
-  --circuit-detail: rgb(84 92 82 / 0.45);
-  --circuit-detail-live: rgb(180 68 42 / 0.8);
-  --circuit-packet: rgb(180 68 42 / 0.95);
-  --circuit-packet-halo: rgb(180 68 42 / 0.18);
+  /* Circuit pipework stays neutral: coral touches a capsule and the dot it is
+     arriving at, and nothing else. Everything is a shade heavier than on dark,
+     because thin low-contrast strokes disappear against paper. The bore is the
+     paper showing through the bus. Same seven structure roles as dark.css plus
+     the two live ones. See docs/design-docs/circuit-design-language.md. */
+  --circuit-bus: rgb(84 92 82 / 0.42);
+  --circuit-bore: rgb(253 253 251 / 0.96);
+  --circuit-branch: rgb(84 92 82 / 0.34);
   --circuit-label: rgb(84 92 82 / 0.45);
+  --circuit-node: rgb(84 92 82 / 0.5);
+  --circuit-node-live: rgb(180 68 42 / 0.9);
+  --circuit-packet: rgb(180 68 42 / 0.95);
   --circuit-node-edge: rgb(180 68 42 / 0.6);
   --circuit-node-glow: rgb(180 68 42 / 0.12);
 

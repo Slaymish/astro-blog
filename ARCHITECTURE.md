@@ -141,17 +141,58 @@ The site is prerendered. `output: 'static'` with the Netlify adapter bakes every
 
 Light and dark themes live in `src/design-system/themes/`, and each defines the same set of semantic roles so the two are interchangeable. An inline script in `Layout.astro` resolves the theme before first paint to avoid a flash: a stored `localStorage` choice wins, otherwise the system preference applies. The site keeps following the system until the visitor explicitly toggles, tracked via `data-theme-source` on the root element.
 
-### Circuit (Data Bus Overlay)
+### Circuit (Pipework Overlay)
 
-`src/lib/circuit` wires DOM elements together with pipework: a trunk leaves a source, turns onto a shared spine in the page gutter, and each node branches off that spine at its own junction. Packets travel those routes and the node they reach acknowledges arrival.
+`src/lib/circuit` wires DOM elements together with pipework. The visual grammar is
+`docs/design-docs/circuit-design-language.md` and is the authority; this section covers structure and
+invariants only.
 
-- A run is drawn as a **wall plus a bore** on identical path data — the wall's two visible edges give the pipe its section, and packets travel the bore so light reads as being inside it. Routes also report their **fittings** (a union either side of a sweep, a tee at each split) so the run looks assembled rather than drawn. `spaceFittings` keeps the meaningful joints and drops any union that would crowd one.
-- **Both ends land on what they serve**, and what a run meets decides how it is finished — the `Attach` contract in `geometry.ts`. A `box` is a face to butt into: the run ends on the edge and takes a flange plate set outside it. A `rule` is a divider that is already a run in its own right, so the branch tees into it with bands laid across the rule rather than capping against it. `text` has no edge, so the run turns onto the node's baseline and travels it for `--circuit-text-run` before stopping, becoming the rule the text has not got. The source is a text end and taps its own baseline the same way. A node's attachment is read off `data-circuit-attach`, defaulting from the flash it already declares.
-- The **spine centres in the page gutter** and sits no further out than one lane. `--page-gutter`'s floor is therefore set by the pipework, not the type: it has to stay wide enough to seat a run clear of the screen edge on tablet and mobile, where a media query also steps the whole kit down a size.
-- `geometry.ts` is pure routing maths in region-local pixels and is unit tested. `engine.ts` owns the DOM, SVG, and lifecycle. `circuit.css` owns presentation; geometry and timing tokens live in `tokens.css`, colours in the theme files. Every geometry token must stay in px, ms, or unitless — the engine reads them off computed style, so relative units would resolve against the wrong box.
-- Authored regions opt in through markup (`data-circuit`, `data-circuit-source`, `data-circuit-node`, `data-circuit-rail`) and `Layout.astro` boots the engine once per page. The layout also supplies one low-opacity, slow-heartbeat gutter bus to non-home pages so the motif remains site-wide without route-specific decoration. Nodes dispatch a bubbling `circuit:arrive` event.
-- Two invariants worth knowing before changing it. **Coordinates are measured against the overlay, not the region**, because as an out-of-flow child the overlay fills the region's padding box and would otherwise be offset by it — and because region-local geometry stays correct under Bend's transforms. **A node's approach edge resolves per layout** from where the node actually sits, so one markup contract works at every breakpoint.
-- Because Bend swaps the scroll container when its canvas activates, the engine listens for scroll in the capture phase rather than binding to a node that may be replaced. Pipes render on the first geometry pass rather than tracing in as regions enter the viewport, so the structural layer does not pop in after page load. Touch does not create free-standing viewport pulses: every packet remains attached to a route authored by the region. Dense regions may opt out decoratively on mobile with `data-circuit-mobile="off"`. Under `prefers-reduced-motion` the persistent pipes and fittings still render — they are structure — but packets, lamps, and the idle heartbeat do not run.
+- **Topology is three runs.** A *trunk* leaves the source's baseline and elbows down to a *lane*; the
+  lane carries it to a *rail* that runs the full height of the region in the page gutter. Branches
+  tap whichever run is nearest — the lane if the node sits under it (a drop) or over it (a rise), the
+  rail otherwise. Routing to the rail unconditionally is what previously made a bus travel 900px to
+  the gutter and back to reach a node beside its own source. When a node sits to the right of the
+  source, the lane runs out past its own feed, is capped there, and the trunk tees into it.
+- **One radius, guaranteed.** `--circuit-radius` is never reduced to fit. `relaxLegs` rewrites any
+  polyline that would produce a leg shorter than `--circuit-min-leg` so a full sweep always fits.
+  Corners are true circular arcs (`A`), not quadratics. Do not reintroduce a per-corner radius cap:
+  that is what produced seven different rendered radii on one page.
+- **Geometry is snapped onto the device pixel grid** by a `Snap` the engine supplies, which corrects
+  for the overlay's own fractional offset. Even stroke weights centre on whole pixels and the 1px
+  tick centres on a half pixel. Every weight must stay even or exactly 1px for this to hold.
+- **Both ends land on what they serve**, and what a run meets decides how it is finished — the
+  `Attach` contract in `geometry.ts`. A `box` takes a cap plate set outside its face. A `rule` is
+  already a line in the layout, so the run meets its leading end and takes a port, and the rule reads
+  as reaching out to the bus. `text` has no edge, so the run arrives along the node's baseline and
+  travels it for `--circuit-text-run`. Attachment is declared explicitly with `data-circuit-attach`;
+  it is never inferred from `data-circuit-flash`, which is presentational.
+- **A run never crosses what it serves.** The lane is lifted clear of the first node below the
+  source, and a stub off the lane that would pass through another node's box falls back to a rail
+  tap. `obstacles` in `RouteOptions` carries those boxes.
+- The **rail centres in the page gutter** and sits no further out than one lane. `--page-gutter`'s
+  floor is therefore set by the pipework, not the type.
+- `geometry.ts` is pure routing maths in region-local pixels and is unit tested. `engine.ts` owns the
+  DOM, SVG, and lifecycle. `circuit.css` owns presentation; geometry and timing tokens live in
+  `tokens.css`, colours in the theme files. Every geometry token must stay in px, ms, or unitless —
+  the engine reads them off computed style, so relative units would resolve against the wrong box.
+- Authored regions opt in through markup (`data-circuit`, `data-circuit-source`, `data-circuit-node`,
+  `data-circuit-attach`, `data-circuit-lane`) and `Layout.astro` boots the engine once per page. The
+  layout also supplies one quiet gutter rail to non-home pages so the motif remains site-wide without
+  route-specific decoration. Nodes dispatch a bubbling `circuit:arrive` event.
+- **Motion is CSS, not JavaScript.** One capsule per route rides `offset-path` with `offset-distance`
+  and `offset-rotate`, as an HTML span in a sibling overlay rather than an SVG child (the broadest
+  support for the feature). Capsules exist only where `CSS.supports('offset-path', …)` passes, so the
+  un-enhanced baseline is a complete drawing with no motion. An `IntersectionObserver` toggles
+  `is-circuit-live`, which flips `animation-play-state`; there is no `requestAnimationFrame` loop in
+  the motif at all. `prefers-reduced-motion` hides the capsule layer entirely in CSS.
+- Two invariants worth knowing before changing it. **Coordinates are measured against the overlay,
+  not the region**, because as an out-of-flow child the overlay fills the region's padding box and
+  would otherwise be offset by it — and because region-local geometry stays correct under Bend's
+  transforms. **A branch's approach resolves per layout** from where the node actually sits, so one
+  markup contract works at every breakpoint.
+- Density thins rather than the section: internal pages get the rail and its caps only, the label is
+  not drawn below `80rem`, and the pipe is 4px at every width. The previous 3px / 1.5px mobile weight
+  override is gone because a 1.5px stroke cannot render crisply at any device pixel ratio.
 
 ### Testing and CI
 
