@@ -88,9 +88,9 @@ const documents: SeedDocument[] = [
     },
     hero: {
       eyebrow: 'Hamish Burke / Wellington, New Zealand',
-      headline: 'I build things, and I want to understand what',
-      headlineAccent: 'they’re capable of.',
-      lede: 'Software developer at Alphero. Exploring technology, AI, systems, business, and the problems worth solving.',
+      headline: 'Software developer at Alphero,',
+      headlineAccent: 'in Wellington.',
+      lede: 'Most of what I build outside of that is to solve something for myself, or to prove I can actually do it in that space.',
       links: [
         { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
         { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
@@ -100,7 +100,7 @@ const documents: SeedDocument[] = [
     interests: {
       label: 'What I’m interested in',
       statement:
-        'I’m interested in what happens when technology stops being just a tool and starts changing what organisations and people are capable of doing. Particularly AI, software systems, business, decision-making, and the strange space where those things overlap.',
+        'I care about how things work, how those things interact once they’re part of something bigger, and what’s actually worth building in the first place.',
       items: [
         { _key: 'technology', title: 'Technology', body: 'How things work.' },
         { _key: 'systems', title: 'Systems', body: 'How complicated things interact.' },
@@ -110,7 +110,7 @@ const documents: SeedDocument[] = [
     currently: {
       label: 'Currently',
       heading: 'Learning how software actually gets made.',
-      body: 'I’m working as a junior software developer at Alphero, where I’m learning how software gets designed, built, shipped, maintained, and used by real organisations. That is the part you cannot get from side projects alone, and it is most of what I am doing right now.',
+      body: 'I’m working as a junior software developer at Alphero, where I’m learning how software gets designed, built, and produced for real organisations. That is the part you cannot get from side projects alone, and it is most of what I am doing right now.',
       link: { _type: 'ctaLink', label: 'Professional work', href: '/work' }
     },
     projectsSection: {
