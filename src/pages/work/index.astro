@@ -35,15 +35,19 @@ const { hero, leadSection, supportSection } = copy;
     </div>
   </section>
 
-  <section class="work-index__support" aria-labelledby="support-work-heading">
-    <div class="work-index__section-heading">
-      <h2 id="support-work-heading">{supportSection.heading}</h2>
-      <p>{supportSection.description}</p>
-    </div>
-    <div>
-      {supportStories.map((story) => <WorkCard story={story} variant="row" />)}
-    </div>
-  </section>
+  {/* The heading and its description only make sense with cards under them, and
+      there are periods with no support-status stories at all. */}
+  {supportStories.length > 0 && (
+    <section class="work-index__support" aria-labelledby="support-work-heading">
+      <div class="work-index__section-heading">
+        <h2 id="support-work-heading">{supportSection.heading}</h2>
+        <p>{supportSection.description}</p>
+      </div>
+      <div>
+        {supportStories.map((story) => <WorkCard story={story} variant="row" />)}
+      </div>
+    </section>
+  )}
 
   <ContactBand heading={copy.contactHeading} booking />
 </Layout>
