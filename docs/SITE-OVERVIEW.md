@@ -136,9 +136,6 @@ routes above. Consequences:
 
 ## Notable non-obvious pieces
 
-- **`Bend.tsx`** (`src/components/canvasui/`): a vendored shadcn-registry
-  component that owns the scroll container — the document itself does not
-  scroll. The header renders outside it deliberately.
 - **`src/lib/circuit/`**: a decorative "data bus" SVG overlay threading
   through page gutters, present site-wide via `Layout.astro`. Pure geometry
   in `geometry.ts` (unit tested), DOM/lifecycle in `engine.ts`, presentation

@@ -40,9 +40,11 @@ const documents: SeedDocument[] = [
     _type: 'siteSettings',
     header: {
       // Order leaves room for /now to be inserted after Writing without rebalancing.
+      // Writing sits in the footer, not the header: the last post is from March
+      // 2026, and a stale section does not earn top-level placement. Promote it
+      // back when the cadence justifies it.
       navLinks: [
         { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
-        { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
         { _key: 'work', _type: 'ctaLink', label: 'Work', href: '/work' },
         { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' },
         { _key: 'contact', _type: 'ctaLink', label: 'Contact', href: '/contact' }

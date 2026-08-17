@@ -57,10 +57,10 @@ Layers: routes (`src/pages/`) own request-level fetching and page assembly; comp
 
 Non-obvious pieces:
 
-- **`src/components/canvasui/Bend.tsx`** is a vendored shadcn-registry component (not an npm
-  dep). `Layout.astro` wraps page content in it, so **Bend owns the scroll container and the
-  document itself does not scroll**. The header is rendered outside Bend deliberately. Anything
-  binding to scroll must use capture-phase listeners, since Bend swaps the scroller.
+- **The page is an ordinary scrolling document.** A WebGL page-fold effect (`Bend.tsx`) used to
+  own the scroll container, which forced capture-phase scroll listeners and an element-swap dance
+  in `Layout.astro`; it was removed on 2026-08-18 along with those workarounds. Bind scroll
+  handlers to `window` — there is no longer a nested scroller to account for.
 - **`src/lib/circuit/`** is the data-bus overlay. `geometry.ts` is pure, unit-tested routing
   maths; `engine.ts` owns DOM/SVG/lifecycle; `circuit.css` owns presentation. Geometry tokens
   in `tokens.css` must stay in px/ms/unitless — the engine reads them off computed style.

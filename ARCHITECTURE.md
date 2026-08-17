@@ -42,7 +42,6 @@ Deployment target is Netlify server output.
 
 - `src/components/layout/Layout.astro`: main-site HTML shell, metadata, OG/Twitter tags, JSON-LD graph, robots directives, theme bootstrap.
 - `src/components/layout/Header.astro` + `src/components/layout/Footer.astro`: shared nav/footer.
-- `src/components/canvasui/Bend.tsx`: vendored Canvas UI component (shadcn registry, not an npm dependency). `Layout.astro` wraps page content in it, so **Bend owns the scroll container and the document itself does not scroll**. The header is deliberately rendered outside Bend so it never folds.
 
 ### Content and Data Access
 
@@ -187,8 +186,8 @@ invariants only.
   the motif at all. `prefers-reduced-motion` hides the capsule layer entirely in CSS.
 - Two invariants worth knowing before changing it. **Coordinates are measured against the overlay,
   not the region**, because as an out-of-flow child the overlay fills the region's padding box and
-  would otherwise be offset by it — and because region-local geometry stays correct under Bend's
-  transforms. **A branch's approach resolves per layout** from where the node actually sits, so one
+  would otherwise be offset by it, and because region-local geometry stays correct under any
+  ancestor transform. **A branch's approach resolves per layout** from where the node actually sits, so one
   markup contract works at every breakpoint.
 - Density thins rather than the section: internal pages get the rail and its caps only, the label is
   not drawn below `80rem`, and the pipe is 4px at every width. The previous 3px / 1.5px mobile weight

@@ -12,7 +12,6 @@ import "../../styles/globals.css";
 // Layout Components
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
-import { Bend } from "../canvasui/Bend";
 import {
   SITE_AUTHOR,
   SITE_DESCRIPTION,
@@ -238,42 +237,16 @@ const structuredData = {
         padding-block-end: 0;
       }
 
-      /* Containing block for Bend's canvases: astro-island is display:contents
-         and so cannot be one itself. */
-      .bend-shell {
-        position: relative;
-        width: 100%;
-      }
-
-      /* Default to an ordinary scrolling document. Bend is a desktop-only
-         enhancement and sets data-bend-active once its canvas has taken over;
-         only then does it own the scroll container and the document must not
-         scroll. Touch browsers never get here, so they keep native scrolling. */
-      html[data-bend-active],
-      html[data-bend-active] body.bend-host {
-        height: 100%;
-        overflow: hidden;
-      }
-
-      html[data-bend-active] body.bend-host {
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* The header sits outside Bend so it never folds; Bend takes the rest. */
-      html[data-bend-active] .bend-shell {
-        flex: 1;
-        min-height: 0;
-      }
-
-      /* Sits inside Bend's scroller and restores the flex column the body used to provide. */
-      .bend-page {
+      /* Wraps everything below the header. `isolation` gives the ambient
+         background its own stacking context so it can sit behind the shell
+         without a z-index arms race with page content. */
+      .page-body {
+        background: var(--bg);
         display: flex;
         flex-direction: column;
         isolation: isolate;
         min-height: 100%;
         position: relative;
-        background: var(--bg);
       }
 
       /* One viewport-sized fixed layer keeps the atmosphere continuous between
@@ -303,7 +276,7 @@ const structuredData = {
         position: absolute;
       }
 
-      .bend-page > .site-shell {
+      .page-body > .site-shell {
         position: relative;
         z-index: 1;
       }
@@ -313,62 +286,38 @@ const structuredData = {
       }
     </style>
   </head>
-  <body class="antialiased bend-host" style="background-color: var(--bg); color: var(--text);">
+  <body class="antialiased" style="background-color: var(--bg); color: var(--text);">
     <a class="skip-link" href="#main-content">Skip to content</a>
 
     <Header />
 
-    <!-- The page is ordinary server-rendered markup and stays that way. Bend
-         renders no content of its own: it adopts .bend-page into its canvas
-         only once it activates, so a client-side failure can never blank the
-         page. It also hydrates on desktop pointers only, so phones never run
-         the React or WebGL path. Keep the query in step with DESKTOP_QUERY in
-         Bend.tsx. -->
-    <div class="bend-shell">
-      <div class="bend-page">
-        <div class="ambient-background" aria-hidden="true"></div>
-        <div class="site-shell">
-          <main
-            id="main-content"
-            class={`grow w-full mx-auto pt-8 pb-8 sm:pt-10 sm:pb-12 md:pt-10 md:pb-16 ${fullWidth ? '' : 'max-w-[var(--content-max-width)]'}`}
-            tabindex="-1"
-          >
-            {showPageCircuit && (
-              <div class="page-circuit-motif" data-circuit="PAGE_BUS" aria-hidden="true">
-                <span class="page-circuit-motif__anchor page-circuit-motif__anchor--source" data-circuit-source></span>
-                <span
-                  class="page-circuit-motif__anchor page-circuit-motif__anchor--middle"
-                  data-circuit-node="middle"
-                  data-circuit-lane="rail"
-                ></span>
-                <span
-                  class="page-circuit-motif__anchor page-circuit-motif__anchor--end"
-                  data-circuit-node="end"
-                  data-circuit-lane="rail"
-                ></span>
-              </div>
-            )}
-            <slot />
-          </main>
-          <Footer />
-        </div>
+    <div class="page-body">
+      <div class="ambient-background" aria-hidden="true"></div>
+      <div class="site-shell">
+        <main
+          id="main-content"
+          class={`grow w-full mx-auto pt-8 pb-8 sm:pt-10 sm:pb-12 md:pt-10 md:pb-16 ${fullWidth ? '' : 'max-w-[var(--content-max-width)]'}`}
+          tabindex="-1"
+        >
+          {showPageCircuit && (
+            <div class="page-circuit-motif" data-circuit="PAGE_BUS" aria-hidden="true">
+              <span class="page-circuit-motif__anchor page-circuit-motif__anchor--source" data-circuit-source></span>
+              <span
+                class="page-circuit-motif__anchor page-circuit-motif__anchor--middle"
+                data-circuit-node="middle"
+                data-circuit-lane="rail"
+              ></span>
+              <span
+                class="page-circuit-motif__anchor page-circuit-motif__anchor--end"
+                data-circuit-node="end"
+                data-circuit-lane="rail"
+              ></span>
+            </div>
+          )}
+          <slot />
+        </main>
+        <Footer />
       </div>
-
-      <Bend
-        client:media="(min-width: 1024px) and (hover: hover) and (pointer: fine)"
-        target=".bend-page"
-        zone={160}
-        angle={16}
-        rounding={480}
-        perspective={1800}
-        ease={90}
-        smoothing={0.12}
-        tumble={0.03}
-        tilt={0}
-        direction="out"
-        top
-        bottom
-      />
     </div>
     <!-- Wires [data-circuit] regions into a bus overlay. Regions opt in through
          markup only; a page with none pays nothing but the module. -->
@@ -389,23 +338,16 @@ const structuredData = {
           root.style.setProperty('--ambient-shift-y', (1 - progress * 2).toFixed(2) + '%');
         }
 
-        function ambientScroll(event) {
+        function ambientScroll() {
           if (reduceMotion.matches) return;
 
-          var node = event && event.target;
-          var isDocument = !event || node === document || node === document.documentElement;
-          var isBendScroller = node instanceof HTMLElement && node.hasAttribute('data-canvasui-content');
-          if (!isDocument && !isBendScroller) return;
-
-          var scrollTop = isDocument ? window.scrollY : node.scrollTop;
-          var viewport = isDocument ? window.innerHeight : node.clientHeight;
-          var scrollHeight = isDocument ? document.documentElement.scrollHeight : node.scrollHeight;
-          progress = Math.min(1, Math.max(0, scrollTop / Math.max(1, scrollHeight - viewport)));
+          var scrollable = root.scrollHeight - window.innerHeight;
+          progress = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
 
           if (!frame) frame = requestAnimationFrame(paintAmbientPosition);
         }
 
-        document.addEventListener('scroll', ambientScroll, { passive: true, capture: true });
+        window.addEventListener('scroll', ambientScroll, { passive: true });
         ambientScroll();
       })();
     </script>
@@ -505,22 +447,16 @@ const structuredData = {
         var firedMilestones = {};
         var pathname = window.location.pathname;
 
-        // Bend hosts the page in its own scroll container and swaps that element
-        // when the canvas effect activates, so listen in the capture phase on the
-        // document rather than binding to a node that may be replaced.
+        // This block re-runs on astro:page-load, so drop any previous listener
+        // before binding a new one.
         if (window.__analyticsScrollHandler) {
-          document.removeEventListener('scroll', window.__analyticsScrollHandler, true);
+          window.removeEventListener('scroll', window.__analyticsScrollHandler);
         }
 
-        function analyticsScroll(event) {
-          var node = event.target;
-          var isDocument = node === document || node === document.documentElement;
-          var scrollTop = isDocument ? window.scrollY : node.scrollTop;
-          var viewport = isDocument ? window.innerHeight : node.clientHeight;
-          var scrollHeight = isDocument ? document.documentElement.scrollHeight : node.scrollHeight;
-          var docHeight = scrollHeight - viewport;
+        function analyticsScroll() {
+          var docHeight = document.documentElement.scrollHeight - window.innerHeight;
           if (docHeight <= 0) return;
-          var pct = Math.round((scrollTop / docHeight) * 100);
+          var pct = Math.round((window.scrollY / docHeight) * 100);
           if (pct > maxScroll) maxScroll = pct;
           scrollMilestones.forEach(function(m) {
             if (pct >= m && !firedMilestones[m]) {
@@ -530,7 +466,7 @@ const structuredData = {
           });
         }
         window.__analyticsScrollHandler = analyticsScroll;
-        document.addEventListener('scroll', analyticsScroll, { passive: true, capture: true });
+        window.addEventListener('scroll', analyticsScroll, { passive: true });
 
         document.querySelectorAll('a[href*="/cv"], a[href*="cv.pdf"], a[href*="CV"]').forEach(function(el) {
           el.addEventListener('click', function() {

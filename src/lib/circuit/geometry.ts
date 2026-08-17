@@ -3,7 +3,7 @@
  *
  * Pure routing maths for the pipework overlay. Everything works in region-local
  * pixels (an element's box measured against its region's overlay), so results
- * stay correct under any ancestor transform, including Bend's canvas scroller.
+ * stay correct under any ancestor transform.
  *
  * The grammar this implements is docs/design-docs/circuit-design-language.md.
  * Three rules matter more than the rest:
