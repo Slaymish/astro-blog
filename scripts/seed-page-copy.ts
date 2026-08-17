@@ -84,13 +84,13 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'Hamish Burke',
       description:
-        'Software developer at Alphero in Wellington. I build things and write about technology, AI, systems, and the problems worth solving.'
+        'Software developer in Wellington, New Zealand. I build things in the open and write about technology, AI, systems, and the problems worth solving.'
     },
     hero: {
       eyebrow: 'Hamish Burke / Wellington, New Zealand',
-      headline: 'Software developer at Alphero,',
+      headline: 'Software developer',
       headlineAccent: 'in Wellington.',
-      lede: 'Most of what I build outside of that is to solve something for myself, or to prove I can actually do it in that space.',
+      lede: 'I build things I want to exist, and I publish them. The code is publicly readable, the write-ups say what did not work, and you can run most of it yourself.',
       links: [
         { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
         { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },

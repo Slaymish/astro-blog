@@ -13,6 +13,7 @@ interface Props {
 }
 
 const { story, variant = 'featured', reverse = false, circuitNode } = Astro.props;
+const repoUrl = story.primaryArtifact?.githubUrl;
 ---
 
 <article
@@ -21,7 +22,7 @@ const { story, variant = 'featured', reverse = false, circuitNode } = Astro.prop
   data-circuit-attach={circuitNode ? 'rule' : undefined}
   data-circuit-flash={circuitNode ? 'edge' : undefined}
 >
-  <a href={workStoryHref(story.slug)} class="work-card__link" aria-label={`Read the ${story.title} case study`}>
+  <div class="work-card__link">
     <div class="work-card__visual">
       <WorkGraphic kind={story.graphic.kind} alt={story.graphic.alt} compact={variant === 'row'} />
     </div>
@@ -33,15 +34,42 @@ const { story, variant = 'featured', reverse = false, circuitNode } = Astro.prop
       <h3>{story.title}</h3>
       <p class="work-card__summary">{story.summary}</p>
       <p class="work-card__result"><strong>Result</strong> {story.result}</p>
-      <IconText class="work-card__action">View case study</IconText>
+      <div class="work-card__actions">
+        {/* Stretched link: covers the whole card, so the card stays one big
+            click target while the repo link below can sit above it. */}
+        <a
+          href={workStoryHref(story.slug)}
+          class="work-card__cover"
+          aria-label={`Read the ${story.title} case study`}
+        >
+          <IconText class="work-card__action">View case study</IconText>
+        </a>
+        {repoUrl && (
+          <a
+            href={repoUrl}
+            class="work-card__repo"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${story.title} source code on GitHub`}
+          >
+            <IconText class="work-card__action">Source on GitHub</IconText>
+          </a>
+        )}
+      </div>
     </div>
-  </a>
+  </div>
 </article>
 
 <style>
-  .work-card { border-top: 1px solid var(--color-stroke-subtle); }
+  .work-card { border-top: 1px solid var(--color-stroke-subtle); position: relative; }
   .work-card__link { color: inherit; display: grid; gap: var(--spacing-6); padding-block: clamp(2rem, 6vw, 5rem); text-decoration: none; }
   .work-card__link:hover { color: inherit; opacity: 1; }
+  .work-card__actions { align-items: baseline; display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-6); }
+  .work-card__cover, .work-card__repo { color: inherit; text-decoration: none; }
+  .work-card__cover::after { content: ''; inset: 0; position: absolute; }
+  /* Sits above the stretched link so it stays independently clickable. */
+  .work-card__repo { position: relative; z-index: 1; }
+  .work-card__cover:hover, .work-card__repo:hover { color: inherit; opacity: 1; }
   .work-card__visual { min-width: 0; }
   .work-card__content { align-self: center; }
   .work-card__meta { align-items: start; color: var(--color-text-secondary); display: flex; font-size: var(--type-label); font-weight: 600; gap: var(--spacing-4); justify-content: space-between; letter-spacing: .09em; line-height: 1.4; text-transform: uppercase; }
