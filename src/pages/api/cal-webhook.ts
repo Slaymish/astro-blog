@@ -10,22 +10,15 @@
  */
 
 import { getStore } from '@netlify/blobs';
+import { parseBookingRef } from '../../lib/analytics';
+import { SESSION_STORE, conversionKey, dayStamp } from '../../lib/sessionStore';
+import { timingSafeEqual } from '../../lib/timingSafe';
 
 export const prerender = false;
 
 const UMAMI_ENDPOINT = 'https://cloud.umami.is/api/send';
 const UMAMI_WEBSITE_ID = '3b77a67f-19f6-4f3c-a7ab-8af0d58bfbc6';
 const SITE_HOSTNAME = 'hamishburke.dev';
-
-/** Timing-safe comparison so a bad signature cannot be probed byte by byte. */
-function safeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < a.length; i += 1) {
-    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return mismatch === 0;
-}
 
 async function hmacSha256Hex(secret: string, body: string): Promise<string> {
   const key = await crypto.subtle.importKey(
@@ -41,14 +34,6 @@ async function hmacSha256Hex(secret: string, body: string): Promise<string> {
     .join('');
 }
 
-/** `ref` is written by the client as "<path>|<nonce>". Anything else is ignored. */
-function parseRef(raw: unknown): { page: string; nonce: string } | null {
-  if (typeof raw !== 'string') return null;
-  const [page, nonce] = raw.split('|');
-  if (!page || !/^\/[\w\-/]*$/.test(page)) return null;
-  return { page, nonce: /^[a-z0-9]{4,32}$/.test(nonce ?? '') ? nonce : 'unknown' };
-}
-
 export async function POST({ request }: { request: Request }) {
   const secret = process.env.CAL_WEBHOOK_SECRET;
   if (!secret) {
@@ -59,7 +44,7 @@ export async function POST({ request }: { request: Request }) {
   const provided = request.headers.get('x-cal-signature-256') ?? '';
   const expected = await hmacSha256Hex(secret, rawBody);
 
-  if (!provided || !safeEqual(provided.toLowerCase(), expected)) {
+  if (!provided || !timingSafeEqual(provided.toLowerCase(), expected)) {
     return new Response('Invalid signature', { status: 401 });
   }
 
@@ -76,14 +61,14 @@ export async function POST({ request }: { request: Request }) {
   }
 
   const metadata = (event.payload?.metadata ?? {}) as Record<string, unknown>;
-  const ref = parseRef(metadata.ref);
+  const ref = parseBookingRef(metadata.ref);
 
   // Also record the conversion alongside the collected sessions. The nightly
   // synthesis reads the blob store, not Umami, so a booking written only to
   // Umami would be invisible to the analysis that exists to explain bookings.
   try {
-    const day = new Date().toISOString().slice(0, 10);
-    await getStore('sessions').setJSON(`conversions/${day}/${crypto.randomUUID()}`, {
+    const day = dayStamp();
+    await getStore(SESSION_STORE).setJSON(conversionKey(day, crypto.randomUUID()), {
       day,
       visitor: ref?.nonce ?? null,
       page: ref?.page ?? null,

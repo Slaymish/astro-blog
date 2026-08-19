@@ -2,10 +2,6 @@
   publish = "dist"
   command = "pnpm run build"
 
-# Nightly qualitative analysis of visitor sessions. Runs at 15:00 UTC (~3am NZ).
-[functions."session-insights"]
-  schedule = "0 15 * * *"
-
 [build.environment]
   SANITY_PROJECT_ID = "qnuj1c4o"
   SANITY_DATASET = "production"
@@ -20,10 +16,28 @@
 # HTML is prerendered and Netlify purges its CDN on deploy, so revalidating
 # rather than holding a timed copy means a publish is live as soon as the
 # rebuild finishes instead of up to five minutes later.
+#
+# The security headers ride on the same rule so every response carries them.
+# The CSP allowlist is derived from what the built output actually loads:
+# Umami for analytics, jsdelivr for the KaTeX stylesheet and its fonts, Sanity
+# for images and media. PDF.js is self-hosted under /vendor and renders to a
+# canvas, so object-src can stay closed; nothing on the site uses an iframe.
+#
+# script-src keeps 'unsafe-inline' because the theme resolver, the booking-ref
+# rewriter and the analytics tracker are all inline scripts that must run
+# before or independently of the bundle. Hash-based CSP via Astro's
+# experimental.csp flag would close that gap and is the natural follow-up.
 [[headers]]
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' blob: https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://cdn.sanity.io; font-src 'self' data: https://cdn.jsdelivr.net; connect-src 'self' https://cloud.umami.is; worker-src 'self' blob:; media-src 'self' blob: https://cdn.sanity.io; manifest-src 'self'; upgrade-insecure-requests"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Cross-Origin-Opener-Policy = "same-origin"
 
 # RSS is now prerendered alongside the rest of the site and refreshed by the
 # publish rebuild, so it follows the same revalidate rule as every other page.
@@ -82,6 +96,12 @@
 
 [[redirects]]
   from = "/projects/drop-eta"
+  to = "/410.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/projects/otto"
   to = "/410.html"
   status = 410
   force = true

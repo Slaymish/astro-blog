@@ -2,19 +2,56 @@
  * Nightly session-archetype synthesis.
  *
  * Statistical tests need volume this site does not have. Qualitative synthesis
- * works at N=50: reconstruct anonymised event sequences from Umami, and ask
- * Claude what distinguishes sessions that reached a booking from those that did
- * not. The report is written to Netlify Blobs and read via /api/insights.
+ * works at N=50: read the anonymised event sequences /api/collect wrote to
+ * Netlify Blobs, join them against confirmed bookings, and ask Claude what
+ * distinguishes sessions that reached a booking from those that did not. The
+ * report is written back to Blobs and read via /api/insights.
  *
- * Schedule is declared in netlify.toml.
+ * The schedule lives in the `config` export at the foot of this file, and
+ * nowhere else. netlify.toml used to carry a second copy, which is a drift risk
+ * for no benefit: the export is type-checked and sits beside the code it times.
  */
 
 import type { Config } from '@netlify/functions';
 import Anthropic from '@anthropic-ai/sdk';
-import { getStore } from '@netlify/blobs';
+import { getStore, type Store } from '@netlify/blobs';
+import { RATE_LIMIT_STORE, isExpiredCounter, windowId } from '../../src/lib/rateLimit';
+import {
+  INSIGHTS_STORE,
+  LATEST_REPORT_KEY,
+  SESSION_STORE,
+  conversionPrefix,
+  isConversionKey,
+  isExpiredKey,
+  retentionCutoff,
+  sessionPrefix
+} from '../../src/lib/sessionStore';
 
 const LOOKBACK_DAYS = 7;
 const MAX_SESSIONS = 200;
+
+/**
+ * Ceiling on conversion blobs read per run. Bookings are rare enough that this
+ * should never bind, but the loop below does a serial `get` per blob across the
+ * whole lookback, so an unexpected flood would otherwise stall the function.
+ */
+const MAX_CONVERSIONS = 200;
+
+/**
+ * How long collected sessions are kept. Well past the analysis window, so a
+ * lookback change does not silently start reading pruned days.
+ */
+const SESSION_RETENTION_DAYS = 30;
+
+/**
+ * Confirmed bookings are kept far longer. They are a handful of tiny records a
+ * year and the only ground truth the analysis has, so the storage saved by
+ * expiring them on the session schedule would not be worth losing them.
+ */
+const CONVERSION_RETENTION_DAYS = 365;
+
+/** Rate-limit counters are only meaningful inside their own hour. */
+const COUNTER_RETENTION_HOURS = 48;
 
 interface StoredSession {
   day: string;
@@ -24,6 +61,31 @@ interface StoredSession {
 
 interface StoredConversion {
   visitor?: string | null;
+}
+
+/**
+ * Deletes blobs past their retention window.
+ *
+ * Nothing else ever removes them: the collector and the webhook only write.
+ * Left unpruned the store grows without bound, and storage is paid for data no
+ * report has read in weeks.
+ */
+async function prune(store: Store, isExpired: (key: string) => boolean): Promise<number> {
+  let deleted = 0;
+
+  for await (const page of store.list({ paginate: true })) {
+    for (const blob of page.blobs) {
+      if (!isExpired(blob.key)) continue;
+      try {
+        await store.delete(blob.key);
+        deleted += 1;
+      } catch {
+        // A key that fails to delete is simply retried tomorrow.
+      }
+    }
+  }
+
+  return deleted;
 }
 
 /** The last N days as YYYY-MM-DD, matching the collector's blob key prefix. */
@@ -72,20 +134,42 @@ thin to trust at this sample size, say so rather than inventing significance.
 Return concise markdown.`;
 
 export default async function handler(): Promise<Response> {
+  const store = getStore(SESSION_STORE);
+
+  // Runs before the report so that a missing API key, a thin night or a model
+  // refusal cannot leave retention permanently unenforced.
+  try {
+    const sessionCutoff = retentionCutoff(SESSION_RETENTION_DAYS);
+    const conversionCutoff = retentionCutoff(CONVERSION_RETENTION_DAYS);
+    const sessions = await prune(store, (key) =>
+      isExpiredKey(key, isConversionKey(key) ? conversionCutoff : sessionCutoff)
+    );
+    const counterCutoff = windowId(new Date(Date.now() - COUNTER_RETENTION_HOURS * 3_600_000));
+    const counters = await prune(getStore(RATE_LIMIT_STORE), (key) => isExpiredCounter(key, counterCutoff));
+    console.log(`[session-insights] pruned ${sessions} session blobs and ${counters} rate-limit counters`);
+  } catch (error) {
+    console.error('[session-insights] prune failed:', error);
+  }
+
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (!anthropicKey) {
     return new Response('ANTHROPIC_API_KEY must be set', { status: 503 });
   }
 
-  const store = getStore('sessions');
   const days = recentDays(LOOKBACK_DAYS);
 
   // Which visitors actually completed a booking. Without this join the analysis
   // could only see booking-link clicks, not bookings.
   const convertedVisitors = new Set<string>();
+  let conversionsRead = 0;
+
   for (const day of days) {
-    const { blobs } = await store.list({ prefix: `conversions/${day}/` });
+    if (conversionsRead >= MAX_CONVERSIONS) break;
+
+    const { blobs } = await store.list({ prefix: conversionPrefix(day) });
     for (const blob of blobs) {
+      if (conversionsRead >= MAX_CONVERSIONS) break;
+      conversionsRead += 1;
       try {
         const conversion = (await store.get(blob.key, { type: 'json' })) as StoredConversion | null;
         if (conversion?.visitor) convertedVisitors.add(conversion.visitor);
@@ -101,7 +185,7 @@ export default async function handler(): Promise<Response> {
   for (const day of days) {
     if (sequences.length >= MAX_SESSIONS) break;
 
-    const { blobs } = await store.list({ prefix: `${day}/` });
+    const { blobs } = await store.list({ prefix: sessionPrefix(day) });
     for (const blob of blobs) {
       if (sequences.length >= MAX_SESSIONS) break;
       try {
@@ -152,10 +236,10 @@ export default async function handler(): Promise<Response> {
     .map((block) => block.text)
     .join('\n');
 
-  const reportStore = getStore('session-insights');
+  const reportStore = getStore(INSIGHTS_STORE);
   const generatedAt = new Date().toISOString();
   await reportStore.set(
-    'latest',
+    LATEST_REPORT_KEY,
     JSON.stringify({ generatedAt, sessionCount: sequences.length, report })
   );
 

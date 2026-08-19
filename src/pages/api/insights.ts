@@ -5,6 +5,8 @@
  */
 
 import { getStore } from '@netlify/blobs';
+import { INSIGHTS_STORE, LATEST_REPORT_KEY } from '../../lib/sessionStore';
+import { timingSafeEqual } from '../../lib/timingSafe';
 
 export const prerender = false;
 
@@ -23,16 +25,11 @@ export async function GET({ request, url }: { request: Request; url: URL }) {
     url.searchParams.get('token') ??
     '';
 
-  // Length-independent comparison keeps the token from being probed by timing.
-  if (provided.length !== expected.length) return unauthorised();
-  let mismatch = 0;
-  for (let i = 0; i < expected.length; i += 1) {
-    mismatch |= provided.charCodeAt(i) ^ expected.charCodeAt(i);
-  }
-  if (mismatch !== 0) return unauthorised();
+  // Constant-time so the token cannot be recovered by timing the response.
+  if (!timingSafeEqual(provided, expected)) return unauthorised();
 
-  const store = getStore('session-insights');
-  const latest = await store.get('latest', { type: 'json' });
+  const store = getStore(INSIGHTS_STORE);
+  const latest = await store.get(LATEST_REPORT_KEY, { type: 'json' });
 
   if (!latest) {
     return new Response('No report generated yet', { status: 404 });

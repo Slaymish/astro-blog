@@ -3,58 +3,28 @@
  *
  * Umami Cloud keeps the dashboards, but its query API is a paid feature. The
  * nightly synthesis only needs ordered event sequences, so we collect those
- * ourselves: one batched beacon per session, stored as one blob per session.
+ * ourselves: one batched beacon per page view, stored as one blob per beacon.
  *
  * Deliberately stores no IP address, user agent, referrer or cookie. The
- * session id is a random per-tab value generated in the browser and is not
- * linkable to a person.
+ * visitor id is a random value minted in the browser and kept in localStorage;
+ * it is not linkable to a person.
  */
 
 import { getStore } from '@netlify/blobs';
+import { cleanEvents, cleanNonce } from '../../lib/analytics';
+import {
+  COLLECT_LIMIT_PER_WINDOW,
+  RATE_LIMIT_STORE,
+  clientAddress,
+  consume,
+  counterKey,
+  windowId
+} from '../../lib/rateLimit';
+import { SESSION_STORE, dayStamp, sessionKey } from '../../lib/sessionStore';
 
 export const prerender = false;
 
 const MAX_BODY_BYTES = 8 * 1024;
-const MAX_EVENTS = 100;
-const PATH_PATTERN = /^\/[\w\-/.]*$/;
-const NAME_PATTERN = /^[a-z0-9-]{1,40}$/;
-const NONCE_PATTERN = /^[a-z0-9]{4,32}$/;
-
-interface IncomingEvent {
-  t?: unknown;
-  p?: unknown;
-  n?: unknown;
-}
-
-interface CleanEvent {
-  /** Milliseconds since the session started. */
-  t: number;
-  /** Page path. */
-  p: string;
-  /** Event name, absent for a plain pageview. */
-  n?: string;
-}
-
-/**
- * Everything is attacker-controlled, so each field is validated rather than
- * trusted — an unbounded blob store is otherwise a free write primitive.
- */
-function clean(events: unknown): CleanEvent[] {
-  if (!Array.isArray(events)) return [];
-
-  return events
-    .slice(0, MAX_EVENTS)
-    .map((raw: IncomingEvent) => {
-      const path = typeof raw?.p === 'string' && PATH_PATTERN.test(raw.p) ? raw.p.slice(0, 120) : null;
-      if (!path) return null;
-
-      const offset = typeof raw?.t === 'number' && Number.isFinite(raw.t) ? Math.max(0, Math.round(raw.t)) : 0;
-      const name = typeof raw?.n === 'string' && NAME_PATTERN.test(raw.n) ? raw.n : undefined;
-
-      return { t: offset, p: path, ...(name ? { n: name } : {}) } satisfies CleanEvent;
-    })
-    .filter((event): event is CleanEvent => event !== null);
-}
 
 export async function POST({ request }: { request: Request }) {
   const raw = await request.text();
@@ -69,21 +39,33 @@ export async function POST({ request }: { request: Request }) {
     return new Response(null, { status: 400 });
   }
 
-  const events = clean(payload.e);
+  const events = cleanEvents(payload.e);
   if (events.length === 0) {
     return new Response(null, { status: 204 });
   }
 
+  // Metered here rather than at the top of the handler: the resource being
+  // protected is the blob write, and a malformed request never reaches one.
+  const window = windowId();
+  const key = await counterKey(clientAddress(request.headers), window, process.env.RATE_LIMIT_SALT ?? '');
+  const allowed = await consume(
+    getStore(RATE_LIMIT_STORE),
+    key,
+    COLLECT_LIMIT_PER_WINDOW
+  );
+
+  if (!allowed) {
+    return new Response(null, { status: 429, headers: { 'retry-after': '3600' } });
+  }
+
   // The same opaque nonce that is attached to booking links, so a confirmed
   // booking can be joined back to the session that produced it.
-  const visitor = typeof payload.s === 'string' && NONCE_PATTERN.test(payload.s) ? payload.s : null;
+  const visitor = cleanNonce(payload.s);
 
-  const day = new Date().toISOString().slice(0, 10);
-  // One blob per session: concurrent sessions never contend for the same key.
-  const key = `${day}/${crypto.randomUUID()}`;
-
+  const day = dayStamp();
+  // One blob per beacon: concurrent sessions never contend for the same key.
   try {
-    await getStore('sessions').setJSON(key, { day, visitor, events });
+    await getStore(SESSION_STORE).setJSON(sessionKey(day, crypto.randomUUID()), { day, visitor, events });
   } catch {
     // Losing an analytics beacon must never surface to the visitor.
     return new Response(null, { status: 204 });
