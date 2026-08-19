@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { fetchFreshSanity } from '../lib/sanity';
-import { portableTextToPlainText } from '../lib/portableText';
+import { portableTextToPlainText, type PortableTextBody } from '../lib/portableText';
 import { markdownToPlainText } from '../lib/markdown';
 import { escapeXml } from '../lib/escape';
 import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from '../lib/site';
@@ -9,7 +9,7 @@ type RssPost = {
   title: string;
   slug: string;
   publishedAt: string;
-  body?: any;
+  body?: PortableTextBody;
   markdownBody?: string;
   tags?: string[];
 };

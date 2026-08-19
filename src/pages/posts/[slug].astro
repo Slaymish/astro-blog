@@ -7,21 +7,12 @@ import { calculateReadingTime } from "../../utils/reading-time";
 import { createSlug } from "../../utils/slug";
 import { fetchSanity } from "../../lib/sanity";
 import { SITE_URL, absoluteUrl } from "../../lib/site";
-import { portableTextToHtml, portableTextToPlainText } from "../../lib/portableText";
+import { portableTextToHtml, portableTextToPlainText, type PortableTextBody } from "../../lib/portableText";
 import { markdownToHtml, markdownToPlainText } from "../../lib/markdown";
 import { splitHtmlAtInteractive, stripInteractivePlaceholder } from "../../utils/split-html";
 import InteractiveElement from "../../components/interactive/InteractiveElement.astro";
 import Icon from "../../components/ui/Icon.astro";
-import IconText from "../../components/ui/IconText.astro";
 import { contentPostSlug, legacyRoutePolicy, publicPostSlug } from "../../lib/legacyRoutes";
-
-type RelatedProjectDoc = {
-  title: string;
-  slug: string;
-  technologies?: string[];
-  link?: string;
-  github?: string;
-};
 
 type PostDoc = {
   title: string;
@@ -30,7 +21,7 @@ type PostDoc = {
   updatedAt?: string;
   tags?: string[];
   excerpt?: string;
-  body?: any;
+  body?: PortableTextBody;
   markdownBody?: string;
   interactiveElement?: string;
 };
@@ -67,17 +58,6 @@ const post = await fetchSanity<PostDoc | null>(`
     interactiveElement
   }
 `, { slug: contentSlug });
-
-// Find any project that references this post
-const relatedProject = post ? await fetchSanity<RelatedProjectDoc | null>(`
-  *[_type == "project" && relatedPost._ref in *[_type == "post" && slug.current == $slug]._id][0]{
-    title,
-    "slug": slug.current,
-    technologies,
-    link,
-    github
-  }
-`, { slug: contentSlug }) : null;
 
 if (!post) {
   return Astro.redirect("/404");
@@ -141,7 +121,6 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
     date={postDate}
     readingTime={readingTime.text}
     tagLinks={tagLinks}
-    titleTransitionName={`title-posts-${postPublicSlug}`}
     backHref={backHref}
     backLabel={backLabel}
   />
@@ -154,21 +133,6 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
 
   <div class="post-layout">
     <article itemscope itemtype="http://schema.org/BlogPosting">
-
-      {relatedProject && (
-        <div class="project-callout" data-reveal>
-          <span class="project-callout-label">Project</span>
-          <span class="project-callout-title">{relatedProject.title}</span>
-          <div class="project-callout-links">
-            {relatedProject.link && (
-              <a href={relatedProject.link} target="_blank" rel="noopener noreferrer"><IconText icon="arrow-up-right">Live Demo</IconText></a>
-            )}
-            {relatedProject.github && (
-              <a href={relatedProject.github} target="_blank" rel="noopener noreferrer"><IconText icon="arrow-up-right">GitHub</IconText></a>
-            )}
-          </div>
-        </div>
-      )}
 
       {interactiveSplit ? (
         <div class="prose prose-fade-in" itemprop="articleBody">
@@ -406,75 +370,6 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
 
   .back-link::after {
     display: none !important;
-  }
-
-  /* ── Project callout ── */
-  .project-callout {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem 1rem;
-    padding: 1rem 1.5rem;
-    margin-bottom: 2rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    font-size: 0.875rem;
-    overflow-x: auto;
-    white-space: nowrap;
-    transition: border-color 0.2s ease;
-  }
-
-  .project-callout:hover {
-    border-color: var(--accent);
-  }
-
-  .project-callout-label {
-    font-weight: 600;
-    color: var(--accent);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.75rem;
-  }
-
-  .project-callout-title {
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  .project-callout-links {
-    display: flex;
-    gap: 0.75rem;
-    margin-left: auto;
-  }
-
-  .project-callout-links a {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    transition: color 0.15s ease;
-  }
-
-  .project-callout-links a:hover {
-    color: var(--accent);
-  }
-
-  .project-callout-links a::after {
-    display: none !important;
-  }
-
-  /* On narrow screens let the callout wrap instead of scrolling/clipping */
-  @media (max-width: 640px) {
-    .project-callout {
-      flex-wrap: wrap;
-      white-space: normal;
-      overflow-x: visible;
-    }
-
-    .project-callout-links {
-      margin-left: 0;
-      width: 100%;
-    }
   }
 
 </style>

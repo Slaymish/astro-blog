@@ -6,7 +6,7 @@ import PDFViewer from '../../components/features/PDFViewer.astro';
 import { calculateReadingTime } from '../../utils/reading-time';
 import { createSlug } from '../../utils/slug';
 import { fetchSanity } from '../../lib/sanity';
-import { portableTextToHtml, portableTextToPlainText } from '../../lib/portableText';
+import { portableTextToHtml, portableTextToPlainText, type PortableTextBody } from '../../lib/portableText';
 import { SITE_URL, absoluteUrl } from '../../lib/site';
 import { legacyRoutePolicy } from '../../lib/legacyRoutes';
 
@@ -17,7 +17,7 @@ type ReportDoc = {
   description?: string;
   tags?: string[];
   pdfUrl?: string;
-  body?: any;
+  body?: PortableTextBody;
 };
 
 export async function getStaticPaths() {
@@ -81,7 +81,6 @@ const publishedTime = new Date(report.publishedAt).toISOString();
       <h1
         class="text-4xl font-bold mb-4 text-[var(--text)]"
         itemprop="headline"
-        transition:name={`title-reports-${report.slug}`}
       >
         {report.title}
       </h1>

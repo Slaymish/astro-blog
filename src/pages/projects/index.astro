@@ -1,6 +1,7 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
 import ContactBand from '../../components/work/ContactBand.astro';
+import PageHeader from '../../components/layout/PageHeader.astro';
 import WorkCard from '../../components/work/WorkCard.astro';
 import { getWorkStories } from '../../lib/workData';
 import { getProjectsIndexPage } from '../../lib/pageContent';
@@ -17,11 +18,13 @@ const { hero } = copy;
   description={copy.seo.description}
   canonicalURL={absoluteUrl('/projects', SITE_URL)}
 >
-  <header class="projects-index__header">
-    <p class="projects-index__eyebrow">{hero.eyebrow}</p>
-    <h1>{hero.headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}</h1>
-    <p class="projects-index__intro">{hero.intro}</p>
-  </header>
+  <PageHeader
+    eyebrow={hero.eyebrow}
+    headline={hero.headlineLines}
+    intro={hero.intro}
+    headlineMeasure="16ch"
+    introMeasure="37rem"
+  />
 
   <section aria-label="Independent projects">
     {projects.map((story, index) => (
@@ -31,10 +34,3 @@ const { hero } = copy;
 
   <ContactBand heading={copy.contactHeading} />
 </Layout>
-
-<style>
-  .projects-index__header { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
-  .projects-index__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 16ch; }
-  .projects-index__intro { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.45; margin: var(--spacing-8) 0 0; max-width: 37rem; }
-</style>

@@ -1,6 +1,7 @@
 ---
 import Layout from '../components/layout/Layout.astro';
 import ButtonLink from '../components/ui/ButtonLink.astro';
+import PageHeader from '../components/layout/PageHeader.astro';
 import { getCvPage } from '../lib/pageContent';
 import { SITE_URL, absoluteUrl } from '../lib/site';
 
@@ -14,10 +15,14 @@ const { hero, academic } = copy;
   canonicalURL={absoluteUrl('/cv', SITE_URL)}
 >
   <article class="cv">
-    <header class="cv__hero">
-      <p class="cv__eyebrow">{hero.eyebrow}</p>
-      <h1>{hero.headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}</h1>
-      <p>{hero.intro}</p>
+    <PageHeader
+      eyebrow={hero.eyebrow}
+      headline={hero.headlineLines}
+      intro={hero.intro}
+      introMeasure="43rem"
+      introScale="large"
+      introSpace="0"
+    >
       <div class="cv__actions">
         {hero.actions.map((action, index) => (
           <ButtonLink
@@ -30,7 +35,7 @@ const { hero, academic } = copy;
           </ButtonLink>
         ))}
       </div>
-    </header>
+    </PageHeader>
 
     <section class="cv__facts" aria-label="Professional summary">
       {copy.facts.map((fact) => <div><span>{fact.label}</span><strong>{fact.value}</strong></div>)}
@@ -55,10 +60,7 @@ const { hero, academic } = copy;
 </Layout>
 
 <style>
-  .cv__hero { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
   .cv__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  .cv__hero h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; }
-  .cv__hero > p:not(.cv__eyebrow) { color: var(--color-text-secondary); font-size: clamp(1.15rem, 2.2vw, 1.5rem); line-height: 1.5; max-width: 43rem; }
   .cv__actions { align-items: center; display: flex; flex-wrap: wrap; gap: var(--spacing-3) var(--spacing-5); margin-top: var(--spacing-8); }
   .cv__facts { border-top: 1px solid var(--color-stroke-subtle); }
   .cv__facts > div { border-bottom: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-3); padding-block: clamp(1.4rem, 4vw, 2.5rem); }

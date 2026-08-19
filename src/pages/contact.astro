@@ -1,6 +1,7 @@
 ---
 import Layout from '../components/layout/Layout.astro';
 import Icon from '../components/ui/Icon.astro';
+import PageHeader from '../components/layout/PageHeader.astro';
 import { getContactPage } from '../lib/pageContent';
 import { SITE_URL, absoluteUrl } from '../lib/site';
 
@@ -13,11 +14,13 @@ const { hero } = copy;
   description={copy.seo.description}
   canonicalURL={absoluteUrl('/contact', SITE_URL)}
 >
-  <header class="contact__header">
-    <p class="contact__eyebrow">{hero.eyebrow}</p>
-    <h1>{hero.headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}</h1>
-    <p class="contact__intro">{hero.intro}</p>
-  </header>
+  <PageHeader
+    eyebrow={hero.eyebrow}
+    headline={hero.headlineLines}
+    intro={hero.intro}
+    headlineMeasure="14ch"
+    introMeasure="38rem"
+  />
 
   <section class="contact__channels" aria-label="Ways to get in touch">
     <ul>
@@ -47,11 +50,6 @@ const { hero } = copy;
 </Layout>
 
 <style>
-  .contact__header { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
-  .contact__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  .contact__header h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 14ch; }
-  .contact__intro { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.45; margin: var(--spacing-8) 0 0; max-width: 38rem; }
-
   .contact__channels ul { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }
   .contact__channels li { border-bottom: 1px solid var(--color-stroke-subtle); }
   .contact__channels a { align-items: baseline; color: var(--color-text-primary); display: grid; gap: var(--spacing-2) var(--spacing-8); padding-block: clamp(1.5rem, 3.5vw, 2.25rem); }

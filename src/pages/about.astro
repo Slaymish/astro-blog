@@ -1,6 +1,7 @@
 ---
 import Layout from '../components/layout/Layout.astro';
 import MediaFrame from '../components/ui/MediaFrame.astro';
+import PageHeader from '../components/layout/PageHeader.astro';
 import ContactBand from '../components/work/ContactBand.astro';
 import { getAboutPage } from '../lib/pageContent';
 import { portableTextToHtml } from '../lib/portableText';
@@ -17,11 +18,14 @@ const largeCopyHtml = portableTextToHtml(portrait.largeCopy);
   canonicalURL={absoluteUrl('/about', SITE_URL)}
 >
   <article class="about">
-    <header class="about__hero">
-      <p class="about__eyebrow">{hero.eyebrow}</p>
-      <h1>{hero.heading}</h1>
-      <p class="about__intro">{hero.intro}</p>
-    </header>
+    <PageHeader
+      eyebrow={hero.eyebrow}
+      headline={hero.heading}
+      intro={hero.intro}
+      headlineMeasure="12ch"
+      introMeasure="44rem"
+      introScale="large"
+    />
 
     <section class="about__portrait" aria-label="Introduction">
       <MediaFrame
@@ -94,11 +98,7 @@ const largeCopyHtml = portableTextToHtml(portrait.largeCopy);
 </Layout>
 
 <style>
-  .about__hero { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
-  .about__eyebrow,
   .about__label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  .about__hero h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 12ch; }
-  .about__intro { color: var(--color-text-secondary); font-size: clamp(1.15rem, 2.2vw, 1.5rem); line-height: 1.5; margin-top: var(--spacing-8); max-width: 44rem; }
   .about__portrait { align-items: center; border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: clamp(2rem, 7vw, 6rem); padding-block: clamp(3rem, 9vw, 8rem); }
   .about__portrait :global(.media-frame) { max-width: 28rem; }
   .about__portrait p { color: var(--color-text-secondary); line-height: 1.7; }

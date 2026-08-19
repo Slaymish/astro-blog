@@ -12,6 +12,7 @@ import "../../styles/globals.css";
 // Layout Components
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
+import { THEME_COLORS } from "../../lib/shell/theme";
 import {
   SITE_AUTHOR,
   SITE_DESCRIPTION,
@@ -122,7 +123,7 @@ const structuredData = {
          data-cfasync="false" is required: Cloudflare Rocket Loader otherwise
          rewrites the type attribute and defers this until after first paint,
          which reintroduces the flash. -->
-    <script is:inline data-cfasync="false">
+    <script is:inline data-cfasync="false" define:vars={{ themeColors: THEME_COLORS }}>
       (function () {
         var root = document.documentElement;
         var stored = null;
@@ -133,9 +134,11 @@ const structuredData = {
         root.classList.add(theme);
         root.dataset.themeSource = stored ? 'user' : 'system';
         // Set inline so the browser paints the right canvas even before the
-        // theme stylesheet has parsed.
+        // theme stylesheet has parsed. themeColors is inlined at build time
+        // from src/lib/shell/theme.ts: no stylesheet has parsed yet, so the
+        // token cannot be read off computed style here.
         root.style.colorScheme = theme;
-        root.style.backgroundColor = theme === 'light' ? '#f6f7f3' : '#0b0d0c';
+        root.style.backgroundColor = themeColors[theme];
       })();
     </script>
     
@@ -200,8 +203,10 @@ const structuredData = {
     <!-- Performance and Security -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="format-detection" content="telephone=no" />
-    <meta name="theme-color" content="#0b0d0c" />
-    <meta name="msapplication-TileColor" content="#0b0d0c" />
+    <!-- Rendered dark; ThemeToggle's syncChrome() corrects theme-color to the
+         resolved theme as soon as it runs. -->
+    <meta name="theme-color" content={THEME_COLORS.dark} />
+    <meta name="msapplication-TileColor" content={THEME_COLORS.dark} />
     
     <!-- Preconnect to external domains for faster loading -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -325,201 +330,14 @@ const structuredData = {
       import { initCircuit } from "../../lib/circuit";
       initCircuit();
     </script>
-    <script is:inline data-cfasync="false">
-      (function () {
-        var root = document.documentElement;
-        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        var frame = 0;
-        var progress = 0;
 
-        function paintAmbientPosition() {
-          frame = 0;
-          root.style.setProperty('--ambient-shift-x', (-1.5 + progress * 3).toFixed(2) + '%');
-          root.style.setProperty('--ambient-shift-y', (1 - progress * 2).toFixed(2) + '%');
-        }
-
-        function ambientScroll() {
-          if (reduceMotion.matches) return;
-
-          var scrollable = root.scrollHeight - window.innerHeight;
-          progress = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
-
-          if (!frame) frame = requestAnimationFrame(paintAmbientPosition);
-        }
-
-        window.addEventListener('scroll', ambientScroll, { passive: true });
-        ambientScroll();
-      })();
-    </script>
-    {article && (
-      <script is:inline>
-        function initCodeCopy() {
-          // Copy-to-clipboard on code blocks
-          document.querySelectorAll('.prose pre').forEach(function(pre) {
-            if (pre.querySelector('.code-copy-btn')) return; // already added
-            var btn = document.createElement('button');
-            btn.className = 'code-copy-btn';
-            btn.setAttribute('aria-label', 'Copy code');
-            btn.textContent = 'Copy';
-            btn.addEventListener('click', function() {
-              var code = pre.querySelector('code');
-              var text = code ? code.textContent : pre.textContent;
-              navigator.clipboard.writeText(text || '').then(function() {
-                btn.textContent = 'Copied!';
-                setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
-              });
-            });
-            pre.style.position = 'relative';
-            pre.appendChild(btn);
-          });
-        }
-        initCodeCopy();
-      </script>
-    )}
-    <!-- Attribute completed bookings back to the page that produced them. The
-         page is prerendered, so the ref is attached here rather than at build
-         time. Cal.com returns metadata on its BOOKING_CREATED webhook, which
-         /api/cal-webhook turns into a conversion event. -->
-    <script is:inline data-cfasync="false">
-      (function () {
-        var NONCE_KEY = 'booking-nonce';
-        var nonce;
-        try {
-          nonce = localStorage.getItem(NONCE_KEY);
-          if (!nonce) {
-            nonce = Math.random().toString(36).slice(2, 10);
-            localStorage.setItem(NONCE_KEY, nonce);
-          }
-        } catch (e) {
-          nonce = 'nostorage';
-        }
-
-        var ref = window.location.pathname + '|' + nonce;
-
-        document.querySelectorAll('a[href*="cal.com/"]').forEach(function (link) {
-          var href = link.getAttribute('href');
-          if (!href || href.indexOf('metadata[ref]') !== -1) return;
-          link.setAttribute(
-            'href',
-            href + (href.indexOf('?') === -1 ? '?' : '&') + 'metadata[ref]=' + encodeURIComponent(ref)
-          );
-        });
-      })();
-    </script>
-
-    <!-- Custom analytics events for UX success metrics -->
-    <script is:inline>
-      function initAnalytics() {
-        // Sequence buffer for the nightly synthesis. Umami Cloud keeps the
-        // dashboards; its query API is paid, so the ordered sequence is
-        // collected first-party and flushed once per session.
-        var sessionStart = Date.now();
-        var sequence = [{ t: 0, p: window.location.pathname }];
-
-        function track(name, data) {
-          if (typeof umami !== 'undefined' && umami.track) {
-            umami.track(name, data);
-          }
-          if (sequence.length < 100) {
-            sequence.push({ t: Date.now() - sessionStart, p: window.location.pathname, n: name });
-          }
-        }
-
-        var sequenceSent = false;
-        function flushSequence() {
-          if (sequenceSent || sequence.length === 0) return;
-          sequenceSent = true;
-          var visitorId = '';
-          try { visitorId = localStorage.getItem('booking-nonce') || ''; } catch (e) {}
-          try {
-            // sendBeacon survives the page being torn down; fetch often does not.
-            // `s` is the same nonce attached to booking links, so a confirmed
-            // booking can be joined back to the session that produced it.
-            navigator.sendBeacon(
-              '/api/collect',
-              new Blob([JSON.stringify({ s: visitorId, e: sequence })], { type: 'application/json' })
-            );
-          } catch (e) {}
-        }
-
-        var maxScroll = 0;
-        var scrollMilestones = [25, 50, 60, 75, 90, 100];
-        var firedMilestones = {};
-        var pathname = window.location.pathname;
-
-        // This block re-runs on astro:page-load, so drop any previous listener
-        // before binding a new one.
-        if (window.__analyticsScrollHandler) {
-          window.removeEventListener('scroll', window.__analyticsScrollHandler);
-        }
-
-        function analyticsScroll() {
-          var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-          if (docHeight <= 0) return;
-          var pct = Math.round((window.scrollY / docHeight) * 100);
-          if (pct > maxScroll) maxScroll = pct;
-          scrollMilestones.forEach(function(m) {
-            if (pct >= m && !firedMilestones[m]) {
-              firedMilestones[m] = true;
-              track('scroll-depth', { depth: m, page: pathname });
-            }
-          });
-        }
-        window.__analyticsScrollHandler = analyticsScroll;
-        window.addEventListener('scroll', analyticsScroll, { passive: true });
-
-        document.querySelectorAll('a[href*="/cv"], a[href*="cv.pdf"], a[href*="CV"]').forEach(function(el) {
-          el.addEventListener('click', function() {
-            var label = el.textContent.trim().toLowerCase();
-            track(label.includes('download') ? 'cv-download' : 'cv-view', { page: pathname });
-          });
-        });
-
-        document.querySelectorAll('a[href^="mailto:"]').forEach(function(el) {
-          el.addEventListener('click', function() { track('email-click', { page: pathname }); });
-        });
-
-        document.querySelectorAll('.share-link, a[href*="twitter.com/intent"], a[href*="linkedin.com/share"]').forEach(function(el) {
-          el.addEventListener('click', function() {
-            var href = el.getAttribute('href') || '';
-            var platform = href.includes('twitter.com') || href.includes('x.com') ? 'twitter' : href.includes('linkedin.com') ? 'linkedin' : 'unknown';
-            track('social-share', { platform: platform, page: pathname });
-          });
-        });
-
-        document.querySelectorAll('a[target="_blank"], a[rel*="noopener"]').forEach(function(el) {
-          el.addEventListener('click', function() {
-            var href = el.getAttribute('href') || '';
-            if (href.includes('github.com')) track('outbound-click', { destination: 'github', page: pathname });
-            else if (href.includes('linkedin.com')) track('outbound-click', { destination: 'linkedin', page: pathname });
-          });
-        });
-
-        document.querySelectorAll('a[href*="cal.com/hamishburke"]').forEach(function(el) {
-          el.addEventListener('click', function() {
-            track('book-call', { page: pathname, placement: el.closest('header') ? 'header' : 'content' });
-          });
-        });
-
-        document.querySelectorAll('a[href="/work"], a[href^="/work/"]').forEach(function(el) {
-          el.addEventListener('click', function() {
-            track('work-view', { page: pathname, destination: el.getAttribute('href') || '/work' });
-          });
-        });
-
-        var pageStart = Date.now();
-        document.addEventListener('visibilitychange', function onHide() {
-          if (document.visibilityState === 'hidden') {
-            track('scroll-depth-final', { depth: maxScroll, page: pathname });
-            track('time-on-page', { seconds: Math.round((Date.now() - pageStart) / 1000), page: pathname });
-            flushSequence();
-          }
-        });
-        // pagehide covers the cases visibilitychange misses (bfcache, some iOS paths).
-        window.addEventListener('pagehide', flushSequence);
-      }
-
-      initAnalytics();
+    <!-- The shell's own behaviour: ambient-background drift, the cal.com
+         booking-ref rewriter, the analytics tracker and the code-copy buttons.
+         Bundled rather than inline so it is type-checked and can share
+         MAX_EVENTS with the server-side validator in src/lib/analytics.ts. -->
+    <script>
+      import { initShell } from "../../lib/shell";
+      initShell();
     </script>
   </body>
 </html>

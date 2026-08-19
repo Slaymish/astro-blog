@@ -15,8 +15,6 @@ interface Props {
   tagLinks?: Array<{ name: string; slug: string }>;
   /** Accent color override for the decorative elements */
   accentColor?: string;
-  /** Transition name for the title (for Astro view transitions) */
-  titleTransitionName?: string;
   /** Back link */
   backHref?: string;
   backLabel?: string;
@@ -31,7 +29,6 @@ const {
   tags = [],
   tagLinks = [],
   accentColor,
-  titleTransitionName,
   backHref,
   backLabel,
 } = Astro.props;
@@ -54,12 +51,7 @@ const formattedDate = date
       <span class="parallax-hero__label">{label}</span>
     )}
 
-    <h1
-      class="parallax-hero__title"
-      transition:name={titleTransitionName}
-    >
-      {title}
-    </h1>
+    <h1 class="parallax-hero__title">{title}</h1>
 
     {subtitle && (
       <p class="parallax-hero__subtitle">{subtitle}</p>

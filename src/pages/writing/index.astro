@@ -1,5 +1,6 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
+import PageHeader from '../../components/layout/PageHeader.astro';
 import { getWriting, filterableTags } from '../../lib/writingData';
 import { getWritingIndexPage } from '../../lib/pageContent';
 import { SITE_URL, absoluteUrl } from '../../lib/site';
@@ -14,13 +15,13 @@ const { hero } = copy;
   description={copy.seo.description}
   canonicalURL={absoluteUrl('/writing', SITE_URL)}
 >
-  <header class="writing-index__header">
-    <p class="writing-index__eyebrow">{hero.eyebrow}</p>
-    <h1 transition:name="page-heading">
-      {hero.headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}
-    </h1>
-    <p class="writing-index__intro">{hero.intro}</p>
-  </header>
+  <PageHeader
+    eyebrow={hero.eyebrow}
+    headline={hero.headlineLines}
+    intro={hero.intro}
+    headlineMeasure="16ch"
+    introMeasure="40rem"
+  />
 
   {tags.length > 0 && (
     <div class="writing-filter">
@@ -43,7 +44,7 @@ const { hero } = copy;
             {entry.type === 'report' && <span class="writing-list__type">Report</span>}
           </span>
           <span class="writing-list__body">
-            <span class="writing-list__title" transition:name={`title-${entry.href}`}>{entry.title}</span>
+            <span class="writing-list__title">{entry.title}</span>
             {entry.excerpt && <span class="writing-list__excerpt">{entry.excerpt}</span>}
           </span>
         </a>
@@ -57,8 +58,7 @@ const { hero } = copy;
 <script>
   function initTagFilter() {
     const list = document.getElementById('writing-list');
-    if (!list || list.dataset.filterInit) return;
-    list.dataset.filterInit = 'true';
+    if (!list) return;
 
     const buttons = document.querySelectorAll<HTMLButtonElement>('.writing-filter__tag');
     const items = list.querySelectorAll<HTMLElement>('.writing-list__item');
@@ -90,16 +90,9 @@ const { hero } = copy;
   }
 
   initTagFilter();
-  // Astro's view transitions replace the document, so rebind on every page load.
-  document.addEventListener('astro:page-load', initTagFilter);
 </script>
 
 <style>
-  .writing-index__header { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
-  .writing-index__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  .writing-index__header h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 16ch; }
-  .writing-index__intro { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.45; margin: var(--spacing-8) 0 0; max-width: 40rem; }
-
   .writing-filter { border-top: 1px solid var(--color-stroke-subtle); padding-block: var(--spacing-6); }
   .writing-filter p { color: var(--color-text-secondary); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }
   .writing-filter__tags { display: flex; flex-wrap: wrap; gap: var(--spacing-2) var(--spacing-5); }

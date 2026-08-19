@@ -1,6 +1,7 @@
 ---
 // Theme switching is progressive: the markup renders a real button, and the
 // bootstrap script in Layout.astro has already resolved the theme before paint.
+import { THEME_COLORS } from "../../lib/shell/theme";
 ---
 
 <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">
@@ -44,18 +45,15 @@
 </style>
 
 <!-- data-cfasync="false" keeps Rocket Loader from deferring the toggle wiring. -->
-<script is:inline data-cfasync="false">
+<script is:inline data-cfasync="false" define:vars={{ themeColors: THEME_COLORS }}>
   (function () {
-    var LIGHT_THEME_COLOR = '#f6f7f3';
-    var DARK_THEME_COLOR = '#0b0d0c';
-
     function currentTheme() {
       return document.documentElement.classList.contains('light') ? 'light' : 'dark';
     }
 
     function syncChrome(theme) {
       var meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute('content', theme === 'light' ? LIGHT_THEME_COLOR : DARK_THEME_COLOR);
+      if (meta) meta.setAttribute('content', themeColors[theme]);
 
       document.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
         button.setAttribute('aria-label', theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme');
@@ -67,7 +65,7 @@
       root.classList.remove('light', 'dark');
       root.classList.add(theme);
       root.style.colorScheme = theme;
-      root.style.backgroundColor = theme === 'light' ? LIGHT_THEME_COLOR : DARK_THEME_COLOR;
+      root.style.backgroundColor = themeColors[theme];
       if (persist) {
         try { localStorage.setItem('theme', theme); } catch (e) {}
         root.dataset.themeSource = 'user';
