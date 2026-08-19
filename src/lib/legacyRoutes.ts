@@ -3,7 +3,6 @@ export type LegacyRouteType = 'project' | 'post' | 'report';
 export type LegacyRoutePolicy =
   | { action: 'redirect'; destination: string }
   | { action: 'gone' }
-  | { action: 'unlisted' }
   | null;
 
 export const projectSuccessors: Record<string, string> = {
@@ -17,6 +16,9 @@ export const projectSuccessors: Record<string, string> = {
 export const archivedProjects = new Set([
   'bedroom-layout-designer',
   'drop-eta',
+  // Never finished; retired rather than left as an unlisted page (an X-Robots-Tag
+  // set from a prerendered route is a no-op, so it was never actually unlisted).
+  'otto',
   'piano-improvisation-helper',
   'wiki-router',
 ]);
@@ -50,7 +52,6 @@ export function legacyRoutePolicy(type: LegacyRouteType, slug: string): LegacyRo
     const successor = projectSuccessors[slug];
     if (successor) return { action: 'redirect', destination: successor };
     if (archivedProjects.has(slug)) return { action: 'gone' };
-    if (slug === 'otto') return { action: 'unlisted' };
   }
 
   if (type === 'post' && slug === 'gpu-share') {

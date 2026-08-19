@@ -1,9 +1,16 @@
 import { publicPostSlug } from './legacyRoutes';
+import type { PortableTextBody } from './portableText';
 
 /** Which index a story appears on. Detail pages live at /work/<slug> for both. */
 export type WorkKind = 'professional' | 'independent';
 export type WorkStatus = 'lead' | 'support';
 export type WorkService = 'ai-automation' | 'digital-products' | 'technical-direction';
+/**
+ * What a story can cite as source material. `project` is legacy: the schema no
+ * longer offers it as a reference target, but five published stories still point
+ * at one, and those documents carry the repo and live-site URLs the work cards
+ * render. Keep it here until that data is migrated.
+ */
 export type ArtifactType = 'project' | 'post' | 'report';
 export type GraphicKind =
   | 'sprint-coach'
@@ -50,7 +57,7 @@ export interface WorkStory {
     kind: GraphicKind;
     alt: string;
   };
-  body: unknown[];
+  body: PortableTextBody;
   primaryArtifact?: WorkArtifact;
   supportingArtifacts: WorkArtifact[];
 }
@@ -59,10 +66,11 @@ export function workStoryHref(slug: string): string {
   return `/work/${slug}`;
 }
 
+/** Posts are published under their public alias; reports under their own slug. */
 export function artifactHref(artifact: WorkArtifact): string {
-  const route = artifact.type === 'post' ? 'posts' : `${artifact.type}s`;
-  const slug = artifact.type === 'post' ? publicPostSlug(artifact.slug) : artifact.slug;
-  return `/${route}/${slug}`;
+  return artifact.type === 'post'
+    ? `/posts/${publicPostSlug(artifact.slug)}`
+    : `/reports/${artifact.slug}`;
 }
 
 /** The reflection answers an independent project must give, in the order they render. */

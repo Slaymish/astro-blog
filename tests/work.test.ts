@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import {
   type WorkStory,
@@ -6,7 +7,13 @@ import {
   validateWorkStories,
   workStoryHref
 } from '../src/lib/work';
-import { contentPostSlug, legacyRoutePolicy } from '../src/lib/legacyRoutes';
+import {
+  type LegacyRoutePolicy,
+  archivedProjects,
+  contentPostSlug,
+  legacyRoutePolicy,
+  projectSuccessors
+} from '../src/lib/legacyRoutes';
 
 function story(overrides: Partial<WorkStory> = {}): WorkStory {
   return {
@@ -27,10 +34,10 @@ function story(overrides: Partial<WorkStory> = {}): WorkStory {
     graphic: { kind: 'brontehf', alt: 'An example system diagram.' },
     body: [],
     primaryArtifact: {
-      id: 'project-one',
-      type: 'project',
-      title: 'Example project',
-      slug: 'example-project'
+      id: 'report-one',
+      type: 'report',
+      title: 'Example report',
+      slug: 'example-report'
     },
     supportingArtifacts: [],
     ...overrides
@@ -110,23 +117,22 @@ test('validateWorkStories rejects duplicate order, slug, and artifact assignment
   const duplicate = story({ id: 'workStory-two' });
   duplicate.supportingArtifacts = [
     {
-      id: 'project-one',
-      type: 'project',
-      title: 'Repeated project',
-      slug: 'example-project'
+      id: 'report-one',
+      type: 'report',
+      title: 'Repeated report',
+      slug: 'example-report'
     }
   ];
 
   assert.deepEqual(validateWorkStories([story(), duplicate]), [
     'Duplicate story order: 1',
     'Duplicate story slug: example',
-    'Artifact project-one is assigned more than once'
+    'Artifact report-one is assigned more than once'
   ]);
 });
 
 test('story and artifact URLs preserve their canonical route families', () => {
   assert.equal(workStoryHref('gpu-share'), '/work/gpu-share');
-  assert.equal(artifactHref({ id: 'p', type: 'project', title: 'P', slug: 'p' }), '/projects/p');
   assert.equal(artifactHref({ id: 'a', type: 'post', title: 'A', slug: 'a' }), '/posts/a');
   assert.equal(
     artifactHref({ id: 'gpu-post', type: 'post', title: 'GPUShare post', slug: 'gpu-share' }),
@@ -154,7 +160,42 @@ test('legacy work routes redirect successors, retire archives, and preserve sour
     legacyRoutePolicy('report', 'a-survey-of-nosql-databases-and-polyglot-persistence-patterns'),
     { action: 'gone' }
   );
-  assert.deepEqual(legacyRoutePolicy('project', 'otto'), { action: 'unlisted' });
+  assert.deepEqual(legacyRoutePolicy('project', 'otto'), { action: 'gone' });
   assert.equal(legacyRoutePolicy('post', 'healthagent-apple-health-data-ingestion-and-insights'), null);
   assert.equal(legacyRoutePolicy('report', 'wildfire-analysis-with-pyspark'), null);
+});
+
+test('the retired unlisted action is no longer part of the policy union', () => {
+  // F-024: `unlisted` was implemented by setting X-Robots-Tag from a prerendered
+  // route, which is a no-op, so the page it guarded was always indexable. The
+  // annotation below fails `astro check` if the variant is ever reinstated.
+  type PolicyAction = NonNullable<LegacyRoutePolicy>['action'];
+  const admitsUnlisted: 'unlisted' extends PolicyAction ? true : false = false;
+  assert.equal(admitsUnlisted, false);
+
+  const actions = ['brontehf', 'otto', 'wiki-router', 'unknown-slug'].map(
+    (slug) => legacyRoutePolicy('project', slug)?.action ?? null
+  );
+  assert.deepEqual(actions, ['redirect', 'gone', 'gone', null]);
+});
+
+test('every retired project slug has a matching netlify.toml rule', () => {
+  // The policy table and the redirect rules are mirrored by repo convention and
+  // nothing else enforces it, so drift here is silent until a URL misbehaves.
+  const netlifyToml = readFileSync(new URL('../netlify.toml', import.meta.url), 'utf8');
+
+  const rule = (from: string, to: string, status: number) =>
+    `[[redirects]]\n  from = "${from}"\n  to = "${to}"\n  status = ${status}\n  force = true`;
+
+  for (const [slug, destination] of Object.entries(projectSuccessors)) {
+    if (!netlifyToml.includes(rule(`/projects/${slug}`, destination, 301))) {
+      assert.fail(`netlify.toml is missing a 301 from /projects/${slug} to ${destination}`);
+    }
+  }
+
+  for (const slug of archivedProjects) {
+    if (!netlifyToml.includes(rule(`/projects/${slug}`, '/410.html', 410))) {
+      assert.fail(`netlify.toml is missing a 410 for /projects/${slug}`);
+    }
+  }
 });

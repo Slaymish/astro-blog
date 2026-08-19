@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 
-const artifactTypes = [{ type: 'project' }, { type: 'post' }, { type: 'report' }];
+const artifactTypes = [{ type: 'post' }, { type: 'report' }];
 
 const isIndependent = (document: unknown): boolean =>
   (document as { kind?: string } | undefined)?.kind === 'independent';
