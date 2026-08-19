@@ -86,13 +86,13 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'Hamish Burke',
       description:
-        'Software developer in Wellington, New Zealand. I build things in the open and write about technology, AI, systems, and the problems worth solving.'
+        'Software developer in Wellington, New Zealand. I build things in the open and write up what happened, including what did not work.'
     },
     hero: {
       eyebrow: 'Hamish Burke / Wellington, New Zealand',
       headline: 'Software developer',
       headlineAccent: 'in Wellington.',
-      lede: 'I build things I want to exist, and I publish them. The code is publicly readable, the write-ups say what did not work, and you can run most of it yourself.',
+      lede: 'I build things I want to exist, and I publish them. The code is public and the write-ups say what didn’t work.',
       links: [
         { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
         { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
@@ -102,7 +102,7 @@ const documents: SeedDocument[] = [
     interests: {
       label: 'What I’m interested in',
       statement:
-        'I care about how things work, how those things interact once they’re part of something bigger, and what’s actually worth building in the first place.',
+        'I mostly want to know why a thing was built the way it was.',
       items: [
         { _key: 'technology', title: 'Technology', body: 'How things work.' },
         { _key: 'systems', title: 'Systems', body: 'How complicated things interact.' },
@@ -112,7 +112,7 @@ const documents: SeedDocument[] = [
     currently: {
       label: 'Currently',
       heading: 'Learning how software actually gets made.',
-      body: 'I’m working as a junior software developer at Alphero, where I’m learning how software gets designed, built, and produced for real organisations. That is the part you cannot get from side projects alone, and it is most of what I am doing right now.',
+      body: 'I’m a junior developer at Alphero, learning how software actually gets built for real organisations. That’s the part side projects don’t teach you, and it’s most of what I’m doing right now.',
       link: { _type: 'ctaLink', label: 'Professional work', href: '/work' }
     },
     projectsSection: {
@@ -138,13 +138,13 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'Writing',
       description:
-        'Essays, technical explorations, and notes on AI, software systems, and the things Hamish Burke is trying to figure out.'
+        'Notes on AI and software systems by Hamish Burke, including the things he has not figured out yet.'
     },
     hero: {
       eyebrow: 'Writing',
       headlineLines: ['What I’ve been', 'thinking about.'],
       intro:
-        'Technical explorations, things I have worked out, and questions I have not answered yet. Mostly AI, software systems, and the places where they meet everything else.'
+        'Things I have worked out, and things I have not. Mostly AI and software systems.'
     },
     filterLabel: 'Filter by tag',
     emptyMessage: 'Nothing here yet.'
@@ -155,13 +155,13 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'About Hamish Burke',
       description:
-        'Software engineer in Wellington working across digital products, AI systems, infrastructure, and the interfaces that make them useful.'
+        'Hamish Burke is a web developer at Alphero in Wellington, New Zealand, who builds and writes up independent projects.'
     },
     hero: {
       eyebrow: 'About · Wellington, New Zealand',
       heading: 'I like understanding the whole system.',
       intro:
-        'I’m Hamish. I build software, and I am mostly interested in what happens at the edges of it: how organisations actually decide things, where AI genuinely changes what is possible, and which problems are worth the effort. I am early in working that out.'
+        'I’m Hamish. I build software, and I’m mostly interested in what happens at the edges of it: how organisations actually decide things, and which problems are worth the effort. I’m early in working that out.'
     },
     portrait: {
       imageAlt: 'Hamish Burke in Wellington',
@@ -184,26 +184,26 @@ const documents: SeedDocument[] = [
           ]
         }
       ],
-      body: 'This site deliberately excludes NDA-covered client work. What is here is what I can discuss honestly: things I built myself, finished freelance delivery, and technical studies with enough evidence to inspect and enough limitations to be worth reading.'
+      body: 'There’s no NDA-covered client work on this site. What’s here is what I can talk about honestly: things I built myself, finished freelance work, and technical studies where the limitations are written down alongside the results.'
     },
     capabilities: {
       label: 'What I’m working on getting good at',
-      heading: 'Three things I keep coming back to.',
+      heading: 'Things I keep coming back to.',
       items: [
         {
           _key: 'delivery',
           title: 'Shipping things that last',
-          body: 'Interfaces, content systems, and integrations, plus the release path that decides whether any of it survives contact with real use.'
+          body: 'Interfaces, content systems, integrations, and the release path. The release path usually decides whether the rest of it holds up.'
         },
         {
           _key: 'systems',
           title: 'Seeing the whole system',
-          body: 'Data models, APIs, infrastructure, and trust boundaries. I find the constraints more interesting than the features.'
+          body: 'Data models, APIs, infrastructure, trust boundaries. I find the constraints more interesting than the features.'
         },
         {
           _key: 'clarity',
           title: 'Saying what actually happened',
-          body: 'Visible trade-offs, honest limits, and results reported as they came out rather than as I would have liked them to.'
+          body: 'Reporting results as they came out rather than as I would have liked them to.'
         }
       ]
     },
@@ -211,8 +211,8 @@ const documents: SeedDocument[] = [
       label: 'Background',
       heading: 'From research into shipping software.',
       paragraphs: [
-        'I completed a Master of Computer Science at Victoria University of Wellington. My thesis studied diffusion-based anomaly detection for electrical distribution networks. That work sharpened how I frame uncertain problems, evaluate evidence, and separate an interesting result from a useful one.',
-        'Outside software, I’m working on making more time for reading, playing the piano, and getting away from screens. They serve as essential counterweights to a day spent entirely in code and abstractions.'
+        'I did a Master of Computer Science at Victoria University of Wellington. My thesis was on diffusion-based anomaly detection for electrical distribution networks. Mostly it taught me the difference between an interesting result and a useful one.',
+        'Outside software I’m trying to make more time for reading, the piano, and being away from a screen.'
       ],
       links: [
         { _key: 'cv', _type: 'ctaLink', label: 'View CV →', href: '/cv' },
@@ -234,15 +234,15 @@ const documents: SeedDocument[] = [
     _id: 'cvPage',
     _type: 'cvPage',
     seo: {
-      title: 'CV — Hamish Burke',
+      title: 'CV · Hamish Burke',
       description:
         'Current professional summary and academic CV for Hamish Burke, a software engineer in Wellington, New Zealand.'
     },
     hero: {
       eyebrow: 'Curriculum vitae',
-      headlineLines: ['Software engineer.', 'Systems thinker.'],
+      headlineLines: ['Software engineer.', 'Wellington, NZ.'],
       intro:
-        'I work across digital products, AI systems, infrastructure, and the interfaces that make them usable. I’m currently a web developer at Alphero and take on selected independent projects.',
+        'I’m a web developer at Alphero, and I take on a small number of independent projects alongside it.',
       actions: [
         {
           _key: 'linkedin',
@@ -273,21 +273,21 @@ const documents: SeedDocument[] = [
     _type: 'workIndexPage',
     seo: {
       title: 'Selected Work',
-      description: 'Websites, digital products, AI systems, and technical architecture built by Hamish Burke.'
+      description: 'Client websites, independent products, and technical studies built by Hamish Burke in Wellington, New Zealand.'
     },
     hero: {
       eyebrow: 'Selected work · 2024–2026',
-      headlineLines: ['Useful systems,', 'built properly.'],
+      headlineLines: ['Work I can', 'show you.'],
       intro:
-        'Client websites, digital products, AI systems, and technical architecture. Each story starts with what changed, not just a list of tools.'
+        'Client websites, products I built for myself, and a few technical studies. Each one says what the problem was and what happened.'
     },
     leadSection: {
       heading: 'Lead work',
-      description: 'Finished client delivery and substantial products.'
+      description: 'Finished client work and the larger products.'
     },
     supportSection: {
       heading: 'Technical studies',
-      description: 'Smaller systems that prove a specific engineering capability.'
+      description: 'Smaller builds, each one testing one specific thing.'
     },
     contactHeading: 'What are you trying to make work?'
   },
@@ -297,13 +297,13 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'Projects',
       description:
-        'Independent things Hamish Burke has built, each one written up around the question it started from and what it taught him.'
+        'Independent projects built by Hamish Burke, each written up around the question that started it.'
     },
     hero: {
       eyebrow: 'Independent projects',
       headlineLines: ['Things I built', 'to find out.'],
       intro:
-        'Projects I started myself, usually because I wanted to know whether something was possible. Each one says what the question was, what I built, what I learned, and what I would do differently.'
+        'Projects I started myself, usually to find out whether something was possible. Each one says what the question was, what I built, and what I would do differently.'
     },
     contactHeading: 'Working on something similar?'
   },
@@ -318,7 +318,7 @@ const documents: SeedDocument[] = [
       eyebrow: 'Contact',
       headlineLines: ['Say hello.'],
       intro:
-        'I like hearing about interesting problems and from people working on ambitious things. Email is the surest way to reach me.'
+        'I like hearing about problems people are stuck on. Email is the surest way to reach me.'
     },
     channels: [
       {
@@ -369,7 +369,7 @@ const documents: SeedDocument[] = [
     },
     code: '404',
     heading: 'Page not found',
-    body: "This page doesn't exist. Maybe it was moved, or maybe it never was.",
+    body: "This page doesn't exist. It might have moved.",
     homeLabel: 'Go home',
     backLabel: 'Go back',
     suggestionsLabel: 'Or try one of these:',

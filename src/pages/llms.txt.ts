@@ -7,17 +7,17 @@ export const GET: APIRoute = () => {
 > ${SITE_DESCRIPTION}
 
 ## What this site is
-The personal site of Hamish Burke, a software developer at Alphero in Wellington, New Zealand. It documents what he builds, what he writes, and what he is currently trying to understand. It is a record of a trajectory rather than a finished body of expertise.
+The personal site of Hamish Burke, a software developer at Alphero in Wellington, New Zealand. It documents what he builds and what he is currently trying to understand. He is early in his career and the site is written that way.
 
 ## Best for
 - Readers interested in AI systems, software architecture, and honest write-ups of what did and did not work.
-- People evaluating independent projects where the question, the build, the lesson, and the regret are all stated.
-- Collaborators or employers looking for evidence of how someone thinks, not a list of technologies.
+- People evaluating independent projects where the question, the build and what he would do differently are all written down.
+- Collaborators or employers looking for evidence of how someone thinks.
 
 ## Capabilities and constraints
 - Content is free to read on the public web.
 - Primary formats: independent project write-ups, professional case studies, technical posts, and research-style reports.
-- Hamish is early in his career and the site says so. Treat project write-ups as accounts of what was built and measured, not as claims of general expertise.
+- Treat project write-ups as accounts of what was built and measured, not as claims of general expertise.
 - Reported results include their limitations. Where a result was poor, the write-up says so.
 
 ## Key URLs

@@ -28,11 +28,11 @@ const image = images[kind];
 const graphicAlts: Partial<Record<GraphicKind, string>> = {
   brontehf: 'BrontëHF’s public projects page showing a filterable grid of portfolio work.',
   'you-inc':
-    'A bank transaction from the Akahu feed passing through three classification tiers — a declarative rule, an NZFCC category fallback, then a suspense account — and posting as a balanced double-entry journal where debits equal credits.',
+    'A bank transaction from the Akahu feed passing through three classification tiers (a declarative rule, an NZFCC category fallback, then a suspense account) before posting as a balanced double-entry journal where debits equal credits.',
   'gpu-share':
     'Two layers: an always-on cloud layer holding accounts, ledger and invoices, and a home GPU host running Ollama and Blender that connects outbound through a tunnel with no open ports. Pricing is derived from electricity rate multiplied by GPU wattage.',
   'home-lab':
-    'A single 8GB Raspberry Pi reached by two separate paths — a Cloudflare Tunnel for public services and Tailscale for admin services — with 7.26 of 8GB of memory allocated and a disaster recovery restore measured at 1 hour 45 minutes against a 2 hour target.',
+    'A single 8GB Raspberry Pi reached by two separate paths: a Cloudflare Tunnel for public services and Tailscale for admin services. 7.26 of 8GB of memory is allocated, and a disaster recovery restore was measured at 1 hour 45 minutes against a 2 hour target.',
 };
 
 const graphicAlt = graphicAlts[kind] ?? alt;
