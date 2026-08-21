@@ -10,7 +10,7 @@
  * it is not linkable to a person.
  */
 
-import { getStore } from '@netlify/blobs';
+import { getStore, type Store } from '@netlify/blobs';
 import { cleanEvents, cleanNonce } from '../../lib/analytics';
 import {
   COLLECT_LIMIT_PER_WINDOW,
@@ -25,6 +25,21 @@ import { SESSION_STORE, dayStamp, sessionKey } from '../../lib/sessionStore';
 export const prerender = false;
 
 const MAX_BODY_BYTES = 8 * 1024;
+
+/**
+ * Blob stores only exist on Netlify. `astro dev` has no `siteID` or `token`, so
+ * `getStore` throws there, and because the beacon fires on every page view that
+ * surfaced as a 500 and an error overlay over the whole site in development.
+ * Both stores are resolved together: without them there is nothing to write and
+ * so nothing to meter either.
+ */
+function stores(): { rateLimits: Store; sessions: Store } | null {
+  try {
+    return { rateLimits: getStore(RATE_LIMIT_STORE), sessions: getStore(SESSION_STORE) };
+  } catch {
+    return null;
+  }
+}
 
 export async function POST({ request }: { request: Request }) {
   const raw = await request.text();
@@ -44,15 +59,16 @@ export async function POST({ request }: { request: Request }) {
     return new Response(null, { status: 204 });
   }
 
+  const store = stores();
+  if (!store) {
+    return new Response(null, { status: 204 });
+  }
+
   // Metered here rather than at the top of the handler: the resource being
   // protected is the blob write, and a malformed request never reaches one.
   const window = windowId();
   const key = await counterKey(clientAddress(request.headers), window, process.env.RATE_LIMIT_SALT ?? '');
-  const allowed = await consume(
-    getStore(RATE_LIMIT_STORE),
-    key,
-    COLLECT_LIMIT_PER_WINDOW
-  );
+  const allowed = await consume(store.rateLimits, key, COLLECT_LIMIT_PER_WINDOW);
 
   if (!allowed) {
     return new Response(null, { status: 429, headers: { 'retry-after': '3600' } });
@@ -65,10 +81,9 @@ export async function POST({ request }: { request: Request }) {
   const day = dayStamp();
   // One blob per beacon: concurrent sessions never contend for the same key.
   try {
-    await getStore(SESSION_STORE).setJSON(sessionKey(day, crypto.randomUUID()), { day, visitor, events });
+    await store.sessions.setJSON(sessionKey(day, crypto.randomUUID()), { day, visitor, events });
   } catch {
     // Losing an analytics beacon must never surface to the visitor.
-    return new Response(null, { status: 204 });
   }
 
   return new Response(null, { status: 204 });
