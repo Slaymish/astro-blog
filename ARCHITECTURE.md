@@ -33,7 +33,10 @@ Deployment target is Netlify server output.
 
 - `astro.config.ts`: production Astro config, Netlify adapter, Sanity integration, canonical site URL.
 - `astro.config.dev.ts`: local dev config without Netlify adapter.
-- `src/pages/index.astro`: homepage. Hero, areas of interest, a current-state statement, then projects, professional work, and recent writing.
+- `src/pages/index.astro`: homepage. Two regions only — a fold carrying the name and three
+  annotations on circuit leader lines, then one dated index of everything, newest first.
+  The six repeated eyebrow/heading/link sections it replaced are gone, along with the
+  `interests` and `currently` copy. Spec: `docs/design/specs/design-landing-datasheet-index.md`.
 - `src/pages/projects/index.astro`, `src/pages/work/index.astro`, `src/pages/writing/index.astro`, `src/pages/reading/index.astro`: list/index pages.
 - `src/pages/work/[slug].astro`, `src/pages/posts/[slug].astro`, `src/pages/reports/[...slug].astro`: dynamic detail routes.
 - `src/pages/projects/[slug].astro`: redirect-only, retained for retired project URLs. It does not serve project detail pages.
@@ -46,7 +49,11 @@ Deployment target is Netlify server output.
 ### Content and Data Access
 
 - `src/lib/sanity.ts`: Sanity client creation and `fetchSanity` query helper. Reads through Sanity's edge CDN (bounded eventual consistency, roughly two minutes); `fetchFreshSanity` bypasses it and is used only by RSS.
-- `src/lib/writingData.ts`: the single posts-plus-reports stream behind `/writing`, `/tags/[tag]`, and the homepage writing section. Owns the mapping from Sanity content slug to public post slug, so no caller should build a `/posts/...` href by hand.
+- `src/lib/writingData.ts`: the single posts-plus-reports stream behind `/writing` and `/tags/[tag]`. Owns the mapping from Sanity content slug to public post slug, so no caller should build a `/posts/...` href by hand.
+- `src/lib/homeIndex.ts`: flattens work stories and writing into the homepage's one dated
+  stream. Owns two rules that carry the design: which rows expand to show a diagram, and
+  the suppression of any write-up already represented by a story that claims it as an
+  artifact. Also derives the fold's project count, which is never authored in the CMS.
 - `src/lib/portableText.ts`: Sanity Portable Text -> HTML/plaintext conversion.
 - `src/lib/markdown.ts`: markdown -> HTML/plaintext conversion.
 - `src/lib/site.ts`: canonical site constants and URL helpers used across metadata/feed/crawl endpoints.

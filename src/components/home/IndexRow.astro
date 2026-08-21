@@ -1,0 +1,101 @@
+---
+import type { IndexRow } from '../../lib/homeIndex';
+import WorkGraphic from '../work/WorkGraphic.astro';
+
+interface Props {
+  row: IndexRow;
+  /** Wires the row onto the index data bus as a named node (src/lib/circuit). */
+  circuitNode?: string;
+}
+
+const { row, circuitNode } = Astro.props;
+const expanded = Boolean(row.graphic);
+---
+
+<li
+  class:list={['index-row', expanded && 'index-row--expanded']}
+  data-circuit-node={circuitNode}
+  data-circuit-attach={circuitNode ? 'rule' : undefined}
+  data-circuit-flash={circuitNode ? 'edge' : undefined}
+>
+  <a href={row.href}>
+    <span class="index-row__month">{row.month}</span>
+    <span class="index-row__head">
+      <h3>{row.title}</h3>
+      <span class="index-row__descriptor">{row.descriptor}</span>
+    </span>
+    {row.graphic && (
+      <span class="index-row__visual">
+        <WorkGraphic kind={row.graphic.kind} alt={row.graphic.alt} compact />
+      </span>
+    )}
+    {row.metric && <span class="index-row__metric">{row.metric}</span>}
+  </a>
+</li>
+
+<style>
+  .index-row { border-top: 1px solid var(--color-stroke-subtle); }
+  /* The rules run the full page width, but the row's content is capped well short
+     of the 90rem shell: at full width the right-aligned descriptor ends up a
+     thousand pixels from the title it belongs to and the pair stops reading as
+     one row. */
+  .index-row a {
+    color: var(--color-text-primary);
+    display: grid;
+    gap: var(--spacing-3) var(--spacing-6);
+    max-width: 68rem;
+    padding-block: clamp(1.1rem, 2.5vw, 1.75rem);
+  }
+
+  .index-row__month {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* Title and descriptor meet on one baseline, so the descriptor reads as the
+     row's own column rather than as a badge hung off the title. */
+  .index-row__head {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2) var(--spacing-6);
+    justify-content: space-between;
+  }
+  .index-row__head h3 {
+    font-size: clamp(1.15rem, 2vw, 1.6rem);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-heading);
+    margin: 0;
+  }
+  .index-row__descriptor {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+  }
+
+  .index-row__metric {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    line-height: 1.6;
+    max-width: 46ch;
+  }
+
+  .index-row a:hover h3,
+  .index-row a:focus-visible h3 { color: var(--color-action); }
+  .index-row a:hover { border-color: var(--color-stroke-strong); }
+
+  @media (min-width: 48rem) {
+    .index-row a { grid-template-columns: 4.5rem minmax(0, 1fr); }
+    .index-row__month { grid-row: span 2; }
+    .index-row__head,
+    .index-row__metric { grid-column: 2; }
+
+    /* Expanded rows put the diagram beside its measurement rather than above it,
+       so the row keeps one baseline and the stream keeps its rhythm. */
+    .index-row--expanded a { grid-template-columns: 4.5rem minmax(0, 15rem) minmax(0, 1fr); }
+    .index-row--expanded .index-row__head { grid-column: 2 / -1; }
+    .index-row--expanded .index-row__visual { grid-column: 2; }
+    .index-row--expanded .index-row__metric { align-self: center; grid-column: 3; }
+  }
+</style>

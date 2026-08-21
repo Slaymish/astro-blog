@@ -20,31 +20,19 @@ export interface Seo {
   description: string;
 }
 
-/** A homepage section header with its own "see all" link. */
-export interface IndexSection {
-  eyebrow: string;
-  heading: string;
-  link: CtaLink;
-}
-
 export interface HomePage {
   seo: Seo;
-  hero: {
-    eyebrow: string;
-    headline: string;
-    headlineAccent: string;
-    lede: string;
-    links: CtaLink[];
+  /**
+   * The name plus three annotations on leader lines. There is no eyebrow, headline
+   * and lede stack: the annotations carry a place, a count and a link rather than
+   * restating what the name already says.
+   */
+  fold: {
+    name: string;
+    position: string;
+    sourceLink: CtaLink;
   };
-  interests: {
-    label: string;
-    statement: string;
-    items: { title: string; body: string }[];
-  };
-  currently: { label: string; heading: string; body: string; link: CtaLink };
-  projectsSection: IndexSection;
-  workSection: IndexSection;
-  writingSection: IndexSection;
+  indexSection: { projectsLink: CtaLink; writingLink: CtaLink };
   contactHeading: string;
 }
 

@@ -2,177 +2,136 @@
 import Layout from '../components/layout/Layout.astro';
 import IconText from '../components/ui/IconText.astro';
 import ContactBand from '../components/work/ContactBand.astro';
-import WorkCard from '../components/work/WorkCard.astro';
+import IndexRow from '../components/home/IndexRow.astro';
 import { getWorkStories } from '../lib/workData';
 import { getHomePage } from '../lib/pageContent';
-import { getRecentWriting } from '../lib/writingData';
+import { getWriting } from '../lib/writingData';
+import { buildHomeIndex, foldCount } from '../lib/homeIndex';
 
 const [stories, writing, copy] = await Promise.all([
   getWorkStories(),
-  getRecentWriting(4),
+  getWriting(),
   getHomePage()
 ]);
 
-const projects = stories.filter((story) => story.kind === 'independent').slice(0, 2);
-const work = stories.filter((story) => story.kind === 'professional' && story.status === 'lead');
-const { hero, interests, currently, projectsSection, workSection, writingSection } = copy;
+const { fold, indexSection } = copy;
+const years = buildHomeIndex(stories, writing);
+
+const counted = foldCount(stories);
+
+// The index bus taps the expanded rows only, so the node names are read back off the
+// built rows rather than recomputing the expansion rule a second time.
+const busNodes = new Set(
+  years.flatMap((year) => year.rows).filter((row) => row.graphic).map((row) => row.key)
+);
 ---
 
 <Layout title={copy.seo.title} description={copy.seo.description}>
-  <section class="home-hero" data-circuit="BUS_01">
-    <p class="home-hero__eyebrow">{hero.eyebrow}</p>
-    <h1>{hero.headline} <span class="home-hero__accent" data-circuit-source>{hero.headlineAccent}</span></h1>
-    <div class="home-hero__lower">
-      <!-- Two nodes rather than one: the hero is the page's focal point, so the
-           bus is denser here. The lede is met along its own baseline; the links
-           are dropped onto from the lane directly above them. -->
-      <p data-circuit-node="lede" data-circuit-attach="text" data-circuit-flash="underline">{hero.lede}</p>
-      <nav
-        class="home-hero__links"
-        aria-label="Start here"
-        data-circuit-node="start"
-        data-circuit-attach="text"
-        data-circuit-flash="underline"
-      >
-        {hero.links.map((link) => (
-          <a href={link.href} aria-label={link.ariaLabel}><IconText>{link.label}</IconText></a>
-        ))}
-      </nav>
-    </div>
-  </section>
-
-  <section class="home-interests" aria-labelledby="interests-heading">
-    <p class="home-section-label">{interests.label}</p>
-    <div>
-      <h2 id="interests-heading">{interests.statement}</h2>
-      <ul class="home-interests__list">
-        {interests.items.map((item) => (
-          <li>
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <section class="home-currently" aria-labelledby="currently-heading">
-    <p class="home-section-label">{currently.label}</p>
-    <div>
-      <h2 id="currently-heading">{currently.heading}</h2>
-      <p>{currently.body}</p>
-      <a href={currently.link.href}><IconText>{currently.link.label}</IconText></a>
-    </div>
-  </section>
-
-  <section class="home-work" aria-labelledby="projects-heading" data-circuit="BUS_02">
-    <div class="home-section-heading">
-      <div>
-        <!-- The bus leaves the section label rather than the heading: the first
-             card's own rule sits barely below the heading's baseline, and a lane
-             dropped from there would run parallel to it a few pixels away. -->
-        <p data-circuit-source>{projectsSection.eyebrow}</p>
-        <h2 id="projects-heading">{projectsSection.heading}</h2>
-      </div>
-      <a href={projectsSection.link.href}><IconText>{projectsSection.link.label}</IconText></a>
-    </div>
-    {projects.map((story, index) => (
-      <WorkCard story={story} reverse={index % 2 === 1} circuitNode={story.slug} />
-    ))}
-    <div class="home-work__footer">
-      <a href={projectsSection.link.href}><IconText>{projectsSection.link.label}</IconText></a>
-    </div>
-  </section>
-
-  <section class="home-work home-work--secondary" aria-labelledby="work-heading">
-    <div class="home-section-heading">
-      <div>
-        <p>{workSection.eyebrow}</p>
-        <h2 id="work-heading">{workSection.heading}</h2>
-      </div>
-      <a href={workSection.link.href}><IconText>{workSection.link.label}</IconText></a>
-    </div>
-    {work.map((story) => <WorkCard story={story} variant="row" />)}
-  </section>
-
-  <section class="home-writing" aria-labelledby="writing-heading">
-    <div class="home-section-heading">
-      <div>
-        <p>{writingSection.eyebrow}</p>
-        <h2 id="writing-heading">{writingSection.heading}</h2>
-      </div>
-      <a href={writingSection.link.href}><IconText>{writingSection.link.label}</IconText></a>
-    </div>
-    <ul class="home-writing__list">
-      {writing.map((entry) => (
-        <li>
-          <a href={entry.href}>
-            <span class="home-writing__date">{entry.displayDate}</span>
-            <span class="home-writing__title">{entry.title}</span>
-            {entry.excerpt && <span class="home-writing__excerpt">{entry.excerpt}</span>}
-          </a>
-        </li>
-      ))}
+  <section class="fold" data-circuit="BUS_01">
+    <h1 data-circuit-source>{fold.name}</h1>
+    <!-- The annotations are the subtitle. They are nodes on the fold bus, so the
+         leader lines the engine draws are what relates them to the name; without
+         the pipework they would be three loose fragments. -->
+    <ul class="fold__annotations">
+      <li data-circuit-node="position" data-circuit-attach="text" data-circuit-flash="underline">
+        {fold.position}
+      </li>
+      <li data-circuit-node="count" data-circuit-attach="text" data-circuit-flash="underline">
+        {counted}
+      </li>
+      <li data-circuit-node="source" data-circuit-attach="text" data-circuit-flash="underline">
+        <a
+          href={fold.sourceLink.href}
+          class="fold__link"
+          aria-label={fold.sourceLink.ariaLabel}
+          target={fold.sourceLink.external ? '_blank' : undefined}
+          rel={fold.sourceLink.external ? 'noopener noreferrer' : undefined}
+        >{fold.sourceLink.label}</a>
+      </li>
     </ul>
   </section>
+
+  {years.length > 0 && (
+    <section class="index" aria-label="Everything, newest first" data-circuit="BUS_02">
+      {years.map((year, yearIndex) => (
+        <>
+          <h2 class="index__year" data-circuit-source={yearIndex === 0 ? true : undefined}>
+            {year.year}
+          </h2>
+          <ul class="index__rows">
+            {year.rows.map((row) => (
+              <IndexRow row={row} circuitNode={busNodes.has(row.key) ? row.key : undefined} />
+            ))}
+          </ul>
+        </>
+      ))}
+      <nav class="index__tail" aria-label="Browse everything">
+        <a href={indexSection.projectsLink.href}><IconText>{indexSection.projectsLink.label}</IconText></a>
+        <a href={indexSection.writingLink.href}><IconText>{indexSection.writingLink.label}</IconText></a>
+      </nav>
+    </section>
+  )}
 
   <ContactBand heading={copy.contactHeading} />
 </Layout>
 
 <style>
-  .home-hero { display: flex; flex-direction: column; min-height: clamp(30rem, calc(78svh - 8rem), 38rem); padding-block: var(--hero-top-space) var(--spacing-8); }
-  .home-hero__eyebrow,
-  .home-section-heading p,
-  .home-section-label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  .home-hero h1 { font-size: clamp(2.9rem, 8vw, 7rem); letter-spacing: var(--tracking-display); line-height: .92; margin: 0; max-width: 18ch; }
-  .home-hero__accent { color: var(--color-action); }
-  /* Auto top margin drops this row onto the hero's bottom edge, so a short
-     headline leaves composed space under the h1 rather than a dead tail. */
-  .home-hero__lower { align-items: end; display: grid; gap: var(--spacing-6); margin-block: auto 0; padding-block-start: clamp(2rem, 6vw, 4.5rem); }
-  .home-hero__lower > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 2vw, 1.35rem); line-height: 1.5; margin: 0; max-width: 40rem; }
-  .home-hero__links { display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-6); }
-  .home-hero__links a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
-  .home-hero__links a:hover { color: var(--color-action); }
+  /* The fold carries a name and three facts. Anything longer than a fragment
+     belongs in the index below, where it can be dated and measured. */
+  .fold {
+    align-content: center;
+    display: grid;
+    gap: clamp(2.5rem, 7vw, 4.5rem);
+    min-height: clamp(26rem, calc(70svh - 8rem), 34rem);
+    padding-block: var(--hero-top-space) var(--spacing-8);
+  }
+  .fold h1 {
+    font-size: clamp(3.25rem, 11vw, 9rem);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-display);
+    line-height: 0.88;
+    margin: 0;
+    max-width: 8ch;
+  }
 
-  /* Areas of investigation, deliberately not a skills grid: no icons, no badges. */
-  .home-interests { border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); padding-block: var(--band-inset); }
-  .home-interests h2 { font-size: clamp(1.6rem, 3vw, 2.6rem); font-weight: var(--font-weight-normal); letter-spacing: var(--tracking-heading); line-height: 1.25; margin: 0; max-width: 34ch; text-wrap: balance; }
-  .home-interests__list { display: grid; gap: var(--spacing-6); list-style: none; margin: clamp(2.5rem, 6vw, 4rem) 0 0; padding: 0; }
-  .home-interests__list h3 { font-size: var(--type-body); margin: 0 0 var(--spacing-2); }
-  .home-interests__list p { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.6; margin: 0; }
-  .home-interests__list li { border-top: 1px solid var(--color-stroke-subtle); padding-top: var(--spacing-4); }
+  .fold__annotations {
+    display: grid;
+    gap: var(--spacing-4);
+    justify-items: start;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .fold__annotations li {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-wide);
+  }
+  /* The one element on the static page allowed the action colour. Everything else
+     earns it on hover or focus. */
+  .fold__link { color: var(--color-action); }
+  .fold__link:hover { color: var(--color-text-primary); }
 
-  .home-currently { border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-8); padding-block: var(--band-inset); }
-  .home-currently h2 { font-size: clamp(2rem, 4.5vw, 3.6rem); letter-spacing: var(--tracking-heading); margin: 0; max-width: 20ch; text-wrap: balance; }
-  .home-currently div > p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 1.6vw, 1.2rem); line-height: 1.7; margin: var(--spacing-6) 0 0; max-width: 44rem; }
-  .home-currently a { color: var(--color-text-primary); display: inline-block; font-size: var(--type-body-small); font-weight: 700; margin-top: var(--spacing-6); }
-  .home-currently a:hover { color: var(--color-action); }
+  .index { border-top: 1px solid var(--color-stroke-subtle); padding-block-start: var(--spacing-10); }
+  .index__year {
+    font-size: clamp(1.15rem, 2vw, 1.6rem);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-heading);
+    margin: 0;
+    padding-block-end: var(--spacing-4);
+  }
+  .index__year:not(:first-of-type) { padding-block-start: clamp(3rem, 7vw, 5rem); }
+  .index__rows { list-style: none; margin: 0; padding: 0; }
+  .index__rows :global(.index-row:last-child) { border-bottom: 1px solid var(--color-stroke-subtle); }
 
-  .home-work { border-top: 1px solid var(--color-stroke-subtle); margin-block-start: 0; }
-  .home-section-heading { align-items: end; display: flex; justify-content: space-between; padding-block: var(--spacing-8); }
-  .home-section-heading h2 { font-size: clamp(2.3rem, 5vw, 4.5rem); letter-spacing: var(--tracking-heading); margin: 0; }
-  .home-section-heading a,
-  .home-work__footer a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
-  .home-section-heading a:hover,
-  .home-work__footer a:hover { color: var(--color-action); }
-  .home-work__footer { padding-block: var(--spacing-6); }
-  .home-work--secondary { margin-block-start: clamp(3rem, 8vw, 6rem); }
-
-  .home-writing { border-top: 1px solid var(--color-stroke-subtle); margin-block-start: clamp(3rem, 8vw, 6rem); }
-  .home-writing__list { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }
-  .home-writing__list li { border-bottom: 1px solid var(--color-stroke-subtle); }
-  .home-writing__list a { align-items: baseline; color: var(--color-text-primary); display: grid; gap: var(--spacing-1) var(--spacing-6); padding-block: clamp(1.25rem, 3vw, 2rem); }
-  .home-writing__list a:hover .home-writing__title { color: var(--color-action); }
-  .home-writing__date { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--type-label); }
-  .home-writing__title { font-size: clamp(1.2rem, 2.2vw, 1.75rem); letter-spacing: var(--tracking-heading); }
-  .home-writing__excerpt { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.6; max-width: 52rem; }
+  .index__tail { display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-8); padding-block: clamp(2rem, 5vw, 3rem); }
+  .index__tail a { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: var(--font-weight-bold); }
+  .index__tail a:hover { color: var(--color-action); }
 
   @media (min-width: 48rem) {
-    .home-hero__lower { grid-template-columns: minmax(0, 1.3fr) minmax(16rem, .7fr); }
-    .home-interests,
-    .home-currently { grid-template-columns: minmax(10rem, .45fr) minmax(0, 1.55fr); }
-    .home-interests__list { grid-template-columns: repeat(3, 1fr); gap: var(--spacing-8); }
-    .home-writing__list a { grid-template-columns: 7rem minmax(0, 1fr); }
-    .home-writing__date { grid-row: span 2; }
+    .fold { gap: clamp(3rem, 8vw, 6rem); }
+    .fold__annotations { gap: var(--spacing-5); padding-inline-start: 4.5rem; }
   }
 </style>

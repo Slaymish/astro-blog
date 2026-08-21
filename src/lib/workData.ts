@@ -14,6 +14,7 @@ const workStoryFields = `
   service,
   date,
   summary,
+  metric,
   problem,
   role,
   timeframe,

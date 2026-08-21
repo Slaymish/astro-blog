@@ -90,9 +90,6 @@ export async function getWriting(): Promise<WritingEntry[]> {
   );
 }
 
-export async function getRecentWriting(limit: number): Promise<WritingEntry[]> {
-  return (await getWriting()).slice(0, limit);
-}
 
 /** Tags worth offering as a filter: anything that would narrow to more than one entry. */
 export function filterableTags(entries: WritingEntry[]): string[] {

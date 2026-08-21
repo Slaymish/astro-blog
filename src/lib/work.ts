@@ -43,6 +43,8 @@ export interface WorkStory {
   service: WorkService;
   date: string;
   summary: string;
+  /** The measured fact shown on the homepage index. Absent on stories predating the field. */
+  metric?: string;
   problem: string;
   role: string;
   timeframe?: string;

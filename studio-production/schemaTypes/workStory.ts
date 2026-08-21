@@ -124,6 +124,14 @@ export const workStory = defineType({
       validation: (rule) => rule.required().max(180)
     }),
     defineField({
+      name: 'metric',
+      title: 'Index metric',
+      type: 'string',
+      description:
+        'The measured fact shown on the homepage index. Print the number that exists, whether or not it flatters — an unflattering measurement is the point. Distinct from Result, which is prose for the case-study page.',
+      validation: (rule) => rule.max(100)
+    }),
+    defineField({
       name: 'problem',
       title: 'Problem',
       type: 'text',

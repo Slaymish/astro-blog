@@ -1,19 +1,4 @@
-import { defineArrayMember, defineField, defineType } from 'sanity';
-
-/** A titled section header with its own "see all" link. Used three times on the homepage. */
-function indexSection(name: string, title: string) {
-  return defineField({
-    name,
-    title,
-    type: 'object',
-    fields: [
-      defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string', validation: (rule) => rule.required().max(40) }),
-      defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required().max(60) }),
-      defineField({ name: 'link', title: 'Section link', type: 'ctaLink', validation: (rule) => rule.required() })
-    ],
-    validation: (rule) => rule.required()
-  });
-}
+import { defineField, defineType } from 'sanity';
 
 export const homePage = defineType({
   name: 'homePage',
@@ -31,80 +16,48 @@ export const homePage = defineType({
       validation: (rule) => rule.required()
     }),
     defineField({
-      name: 'hero',
-      title: 'Hero',
+      name: 'fold',
+      title: 'Fold',
       type: 'object',
+      description:
+        'The name, and three annotations hung off it on leader lines. There is deliberately no eyebrow, headline and lede stack: the annotations are the subtitle, and they carry a place, a count and a link rather than restating the name. The middle annotation is counted from the work stories at build time rather than authored here, so it cannot drift out of date.',
       fields: [
-        defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string', validation: (rule) => rule.required().max(90) }),
         defineField({
-          name: 'headline',
-          title: 'Headline',
+          name: 'name',
+          title: 'Name',
           type: 'string',
-          description: 'The plain part of the headline. The accent below is appended in the action colour.',
-          validation: (rule) => rule.required().max(90)
-        }),
-        defineField({
-          name: 'headlineAccent',
-          title: 'Headline accent',
-          type: 'string',
-          description:
-            'Rendered in the action colour at the end of the headline. This element is also the origin of the homepage data bus, so it cannot be left empty.',
+          description: 'Set at display scale. Also the origin of the fold data bus, so it cannot be empty.',
           validation: (rule) => rule.required().max(40)
         }),
-        defineField({ name: 'lede', title: 'Lede', type: 'text', rows: 3, validation: (rule) => rule.required().max(260) }),
         defineField({
-          name: 'links',
-          title: 'Hero links',
-          type: 'array',
-          description: 'Plain links, not buttons. The homepage deliberately has no booking call to action.',
-          of: [defineArrayMember({ type: 'ctaLink' })],
-          validation: (rule) => rule.required().min(2).max(4)
+          name: 'position',
+          title: 'Position',
+          type: 'string',
+          description:
+            'The first annotation: where Hamish is and since when. A fragment, not a sentence — the fold has no room for prose.',
+          validation: (rule) => rule.required().max(60)
+        }),
+        defineField({
+          name: 'sourceLink',
+          title: 'Source link',
+          type: 'ctaLink',
+          description: 'The third annotation, and the only element on the static page in the action colour.',
+          validation: (rule) => rule.required()
         })
       ],
       validation: (rule) => rule.required()
     }),
     defineField({
-      name: 'interests',
-      title: 'What I am interested in',
+      name: 'indexSection',
+      title: 'Index tail links',
       type: 'object',
-      description: 'Areas of investigation, not claims of expertise. Keep the copy off the language of a skills grid.',
+      description: 'The two links that close the dated index.',
       fields: [
-        defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule) => rule.required().max(40) }),
-        defineField({ name: 'statement', title: 'Statement', type: 'text', rows: 4, validation: (rule) => rule.required().max(400) }),
-        defineField({
-          name: 'items',
-          title: 'Areas',
-          type: 'array',
-          of: [
-            defineArrayMember({
-              type: 'object',
-              fields: [
-                defineField({ name: 'title', title: 'Title', type: 'string', validation: (rule) => rule.required().max(30) }),
-                defineField({ name: 'body', title: 'Body', type: 'string', validation: (rule) => rule.required().max(90) })
-              ]
-            })
-          ],
-          validation: (rule) => rule.required().min(2).max(4)
-        })
+        defineField({ name: 'projectsLink', title: 'Projects link', type: 'ctaLink', validation: (rule) => rule.required() }),
+        defineField({ name: 'writingLink', title: 'Writing link', type: 'ctaLink', validation: (rule) => rule.required() })
       ],
       validation: (rule) => rule.required()
     }),
-    defineField({
-      name: 'currently',
-      title: 'Currently',
-      type: 'object',
-      description: 'The honest present-tense statement of where Hamish actually is. Do not dress this up.',
-      fields: [
-        defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule) => rule.required().max(40) }),
-        defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required().max(90) }),
-        defineField({ name: 'body', title: 'Body', type: 'text', rows: 4, validation: (rule) => rule.required().max(400) }),
-        defineField({ name: 'link', title: 'Section link', type: 'ctaLink', validation: (rule) => rule.required() })
-      ],
-      validation: (rule) => rule.required()
-    }),
-    indexSection('projectsSection', 'Projects section'),
-    indexSection('workSection', 'Work section'),
-    indexSection('writingSection', 'Writing section'),
     defineField({
       name: 'contactHeading',
       title: 'Contact band heading',

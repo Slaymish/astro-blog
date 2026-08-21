@@ -88,47 +88,20 @@ const documents: SeedDocument[] = [
       description:
         'Software developer in Wellington, New Zealand. Independent projects, client work, and notes on AI and software systems.'
     },
-    hero: {
-      eyebrow: 'Hamish Burke / Wellington, New Zealand',
-      headline: 'Software developer',
-      headlineAccent: 'in Wellington.',
-      lede: 'I build things I want to exist. Most of the source is on GitHub.',
-      links: [
-        { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
-        { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
-        { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' }
-      ]
+    fold: {
+      name: 'Hamish Burke',
+      position: 'Alphero, Wellington · since 2026',
+      sourceLink: {
+        _type: 'ctaLink',
+        label: 'github.com/Slaymish',
+        href: 'https://github.com/Slaymish',
+        external: true,
+        ariaLabel: 'Hamish Burke on GitHub'
+      }
     },
-    interests: {
-      label: 'What I’m interested in',
-      statement:
-        'I mostly want to know why a thing was built the way it was.',
-      items: [
-        { _key: 'technology', title: 'Technology', body: 'How things work.' },
-        { _key: 'systems', title: 'Systems', body: 'How complicated things interact.' },
-        { _key: 'strategy', title: 'Strategy', body: 'What is actually worth doing.' }
-      ]
-    },
-    currently: {
-      label: 'Currently',
-      heading: 'Learning how software gets made.',
-      body: 'I’m a junior developer at Alphero. That’s where I’m learning the parts side projects don’t teach you, and it’s most of what I’m doing right now.',
-      link: { _type: 'ctaLink', label: 'Professional work', href: '/work' }
-    },
-    projectsSection: {
-      eyebrow: 'Independent',
-      heading: 'Things I built',
-      link: { _type: 'ctaLink', label: 'All projects', href: '/projects' }
-    },
-    workSection: {
-      eyebrow: 'Professional',
-      heading: 'Client work',
-      link: { _type: 'ctaLink', label: 'All work', href: '/work' }
-    },
-    writingSection: {
-      eyebrow: 'Writing',
-      heading: 'What I’ve been thinking about',
-      link: { _type: 'ctaLink', label: 'All writing', href: '/writing' }
+    indexSection: {
+      projectsLink: { _type: 'ctaLink', label: 'All projects', href: '/projects' },
+      writingLink: { _type: 'ctaLink', label: 'All writing', href: '/writing' }
     },
     contactHeading: 'Working on something interesting?'
   },
