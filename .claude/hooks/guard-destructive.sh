@@ -42,14 +42,43 @@ MSG
   fi
 fi
 
+# Matching the bare filename blocked `git add`, `cat` and `grep` on these scripts,
+# which made the warning noise. Match execution instead: split the command on shell
+# separators and require a segment whose leading word, once wrappers and env
+# assignments are stripped, is a JS runner.
+runs_script() {
+  local text="$1" script_re="$2" seg s
+  text="${text//&&/$'\n'}"
+  text="${text//||/$'\n'}"
+  text="${text//;/$'\n'}"
+  text="${text//|/$'\n'}"
+
+  local IFS=$'\n'
+  for seg in $text; do
+    [[ "$seg" =~ $script_re ]] || continue
+
+    s="${seg#"${seg%%[![:space:]]*}"}"
+    while [[ "$s" =~ ^([A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*|env|command|exec|npx|time|sudo|nohup)[[:space:]]+ ]]; do
+      s="${s#"${BASH_REMATCH[0]}"}"
+    done
+    if [[ "$s" =~ ^(pnpm|npm|yarn|bun)[[:space:]]+(exec|dlx|run)[[:space:]]+ ]]; then
+      s="${s#"${BASH_REMATCH[0]}"}"
+    fi
+
+    [[ "$s" =~ ^(tsx|ts-node|node|bun|deno)([[:space:]]|$) ]] && return 0
+  done
+  return 1
+}
+
 destructive=0
 patching=0
-case "$command_text" in
-  *seed:copy*|*seed-page-copy.ts*) destructive=1 ;;
-esac
-case "$command_text" in
-  *copy-depersona.ts*|*copy-humanise.ts*|*copy-humanise-posts.ts*|*migrate-home-datasheet.ts*) patching=1 ;;
-esac
+
+# `pnpm run seed:copy` and friends never name the script file, so check separately.
+if [[ "$command_text" =~ (^|[[:space:]\;\&\|\(])(pnpm|npm|yarn|bun)([[:space:]]+run)?[[:space:]]+seed:copy([[:space:]]|$) ]]; then
+  destructive=1
+fi
+runs_script "$command_text" '(^|/)seed-page-copy\.ts' && destructive=1
+runs_script "$command_text" '(^|/)(copy-depersona|copy-humanise|copy-humanise-posts|migrate-home-datasheet)\.ts' && patching=1
 
 [ "$destructive" -eq 0 ] && [ "$patching" -eq 0 ] && exit 0
 
