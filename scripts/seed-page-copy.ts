@@ -51,7 +51,7 @@ const documents: SeedDocument[] = [
       ]
     },
     footer: {
-      tagline: 'Building things and writing about them, from Wellington, NZ.',
+      tagline: 'Software developer, Wellington, New Zealand.',
       navLinks: [
         { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
         { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
@@ -86,13 +86,13 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'Hamish Burke',
       description:
-        'Software developer in Wellington, New Zealand. I build things in the open and write up what happened, including what did not work.'
+        'Software developer in Wellington, New Zealand. Independent projects, client work, and notes on AI and software systems.'
     },
     hero: {
       eyebrow: 'Hamish Burke / Wellington, New Zealand',
       headline: 'Software developer',
       headlineAccent: 'in Wellington.',
-      lede: 'I build things I want to exist, and I publish them. The code is public and the write-ups say what didn’t work.',
+      lede: 'I build things I want to exist. Most of the source is on GitHub.',
       links: [
         { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
         { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
@@ -111,8 +111,8 @@ const documents: SeedDocument[] = [
     },
     currently: {
       label: 'Currently',
-      heading: 'Learning how software actually gets made.',
-      body: 'I’m a junior developer at Alphero, learning how software actually gets built for real organisations. That’s the part side projects don’t teach you, and it’s most of what I’m doing right now.',
+      heading: 'Learning how software gets made.',
+      body: 'I’m a junior developer at Alphero. That’s where I’m learning the parts side projects don’t teach you, and it’s most of what I’m doing right now.',
       link: { _type: 'ctaLink', label: 'Professional work', href: '/work' }
     },
     projectsSection: {
@@ -138,13 +138,13 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'Writing',
       description:
-        'Notes on AI and software systems by Hamish Burke, including the things he has not figured out yet.'
+        'Notes on AI and software systems by Hamish Burke.'
     },
     hero: {
       eyebrow: 'Writing',
       headlineLines: ['What I’ve been', 'thinking about.'],
       intro:
-        'Things I have worked out, and things I have not. Mostly AI and software systems.'
+        'Mostly AI and software systems, written while I’m still working them out.'
     },
     filterLabel: 'Filter by tag',
     emptyMessage: 'Nothing here yet.'
@@ -155,7 +155,7 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'About Hamish Burke',
       description:
-        'Hamish Burke is a web developer at Alphero in Wellington, New Zealand, who builds and writes up independent projects.'
+        'Hamish Burke is a web developer at Alphero in Wellington, New Zealand, with a master’s in computer science from Victoria University of Wellington.'
     },
     hero: {
       eyebrow: 'About · Wellington, New Zealand',
@@ -184,7 +184,7 @@ const documents: SeedDocument[] = [
           ]
         }
       ],
-      body: 'There’s no NDA-covered client work on this site. What’s here is what I can talk about honestly: things I built myself, finished freelance work, and technical studies where the limitations are written down alongside the results.'
+      body: 'There’s no NDA-covered client work on this site. What’s here is what I’m free to publish: things I built myself, finished freelance work, and a few technical studies.'
     },
     capabilities: {
       label: 'What I’m working on getting good at',
@@ -202,8 +202,8 @@ const documents: SeedDocument[] = [
         },
         {
           _key: 'clarity',
-          title: 'Saying what actually happened',
-          body: 'Reporting results as they came out rather than as I would have liked them to.'
+          title: 'Writing it down',
+          body: 'Keeping design notes and known limits current, while I still remember why I picked one option over another.'
         }
       ]
     },
@@ -279,7 +279,7 @@ const documents: SeedDocument[] = [
       eyebrow: 'Selected work · 2024–2026',
       headlineLines: ['Work I can', 'show you.'],
       intro:
-        'Client websites, products I built for myself, and a few technical studies. Each one says what the problem was and what happened.'
+        'Client websites, products I built for myself, and a few technical studies.'
     },
     leadSection: {
       heading: 'Lead work',
@@ -297,13 +297,13 @@ const documents: SeedDocument[] = [
     seo: {
       title: 'Projects',
       description:
-        'Independent projects built by Hamish Burke, each written up around the question that started it.'
+        'Independent projects by Hamish Burke, including a home lab, a self-hosted finance ledger, and a GPU sharing platform.'
     },
     hero: {
       eyebrow: 'Independent projects',
       headlineLines: ['Things I built', 'to find out.'],
       intro:
-        'Projects I started myself, usually to find out whether something was possible. Each one says what the question was, what I built, and what I would do differently.'
+        'Projects I started myself, usually to find out whether something was possible. A home lab, a self-hosted finance ledger, a GPU sharing platform.'
     },
     contactHeading: 'Working on something similar?'
   },
@@ -358,7 +358,7 @@ const documents: SeedDocument[] = [
       }
     ],
     availabilityNote:
-      'I work full time at Alphero and take on a small number of independent projects alongside it. If you have something that fits, say what the problem is and I will tell you honestly whether I am the right person for it.'
+      'I work full time at Alphero and take on a small number of independent projects alongside it. If you have something that fits, say what the problem is and I’ll tell you whether I’m the right person for it.'
   },
   {
     _id: 'notFoundPage',

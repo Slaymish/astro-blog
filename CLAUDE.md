@@ -93,6 +93,10 @@ content-type validation and redirect blocking. Do not weaken those protections.
 ## Content rules
 
 - Do not use em dashes in site content.
+- Do not describe the site or Hamish in terms of candour: no "write-ups say what didn't
+  work", "what I can talk about honestly", "what I would do differently". That formula is
+  the house style of AI-written developer bios, and it was stripped from Sanity, `site.ts`
+  and `llms.txt.ts` on 2026-08-21. Name the actual project instead.
 
 ## Repo conventions
 
