@@ -1,5 +1,6 @@
 ---
-import type { GraphicKind } from '../../lib/work';
+import type { GraphicKind, ScreenshotGraphicKind } from '../../lib/work';
+import { isScreenshotGraphic } from '../../lib/work';
 
 interface Props {
   kind: GraphicKind;
@@ -10,7 +11,9 @@ interface Props {
 
 const { kind, alt, compact = false, priority = false } = Astro.props;
 
-const images: Partial<Record<GraphicKind, { src: string; position?: string }>> = {
+// Keyed by ScreenshotGraphicKind rather than a partial map of every kind, so a
+// kind added to that list without an image here fails the build.
+const images: Record<ScreenshotGraphicKind, { src: string; position?: string }> = {
   'sprint-coach': {
     src: '/images/work/sprint-coach-home.webp',
   },
@@ -23,7 +26,7 @@ const images: Partial<Record<GraphicKind, { src: string; position?: string }>> =
   },
 };
 
-const image = images[kind];
+const image = isScreenshotGraphic(kind) ? images[kind] : undefined;
 
 const graphicAlts: Partial<Record<GraphicKind, string>> = {
   brontehf: 'BrontëHF’s public projects page showing a filterable grid of portfolio work.',
@@ -200,44 +203,38 @@ const graphicAlt = graphicAlts[kind] ?? alt;
     padding: clamp(1rem, 3vw, 2rem);
   }
 
-  /* These sit on a dark scrim over a screenshot, so the text stays light in
-     both themes rather than following the theme's primary text colour. */
-  .work-graphic__boundary,
-  .work-graphic__pipeline {
+  /* The chips that sit on a dark scrim over a screenshot: the pipeline caption
+     and Sprint Coach's own mark. Both keep light text in either theme rather
+     than following the theme's primary colour. Their size is carried in four
+     custom properties, so the small-frame variants below swap values instead of
+     restating the rule. */
+  .work-graphic__pipeline,
+  .work-graphic__brand {
+    --chip-inset: var(--spacing-4);
+    --chip-gap: var(--spacing-3);
+    --chip-padding: var(--spacing-3) var(--spacing-4);
+    --chip-size: var(--type-label);
+
     backdrop-filter: blur(12px);
     background: rgb(7 9 8 / 88%);
     border: 1px solid var(--color-stroke-strong);
+    bottom: var(--chip-inset);
     color: var(--tile-image-text);
     display: flex;
-    font-size: var(--type-label);
-    gap: var(--spacing-3);
-    left: var(--spacing-4);
-    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--chip-size);
+    gap: var(--chip-gap);
+    left: var(--chip-inset);
+    padding: var(--chip-padding);
     position: absolute;
   }
 
-  .work-graphic__boundary,
-  .work-graphic__pipeline { bottom: var(--spacing-4); justify-content: space-between; right: var(--spacing-4); }
-  .work-graphic__boundary b { color: var(--color-action); font-weight: var(--font-weight-medium); }
+  .work-graphic__pipeline { justify-content: space-between; right: var(--chip-inset); }
   .work-graphic__pipeline b { color: var(--color-action); }
 
-  /* Sprint Coach's own mark, sat on a dark scrim over the site screenshot, so
-     it keeps its brand lime in both themes. */
   .work-graphic__brand {
     align-items: center;
-    backdrop-filter: blur(12px);
-    background: rgb(7 9 8 / 88%);
-    border: 1px solid var(--color-stroke-strong);
-    bottom: var(--spacing-4);
-    color: var(--tile-image-text);
-    display: flex;
-    font-size: var(--type-label);
-    gap: var(--spacing-3);
-    left: var(--spacing-4);
     letter-spacing: .06em;
     margin: 0;
-    padding: var(--spacing-3) var(--spacing-4);
-    position: absolute;
     text-transform: uppercase;
   }
 
@@ -251,24 +248,24 @@ const graphicAlt = graphicAlts[kind] ?? alt;
     width: auto;
   }
 
-  /* The frame gets small on phones and in the row-variant card, so the chip
-     shrinks with it rather than covering the screenshot it sits on. */
+  /* The frame gets small on phones and in the index row, so the chip shrinks
+     with it rather than covering the screenshot it sits on. */
+  .work-graphic--compact .work-graphic__pipeline,
   .work-graphic--compact .work-graphic__brand,
   .work-graphic--sprint-coach .work-graphic__brand {
-    bottom: var(--spacing-3);
-    font-size: .6rem;
-    gap: var(--spacing-2);
-    left: var(--spacing-3);
-    padding: var(--spacing-2) var(--spacing-3);
+    --chip-inset: var(--spacing-3);
+    --chip-gap: var(--spacing-2);
+    --chip-padding: var(--spacing-2) var(--spacing-3);
+    --chip-size: .6rem;
   }
 
+  /* Only the full-width frame has the room to carry the mark at full size. */
   @media (min-width: 48rem) {
     .work-graphic--sprint-coach:not(.work-graphic--compact) .work-graphic__brand {
-      bottom: var(--spacing-4);
-      font-size: var(--type-label);
-      gap: var(--spacing-3);
-      left: var(--spacing-4);
-      padding: var(--spacing-3) var(--spacing-4);
+      --chip-inset: var(--spacing-4);
+      --chip-gap: var(--spacing-3);
+      --chip-padding: var(--spacing-3) var(--spacing-4);
+      --chip-size: var(--type-label);
     }
   }
 
@@ -294,21 +291,49 @@ const graphicAlt = graphicAlts[kind] ?? alt;
      rather than flat. Depth is small on purpose; the shadows carry most of it. */
   .work-graphic__ledger,
   .work-graphic__gpu,
-  .work-graphic__lab { perspective: 1200px; }
+  .work-graphic__lab {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(.75rem, 2.6cqi, 1.5rem);
+    height: 100%;
+    justify-content: space-between;
+    perspective: 1200px;
+  }
+
+  /* The eyebrow over each panel. */
+  .work-graphic__ledger small,
+  .work-graphic__gpu small,
+  .work-graphic__lab small {
+    color: var(--color-text-secondary);
+    font-size: clamp(.66rem, 1.6cqi, .78rem);
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
 
   .work-graphic__ledger-flow,
   .work-graphic__cascade,
   .work-graphic__gpu-split,
   .work-graphic__lab-doors { transform-style: preserve-3d; }
 
+  /* Every raised panel across the three compositions. Only what they all share
+     lives here — border, shadow and depth are what tell them apart. */
+  .work-graphic__txn,
+  .work-graphic__journal,
+  .work-graphic__gpu-cloud,
+  .work-graphic__gpu-host,
+  .work-graphic__lab-doors div,
+  .work-graphic__lab-host {
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+  }
+
   /* ---- YouInc: one transaction, classified then balanced ---- */
-  .work-graphic__ledger { display: flex; flex-direction: column; gap: clamp(.75rem, 2.6cqi, 1.5rem); height: 100%; justify-content: space-between; }
   /* flex:1 lets the row own the spare height while align-items keeps the panels
      sized to their content rather than stretching. */
   .work-graphic__ledger-flow { align-items: center; display: grid; flex: 1; gap: clamp(.5rem, 2cqi, 1.25rem); grid-template-columns: minmax(0, .85fr) minmax(0, 1fr) minmax(0, 1fr); }
 
-  .work-graphic__txn { background: var(--surface); border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: .15em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(4px); }
-  .work-graphic__txn small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
+  .work-graphic__txn { border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-sm); gap: .15em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(4px); }
   .work-graphic__txn strong { font-size: clamp(.95rem, 2.6cqi, 1.35rem); letter-spacing: -.01em; }
   .work-graphic__txn em { color: var(--color-action); font-family: var(--font-mono); font-size: clamp(.9rem, 2.4cqi, 1.25rem); font-style: normal; }
 
@@ -323,22 +348,19 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   .work-graphic__cascade span { font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .05em; text-transform: uppercase; }
   .work-graphic__cascade b { font-size: clamp(.7rem, 1.75cqi, .86rem); font-weight: var(--font-weight-medium); text-align: right; }
 
-  .work-graphic__journal { background: var(--surface); border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: .2em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(20px); }
-  .work-graphic__journal small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
+  .work-graphic__journal { border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); gap: .2em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(20px); }
   .work-graphic__journal div { display: flex; font-family: var(--font-mono); font-size: clamp(.72rem, 1.8cqi, .9rem); gap: .75em; justify-content: space-between; }
   .work-graphic__journal p { border-top: 1px solid var(--color-stroke-strong); display: flex; font-family: var(--font-mono); font-size: clamp(.72rem, 1.8cqi, .9rem); gap: .75em; justify-content: space-between; margin: .35em 0 0; padding-top: .4em; }
   .work-graphic__journal p span { color: var(--color-text-secondary); }
   .work-graphic__journal p b { color: var(--color-action); }
 
   /* ---- GPUShare: what stays up, and what only runs when the host does ---- */
-  .work-graphic__gpu { display: flex; flex-direction: column; gap: clamp(.75rem, 2.6cqi, 1.5rem); height: 100%; justify-content: space-between; }
   .work-graphic__gpu-split { align-items: center; display: grid; flex: 1; gap: clamp(.5rem, 1.8cqi, 1.1rem); grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
   .work-graphic__gpu-cloud,
-  .work-graphic__gpu-host { display: flex; flex-direction: column; gap: .2em; min-width: 0; padding: clamp(.6rem, 2cqi, 1.2rem); }
-  .work-graphic__gpu-cloud { background: var(--surface); border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-sm); transform: translateZ(4px); }
+  .work-graphic__gpu-host { gap: .2em; min-width: 0; padding: clamp(.6rem, 2cqi, 1.2rem); }
+  .work-graphic__gpu-cloud { border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-sm); transform: translateZ(4px); }
   /* The host floats highest — it is the machine the whole thing hangs off. */
-  .work-graphic__gpu-host { background: var(--surface); border: 1px dashed var(--color-action); box-shadow: var(--shadow-lg); transform: translateZ(18px); }
-  .work-graphic__gpu small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
+  .work-graphic__gpu-host { border: 1px dashed var(--color-action); box-shadow: var(--shadow-lg); transform: translateZ(18px); }
   .work-graphic__gpu strong { font-size: clamp(.9rem, 2.4cqi, 1.25rem); line-height: 1.3; }
   .work-graphic__gpu-cloud span,
   .work-graphic__gpu-host span { color: var(--color-text-secondary); font-size: clamp(.68rem, 1.65cqi, .82rem); line-height: 1.4; }
@@ -353,17 +375,17 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   .work-graphic__gpu-price i { color: var(--color-action); font-style: normal; letter-spacing: .06em; margin-left: auto; text-transform: uppercase; }
 
   /* ---- Home lab: two access paths, one host, one measured restore ---- */
-  .work-graphic__lab { display: flex; flex-direction: column; gap: clamp(.6rem, 2.2cqi, 1.25rem); height: 100%; justify-content: space-between; }
+  /* The lab carries four rows rather than three, so it packs tighter. */
+  .work-graphic__lab { gap: clamp(.6rem, 2.2cqi, 1.25rem); }
   .work-graphic__lab-doors { align-items: center; display: grid; gap: clamp(.5rem, 1.8cqi, 1.1rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .work-graphic__lab-doors div { display: flex; flex-direction: column; gap: .15em; padding: clamp(.5rem, 1.8cqi, 1rem); }
-  .work-graphic__lab-doors div:first-child { background: var(--surface); border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-xs); transform: translateZ(2px); }
-  .work-graphic__lab-doors div:last-child { background: var(--surface); border: 1px dashed var(--color-action); box-shadow: var(--shadow-sm); transform: translateZ(8px); }
-  .work-graphic__lab small { color: var(--color-text-secondary); font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .07em; text-transform: uppercase; }
+  .work-graphic__lab-doors div { gap: .15em; padding: clamp(.5rem, 1.8cqi, 1rem); }
+  .work-graphic__lab-doors div:first-child { border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-xs); transform: translateZ(2px); }
+  .work-graphic__lab-doors div:last-child { border: 1px dashed var(--color-action); box-shadow: var(--shadow-sm); transform: translateZ(8px); }
   .work-graphic__lab-doors strong { font-size: clamp(.9rem, 2.3cqi, 1.2rem); }
   .work-graphic__lab-doors span { color: var(--color-text-secondary); font-size: clamp(.68rem, 1.6cqi, .8rem); line-height: 1.4; }
 
   /* The single host is the point of the story, so it sits highest. */
-  .work-graphic__lab-host { background: var(--surface); border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: .4em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(18px); }
+  .work-graphic__lab-host { border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); gap: .4em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(18px); }
   .work-graphic__lab-host strong { font-size: clamp(.95rem, 2.5cqi, 1.3rem); }
   .work-graphic__lab-host span { color: var(--color-text-secondary); font-size: clamp(.68rem, 1.6cqi, .8rem); }
   .work-graphic__lab-memory { background: var(--color-stroke-subtle); height: clamp(.2rem, .8cqi, .4rem); overflow: hidden; width: 100%; }
@@ -386,8 +408,6 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   .work-graphic__matrix i { background: color-mix(in srgb, #24583e var(--value), #d8ddd6); }
   .work-graphic__tradeoff { display: flex; font-size: clamp(.55rem, 1.2vw, .75rem); font-weight: 700; justify-content: space-between; text-transform: uppercase; }
   .work-graphic__tradeoff span:last-child { color: #a83225; }
-
-  .work-graphic--compact .work-graphic__pipeline { font-size: .6rem; }
 
   @media (max-width: 30rem) {
     .work-graphic__pipeline b { display: none; }

@@ -21,6 +21,20 @@ export type GraphicKind =
   | 'home-lab'
   | 'wildfire';
 
+/**
+ * The kinds backed by a screenshot rather than a composed diagram. The composed
+ * ones are authored for the work page's ~34rem frame and are unreadable below
+ * it, so this is what decides where a graphic may be shown small. Every kind
+ * listed here must have an image in WorkGraphic.astro, which types its map
+ * against `ScreenshotGraphicKind` so the two cannot drift.
+ */
+export const SCREENSHOT_GRAPHIC_KINDS = ['sprint-coach', 'brontehf', 'health-agent'] as const;
+export type ScreenshotGraphicKind = (typeof SCREENSHOT_GRAPHIC_KINDS)[number];
+
+export function isScreenshotGraphic(kind: GraphicKind): kind is ScreenshotGraphicKind {
+  return (SCREENSHOT_GRAPHIC_KINDS as readonly GraphicKind[]).includes(kind);
+}
+
 export interface WorkArtifact {
   id: string;
   type: ArtifactType;

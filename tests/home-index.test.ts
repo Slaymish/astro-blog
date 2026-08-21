@@ -57,20 +57,19 @@ test('groups rows by year, newest first', () => {
   assert.deepEqual(rowsOf(years).map((row) => row.month), ['Aug', 'Jun']);
 });
 
-test('expands the two newest independent projects and the newest professional one', () => {
+test('expands the rows whose graphic is a screenshot, whatever their kind or age', () => {
   const years = buildHomeIndex(
     [
-      story({ id: 'i1', slug: 'i1', kind: 'independent', date: '2026-08-01' }),
-      story({ id: 'i2', slug: 'i2', kind: 'independent', date: '2026-07-01' }),
-      story({ id: 'i3', slug: 'i3', kind: 'independent', date: '2026-06-01' }),
-      story({ id: 'p1', slug: 'p1', kind: 'professional', date: '2026-05-01' }),
-      story({ id: 'p2', slug: 'p2', kind: 'professional', date: '2026-04-01' })
+      story({ id: 'shot', slug: 'shot', date: '2026-08-01', graphic: { kind: 'sprint-coach', alt: 'A screenshot.' } }),
+      story({ id: 'diagram', slug: 'diagram', date: '2026-07-01', graphic: { kind: 'you-inc', alt: 'A diagram.' } }),
+      story({ id: 'old-shot', slug: 'old-shot', date: '2024-01-01', graphic: { kind: 'health-agent', alt: 'A screenshot.' } }),
+      story({ id: 'none', slug: 'none', date: '2026-06-01', graphic: undefined })
     ],
     []
   );
 
   const expanded = rowsOf(years).filter((row) => row.graphic).map((row) => row.key);
-  assert.deepEqual(expanded, ['i1', 'i2', 'p1']);
+  assert.deepEqual(expanded, ['shot', 'old-shot']);
 });
 
 test('suppresses writing already represented by a story, primary or supporting', () => {

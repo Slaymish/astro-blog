@@ -1,5 +1,5 @@
 import type { GraphicKind, WorkStory } from './work';
-import { artifactHref, workStoryHref } from './work';
+import { artifactHref, isScreenshotGraphic, workStoryHref } from './work';
 import type { WritingEntry } from './writingData';
 
 /**
@@ -22,7 +22,13 @@ export interface IndexRow {
   date: string;
   month: string;
   metric?: string;
-  /** Present only on expanded rows. Its absence is what makes a row compact. */
+  /**
+   * Present only on expanded rows. Its absence is what makes a row compact.
+   * A row earns one by having a screenshot: the index gives a graphic roughly
+   * 15rem, which a screenshot survives and a composed diagram does not, so the
+   * diagrams stay on the work page where they have the frame they were drawn
+   * for.
+   */
   graphic?: { kind: GraphicKind; alt: string };
 }
 
@@ -38,24 +44,7 @@ function monthOf(isoDate: string): string {
 
 const byDateDesc = (a: { date: string }, b: { date: string }) => b.date.localeCompare(a.date);
 
-/**
- * Expanded rows carry a square diagram; compact rows do not. The set is a rule
- * rather than a hand-picked list so it re-evaluates as content is added: the two
- * most recent independent projects, plus the most recent professional one.
- */
-function expandedIds(stories: WorkStory[]): Set<string> {
-  const newestOfKind = (kind: WorkStory['kind'], count: number) =>
-    stories
-      .filter((story) => story.kind === kind)
-      .sort(byDateDesc)
-      .slice(0, count);
-
-  return new Set(
-    [...newestOfKind('independent', 2), ...newestOfKind('professional', 1)].map((story) => story.id)
-  );
-}
-
-function storyRow(story: WorkStory, expanded: boolean): IndexRow {
+function storyRow(story: WorkStory): IndexRow {
   return {
     key: story.id,
     href: workStoryHref(story.slug),
@@ -64,7 +53,7 @@ function storyRow(story: WorkStory, expanded: boolean): IndexRow {
     date: story.date,
     month: monthOf(story.date),
     metric: story.metric,
-    graphic: expanded && story.graphic ? story.graphic : undefined
+    graphic: story.graphic && isScreenshotGraphic(story.graphic.kind) ? story.graphic : undefined
   };
 }
 
@@ -96,10 +85,9 @@ function claimedHrefs(stories: WorkStory[]): Set<string> {
 }
 
 export function buildHomeIndex(stories: WorkStory[], writing: WritingEntry[]): IndexYear[] {
-  const expanded = expandedIds(stories);
   const claimed = claimedHrefs(stories);
   const rows = [
-    ...stories.map((story) => storyRow(story, expanded.has(story.id))),
+    ...stories.map(storyRow),
     ...writing.filter((entry) => !claimed.has(entry.href)).map(writingRow)
   ].sort(byDateDesc);
 
