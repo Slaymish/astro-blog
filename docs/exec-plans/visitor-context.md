@@ -15,7 +15,7 @@ without giving up static rendering, crawlability, or the site's current
 privacy posture.
 
 Related: `ARCHITECTURE.md` (§4 invariants are drafted here for lifting),
-`AGENTS.md` (§8.2 lists new and touched files), `SITE-OVERVIEW.md`,
+`CLAUDE.md` (§8.2 lists new and touched files; AGENTS.md was folded into it), `SITE-OVERVIEW.md`,
 `docs/tech-debt-tracker.md`.
 
 ---

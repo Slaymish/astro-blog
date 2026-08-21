@@ -228,7 +228,7 @@ which is the prerequisite.
 
 - **Outcome:** every claim in `ARCHITECTURE.md` is checkable against the code; the debt tracker
   cites only files that exist; `knip` is trustworthy enough to gate on; CI catches schema drift.
-- **Owns:** `ARCHITECTURE.md`, `AGENTS.md`, `docs/SITE-OVERVIEW.md`, `docs/tech-debt-tracker.md`,
+- **Owns:** `ARCHITECTURE.md`, `docs/SITE-OVERVIEW.md`, `docs/tech-debt-tracker.md`,
   `README.md`, `knip.json`, `package.json` (dependency placement only), `.github/workflows/ci.yml`,
   `.env-example`, `.env.example`, `scripts/site-audit.mjs`, `src/components/motion/FadeIn.tsx`,
   the four stale root markdown files, `CLAUDE.md`, plus `src/pages/api/collect.ts` and

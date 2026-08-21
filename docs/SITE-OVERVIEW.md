@@ -5,7 +5,7 @@ Last updated: 2026-08-12
 A general orientation document for the current state of hamishburke.dev: what
 the site is, how it is built, and how it is structured. For architectural
 boundaries and invariants, see `ARCHITECTURE.md`; for a file-level "where do I
-change X" map, see `AGENTS.md`.
+change X" map, see `CLAUDE.md`.
 
 ## What the site is
 
@@ -151,7 +151,7 @@ routes above. Consequences:
 ## Where the deeper docs live
 
 - `ARCHITECTURE.md` — authoritative structural boundaries and invariants
-- `AGENTS.md` — file-level "where do I change X" map
+- `CLAUDE.md` — agent routing: commands, rendering model, file-level "where do I change X" map, footguns
 - `PLANS.md` — ExecPlan format for substantial features
 - `docs/exec-plans/` — actual ExecPlan instances
 - `docs/design-docs/` — design docs (theme guide, studio style guide, etc.)
