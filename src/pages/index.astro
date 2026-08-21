@@ -33,13 +33,13 @@ const busNodes = new Set(
          leader lines the engine draws are what relates them to the name; without
          the pipework they would be three loose fragments. -->
     <ul class="fold__annotations">
-      <li data-circuit-node="position" data-circuit-attach="text" data-circuit-flash="underline">
+      <li data-circuit-node="position" data-circuit-attach="box" data-circuit-flash="underline">
         {fold.position}
       </li>
-      <li data-circuit-node="count" data-circuit-attach="text" data-circuit-flash="underline">
+      <li data-circuit-node="count" data-circuit-attach="box" data-circuit-flash="underline">
         {counted}
       </li>
-      <li data-circuit-node="source" data-circuit-attach="text" data-circuit-flash="underline">
+      <li data-circuit-node="source" data-circuit-attach="box" data-circuit-flash="underline">
         <a
           href={fold.sourceLink.href}
           class="fold__link"
@@ -108,6 +108,10 @@ const busNodes = new Set(
     font-size: var(--type-label);
     font-weight: var(--font-weight-medium);
     letter-spacing: var(--letter-spacing-wide);
+    /* A run lands on the leading face of its node, so this padding is the gap
+       between the cap and the first character. Put it on the item rather than
+       the list: padding on the list moves the face too, and the pipe follows. */
+    padding-inline-start: var(--spacing-3);
   }
   /* The one element on the static page allowed the action colour. Everything else
      earns it on hover or focus. */
