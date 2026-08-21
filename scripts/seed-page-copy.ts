@@ -58,19 +58,12 @@ const documents: SeedDocument[] = [
         { _key: 'work', _type: 'ctaLink', label: 'Work', href: '/work' },
         { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' },
         { _key: 'reading', _type: 'ctaLink', label: 'Reading', href: '/reading' },
-        { _key: 'cv', _type: 'ctaLink', label: 'CV', href: '/cv' },
         { _key: 'contact', _type: 'ctaLink', label: 'Contact', href: '/contact' }
       ],
+      // Email and LinkedIn live on /contact; repeating them here read as a job-search
+      // sidebar. GitHub stays because it points at the work rather than at a pitch.
       profileLinks: [
-        { _key: 'email', _type: 'ctaLink', label: 'Email', href: `mailto:${CONTACT_EMAIL}` },
-        { _key: 'github', _type: 'ctaLink', label: 'GitHub', href: 'https://github.com/Slaymish', external: true },
-        {
-          _key: 'linkedin',
-          _type: 'ctaLink',
-          label: 'LinkedIn',
-          href: 'https://www.linkedin.com/in/hamish-burke-2301669a',
-          external: true
-        }
+        { _key: 'github', _type: 'ctaLink', label: 'GitHub', href: 'https://github.com/Slaymish', external: true }
       ]
     },
     contactBand: {
