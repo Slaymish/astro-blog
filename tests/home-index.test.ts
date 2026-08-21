@@ -21,7 +21,6 @@ function story(overrides: Partial<WorkStory> = {}): WorkStory {
     interventions: ['Designed the system boundary.'],
     result: 'The system works and the limits are documented.',
     graphic: { kind: 'brontehf', alt: 'An example system diagram.' },
-    body: [],
     supportingArtifacts: [],
     ...overrides
   };

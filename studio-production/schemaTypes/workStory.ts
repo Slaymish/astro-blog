@@ -218,12 +218,6 @@ export const workStory = defineType({
       type: 'array',
       of: [defineArrayMember({ type: 'reference', to: artifactTypes })],
       validation: (rule) => rule.unique()
-    }),
-    defineField({
-      name: 'body',
-      title: 'Case study body',
-      type: 'blockContent',
-      validation: (rule) => rule.required()
     })
   ],
   orderings: [

@@ -25,7 +25,6 @@ const workStoryFields = `
   learned,
   differently,
   graphic,
-  body,
   "primaryArtifact": primaryArtifact->{
     "id": _id,
     "type": _type,

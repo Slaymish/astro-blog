@@ -1,5 +1,4 @@
 import { publicPostSlug } from './legacyRoutes';
-import type { PortableTextBody } from './portableText';
 
 /** Which index a story appears on. Detail pages live at /work/<slug> for both. */
 export type WorkKind = 'professional' | 'independent';
@@ -73,7 +72,6 @@ export interface WorkStory {
     kind: GraphicKind;
     alt: string;
   };
-  body: PortableTextBody;
   primaryArtifact?: WorkArtifact;
   supportingArtifacts: WorkArtifact[];
 }
