@@ -605,15 +605,18 @@ export function busRoute(
 
   const labelAt = { x: railX, y: snap.y(railBottom - labelInset) };
 
+  // Read the trunk's start back off the relaxed points rather than reusing
+  // `origin`. A source sitting close to the rail has its stub relaxed away, and
+  // the run then begins on the lane instead of the source's own baseline;
+  // measuring the bearing from `origin` to a relaxed vertex put the cap off the
+  // pipe and at an angle, which drew a diagonal bar struck through the heading.
+  const trunkStart = trunkPoints[0] ?? origin;
+  const trunkBearing = angleOf(trunkStart, trunkPoints[1] ?? { x: origin.x, y: laneY });
+
   // Joints carry meaning and are kept unconditionally. Elbow ticks are
   // decoration on top of them and get thinned wherever they would crowd one.
   const joints: Fitting[] = [
-    {
-      kind: 'cap',
-      at: origin,
-      angle: angleOf(origin, trunkPoints[1] ?? { x: origin.x, y: laneY }),
-      on: 'trunk',
-    },
+    { kind: 'cap', at: trunkStart, angle: trunkBearing, on: 'trunk' },
     { kind: 'tap', at: snapTick({ x: railX, y: laneY }, 90, snap), angle: 90, on: 'rail' },
     { kind: 'cap', at: { x: railX, y: railTop }, angle: 90, on: 'rail' },
     { kind: 'cap', at: { x: railX, y: railBottom }, angle: 90, on: 'rail' },

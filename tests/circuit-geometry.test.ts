@@ -189,6 +189,20 @@ test('busRoute drops the source stub when the rail is already within reach', () 
   assert.equal(layout.trunk, 'M -4 100 L -4 128 A 12 12 0 0 1 -16 140 L -28 140');
 });
 
+test('busRoute caps the trunk square to the run it draws, not to the source', () => {
+  // A source close enough to the rail has its last leg relaxed away, so the
+  // trunk no longer starts on the source's own baseline. Measuring the cap from
+  // the source instead of from the path left it off the pipe and at a bearing,
+  // which drew a diagonal bar struck through the heading it came from.
+  const crowded = node({ box: { left: 0, top: 104, width: 600, height: 80 } });
+  const layout = busRoute({ x: 40, y: 100 }, [crowded], options);
+  const [cap] = kinds(layout.fittings, 'cap').filter((fitting) => fitting.on === 'trunk');
+  const start = /^M (-?[\d.]+) (-?[\d.]+)/.exec(layout.trunk)!;
+
+  assert.deepEqual(cap!.at, { x: Number(start[1]), y: Number(start[2]) });
+  assert.ok([0, 90, 180, -90].includes(cap!.angle), `bearing ${cap!.angle} is not square`);
+});
+
 test('busRoute never splits the trunk into arms', () => {
   const layout = busRoute(origin, [node({ box: { left: 0, top: 40, width: 600, height: 80 } })], options);
   assert.equal((layout.trunk.match(/M /g) ?? []).length, 1);
