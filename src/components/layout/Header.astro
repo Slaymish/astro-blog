@@ -46,7 +46,7 @@ function navLinkClasses(href: string) {
         <ThemeToggle />
 
         <details class="site-nav__mobile">
-          <summary aria-label="Open navigation menu">
+          <summary class="btn btn--icon" aria-label="Open navigation menu">
             <svg class="menu-icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="3" y1="6" x2="21" y2="6"/>
               <line x1="3" y1="12" x2="21" y2="12"/>
@@ -123,15 +123,11 @@ function navLinkClasses(href: string) {
     position: relative;
   }
 
-  .site-nav__mobile summary {
-    align-items: center;
-    color: var(--color-text-primary);
-    cursor: pointer;
-    display: flex;
-    height: 2.75rem;
-    justify-content: center;
-    list-style: none;
-    width: 2.75rem;
+  .site-nav__mobile summary { list-style: none; }
+  .site-nav__mobile[open] summary {
+    background: var(--color-bg-raised);
+    border-color: var(--color-stroke-strong);
+    color: var(--color-action);
   }
 
   .site-nav__mobile summary::-webkit-details-marker {

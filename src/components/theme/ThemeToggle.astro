@@ -4,7 +4,7 @@
 import { THEME_COLORS } from "../../lib/shell/theme";
 ---
 
-<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">
+<button type="button" class="btn btn--icon theme-toggle" data-theme-toggle aria-label="Switch theme">
   <svg class="theme-toggle__sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="4" />
     <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
@@ -15,28 +15,6 @@ import { THEME_COLORS } from "../../lib/shell/theme";
 </button>
 
 <style>
-  .theme-toggle {
-    align-items: center;
-    background: none;
-    border: none;
-    border-radius: var(--radius-sm);
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    display: inline-flex;
-    justify-content: center;
-    min-height: 2.75rem;
-    min-width: 2.75rem;
-    padding: 0;
-    transition: color var(--motion-duration-interaction, 150ms) ease;
-  }
-
-  .theme-toggle:hover { color: var(--color-action); }
-
-  .theme-toggle:focus-visible {
-    outline: 2px solid var(--color-focus-ring);
-    outline-offset: 2px;
-  }
-
   /* Show whichever icon represents the theme the button switches *to*. */
   .theme-toggle__sun { display: none; }
   .theme-toggle__moon { display: block; }

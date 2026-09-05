@@ -4,6 +4,7 @@ import { SITE_URL, absoluteUrl } from '../lib/site';
 export const GET: APIRoute = () => {
   const robotsTxt = `User-agent: *
 Allow: /
+Disallow: /stats
 
 Sitemap: ${absoluteUrl('/sitemap.xml', SITE_URL)}
 Host: ${new URL(SITE_URL).host}

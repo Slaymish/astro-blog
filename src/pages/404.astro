@@ -1,6 +1,6 @@
 ---
 import Layout from '../components/layout/Layout.astro';
-import IconText from '../components/ui/IconText.astro';
+import Button from '../components/ui/Button.astro';
 import { getNotFoundPage } from '../lib/pageContent';
 
 const copy = await getNotFoundPage();
@@ -13,10 +13,8 @@ const copy = await getNotFoundPage();
     <p class="not-found__body">{copy.body}</p>
 
     <div class="not-found__actions">
-      <a href="/"><IconText>{copy.homeLabel}</IconText></a>
-      <button type="button" id="go-back-button">
-        <IconText icon="arrow-left" position="start">{copy.backLabel}</IconText>
-      </button>
+      <Button href="/" variant="ghost">{copy.homeLabel}</Button>
+      <Button id="go-back-button" variant="ghost" icon="arrow-left" iconPosition="start">{copy.backLabel}</Button>
     </div>
 
     <div class="not-found__suggestions">
@@ -50,10 +48,6 @@ const copy = await getNotFoundPage();
   .not-found__body { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.5; margin: var(--spacing-8) 0 0; max-width: 36rem; }
 
   .not-found__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-6); margin-top: var(--spacing-10); }
-  .not-found__actions a,
-  .not-found__actions button { align-items: center; background: none; border: 0; color: var(--color-text-primary); cursor: pointer; display: inline-flex; font: inherit; font-size: var(--type-body-small); font-weight: 700; min-height: 2.75rem; padding: 0; }
-  .not-found__actions a:hover,
-  .not-found__actions button:hover { color: var(--color-action); }
 
   .not-found__suggestions { border-top: 1px solid var(--color-stroke-subtle); margin-top: clamp(3rem, 8vw, 6rem); padding-top: var(--spacing-6); }
   .not-found__suggestions p { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }

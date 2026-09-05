@@ -9,8 +9,8 @@ interface Props {
   eyebrow: string;
   /** One line, or several rendered with a line break between them. */
   headline: string | string[];
-  /** Lede paragraph under the headline. */
-  intro: string;
+  /** Lede paragraph under the headline. Omit it to put something else in the slot. */
+  intro?: string;
   /**
    * Headline measure. These are hand-tuned per page and have no token in
    * `tokens.css`, so each route states its own; `none` runs the full column.
@@ -48,7 +48,7 @@ const measures = [
 <header class="page-header" style={measures}>
   <p class="page-header__eyebrow">{eyebrow}</p>
   <h1 class="page-header__headline">{headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}</h1>
-  <p class:list={['page-header__intro', introScale === 'large' && 'is-large']}>{intro}</p><slot />
+  {intro && <p class:list={['page-header__intro', introScale === 'large' && 'is-large']}>{intro}</p>}<slot />
 </header>
 
 <style>

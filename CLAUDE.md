@@ -30,6 +30,9 @@ so `src/lib/shell/*` shows up as unused when it is not.
 
 ## Environment
 
+`INSIGHTS_TOKEN` gates both `/api/insights` and the private `/stats` page; without it they
+return 503 rather than falling open. It is set in Netlify, not in the committed `.env`.
+
 `SANITY_PROJECT_ID` is required and validated at config load, so a missing `.env` fails
 before Astro starts. The id is public (`qnuj1c4o`, also in `netlify.toml` and CI). Defaults:
 `SANITY_DATASET=production`, `SANITY_API_VERSION=2024-01-01`.
@@ -49,7 +52,8 @@ time from Sanity via `getStaticPaths`. Consequences that catch people out:
   resolved client-side (see the "from" back-link script in `src/pages/posts/[slug].astro`).
 - **Publishing in Sanity requires a Netlify build hook** to appear on the site.
 - The only server routes are the ones that opt out with `export const prerender = false`:
-  `api/pdf.ts`, `api/collect.ts`, `api/insights.ts`, `api/cal-webhook.ts`.
+  `api/pdf.ts`, `api/collect.ts`, `api/insights.ts`, `api/cal-webhook.ts`, `api/recommend.ts`,
+  and the private `stats.astro` page.
 - `build: { format: 'file' }` and `trailingSlash: 'never'` — URLs emit as `/work.html`, and
   canonical tags omit the trailing slash. Keep these in step.
 
@@ -75,6 +79,10 @@ Layers: routes (`src/pages/`) own request-level fetching and page assembly; comp
 - Shared layout and global metadata: `src/components/layout/*`
 - Feature components: `src/components/features/*`
 - Theme controls: `src/components/theme/*`; theme CSS: `src/design-system/themes/*`
+- Buttons, chips and form fields: `src/design-system/primitives.css` owns every variant and
+  state; Astro pages render them through `src/components/ui/Button.astro` (`href` makes it a
+  link) and the `.input`, `.select`, `.range`, `.chip` and `.field__*` classes. Do not style a
+  control in a page's `<style>` block; add the state to the primitives instead.
 - Site constants and canonical helpers: `src/lib/site.ts`
 - Data access, transforms, canonical helpers: `src/lib/*`
 - Content rendering and sanitisation: `src/lib/portableText.ts`, `src/lib/markdown.ts`,
@@ -87,7 +95,13 @@ Layers: routes (`src/pages/`) own request-level fetching and page assembly; comp
   singleton is missing rather than rendering empty markup.
 - Book notes on `/reading`: `scripts/seed-book-notes.ts`; the route sorts by the book's
   `order` field within each status group, then by title. Books with the same `sharedNote`
-  key render as one card (stacked covers, the first book's note).
+  key render as one card (stacked covers, the first book's note). The recommendation box
+  under the queue posts to `api/recommend.ts`, validated in `src/lib/recommendations.ts`
+  and written to the `recommendations` blob store, one blob per title, nothing about the
+  sender.
+- Reading those recommendations back, and the nightly session report: `src/pages/stats.astro`,
+  gated by `INSIGHTS_TOKEN` as `/stats?token=...`. Page views and events are deliberately not
+  there; Umami Cloud owns those dashboards and a second copy would only drift.
 - Work stories, their validation and hrefs: `src/sanity/schemaTypes/workStory.ts` and
   `src/lib/work.ts`; the curated homepage selection: `src/lib/workEditorial.ts`
 - The posts-plus-reports stream shared by `/writing`, `/tags/[tag]` and the homepage:

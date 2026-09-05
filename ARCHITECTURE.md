@@ -13,7 +13,7 @@ The system has one user-facing surface backed by Sanity data:
 
 - Main site (`/`): portfolio, writing, projects, reports, reading list.
 
-At build time, routes fetch content from Sanity using GROQ queries and are prerendered to HTML. Shared layout components provide metadata, JSON-LD, theming, and shell structure. Additional routes emit crawl/discovery artifacts (`sitemap.xml`, `robots.txt`, `rss.xml`, `llms.txt`); a handful of API routes opt out of prerendering (the guarded PDF proxy, the analytics collector and report, the Cal.com webhook).
+At build time, routes fetch content from Sanity using GROQ queries and are prerendered to HTML. Shared layout components provide metadata, JSON-LD, theming, and shell structure. Additional routes emit crawl/discovery artifacts (`sitemap.xml`, `robots.txt`, `rss.xml`, `llms.txt`); a handful of API routes opt out of prerendering (the guarded PDF proxy, the analytics collector and report, the Cal.com webhook, the book recommendation box).
 
 Deployment target is Netlify: static output plus those functions.
 
@@ -70,6 +70,8 @@ Deployment target is Netlify: static output plus those functions.
 ### Security-Sensitive Path
 
 - `src/pages/api/pdf.ts`: allowlisted HTTPS-only proxy for Sanity-hosted PDFs, with content-type validation and redirect blocking.
+- `src/pages/stats.astro`: private dashboard reading the `recommendations` store and the latest nightly report. Gated by `INSIGHTS_TOKEN` with the same constant-time compare as `/api/insights`, served `no-store` and `noindex`, and listed in neither the sitemap nor `llms.txt`.
+- `src/pages/api/recommend.ts`: stores book titles from the `/reading` recommendation box in the `recommendations` blob store. Validated in `src/lib/recommendations.ts`, metered by the same rate limiter as the collector, and keeps nothing about the sender.
 - `src/pages/api/collect.ts`, `api/insights.ts`, `api/cal-webhook.ts` and `netlify/functions/session-insights.mts`: the analytics pipeline. Payloads are validated in `src/lib/analytics.ts`, rate limited in `src/lib/rateLimit.ts`, and the report is token-gated with a constant-time compare (`src/lib/timingSafe.ts`).
 
 ### Domain Model (Sanity)
@@ -139,7 +141,7 @@ The PDF proxy route performs host allowlisting, protocol checks, redirect blocki
 
 The site is prerendered. `output: 'static'` with the Netlify adapter bakes every content route to HTML at build time, so pages are served from the CDN with no function invocation and no Sanity round trip per request.
 
-- The only on-demand route is `src/pages/api/pdf.ts`, which keeps `export const prerender = false`.
+- The on-demand routes are the ones that set `export const prerender = false`: the PDF proxy, the analytics collector and report, the Cal.com webhook, the recommendation box, and the private `/stats` page.
 - Dynamic routes (`posts/[slug]`, `work/[slug]`, `reports/[...slug]`, `tags/[tag]`) enumerate their pages via `getStaticPaths` from Sanity.
 - **Publishing in Sanity must trigger a Netlify build hook.** Without it, published content will not appear until the next deploy.
 - Because pages are prerendered, request-time inputs are unavailable. Anything depending on query params must be resolved on the client — see the back-link script in `posts/[slug].astro`.
@@ -147,7 +149,7 @@ The site is prerendered. `output: 'static'` with the Netlify adapter bakes every
 
 ### Theme and UX State
 
-Light and dark themes live in `src/design-system/themes/`, and each defines the same set of semantic roles so the two are interchangeable. An inline script in `Layout.astro` resolves the theme before first paint to avoid a flash: a stored `localStorage` choice wins, otherwise the system preference applies. The site keeps following the system until the visitor explicitly toggles, tracked via `data-theme-source` on the root element.
+Light and dark themes live in `src/design-system/themes/`, and each defines the same set of semantic roles so the two are interchangeable. Interactive controls are defined once in `src/design-system/primitives.css` (buttons with primary, secondary, ghost and icon variants; chips; text, select and range fields; field messages), with every hover, press, focus, disabled, busy, pressed and invalid state, and Astro pages render them through `src/components/ui/Button.astro`. Pages do not style controls locally. An inline script in `Layout.astro` resolves the theme before first paint to avoid a flash: a stored `localStorage` choice wins, otherwise the system preference applies. The site keeps following the system until the visitor explicitly toggles, tracked via `data-theme-source` on the root element.
 
 ### Testing and CI
 

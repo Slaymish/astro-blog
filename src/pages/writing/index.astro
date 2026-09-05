@@ -27,9 +27,9 @@ const { hero } = copy;
     <div class="writing-filter">
       <p id="writing-filter-label">{copy.filterLabel}</p>
       <div class="writing-filter__tags" role="group" aria-labelledby="writing-filter-label">
-        <button type="button" class="writing-filter__tag is-active" data-tag="all" aria-pressed="true">All</button>
+        <button type="button" class="chip writing-filter__tag" data-tag="all" aria-pressed="true">All</button>
         {tags.map((tag) => (
-          <button type="button" class="writing-filter__tag" data-tag={tag} aria-pressed="false">{tag}</button>
+          <button type="button" class="chip writing-filter__tag" data-tag={tag} aria-pressed="false">{tag}</button>
         ))}
       </div>
     </div>
@@ -71,9 +71,7 @@ const { hero } = copy;
         if (!tag) return;
 
         buttons.forEach((other) => {
-          const active = other === button;
-          other.classList.toggle('is-active', active);
-          other.setAttribute('aria-pressed', String(active));
+          other.setAttribute('aria-pressed', String(other === button));
         });
 
         let visible = 0;
@@ -95,10 +93,7 @@ const { hero } = copy;
 <style>
   .writing-filter { border-top: 1px solid var(--color-stroke-subtle); padding-block: var(--spacing-6); }
   .writing-filter p { color: var(--color-text-secondary); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }
-  .writing-filter__tags { display: flex; flex-wrap: wrap; gap: var(--spacing-2) var(--spacing-5); }
-  .writing-filter__tag { background: none; border: 0; color: var(--color-text-secondary); cursor: pointer; font: inherit; font-size: var(--type-body-small); min-height: 2.75rem; padding: 0; }
-  .writing-filter__tag:hover { color: var(--color-text-primary); }
-  .writing-filter__tag.is-active { color: var(--color-action); font-weight: 700; }
+  .writing-filter__tags { display: flex; flex-wrap: wrap; gap: var(--spacing-2); }
 
   .writing-list { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }
   .writing-list__item { border-bottom: 1px solid var(--color-stroke-subtle); }

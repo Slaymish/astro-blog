@@ -178,7 +178,7 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
           <p class="text-sm text-[var(--text-muted)] mb-3">
             Subscribe via RSS to get notified when I publish new writing.
           </p>
-          <a href="/rss.xml" class="subscribe-link">
+          <a href="/rss.xml" class="btn btn--secondary btn--sm">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M4 11a9 9 0 0 1 9 9"/>
               <path d="M4 4a16 16 0 0 1 16 16"/>
@@ -324,25 +324,6 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-  }
-
-  .subscribe-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--accent);
-    text-decoration: none;
-    font-size: 0.875rem;
-    font-weight: 600;
-    transition: opacity 0.15s ease;
-  }
-
-  .subscribe-link:hover {
-    opacity: 0.8;
-  }
-
-  .subscribe-link::after {
-    display: none !important;
   }
 
   /* ── Footer ── */

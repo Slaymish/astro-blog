@@ -88,22 +88,19 @@ export default function GpuCalculator() {
         {/* Model selector */}
         <div className="sm:col-span-2">
           <Label>Model</Label>
-          <select
-            value={modelIndex}
-            onChange={(e) => setModelIndex(Number(e.target.value))}
-            className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
-            style={{
-              background: 'var(--bg)',
-              borderColor: 'var(--border)',
-              color: 'var(--text)',
-            }}
-          >
-            {MODELS.map((m, i) => (
-              <option key={m.name} value={i}>
-                {m.name} - {m.vram}, ~{m.tokPerSec} tok/s - {m.quality}
-              </option>
-            ))}
-          </select>
+          <span className="select mt-1">
+            <select
+              value={modelIndex}
+              onChange={(e) => setModelIndex(Number(e.target.value))}
+              className="input input--sm"
+            >
+              {MODELS.map((m, i) => (
+                <option key={m.name} value={i}>
+                  {m.name} - {m.vram}, ~{m.tokPerSec} tok/s - {m.quality}
+                </option>
+              ))}
+            </select>
+          </span>
         </div>
 
         {/* Tokens per response */}
@@ -119,8 +116,7 @@ export default function GpuCalculator() {
             step={50}
             value={tokensPerResponse}
             onChange={(e) => setTokensPerResponse(Number(e.target.value))}
-            className="mt-1 w-full"
-            style={{ accentColor: 'var(--accent)' }}
+            className="range mt-1"
           />
           <div className="mt-1 flex justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
             <span>50</span>
@@ -141,8 +137,7 @@ export default function GpuCalculator() {
             step={1}
             value={responsesPerDay}
             onChange={(e) => setResponsesPerDay(Number(e.target.value))}
-            className="mt-1 w-full"
-            style={{ accentColor: 'var(--accent)' }}
+            className="range mt-1"
           />
           <div className="mt-1 flex justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
             <span>1</span>
@@ -161,13 +156,10 @@ export default function GpuCalculator() {
               {Object.entries(PRESETS).map(([label, rate]) => (
                 <button
                   key={label}
+                  type="button"
                   onClick={() => { setElectricityRate(rate); setRatePreset(label); }}
-                  className="rounded px-2 py-0.5 text-xs font-medium transition-colors"
-                  style={{
-                    background: ratePreset === label ? 'var(--accent)' : 'var(--surface-2, var(--bg))',
-                    color: ratePreset === label ? 'white' : 'var(--text-muted)',
-                    border: `1px solid ${ratePreset === label ? 'var(--accent)' : 'var(--border)'}`,
-                  }}
+                  className="chip"
+                  aria-pressed={ratePreset === label}
                 >
                   {label}
                 </button>
@@ -181,8 +173,7 @@ export default function GpuCalculator() {
             step={0.001}
             value={electricityRate}
             onChange={(e) => { setElectricityRate(Number(e.target.value)); setRatePreset(null); }}
-            className="mt-1 w-full"
-            style={{ accentColor: 'var(--accent)' }}
+            className="range mt-1"
           />
           <div className="mt-1 flex justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
             <span>$0.01</span>

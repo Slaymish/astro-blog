@@ -1,6 +1,5 @@
 ---
-import ButtonLink from '../ui/ButtonLink.astro';
-import IconText from '../ui/IconText.astro';
+import Button from '../ui/Button.astro';
 import { BOOKING_URL, CONTACT_EMAIL } from '../../lib/site';
 import { getSiteSettings } from '../../lib/pageContent';
 
@@ -28,13 +27,11 @@ const bandHeading = heading ?? contactBand.defaultHeading;
     class="contact-band__actions"
   >
     {booking ? (
-      <ButtonLink href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">
+      <Button href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">
         {contactBand.bookingLabel}
-      </ButtonLink>
+      </Button>
     ) : (
-      <a class="contact-band__primary" href="/contact">
-        <IconText>{contactBand.contactLabel}</IconText>
-      </a>
+      <Button href="/contact" variant="ghost">{contactBand.contactLabel}</Button>
     )}
     <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
   </div>
@@ -45,8 +42,6 @@ const bandHeading = heading ?? contactBand.defaultHeading;
   .contact-band p { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }
   .contact-band h2 { font-size: clamp(2.4rem, 7vw, 6rem); letter-spacing: var(--tracking-heading); margin: 0; max-width: 13ch; }
   .contact-band__actions { align-items: start; display: flex; flex-direction: column; gap: var(--spacing-3); }
-  .contact-band__primary { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; }
-  .contact-band__primary:hover { color: var(--color-action); }
   .contact-band__actions > a:last-child { color: var(--color-text-secondary); font-size: var(--type-body-small); }
   @media (min-width: 48rem) { .contact-band { grid-template-columns: minmax(0, 2fr) minmax(14rem, 1fr); } }
 </style>

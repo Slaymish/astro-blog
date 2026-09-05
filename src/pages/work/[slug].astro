@@ -1,6 +1,6 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
-import ButtonLink from '../../components/ui/ButtonLink.astro';
+import Button from '../../components/ui/Button.astro';
 import { introduction } from '../../lib/workEditorial';
 import { portableTextToHtml } from '../../lib/portableText';
 import IconText from '../../components/ui/IconText.astro';
@@ -52,7 +52,7 @@ const narrativeHtml = portableTextToHtml(story.narrative?.length ? story.narrati
       <h1>{story.title}</h1>
       <p class="case-study__summary">{introduction(story)}</p>
       <div class="case-study__links">
-        {links.map((link, index) => <ButtonLink href={link.href} external={link.href.startsWith('http')} variant={index === 0 ? 'primary' : 'secondary'}>{link.label}</ButtonLink>)}
+        {links.map((link, index) => <Button href={link.href} external={link.href.startsWith('http')} variant={index === 0 ? 'primary' : 'secondary'}>{link.label}</Button>)}
       </div>
       <p class="case-study__role">{story.role}</p>
     </header>

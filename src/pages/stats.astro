@@ -1,0 +1,194 @@
+---
+/**
+ * Private stats page: the two things that had no reader.
+ *
+ * Book recommendations sent from /reading, and the latest nightly session
+ * report written by `netlify/functions/session-insights.mts`. Page views and
+ * interaction counts are deliberately not here; Umami Cloud owns those and a
+ * second, worse copy would only drift.
+ *
+ * Gated by the same `INSIGHTS_TOKEN` as /api/insights, compared in constant
+ * time. Server-rendered, never cached, and `noindex` so it stays out of search
+ * even though neither the sitemap nor llms.txt lists it.
+ */
+import Layout from '../components/layout/Layout.astro';
+import PageHeader from '../components/layout/PageHeader.astro';
+import { INSIGHTS_STORE, LATEST_REPORT_KEY } from '../lib/sessionStore';
+import { RECOMMENDATION_STORE, readRecommendations, type StoredRecommendation } from '../lib/recommendations';
+import { markdownToHtml } from '../lib/markdown';
+import { timingSafeEqual } from '../lib/timingSafe';
+
+export const prerender = false;
+
+const expected = import.meta.env.INSIGHTS_TOKEN ?? process.env.INSIGHTS_TOKEN;
+if (!expected) {
+  return new Response('INSIGHTS_TOKEN not configured', { status: 503 });
+}
+
+const provided =
+  Astro.request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ??
+  Astro.url.searchParams.get('token') ??
+  '';
+
+if (!timingSafeEqual(provided, expected)) {
+  return new Response('Unauthorised', { status: 401 });
+}
+
+Astro.response.headers.set('cache-control', 'no-store');
+
+interface Report {
+  generatedAt: string;
+  sessionCount: number;
+  report: string;
+}
+
+function isReport(value: unknown): value is Report {
+  if (typeof value !== 'object' || value === null) return false;
+  const record = value as Record<string, unknown>;
+  return typeof record.report === 'string' && typeof record.generatedAt === 'string';
+}
+
+/**
+ * Blob stores only exist on Netlify, so `getStore` throws under `astro dev`.
+ * The page still renders there, with the empty states standing in for data.
+ */
+let recommendations: StoredRecommendation[] = [];
+let report: Report | null = null;
+let storeError: string | null = null;
+
+try {
+  const { getStore } = await import('@netlify/blobs');
+  recommendations = await readRecommendations(getStore(RECOMMENDATION_STORE));
+  const latest = await getStore(INSIGHTS_STORE).get(LATEST_REPORT_KEY, { type: 'json' });
+  report = isReport(latest) ? latest : null;
+} catch {
+  storeError = 'Blob stores are unavailable here, which is expected outside Netlify.';
+}
+
+const dateFormat = new Intl.DateTimeFormat('en-NZ', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric'
+});
+
+const stampFormat = new Intl.DateTimeFormat('en-NZ', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+});
+
+function formatDate(iso: string, format: Intl.DateTimeFormat): string {
+  const parsed = new Date(iso);
+  return Number.isNaN(parsed.getTime()) ? 'Unknown date' : format.format(parsed);
+}
+
+const reportHtml = report ? markdownToHtml(report.report) : null;
+---
+
+<Layout
+  title="Stats"
+  description="Private dashboard."
+  robots="noindex, nofollow"
+>
+  <PageHeader
+    eyebrow="Private"
+    headline="Stats."
+    intro="Book recommendations people have sent, and the latest nightly read on how sessions behaved. Page views and events live in Umami."
+    headlineMeasure="14ch"
+    introMeasure="38rem"
+  />
+
+  {storeError && <p class="stats__notice">{storeError}</p>}
+
+  <section class="stats__section" aria-labelledby="stats-recommendations">
+    <div class="stats__heading">
+      <h2 id="stats-recommendations">Recommendations</h2>
+      <p class="stats__count">{recommendations.length}</p>
+    </div>
+
+    {recommendations.length === 0 ? (
+      <p class="stats__empty">Nothing sent yet. The box under the queue on the reading page writes here.</p>
+    ) : (
+      <ol class="stats__list">
+        {recommendations.map((item) => (
+          <li>
+            <span class="stats__title">{item.title}</span>
+            <span class="stats__date">{formatDate(item.receivedAt, dateFormat)}</span>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+
+  <section class="stats__section" aria-labelledby="stats-sessions">
+    <div class="stats__heading">
+      <h2 id="stats-sessions">Sessions</h2>
+      {report && <p class="stats__count">{report.sessionCount}</p>}
+    </div>
+
+    {report && reportHtml ? (
+      <>
+        <p class="stats__stamp">
+          Generated {formatDate(report.generatedAt, stampFormat)} from {report.sessionCount} sessions.
+        </p>
+        <div class="stats__report" set:html={reportHtml} />
+      </>
+    ) : (
+      <p class="stats__empty">
+        No report yet. The nightly function runs at 15:00 UTC and needs sessions in the last seven days to have
+        something to say.
+      </p>
+    )}
+  </section>
+
+  <section class="stats__section" aria-labelledby="stats-elsewhere">
+    <h2 id="stats-elsewhere">Elsewhere</h2>
+    <p class="stats__empty">
+      Page views, referrers, countries and the ten tracked events are in Umami Cloud, which owns the dashboards.
+    </p>
+    <p><a class="btn btn--secondary btn--sm" href="https://cloud.umami.is" target="_blank" rel="noopener noreferrer">Open Umami</a></p>
+  </section>
+</Layout>
+
+<style>
+  .stats__notice { color: var(--color-action); font-size: var(--type-body-small); margin: 0 0 var(--spacing-6); }
+
+  .stats__section { border-top: 1px solid var(--color-stroke-subtle); padding-block: var(--spacing-8) var(--spacing-6); }
+  .stats__section h2 { font-size: clamp(1.4rem, 2.4vw, 2rem); letter-spacing: var(--tracking-heading); margin: 0 0 var(--spacing-6); }
+  .stats__heading h2 { margin-bottom: 0; }
+
+  /* The count sits beside the heading as a figure, not inside a sentence. */
+  .stats__heading { align-items: baseline; display: flex; gap: var(--spacing-4); justify-content: space-between; margin-bottom: var(--spacing-6); }
+  .stats__count { color: var(--color-action); font-size: clamp(1.4rem, 2.4vw, 2rem); font-variant-numeric: tabular-nums; margin: 0; }
+
+  .stats__empty { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.5; margin: 0; max-width: 46rem; }
+  .stats__stamp { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: 0 0 var(--spacing-5); }
+
+  .stats__list { display: grid; gap: 0; list-style: none; margin: 0; max-width: 46rem; padding: 0; }
+  .stats__list li { align-items: baseline; border-bottom: 1px solid var(--color-stroke-subtle); display: flex; gap: var(--spacing-6); justify-content: space-between; padding-block: var(--spacing-3); }
+  .stats__title { color: var(--color-text-primary); font-size: var(--type-body); }
+  .stats__date { color: var(--color-text-secondary); flex: none; font-size: var(--type-body-small); font-variant-numeric: tabular-nums; }
+
+  /* The report is Claude's prose injected with set:html, so these need :global.
+     Article heading sizes are far too large inside a dashboard panel. */
+  .stats__report { color: var(--color-text-secondary); max-width: 46rem; }
+  .stats__report :global(h1),
+  .stats__report :global(h2),
+  .stats__report :global(h3) { color: var(--color-text-primary); font-size: var(--type-body); font-weight: 700; letter-spacing: normal; line-height: 1.4; margin: var(--spacing-6) 0 var(--spacing-3); }
+  .stats__report :global(h1:first-child),
+  .stats__report :global(h2:first-child),
+  .stats__report :global(h3:first-child) { margin-top: 0; }
+  .stats__report :global(p) { font-size: var(--type-body-small); line-height: 1.6; margin: 0 0 var(--spacing-4); }
+  /* globals.css strips list markers site-wide, so the report restores its own. */
+  .stats__report :global(ul) { list-style: disc; margin: 0 0 var(--spacing-4); padding-inline-start: var(--spacing-6); }
+  .stats__report :global(ol) { list-style: decimal; margin: 0 0 var(--spacing-4); padding-inline-start: var(--spacing-6); }
+  .stats__report :global(li) { font-size: var(--type-body-small); line-height: 1.6; margin-bottom: var(--spacing-2); }
+  .stats__report :global(strong) { color: var(--color-text-primary); }
+  .stats__report :global(a) { color: var(--color-text-primary); text-decoration: underline; text-underline-offset: .15em; }
+  .stats__report :global(a:hover) { color: var(--color-action); }
+  .stats__report :global(code) { font-family: var(--font-mono); font-size: 0.9em; }
+  .stats__report :global(> :last-child) { margin-bottom: 0; }
+  .stats__section p + p { margin-top: var(--spacing-4); }
+</style>

@@ -7,6 +7,7 @@ import "../../design-system/themes/dark.css";
 import "../../design-system/themes/light.css";
 
 import "../../styles/globals.css";
+import "../../design-system/primitives.css";
 
 
 // Layout Components
@@ -35,6 +36,8 @@ interface Props {
   canonicalURL?: string;
   /** Use full-width layout (no max-width constraint on main) */
   fullWidth?: boolean;
+  /** Robots directive. Private routes pass `noindex, nofollow`. */
+  robots?: string;
 }
 
 const { 
@@ -48,6 +51,7 @@ const {
   author = SITE_AUTHOR,
   canonicalURL,
   fullWidth = false,
+  robots = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
 } = Astro.props;
 
 const siteTitle = SITE_NAME;
@@ -196,7 +200,7 @@ const structuredData = {
     )}
     
     <!-- Additional meta for LLMs -->
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="robots" content={robots} />
     <meta name="googlebot" content="index, follow" />
     
     <!-- Performance and Security -->

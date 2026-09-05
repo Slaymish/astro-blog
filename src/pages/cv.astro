@@ -1,6 +1,6 @@
 ---
 import Layout from '../components/layout/Layout.astro';
-import ButtonLink from '../components/ui/ButtonLink.astro';
+import Button from '../components/ui/Button.astro';
 import PageHeader from '../components/layout/PageHeader.astro';
 import { getCvPage } from '../lib/pageContent';
 import { SITE_URL, absoluteUrl } from '../lib/site';
@@ -25,14 +25,14 @@ const { hero, academic } = copy;
     >
       <div class="cv__actions">
         {hero.actions.map((action, index) => (
-          <ButtonLink
+          <Button
             href={action.href}
             external={action.external}
             variant={index === 0 ? 'primary' : 'secondary'}
             ariaLabel={action.ariaLabel}
           >
             {action.label}
-          </ButtonLink>
+          </Button>
         ))}
       </div>
     </PageHeader>
@@ -49,10 +49,10 @@ const { hero, academic } = copy;
       <div>
         <p>{academic.body}</p>
         <div class="cv__actions">
-          <ButtonLink href={academic.downloadCta.href} external={academic.downloadCta.external} variant="secondary">
+          <Button href={academic.downloadCta.href} external={academic.downloadCta.external} variant="secondary">
             {academic.downloadCta.label}
-          </ButtonLink>
-          <a href={academic.requestCta.href}>{academic.requestCta.label}</a>
+          </Button>
+          <Button href={academic.requestCta.href} variant="ghost">{academic.requestCta.label}</Button>
         </div>
       </div>
     </section>
@@ -69,7 +69,6 @@ const { hero, academic } = copy;
   .cv__academic { display: grid; gap: var(--spacing-8); margin-block: clamp(5rem, 12vw, 10rem); }
   .cv__academic h2 { font-size: clamp(2.5rem, 6vw, 5rem); letter-spacing: var(--tracking-heading); margin: 0; }
   .cv__academic div > p:not(.cv__eyebrow) { color: var(--color-text-secondary); font-size: clamp(1.05rem, 1.5vw, 1.2rem); line-height: 1.7; max-width: 42rem; }
-  .cv__academic .cv__actions > a:last-child { color: var(--color-text-primary); font-size: var(--type-body-small); font-weight: 700; min-height: 2.75rem; }
   @media (min-width: 48rem) {
     .cv__facts > div { grid-template-columns: minmax(9rem, .4fr) minmax(0, 1.6fr); }
     .cv__academic { grid-template-columns: minmax(12rem, .6fr) minmax(0, 1.4fr); }
