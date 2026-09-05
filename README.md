@@ -1,67 +1,38 @@
-# Hamish's Blog
+# hamishburke.dev
 
-A personal blog built with Astro and Sanity where I write about technology, programming, and ideas that interest me.
+Hamish Burke's personal site: selected work, writing, reports, a reading list and a CV.
+Astro, prerendered to static HTML and hosted on Netlify; content is edited in Sanity Studio.
 
-## About
+## Setup
 
-This blog is my space to document thoughts on:
-- Technology and programming
-- AI and machine learning
-- Hardware projects
-- Mathematics and computer science
-- Random ideas and experiments
+- Node 22 and pnpm 10 (what CI and Netlify build with)
 
-## Tech Stack
+```bash
+pnpm install --frozen-lockfile
+printf 'SANITY_PROJECT_ID=qnuj1c4o\nSANITY_DATASET=production\n' > .env
+pnpm run dev            # http://localhost:4321
+```
 
-- **Astro** - Static site generator; content routes are prerendered at build time
-- **Sanity** - Headless CMS for storing posts, books, and projects
-- **Tailwind CSS** - Utility-first CSS framework
-- **TypeScript** - Type-safe JavaScript
-- **Netlify** - Hosting and deployment
+The project id is public; reads need no token. Writes (Studio, `seed:copy`) need a
+`SANITY_API_TOKEN` in `.env`, which is gitignored.
 
-## Development
+## Commands
 
-### Prerequisites
+| Command | What it does |
+|---|---|
+| `pnpm run dev` | Dev server on :4321 using `astro.config.dev.ts` (no Netlify adapter) |
+| `pnpm run build` | `astro check` then a production build into `dist/` |
+| `pnpm run test` | The test suite (`tests/*.test.ts`) |
+| `pnpm run preview` | Serve the production build locally |
+| `pnpm run studio:dev` | Sanity Studio, a separate app in `studio-production/` |
+| `pnpm exec knip` | Dead code and unused dependency report |
 
-- [Node.js](https://nodejs.org/) v22 (the version CI builds against)
-- [pnpm](https://pnpm.io/) v10
-- [Sanity account](https://www.sanity.io/)
+## Publishing
 
-### Setup
-
-1. Clone this repository
-2. Install dependencies:
-   ```bash
-   pnpm install
-   ```
-3. Create a new Sanity project (use the defaults) and grab the Project ID + dataset name
-4. Copy `.env.example` to `.env` and add your Sanity credentials
-5. Start development server:
-   ```bash
-   pnpm run dev
-   ```
-6. Start Sanity Studio (separate app):
-   ```bash
-   pnpm run studio:dev
-   ```
-
-### Available Commands
-
-| Command | Action |
-|---------|--------|
-| `pnpm run dev` | Start local dev server at `localhost:4321` |
-| `pnpm run build` | Type-check and build the production site to `./dist/` |
-| `pnpm run test` | Run the test suite |
-| `pnpm run preview` | Preview build locally |
-| `pnpm run studio:dev` | Start Sanity Studio locally |
-| `pnpm run studio:build` | Build Sanity Studio for deployment |
-
-## Writing Posts
-
-Posts are managed in Sanity Studio. Run the Studio with `pnpm run studio:dev` (served by the Studio app).
-
-Because the site is prerendered, publishing in Sanity only reaches the live site once a Netlify build runs.
+The site is prerendered, so a change published in Sanity reaches hamishburke.dev when the
+Netlify build hook runs. `CLAUDE.md` holds the working notes (rendering model, footguns,
+where things live) and `ARCHITECTURE.md` the boundaries and invariants.
 
 ## License
 
-MIT License - see LICENSE file for details.
+MIT, see `LICENSE`.

@@ -19,17 +19,19 @@ pnpm run studio:build
 pnpm run seed:copy    # Republishes the page-copy singletons; destructive, see Footguns
 ```
 
-Run a single test file: `pnpm exec tsx --test tests/circuit-geometry.test.ts`.
+Run a single test file: `pnpm exec tsx --test tests/work.test.ts`.
 
 The glob is `tests/*.test.ts`, not `tests/**` — tests in subdirectories will not run.
 
 `pnpm exec knip` checks for dead code and unused dependencies (config in `knip.json`); there is
-no package.json script for it.
+no package.json script for it. It does not follow imports made from an Astro `<script>` block,
+so `src/lib/shell/*` shows up as unused when it is not.
 
 ## Environment
 
 `SANITY_PROJECT_ID` is required and validated at config load, so a missing `.env` fails
-before Astro starts. Defaults: `SANITY_DATASET=production`, `SANITY_API_VERSION=2024-01-01`.
+before Astro starts. The id is public (`qnuj1c4o`, also in `netlify.toml` and CI). Defaults:
+`SANITY_DATASET=production`, `SANITY_API_VERSION=2024-01-01`.
 
 CI (`.github/workflows/ci.yml`) runs tests and the build on Node 22 and pnpm 10 with those vars
 set. A failure that only reproduces locally is usually a version or env mismatch.
@@ -50,17 +52,17 @@ time from Sanity via `getStaticPaths`. Consequences that catch people out:
 - `build: { format: 'file' }` and `trailingSlash: 'never'` — URLs emit as `/work.html`, and
   canonical tags omit the trailing slash. Keep these in step.
 
-Astro content collections (`src/content/`, `src/content.config.ts`) exist but are **not** the
-runtime path. Published content comes from Sanity through `fetchSanity` in `src/lib/sanity.ts`.
+All published content comes from Sanity through `fetchSanity` in `src/lib/sanity.ts`. There are
+no Astro content collections; the markdown copies that used to sit in `src/content/` were
+removed on 2026-09-05 because nothing read them.
 
 ## Architecture
 
-`ARCHITECTURE.md` is the authoritative and current description of boundaries and invariants —
-read it for anything structural. `README.md` covers setup and the day-to-day commands.
-`PLANS.md` defines the ExecPlan format expected for substantial
-features and refactors. Actual ExecPlan instances live in `docs/exec-plans/`, design docs in
-`docs/design-docs/`, and known technical debt (with evidence and next actions) in
-`docs/tech-debt-tracker.md`.
+`ARCHITECTURE.md` is the authoritative description of boundaries and invariants — read it for
+anything structural. `README.md` covers setup and the day-to-day commands. `PLANS.md` defines
+the ExecPlan format for substantial features; instances live in `docs/exec-plans/`, finished
+ones under `completed/`. `docs/portfolio-redesign.md` is the short note on the current
+homepage and work pages (September 2026).
 
 Layers: routes (`src/pages/`) own request-level fetching and page assembly; components
 (`src/components/`) own presentation; `src/lib/` owns external clients and content transforms;
@@ -76,29 +78,27 @@ Layers: routes (`src/pages/`) own request-level fetching and page assembly; comp
 - Data access, transforms, canonical helpers: `src/lib/*`
 - Content rendering and sanitisation: `src/lib/portableText.ts`, `src/lib/markdown.ts`,
   `src/lib/escape.ts`
-- Page copy (no hardcoded user-facing strings): the singleton schemas plus
-  `src/lib/pageContent.ts` and `scripts/seed-page-copy.ts`
-- Work vs project classification and the reflection fields: `src/sanity/schemaTypes/workStory.ts`
-  and `src/lib/work.ts`
+- Page copy lives in two places, and that is the current state rather than a rule. The
+  homepage, the `/work` index header, the two project blurbs on `/about` and the per-story
+  introductions are written in their templates and in `src/lib/workEditorial.ts`. The About
+  hero and background, CV, Writing, Contact and 404 pages read singleton documents through
+  `src/lib/pageContent.ts` (seeded by `scripts/seed-page-copy.ts`), which throws when a
+  singleton is missing rather than rendering empty markup.
+- Work stories, their validation and hrefs: `src/sanity/schemaTypes/workStory.ts` and
+  `src/lib/work.ts`; the curated homepage selection: `src/lib/workEditorial.ts`
 - The posts-plus-reports stream shared by `/writing`, `/tags/[tag]` and the homepage:
   `src/lib/writingData.ts`
 - Canonical Sanity schemas: `src/sanity/schemaTypes/*`, mirrored in
   `studio-production/schemaTypes/*`
-- Astro local content definitions: `src/content.config.ts`, `src/content/*`
 - Static assets: `public/*`
 
 Non-obvious pieces:
 
-- **The page is an ordinary scrolling document.** A WebGL page-fold effect (`Bend.tsx`) used to
-  own the scroll container, which forced capture-phase scroll listeners and an element-swap dance
-  in `Layout.astro`; it was removed on 2026-08-18 along with those workarounds. Bind scroll
-  handlers to `window` — there is no longer a nested scroller to account for.
-- **`src/lib/circuit/`** is the data-bus overlay. `geometry.ts` is pure, unit-tested routing
-  maths; `engine.ts` owns DOM/SVG/lifecycle; `circuit.css` owns presentation. Geometry tokens
-  in `tokens.css` must stay in px/ms/unitless — the engine reads them off computed style.
-- **`src/lib/pageContent.ts`** fetches page copy as Sanity singletons by fixed document ID.
-  Templates hold no hardcoded user-facing strings and there are no fallbacks, so a missing
-  singleton throws rather than rendering empty markup.
+- **The page is an ordinary scrolling document.** A WebGL page-fold effect used to own the
+  scroll container and forced capture-phase listeners; it went on 2026-08-18. Bind scroll
+  handlers to `window`. The decorative circuit overlay and the ambient background went with
+  the September 2026 redesign, so `Layout.astro` now boots one shell module
+  (`src/lib/shell/index.ts`: booking-ref rewriter, analytics beacon, code-copy buttons).
 - **`src/lib/embeddings.ts`** embeds the corpus locally at build time (`@huggingface/transformers`)
   for semantic related-content. No API key, no runtime service.
 - **Analytics pipeline**: `api/collect.ts` writes anonymised session sequences to Netlify Blobs,
@@ -132,7 +132,12 @@ HTTPS-only, redirect blocking and PDF MIME checks all stay. Never commit secrets
 - Do not describe the site or Hamish in terms of candour: no "write-ups say what didn't
   work", "what I can talk about honestly", "what I would do differently". That formula is
   the house style of AI-written developer bios, and it was stripped from Sanity, `site.ts`
-  and `llms.txt.ts` on 2026-08-21. Name the actual project instead.
+  and `llms.txt.ts` on 2026-08-21. Name the actual project instead. The same goes for
+  section headings: "A decision I changed my mind about" is the formula; "Taking the SaaS
+  layer out of You Inc" is the content.
+- The work story schema still carries four legacy reflection fields (question, built,
+  learned, differently). They are optional and nothing renders them; do not build a section
+  around them.
 
 ## Repo conventions
 
@@ -158,15 +163,8 @@ HTTPS-only, redirect blocking and PDF MIME checks all stay. Never commit secrets
 - The dev server caches the Sanity client at module scope. After changing page-copy singletons,
   restart `pnpm run dev`; a browser reload is not enough.
 - `pnpm run seed:copy` uses `createOrReplace` and will overwrite copy edited in Studio, with no
-  undo. Reconcile Studio values into `scripts/seed-page-copy.ts` first. The `copy-*` and
-  `migrate-*` scripts also commit patches straight to the production dataset and have no dry-run
-  mode. All of them are blocked by a hook until the write is acknowledged (see Automated checks).
-- The circuit overlay's *markup contract* has no test coverage, though its routing maths does
-  (`tests/circuit-geometry.test.ts`). A bus (`data-circuit`) needs both a `data-circuit-source`
-  and at least one `data-circuit-node` inside the same region or it renders nothing, silently.
-  Check the page visually after moving those attributes. Its grammar is
-  `docs/design-docs/circuit-design-language.md`; routing decisions depend on real element boxes,
-  so moving a source or a node changes the drawing.
+  undo and no dry-run mode. Reconcile Studio values into `scripts/seed-page-copy.ts` first. It
+  is blocked by a hook until the write is acknowledged (see Automated checks).
 
 ## Automated checks
 
