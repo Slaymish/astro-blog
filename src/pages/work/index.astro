@@ -6,7 +6,7 @@ import { getWorkStories } from '../../lib/workData';
 const stories = (await getWorkStories()).sort((a, b) => b.date.localeCompare(a.date));
 ---
 <Layout title="Work" description="Client websites, independent software, and research by Hamish Burke.">
-  <PageHeader eyebrow="Work" headline="Things I’ve made." intro="Client websites, independent software, and research. Each started with a different question; these are the decisions and results along the way." />
+  <PageHeader eyebrow="Work" headline="Things I’ve made." intro="Client websites, independent software, and research." />
   <section aria-label="All work, newest first">
     {stories.map(story => <WorkCard story={story} />)}
   </section>

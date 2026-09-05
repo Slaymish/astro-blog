@@ -20,9 +20,9 @@ const largeCopyHtml = portableTextToHtml(portrait.largeCopy);
       <div><p class="about__label">About</p><h1 id="about-heading">Hi, I’m Hamish.</h1><p>{hero.intro}</p><div set:html={largeCopyHtml} /></div>
       <MediaFrame src="/images/headshot.jpg" alt={portrait.imageAlt} width={3264} height={4896} ratio="portrait" position="center top" loading="eager" />
     </section>
-    <section class="about__experiences" aria-label="Things that shaped my work">
-      <div><h2>A decision I changed my mind about</h2><p>I built the accounts, plans and billing around You Inc, then took them back out. Running a finance service meant taking responsibility for other people’s bank credentials. A tool people could run themselves made more sense.</p><a href="/work/you-inc">The You Inc story →</a></div>
-      <div><h2>Small systems, real constraints</h2><p>A home server and a shared GPU keep giving me concrete questions to work through: how to recover a machine, who can reach it, and what happens when it switches off.</p><a href="/work/home-lab">Testing a full recovery →</a></div>
+    <section class="about__experiences" aria-label="Two projects">
+      <div><h2>Taking the SaaS layer out of You Inc</h2><p>I built the accounts, plans and billing around You Inc, then took them back out. Running a finance service meant taking responsibility for other people’s bank credentials. A tool people could run themselves made more sense.</p><a href="/work/you-inc">The You Inc story →</a></div>
+      <div><h2>Running a server at home</h2><p>A home server and a shared GPU keep giving me concrete questions to work through: how to recover a machine, who can reach it, and what happens when it switches off.</p><a href="/work/home-lab">Testing a full recovery →</a></div>
     </section>
 
     <section class="about__background" aria-labelledby="background-heading">
@@ -65,7 +65,7 @@ const largeCopyHtml = portableTextToHtml(portrait.largeCopy);
 <style>
 .about__opening { display: grid; gap: 2rem; padding-block: 1.5rem 4rem; align-items: center; }
 h1 { font-size: var(--type-display); letter-spacing: -.035em; line-height: 1.05; margin: 1rem 0 2rem; }
-.about__label { font-size: .75rem; color: var(--color-action); }
+.about__label { font-size: .75rem; color: var(--color-text-secondary); }
 p, .about__opening :global(p) { font-size: 1.125rem; line-height: 1.7; color: var(--color-text-secondary); max-width: 65ch; }
 .about__opening :global(.media-frame) { max-width: 22rem; }
 h2 { font-size: clamp(1.6rem, 3vw, 2rem); line-height: 1.25; letter-spacing: -.025em; }

@@ -6,10 +6,9 @@ const isIndependent = (document: unknown): boolean =>
   (document as { kind?: string } | undefined)?.kind === 'independent';
 
 /**
- * The four reflection questions an independent project has to answer. They are
- * conditionally rather than unconditionally required: a plain `required()` fires
- * even while the field is hidden, which would block editors saving professional
- * stories. `src/lib/work.ts` enforces the same rule at build time.
+ * Legacy reflection answers, kept so existing drafts stay visible in Studio.
+ * Optional since the September 2026 redesign: nothing renders them, and the
+ * "what would I do differently" formula is one the site's copy avoids.
  */
 function reflectionField(name: string, title: string) {
   return defineField({
@@ -19,13 +18,7 @@ function reflectionField(name: string, title: string) {
     rows: 3,
     fieldset: 'reflection',
     hidden: ({ document }) => !isIndependent(document),
-    validation: (rule) =>
-      rule.max(400).custom((value, context) => {
-        if (!isIndependent(context.document)) return true;
-        return typeof value === 'string' && value.trim().length > 0
-          ? true
-          : 'Required for independent projects.';
-      })
+    validation: (rule) => rule.max(400)
   });
 }
 
@@ -36,8 +29,8 @@ export const workStory = defineType({
   fieldsets: [
     {
       name: 'reflection',
-      title: 'Reflection (independent projects)',
-      options: { collapsible: true, collapsed: false }
+      title: 'Reflection (legacy, not rendered)',
+      options: { collapsible: true, collapsed: true }
     }
   ],
   fields: [

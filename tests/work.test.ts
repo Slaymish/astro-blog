@@ -73,32 +73,7 @@ test('validateWorkStories reports incomplete glance content and intervention bou
   ]);
 });
 
-test('validateWorkStories requires every reflection answer from an independent project', () => {
-  const missingAll = story({ kind: 'independent' });
-
-  assert.deepEqual(validateWorkStories([missingAll]), [
-    'Example: question (what was the question) is required for independent projects',
-    'Example: built (what did I build) is required for independent projects',
-    'Example: learned (what did I learn) is required for independent projects',
-    'Example: differently (what would I do differently) is required for independent projects'
-  ]);
-});
-
-test('validateWorkStories treats a blank reflection answer as missing', () => {
-  const blankOne = story({
-    kind: 'independent',
-    question: 'Could a home server run inference for a group of friends?',
-    built: '   ',
-    learned: 'Trust boundaries cost more design time than the inference path.',
-    differently: 'Start with the auth model instead of retrofitting it.'
-  });
-
-  assert.deepEqual(validateWorkStories([blankOne]), [
-    'Example: built (what did I build) is required for independent projects'
-  ]);
-});
-
-test('validateWorkStories accepts a complete independent project and ignores the fields for professional work', () => {
+test('validateWorkStories accepts the legacy reflection fields and their absence alike', () => {
   const complete = story({
     kind: 'independent',
     question: 'Could a home server run inference for a group of friends?',

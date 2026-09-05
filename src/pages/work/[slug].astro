@@ -34,8 +34,7 @@ const links = artifacts.flatMap(artifact => {
 const youIncSections = [
   ['A ledger before a dashboard', 'I wanted a coherent view of what I own, owe, earn and spend. That needed a real accounting model underneath. Synced transactions enter a double-entry ledger where every posting must balance; cashflow, net worth and runway are different views of the same data.'],
   ['Make uncertainty visible', 'Rules route known transactions. Anything uncertain stays in suspense for review instead of quietly disappearing or being treated as a confident classification. Akahu bank sync feeds the ledger, with credentials encrypted in Supabase Vault and kept out of the browser.'],
-  ['Taking the SaaS layer out', 'The first version had accounts, paid plans and billing. But holding other people’s bank credentials brought an obligation that went well beyond building a useful finance tool. I removed the commercial layer and made You Inc self-hosted and MIT licensed. The person running it supplies their own database and Akahu credentials.'],
-  ['What I would build first next time', story.differently || 'I would settle the ledger schema before building the dashboard.']
+  ['Taking the SaaS layer out', 'The first version had accounts, paid plans and billing. But holding other people’s bank credentials brought an obligation that went well beyond building a useful finance tool. I removed the commercial layer and made You Inc self-hosted and MIT licensed. The person running it supplies their own database and Akahu credentials.']
 ];
 const narrativeHtml = portableTextToHtml(story.narrative?.length ? story.narrative : story.body);
 ---
@@ -118,7 +117,7 @@ const narrativeHtml = portableTextToHtml(story.narrative?.length ? story.narrati
 <style>
   .case-study__hero { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
   .case-study__eyebrow,
-  .case-study__section-label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
+  .case-study__section-label { color: var(--color-text-secondary); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
   .case-study__hero h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: 1.05; margin: 0; max-width: 16ch; }
   .case-study__summary { color: var(--color-text-secondary); font-size: clamp(1.2rem, 2.5vw, 1.7rem); line-height: 1.4; margin: var(--spacing-8) 0 0; max-width: 34rem; }
   .case-study__links { display: flex; flex-wrap: wrap; gap: var(--spacing-3); margin-top: var(--spacing-8); }

@@ -66,7 +66,11 @@ export interface WorkStory {
   timeframe?: string;
   interventions: string[];
   result: string;
-  /** The four reflection answers. Required when kind is 'independent'. */
+  /**
+   * Legacy reflection answers. Optional: nothing has rendered them since the
+   * September 2026 redesign, and the site's content rules steer away from the
+   * "what would I do differently" formula they encoded.
+   */
   question?: string;
   built?: string;
   learned?: string;
@@ -90,27 +94,12 @@ export function artifactHref(artifact: WorkArtifact): string {
     : `/reports/${artifact.slug}`;
 }
 
-/** The reflection answers an independent project must give, in the order they render. */
-const REFLECTION_FIELDS = [
-  ['question', 'what was the question'],
-  ['built', 'what did I build'],
-  ['learned', 'what did I learn'],
-  ['differently', 'what would I do differently']
-] as const;
-
 export function validateWorkStories(stories: WorkStory[]): string[] {
   const errors: string[] = [];
 
   for (const story of stories) {
     if (!story.summary.trim()) {
       errors.push(`${story.title}: summary is required`);
-    }
-    if (story.kind === 'independent') {
-      for (const [field, question] of REFLECTION_FIELDS) {
-        if (!story[field]?.trim()) {
-          errors.push(`${story.title}: ${field} (${question}) is required for independent projects`);
-        }
-      }
     }
     if (story.interventions.length < 1 || story.interventions.length > 3) {
       errors.push(`${story.title}: interventions must contain 1 to 3 items`);
