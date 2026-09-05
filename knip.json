@@ -4,9 +4,5 @@
   "ignore": [
     "studio-production/**",
     "public/vendor/**"
-  ],
-  "ignoreDependencies": [
-    "vite",
-    "react"
   ]
 }

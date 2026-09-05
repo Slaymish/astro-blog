@@ -1,6 +1,5 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from "@tailwindcss/vite";
-import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
 import { FontaineTransform } from 'fontaine';
@@ -29,7 +28,6 @@ export default defineConfig({
     defaultStrategy: 'hover',
   },
   integrations: [
-    mdx(),
     react(),
     sanity({
       projectId,
