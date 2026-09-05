@@ -41,6 +41,12 @@ export const book = defineType({
       name: 'link',
       title: 'Link',
       type: 'url'
+    }),
+    defineField({
+      name: 'order',
+      title: 'Order',
+      type: 'number',
+      description: 'Position within its status group on /reading. Lower comes first; books without one sort after, by title.'
     })
   ]
 });

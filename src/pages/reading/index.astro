@@ -17,7 +17,7 @@ type ReadingItem = {
 };
 
 const readingItems = await fetchSanity<ReadingItem[]>(`
-  *[_type == "book"] | order(title asc){
+  *[_type == "book"] | order(coalesce(order, 1000) asc, title asc){
     title,
     author,
     status,
@@ -47,13 +47,13 @@ const grouped = groups
   <PageHeader
     eyebrow="Reading"
     headline="Books, mostly."
-    intro="What I am reading now, what is queued, and what I have finished. Recommendations are always welcome."
+    intro="What I'm reading now, what's queued up next and what I've finished, with the note I wrote for each one as I went. Always keen to hear a recommendation."
     headlineMeasure="14ch"
     introMeasure="38rem"
   />
 
   {grouped.map((group) => (
-    <section class="reading__group" aria-labelledby={`reading-${group.status}`}>
+    <section class="reading__group" aria-labelledby={`reading-${group.status}`} data-count={Math.min(group.items.length, 3)}>
       <h2 id={`reading-${group.status}`}>{group.heading}</h2>
       <ul>
         {group.items.map((item) => (
@@ -105,10 +105,12 @@ const grouped = groups
   .reading__item > a { align-items: center; color: var(--color-text-secondary); display: inline-flex; min-height: 2.75rem; }
   .reading__item > a:hover { color: var(--color-action); }
 
+  /* Columns are capped at the number of books in the group, so a group of one
+     or two runs the full row instead of leaving empty cells beside it. */
   @media (min-width: 48rem) {
-    .reading__group ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .reading__group:not([data-count="1"]) ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (min-width: 75rem) {
-    .reading__group ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .reading__group[data-count="3"] ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 </style>

@@ -3,7 +3,8 @@
  * the contact band) with their initial copy. Written by fixed ID with
  * createOrReplace, so re-running overwrites anything edited in Studio since.
  *
- *   npm run seed:copy
+ *   pnpm run seed:copy                 # every singleton
+ *   pnpm run seed:copy aboutPage       # only the ids named
  *
  * Requires SANITY_API_TOKEN with write access.
  */
@@ -75,7 +76,7 @@ const documents: SeedDocument[] = [
       eyebrow: 'About · Wellington, New Zealand',
       heading: 'I like understanding the whole system.',
       intro:
-        'I’m Hamish. I build software, and I’m mostly interested in what happens at the edges of it: how organisations actually decide things, and which problems are worth the effort. I’m early in working that out.'
+        'I’m Hamish. I build software, web stuff mostly, though what I actually find myself thinking about is the edges of it, how an organisation ends up deciding what gets built in the first place and which of those problems were really worth the effort. I’m early in working that out, which is probably why I keep writing about it.'
     },
     portrait: {
       imageAlt: 'Hamish Burke in Wellington',
@@ -92,7 +93,7 @@ const documents: SeedDocument[] = [
             {
               _type: 'span',
               _key: 'c',
-              text: ' as a web developer and take on a small number of independent projects.',
+              text: ' as a web developer, and take on a small number of independent projects on the side (the ones on this site are the ones I’m free to talk about).',
               marks: []
             }
           ]
@@ -123,10 +124,10 @@ const documents: SeedDocument[] = [
     },
     background: {
       label: 'Background',
-      heading: 'From research into shipping software.',
+      heading: 'Research, then shipping.',
       paragraphs: [
-        'I did a Master of Computer Science at Victoria University of Wellington. My thesis was on diffusion-based anomaly detection for electrical distribution networks. Mostly it taught me the difference between an interesting result and a useful one.',
-        'Outside software I’m trying to make more time for reading, the piano, and being away from a screen.'
+        'I did a Master of Computer Science at Victoria University of Wellington, where my thesis was on diffusion-based anomaly detection for electrical distribution networks (spotting faults in the power grid from the data it throws off, using the same family of models as image generation). Quite honestly the main thing it taught me was the difference between an interesting result and a useful one, as I had plenty of the first and very few of the second.',
+        'Outside software I’m trying to make more time for reading (there’s a list on here), the piano, and generally being away from a screen for a bit.'
       ],
       links: [
         { _key: 'cv', _type: 'ctaLink', label: 'View CV →', href: '/cv' },
@@ -259,14 +260,22 @@ const documents: SeedDocument[] = [
 ];
 
 async function seed() {
+  const wanted = process.argv.slice(2).filter((arg) => arg !== '--');
+  const unknown = wanted.filter((id) => !documents.some((doc) => doc._id === id));
+  if (unknown.length) {
+    console.error(`Unknown document id(s): ${unknown.join(', ')}. Known: ${documents.map((d) => d._id).join(', ')}`);
+    process.exit(1);
+  }
+  const selected = wanted.length ? documents.filter((doc) => wanted.includes(doc._id)) : documents;
+
   const transaction = client.transaction();
-  for (const doc of documents) {
+  for (const doc of selected) {
     transaction.createOrReplace(doc);
   }
 
   await transaction.commit();
-  console.log(`Seeded ${documents.length} documents into ${projectId}/${dataset}:`);
-  for (const doc of documents) {
+  console.log(`Seeded ${selected.length} documents into ${projectId}/${dataset}:`);
+  for (const doc of selected) {
     console.log(`  ${doc._id}`);
   }
 }

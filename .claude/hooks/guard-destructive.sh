@@ -73,20 +73,21 @@ runs_script() {
 destructive=0
 
 # `pnpm run seed:copy` and friends never name the script file, so check separately.
-if [[ "$command_text" =~ (^|[[:space:]\;\&\|\(])(pnpm|npm|yarn|bun)([[:space:]]+run)?[[:space:]]+seed:copy([[:space:]]|$) ]]; then
+if [[ "$command_text" =~ (^|[[:space:]\;\&\|\(])(pnpm|npm|yarn|bun)([[:space:]]+run)?[[:space:]]+seed:(copy|books)([[:space:]]|$) ]]; then
   destructive=1
 fi
-runs_script "$command_text" '(^|/)seed-page-copy\.ts' && destructive=1
+runs_script "$command_text" '(^|/)seed-(page-copy|book-notes)\.ts' && destructive=1
 
 [ "$destructive" -eq 0 ] && exit 0
 
 cat >&2 <<'MSG'
-Blocked: this publishes page-copy singletons with createOrReplace, overwriting
-whatever is currently in the production dataset.
+Blocked: this writes to the production dataset, overwriting whatever is there.
+seed-page-copy publishes the page-copy singletons with createOrReplace, and
+seed-book-notes patches every book's note, status and order.
 
-Before running it, reconcile the live Studio values into
-scripts/seed-page-copy.ts, otherwise copy edited in Studio is lost and there is
-no undo. Ask Hamish to confirm the reconcile has happened.
+Before running it, reconcile the live Studio values into the script, otherwise
+copy edited in Studio is lost and there is no undo. Ask Hamish to confirm the
+reconcile has happened.
 
 To run it once the reconcile is done and Hamish has agreed:
   SANITY_WRITE_ACK=1 <the same command>

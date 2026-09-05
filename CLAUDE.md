@@ -17,6 +17,7 @@ pnpm run preview      # Preview the production build
 pnpm run studio:dev   # Sanity Studio (separate app in studio-production/)
 pnpm run studio:build
 pnpm run seed:copy    # Republishes the page-copy singletons; destructive, see Footguns
+pnpm run seed:books   # Writes the /reading notes, statuses and order; destructive, see Footguns
 ```
 
 Run a single test file: `pnpm exec tsx --test tests/work.test.ts`.
@@ -84,6 +85,8 @@ Layers: routes (`src/pages/`) own request-level fetching and page assembly; comp
   hero and background, CV, Writing, Contact and 404 pages read singleton documents through
   `src/lib/pageContent.ts` (seeded by `scripts/seed-page-copy.ts`), which throws when a
   singleton is missing rather than rendering empty markup.
+- Book notes on `/reading`: `scripts/seed-book-notes.ts`; the route sorts by the book's
+  `order` field within each status group, then by title.
 - Work stories, their validation and hrefs: `src/sanity/schemaTypes/workStory.ts` and
   `src/lib/work.ts`; the curated homepage selection: `src/lib/workEditorial.ts`
 - The posts-plus-reports stream shared by `/writing`, `/tags/[tag]` and the homepage:
@@ -129,6 +132,9 @@ HTTPS-only, redirect blocking and PDF MIME checks all stay. Never commit secrets
 ## Content rules
 
 - Do not use em dashes in site content.
+- All site copy is written with the `hamish-voice` skill in clean mode (Hamish's own
+  register, spelling corrected). That covers page intros, book notes, blurbs, and anything
+  else a visitor reads.
 - Do not describe the site or Hamish in terms of candour: no "write-ups say what didn't
   work", "what I can talk about honestly", "what I would do differently". That formula is
   the house style of AI-written developer bios, and it was stripped from Sanity, `site.ts`
@@ -165,6 +171,10 @@ HTTPS-only, redirect blocking and PDF MIME checks all stay. Never commit secrets
 - `pnpm run seed:copy` uses `createOrReplace` and will overwrite copy edited in Studio, with no
   undo and no dry-run mode. Reconcile Studio values into `scripts/seed-page-copy.ts` first. It
   is blocked by a hook until the write is acknowledged (see Automated checks).
+- `pnpm run seed:books` patches every book's note, status and order from
+  `scripts/seed-book-notes.ts`, so a note edited in Studio is lost on the next run. The notes
+  there are the vault's `Reading List and thoughts.md` with spelling corrected; update the
+  script from the vault, not the other way round. Same hook, same acknowledgement.
 
 ## Automated checks
 
