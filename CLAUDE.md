@@ -86,7 +86,8 @@ Layers: routes (`src/pages/`) own request-level fetching and page assembly; comp
   `src/lib/pageContent.ts` (seeded by `scripts/seed-page-copy.ts`), which throws when a
   singleton is missing rather than rendering empty markup.
 - Book notes on `/reading`: `scripts/seed-book-notes.ts`; the route sorts by the book's
-  `order` field within each status group, then by title.
+  `order` field within each status group, then by title. Books with the same `sharedNote`
+  key render as one card (stacked covers, the first book's note).
 - Work stories, their validation and hrefs: `src/sanity/schemaTypes/workStory.ts` and
   `src/lib/work.ts`; the curated homepage selection: `src/lib/workEditorial.ts`
 - The posts-plus-reports stream shared by `/writing`, `/tags/[tag]` and the homepage:

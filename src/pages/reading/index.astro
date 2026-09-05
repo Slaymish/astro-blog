@@ -14,7 +14,11 @@ type ReadingItem = {
   coverImage?: unknown;
   link?: string;
   note?: string;
+  sharedNote?: string;
 };
+
+/** One rendered card: a single book, or several that share a note. */
+type ReadingCard = { books: ReadingItem[]; note?: string };
 
 const readingItems = await fetchSanity<ReadingItem[]>(`
   *[_type == "book"] | order(coalesce(order, 1000) asc, title asc){
@@ -23,9 +27,36 @@ const readingItems = await fetchSanity<ReadingItem[]>(`
     status,
     coverImage,
     note,
-    link
+    link,
+    sharedNote
   }
 `);
+
+/**
+ * Books that share a `sharedNote` key (within one status) collapse into one
+ * card, covers and titles stacked, with the first book's note beneath them.
+ */
+const toCards = (items: ReadingItem[]): ReadingCard[] => {
+  const cards: ReadingCard[] = [];
+  const shared = new Map<string, ReadingCard>();
+  for (const item of items) {
+    const key = item.sharedNote?.trim();
+    if (!key) {
+      cards.push({ books: [item], note: item.note });
+      continue;
+    }
+    const existing = shared.get(key);
+    if (existing) {
+      existing.books.push(item);
+      existing.note ||= item.note;
+    } else {
+      const card = { books: [item], note: item.note };
+      shared.set(key, card);
+      cards.push(card);
+    }
+  }
+  return cards;
+};
 
 /** Currently reading first, then the queue, then the archive. */
 const groups: { status: ReadingStatus; heading: string }[] = [
@@ -35,8 +66,8 @@ const groups: { status: ReadingStatus; heading: string }[] = [
 ];
 
 const grouped = groups
-  .map((group) => ({ ...group, items: readingItems.filter((item) => item.status === group.status) }))
-  .filter((group) => group.items.length > 0);
+  .map((group) => ({ ...group, cards: toCards(readingItems.filter((item) => item.status === group.status)) }))
+  .filter((group) => group.cards.length > 0);
 ---
 
 <Layout
@@ -53,34 +84,40 @@ const grouped = groups
   />
 
   {grouped.map((group) => (
-    <section class="reading__group" aria-labelledby={`reading-${group.status}`} data-count={Math.min(group.items.length, 3)}>
+    <section class="reading__group" aria-labelledby={`reading-${group.status}`} data-count={Math.min(group.cards.length, 3)}>
       <h2 id={`reading-${group.status}`}>{group.heading}</h2>
       <ul>
-        {group.items.map((item) => (
+        {group.cards.map((card) => (
           <li class="reading__item">
-            <div class="reading__cover" aria-hidden={item.coverImage ? undefined : 'true'}>
-              {item.coverImage ? (
-                <img
-                  src={urlFor(item.coverImage).width(160).height(240).fit('crop').url()}
-                  alt={`Cover of ${item.title}`}
-                  width="80"
-                  height="120"
-                  loading="lazy"
-                />
-              ) : (
-                <div class="reading__cover-placeholder" />
-              )}
-            </div>
-            <div class="reading__detail">
-              <h3>{item.title}</h3>
-              <p>{item.author}</p>
-              {item.note && <p class="reading__note">{item.note}</p>}
-            </div>
-            {item.link && (
-              <a href={item.link} target="_blank" rel="noopener noreferrer" aria-label={`View ${item.title}`}>
-                <Icon name="arrow-up-right" />
-              </a>
-            )}
+            {card.books.map((item) => (
+              <>
+                <div class="reading__cover" aria-hidden={item.coverImage ? undefined : 'true'}>
+                  {item.coverImage ? (
+                    <img
+                      src={urlFor(item.coverImage).width(160).height(240).fit('crop').url()}
+                      alt={`Cover of ${item.title}`}
+                      width="80"
+                      height="120"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="reading__cover-placeholder" />
+                  )}
+                </div>
+                <div class="reading__detail">
+                  <h3>{item.title}</h3>
+                  <p>{item.author}</p>
+                </div>
+                {item.link ? (
+                  <a href={item.link} target="_blank" rel="noopener noreferrer" aria-label={`View ${item.title}`}>
+                    <Icon name="arrow-up-right" />
+                  </a>
+                ) : (
+                  <span />
+                )}
+              </>
+            ))}
+            {card.note && <p class="reading__note">{card.note}</p>}
           </li>
         ))}
       </ul>
@@ -93,6 +130,8 @@ const grouped = groups
   .reading__group h2 { font-size: clamp(1.4rem, 2.4vw, 2rem); letter-spacing: var(--tracking-heading); margin: 0 0 var(--spacing-6); }
   .reading__group ul { display: grid; gap: var(--spacing-6) var(--spacing-8); list-style: none; margin: 0; padding: 0; }
 
+  /* Each book contributes a cover, a title block and a link cell, so books that
+     share a card stack as aligned rows; the note then sits under the titles. */
   .reading__item { align-items: start; display: grid; gap: var(--spacing-4); grid-template-columns: 5rem minmax(0, 1fr) auto; }
   .reading__cover img,
   .reading__cover-placeholder { display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; }
@@ -101,7 +140,7 @@ const grouped = groups
   .reading__cover-placeholder { background: linear-gradient(135deg, var(--color-stroke-subtle), var(--color-stroke-strong)); }
   .reading__detail h3 { font-size: var(--type-body); line-height: 1.4; margin: 0 0 var(--spacing-1); }
   .reading__detail p { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: 0; }
-  .reading__detail .reading__note { margin-top: 1rem; font-size: 1rem; line-height: 1.65; color: var(--color-text-primary); }
+  .reading__note { grid-column: 2; font-size: 1rem; line-height: 1.65; color: var(--color-text-primary); margin: 0; }
   .reading__item > a { align-items: center; color: var(--color-text-secondary); display: inline-flex; min-height: 2.75rem; }
   .reading__item > a:hover { color: var(--color-action); }
 

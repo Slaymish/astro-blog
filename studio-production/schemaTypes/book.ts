@@ -47,6 +47,12 @@ export const book = defineType({
       title: 'Order',
       type: 'number',
       description: 'Position within its status group on /reading. Lower comes first; books without one sort after, by title.'
+    }),
+    defineField({
+      name: 'sharedNote',
+      title: 'Shared note key',
+      type: 'string',
+      description: 'Books with the same key and status share one card on /reading: covers and titles stacked, one note (the first book\'s, by order).'
     })
   ]
 });

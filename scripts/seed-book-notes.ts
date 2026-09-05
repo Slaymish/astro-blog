@@ -45,6 +45,8 @@ type BookNote = {
   status: Status;
   /** Position within the status group; the route sorts by it. */
   order: number;
+  /** Books sharing this key render as one card with one note. */
+  sharedNote?: string;
   note: string;
 };
 
@@ -126,16 +128,17 @@ const books: BookNote[] = [
     author: 'T.J Klune',
     status: 'read',
     order: 7,
+    sharedNote: 'klune-cerulean',
     note:
-      "This and Somewhere Beyond the Sea were both a fun read, wholesome fiction was a great breath of fresh air, where I was able to get fully immersed in the narrative. The love between Arthur and Linus was really sweet and I loved hearing how they described each other so affectionately in each other's eyes."
+      "Both of these were a fun read, wholesome fiction was a great breath of fresh air, where I was able to get fully immersed in the narrative. The love between Arthur and Linus was really sweet and I loved hearing how they described each other so affectionately in each other's eyes."
   },
   {
     title: 'Somewhere Beyond the Sea',
     author: 'T.J Klune',
     status: 'read',
     order: 8,
-    note:
-      "This and The House in the Cerulean Sea were both a fun read, wholesome fiction was a great breath of fresh air, where I was able to get fully immersed in the narrative. The love between Arthur and Linus was really sweet and I loved hearing how they described each other so affectionately in each other's eyes."
+    sharedNote: 'klune-cerulean',
+    note: ''
   }
 ];
 
@@ -157,7 +160,7 @@ async function main() {
 
   for (const book of books) {
     const id = byTitle.get(book.title.toLowerCase());
-    const fields = { note: book.note, status: book.status, order: book.order };
+    const fields = { note: book.note, status: book.status, order: book.order, sharedNote: book.sharedNote ?? null };
     if (id) {
       tx.patch(id, (p) => p.set(fields));
       patched.push(book.title);
