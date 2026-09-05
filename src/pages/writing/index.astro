@@ -1,6 +1,7 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
 import PageHeader from '../../components/layout/PageHeader.astro';
+import Button from '../../components/ui/Button.astro';
 import { getWriting, filterableTags } from '../../lib/writingData';
 import { getWritingIndexPage } from '../../lib/pageContent';
 import { SITE_URL, absoluteUrl } from '../../lib/site';
@@ -53,6 +54,14 @@ const { hero } = copy;
   </ul>
 
   <p class="writing-empty" id="writing-empty" hidden={entries.length > 0}>{copy.emptyMessage}</p>
+
+  <aside class="writing-reading">
+    <p>
+      I keep notes on the books I get through as well, how I came to each one and whatever thought was left over at
+      the end, which is closer to thinking out loud than reviewing anything.
+    </p>
+    <Button href="/reading" variant="secondary">Read my book reflections</Button>
+  </aside>
 </Layout>
 
 <script>
@@ -106,6 +115,12 @@ const { hero } = copy;
   .writing-list__excerpt { color: var(--color-text-secondary); display: block; font-size: var(--type-body-small); line-height: 1.6; margin-top: var(--spacing-2); max-width: 54rem; }
 
   .writing-empty { color: var(--color-text-secondary); padding-block: var(--spacing-16); text-align: center; }
+
+  /* Closing pointer to /reading. One line of copy and one button, sitting under
+     the rule the last list item already draws, so it reads as the end of the
+     page rather than a card. */
+  .writing-reading { align-items: start; display: flex; flex-direction: column; gap: var(--spacing-4); padding-block: var(--spacing-8); }
+  .writing-reading p { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.6; margin: 0; max-width: 42rem; }
 
   @media (min-width: 48rem) {
     .writing-list__item a { grid-template-columns: 9rem minmax(0, 1fr); }
