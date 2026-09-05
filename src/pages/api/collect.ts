@@ -67,7 +67,7 @@ export async function POST({ request }: { request: Request }) {
   // Metered here rather than at the top of the handler: the resource being
   // protected is the blob write, and a malformed request never reaches one.
   const window = windowId();
-  const key = await counterKey(clientAddress(request.headers), window, process.env.RATE_LIMIT_SALT ?? '');
+  const key = await counterKey(clientAddress(request.headers), window, process.env.RATE_LIMIT_SALT ?? '', 'collect');
   const allowed = await consume(store.rateLimits, key, COLLECT_LIMIT_PER_WINDOW);
 
   if (!allowed) {

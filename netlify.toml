@@ -19,7 +19,8 @@
 #
 # The security headers ride on the same rule so every response carries them.
 # The CSP allowlist is derived from what the built output actually loads:
-# Umami for analytics, jsdelivr for the KaTeX stylesheet and its fonts, Sanity
+# Umami for analytics (script from cloud.umami.is, collection posts to
+# gateway.umami.is), jsdelivr for the KaTeX stylesheet and its fonts, Sanity
 # for images and media. PDF.js is self-hosted under /vendor and renders to a
 # canvas, so object-src can stay closed; nothing on the site uses an iframe.
 #
@@ -31,7 +32,7 @@
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' blob: https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://cdn.sanity.io; font-src 'self' data: https://cdn.jsdelivr.net; connect-src 'self' https://cloud.umami.is; worker-src 'self' blob:; media-src 'self' blob: https://cdn.sanity.io; manifest-src 'self'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' blob: https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://cdn.sanity.io; font-src 'self' data: https://cdn.jsdelivr.net; connect-src 'self' https://cloud.umami.is https://gateway.umami.is; worker-src 'self' blob:; media-src 'self' blob: https://cdn.sanity.io; manifest-src 'self'; upgrade-insecure-requests"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"

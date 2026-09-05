@@ -64,7 +64,7 @@ export async function POST({ request }: { request: Request }) {
   }
 
   const window = windowId();
-  const key = await counterKey(clientAddress(request.headers), window, process.env.RATE_LIMIT_SALT ?? '');
+  const key = await counterKey(clientAddress(request.headers), window, process.env.RATE_LIMIT_SALT ?? '', 'recommend');
   const allowed = await consume(store.rateLimits, key, RECOMMEND_LIMIT_PER_WINDOW);
   if (!allowed) {
     return json(429, { error: 'rate_limited' }, { 'retry-after': '3600' });

@@ -37,6 +37,18 @@ export const COLLECT_LIMIT_PER_WINDOW = 120;
 const SHARED_BUCKET = 'unknown';
 
 /**
+ * Which endpoint a counter belongs to.
+ *
+ * Counters live in one store, so without this every endpoint metering a client
+ * would share a single budget. `/api/collect` fires on every page view, so a
+ * shared counter let ordinary browsing exhaust the much smaller allowance of
+ * `/api/recommend` and reject a first submission with 429. Callers must name
+ * their scope, and the union means a typo is a type error rather than a silent
+ * collision.
+ */
+export type RateLimitScope = 'collect' | 'recommend';
+
+/**
  * The current fixed window as `YYYY-MM-DDTHH`. Hourly buckets keep the key
  * space small enough to prune cheaply while still bounding a sustained flood.
  */
@@ -70,12 +82,21 @@ async function sha256Hex(value: string): Promise<string> {
  *
  * The window id is mixed into the hash as well as the key, so the same address
  * produces a different hash each hour and the keys cannot be correlated across
- * windows to reconstruct a visit history.
+ * windows to reconstruct a visit history. The scope is mixed in too, so two
+ * endpoints metering the same visitor never land on the same counter.
+ *
+ * The window stays the first path segment in every form, including the no-address
+ * fallback, because `isExpiredCounter` prunes on it.
  */
-export async function counterKey(address: string | null, window: string, salt: string): Promise<string> {
-  if (!address) return `${window}/${SHARED_BUCKET}`;
+export async function counterKey(
+  address: string | null,
+  window: string,
+  salt: string,
+  scope: RateLimitScope
+): Promise<string> {
+  if (!address) return `${window}/${scope}-${SHARED_BUCKET}`;
 
-  const digest = await sha256Hex(`${salt}:${window}:${address}`);
+  const digest = await sha256Hex(`${salt}:${scope}:${window}:${address}`);
   return `${window}/${digest.slice(0, 32)}`;
 }
 
