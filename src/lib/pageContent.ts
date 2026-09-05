@@ -4,8 +4,11 @@ import { fetchSanity } from './sanity';
 type PortableTextBlock = unknown;
 
 /**
- * Page copy lives in Sanity as singleton documents with fixed IDs, so each page
- * fetches exactly one known document rather than querying by slug.
+ * Page copy for About, CV, Writing, Contact and 404 lives in Sanity as singleton
+ * documents with fixed IDs, so each page fetches exactly one known document
+ * rather than querying by slug. The homepage and the work index write their copy
+ * in the template instead (see src/lib/workEditorial.ts); their singletons were
+ * retired on 2026-09-05.
  */
 
 export interface CtaLink {
@@ -18,22 +21,6 @@ export interface CtaLink {
 export interface Seo {
   title: string;
   description: string;
-}
-
-export interface HomePage {
-  seo: Seo;
-  /**
-   * The name plus three annotations on leader lines. There is no eyebrow, headline
-   * and lede stack: the annotations carry a place, a count and a link rather than
-   * restating what the name already says.
-   */
-  fold: {
-    name: string;
-    position: string;
-    sourceLink: CtaLink;
-  };
-  indexSection: { projectsLink: CtaLink; writingLink: CtaLink };
-  contactHeading: string;
 }
 
 export interface AboutPage {
@@ -72,20 +59,6 @@ export interface CvPage {
   };
 }
 
-export interface WorkIndexPage {
-  seo: Seo;
-  hero: { eyebrow: string; headlineLines: string[]; intro: string };
-  leadSection: { heading: string; description: string };
-  supportSection: { heading: string; description: string };
-  contactHeading: string;
-}
-
-export interface ProjectsIndexPage {
-  seo: Seo;
-  hero: { eyebrow: string; headlineLines: string[]; intro: string };
-  contactHeading: string;
-}
-
 export interface WritingIndexPage {
   seo: Seo;
   hero: { eyebrow: string; headlineLines: string[]; intro: string };
@@ -111,9 +84,8 @@ export interface NotFoundPage {
   suggestions: CtaLink[];
 }
 
+/** Only the contact band still reads this; the header and footer are written in their components. */
 export interface SiteSettings {
-  header: { navLinks: CtaLink[] };
-  footer: { tagline: string; navLinks: CtaLink[]; profileLinks: CtaLink[] };
   contactBand: { label: string; defaultHeading: string; contactLabel: string; bookingLabel: string };
 }
 
@@ -130,11 +102,8 @@ async function fetchSingleton<T>(documentId: string): Promise<T> {
   return doc;
 }
 
-export const getHomePage = () => fetchSingleton<HomePage>('homePage');
 export const getAboutPage = () => fetchSingleton<AboutPage>('aboutPage');
 export const getCvPage = () => fetchSingleton<CvPage>('cvPage');
-export const getWorkIndexPage = () => fetchSingleton<WorkIndexPage>('workIndexPage');
-export const getProjectsIndexPage = () => fetchSingleton<ProjectsIndexPage>('projectsIndexPage');
 export const getWritingIndexPage = () => fetchSingleton<WritingIndexPage>('writingIndexPage');
 export const getContactPage = () => fetchSingleton<ContactPage>('contactPage');
 export const getNotFoundPage = () => fetchSingleton<NotFoundPage>('notFoundPage');

@@ -1,49 +1,11 @@
-import { defineArrayMember, defineField, defineType } from 'sanity';
+import { defineField, defineType } from 'sanity';
 
 export const siteSettings = defineType({
   name: 'siteSettings',
   title: 'Site Settings',
   type: 'document',
-  description: 'Copy that appears in the header, footer, and contact band on every page.',
+  description: 'Copy for the contact band that closes the work pages. The header and footer are written in their components.',
   fields: [
-    defineField({
-      name: 'header',
-      title: 'Header',
-      type: 'object',
-      fields: [
-        defineField({
-          name: 'navLinks',
-          title: 'Navigation links',
-          type: 'array',
-          of: [defineArrayMember({ type: 'ctaLink' })],
-          validation: (rule) => rule.required().min(1)
-        })
-      ],
-      validation: (rule) => rule.required()
-    }),
-    defineField({
-      name: 'footer',
-      title: 'Footer',
-      type: 'object',
-      fields: [
-        defineField({ name: 'tagline', title: 'Tagline', type: 'string', validation: (rule) => rule.required().max(120) }),
-        defineField({
-          name: 'navLinks',
-          title: 'Navigation links',
-          type: 'array',
-          of: [defineArrayMember({ type: 'ctaLink' })],
-          validation: (rule) => rule.required().min(1)
-        }),
-        defineField({
-          name: 'profileLinks',
-          title: 'Profile links',
-          type: 'array',
-          of: [defineArrayMember({ type: 'ctaLink' })],
-          validation: (rule) => rule.required().min(1)
-        })
-      ],
-      validation: (rule) => rule.required()
-    }),
     defineField({
       name: 'contactBand',
       title: 'Contact band',

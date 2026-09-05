@@ -1,6 +1,7 @@
 /**
- * Seeds the page-copy singletons in Sanity with the copy that previously lived
- * in the Astro templates. Safe to re-run: each document is written by fixed ID.
+ * Seeds the page-copy singletons in Sanity (About, CV, Writing, Contact, 404 and
+ * the contact band) with their initial copy. Written by fixed ID with
+ * createOrReplace, so re-running overwrites anything edited in Studio since.
  *
  *   npm run seed:copy
  *
@@ -38,65 +39,12 @@ const documents: SeedDocument[] = [
   {
     _id: 'siteSettings',
     _type: 'siteSettings',
-    header: {
-      // Order leaves room for /now to be inserted after Writing without rebalancing.
-      // Writing sits in the footer, not the header: the last post is from March
-      // 2026, and a stale section does not earn top-level placement. Promote it
-      // back when the cadence justifies it.
-      navLinks: [
-        { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
-        { _key: 'work', _type: 'ctaLink', label: 'Work', href: '/work' },
-        { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' },
-        { _key: 'contact', _type: 'ctaLink', label: 'Contact', href: '/contact' }
-      ]
-    },
-    footer: {
-      tagline: 'Software developer, Wellington, New Zealand.',
-      navLinks: [
-        { _key: 'projects', _type: 'ctaLink', label: 'Projects', href: '/projects' },
-        { _key: 'writing', _type: 'ctaLink', label: 'Writing', href: '/writing' },
-        { _key: 'work', _type: 'ctaLink', label: 'Work', href: '/work' },
-        { _key: 'about', _type: 'ctaLink', label: 'About', href: '/about' },
-        { _key: 'reading', _type: 'ctaLink', label: 'Reading', href: '/reading' },
-        { _key: 'contact', _type: 'ctaLink', label: 'Contact', href: '/contact' }
-      ],
-      // Email and LinkedIn live on /contact; repeating them here read as a job-search
-      // sidebar. GitHub stays because it points at the work rather than at a pitch.
-      profileLinks: [
-        { _key: 'github', _type: 'ctaLink', label: 'GitHub', href: 'https://github.com/Slaymish', external: true }
-      ]
-    },
     contactBand: {
       label: 'Get in touch',
       defaultHeading: 'Working on something interesting?',
       contactLabel: 'Contact',
       bookingLabel: 'Book a call'
     }
-  },
-  {
-    _id: 'homePage',
-    _type: 'homePage',
-    seo: {
-      title: 'Hamish Burke',
-      description:
-        'Software developer in Wellington, New Zealand. Independent projects, client work, and notes on AI and software systems.'
-    },
-    fold: {
-      name: 'Hamish Burke',
-      position: 'Alphero, Wellington · since 2026',
-      sourceLink: {
-        _type: 'ctaLink',
-        label: 'github.com/Slaymish',
-        href: 'https://github.com/Slaymish',
-        external: true,
-        ariaLabel: 'Hamish Burke on GitHub'
-      }
-    },
-    indexSection: {
-      projectsLink: { _type: 'ctaLink', label: 'All projects', href: '/projects' },
-      writingLink: { _type: 'ctaLink', label: 'All writing', href: '/writing' }
-    },
-    contactHeading: 'Working on something interesting?'
   },
   {
     _id: 'writingIndexPage',
@@ -233,45 +181,6 @@ const documents: SeedDocument[] = [
       downloadCta: { _type: 'ctaLink', label: 'Open academic CV', href: '/cv.pdf' },
       requestCta: { _type: 'ctaLink', label: 'Request a current CV →', href: `mailto:${CONTACT_EMAIL}` }
     }
-  },
-  {
-    _id: 'workIndexPage',
-    _type: 'workIndexPage',
-    seo: {
-      title: 'Selected Work',
-      description: 'Client websites, independent products, and technical studies built by Hamish Burke in Wellington, New Zealand.'
-    },
-    hero: {
-      eyebrow: 'Selected work · 2024–2026',
-      headlineLines: ['Work I can', 'show you.'],
-      intro:
-        'Client websites, products I built for myself, and a few technical studies.'
-    },
-    leadSection: {
-      heading: 'Lead work',
-      description: 'Finished client work and the larger products.'
-    },
-    supportSection: {
-      heading: 'Technical studies',
-      description: 'Smaller builds, each one testing one specific thing.'
-    },
-    contactHeading: 'What are you trying to make work?'
-  },
-  {
-    _id: 'projectsIndexPage',
-    _type: 'projectsIndexPage',
-    seo: {
-      title: 'Projects',
-      description:
-        'Independent projects by Hamish Burke, including a home lab, a self-hosted finance ledger, and a GPU sharing platform.'
-    },
-    hero: {
-      eyebrow: 'Independent projects',
-      headlineLines: ['Things I built', 'to find out.'],
-      intro:
-        'Projects I started myself, usually to find out whether something was possible. A home lab, a self-hosted finance ledger, a GPU sharing platform.'
-    },
-    contactHeading: 'Working on something similar?'
   },
   {
     _id: 'contactPage',
