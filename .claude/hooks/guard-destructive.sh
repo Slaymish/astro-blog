@@ -5,8 +5,8 @@
 #
 # `scripts/seed-page-copy.ts` uses createOrReplace across every page-copy
 # singleton, so running it discards anything edited in Studio since the script
-# was last updated. The copy-* and migrate-* scripts patch live documents.
-# None of them have a dry-run mode.
+# was last updated, and it has no dry-run mode. (The one-off copy-* and
+# migrate-* patch scripts it also guarded were deleted on 2026-09-05.)
 set -uo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
@@ -71,19 +71,16 @@ runs_script() {
 }
 
 destructive=0
-patching=0
 
 # `pnpm run seed:copy` and friends never name the script file, so check separately.
 if [[ "$command_text" =~ (^|[[:space:]\;\&\|\(])(pnpm|npm|yarn|bun)([[:space:]]+run)?[[:space:]]+seed:copy([[:space:]]|$) ]]; then
   destructive=1
 fi
 runs_script "$command_text" '(^|/)seed-page-copy\.ts' && destructive=1
-runs_script "$command_text" '(^|/)(copy-depersona|copy-humanise|copy-humanise-posts|migrate-home-datasheet)\.ts' && patching=1
 
-[ "$destructive" -eq 0 ] && [ "$patching" -eq 0 ] && exit 0
+[ "$destructive" -eq 0 ] && exit 0
 
-if [ "$destructive" -eq 1 ]; then
-  cat >&2 <<'MSG'
+cat >&2 <<'MSG'
 Blocked: this publishes page-copy singletons with createOrReplace, overwriting
 whatever is currently in the production dataset.
 
@@ -94,11 +91,4 @@ no undo. Ask Hamish to confirm the reconcile has happened.
 To run it once the reconcile is done and Hamish has agreed:
   SANITY_WRITE_ACK=1 <the same command>
 MSG
-else
-  cat >&2 <<'MSG'
-Blocked: this script commits patches to the production Sanity dataset and has no
-dry-run mode. Confirm with Hamish that the live documents should change, then:
-  SANITY_WRITE_ACK=1 <the same command>
-MSG
-fi
 exit 2
