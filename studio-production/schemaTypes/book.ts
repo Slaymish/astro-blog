@@ -5,6 +5,7 @@ export const book = defineType({
   title: 'Book',
   type: 'document',
   fields: [
+    defineField({ name: 'note', title: 'My reading note', type: 'text', rows: 4, description: 'What stayed with you, what you questioned, or where you disagreed. Use your own words.' }),
     defineField({
       name: 'title',
       title: 'Title',

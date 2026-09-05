@@ -12,13 +12,11 @@
  * `theme.ts` is deliberately absent: it holds build-time constants for the two
  * scripts that must stay inline, not runtime behaviour.
  */
-import { initAmbientBackground } from './ambientBackground';
 import { initAnalytics } from './analyticsTracker';
 import { initBookingRef } from './bookingRef';
 import { initCodeCopy } from './codeCopy';
 
 export function initShell(): void {
-  initAmbientBackground();
   // Before the tracker: this is what mints the visitor nonce the beacon reads.
   initBookingRef();
   initAnalytics();

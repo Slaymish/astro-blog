@@ -85,7 +85,6 @@ export const GET: APIRoute = async () => {
 
   const entries: SitemapEntry[] = [
     { loc: absoluteUrl('/', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '1.0' },
-    { loc: absoluteUrl('/projects', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.9' },
     { loc: absoluteUrl('/writing', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.9' },
     { loc: absoluteUrl('/about', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.7' },
     { loc: absoluteUrl('/work', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.7' },

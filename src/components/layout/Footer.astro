@@ -1,96 +1,18 @@
 ---
-import { SITE_AUTHOR } from '../../lib/site';
-import { getSiteSettings } from '../../lib/pageContent';
-import Logo from '../ui/Logo.astro';
-
-const currentYear = new Date().getFullYear();
-const { footer } = await getSiteSettings();
+import { CONTACT_EMAIL, SITE_AUTHOR, SOCIAL_PROFILES } from '../../lib/site';
 ---
-
 <footer class="site-footer">
-  <div class="site-footer__inner">
-    <div class="site-footer__meta">
-      <a href="/" class="footer-logo" aria-label="Hamish Burke, home"><Logo size={28} /></a>
-      <p>{footer.tagline}</p>
-
-      <nav aria-label="Footer navigation">
-        {footer.navLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
-      </nav>
-
-      <div class="site-footer__profiles">
-        {footer.profileLinks.map((link) => (
-          <a
-            href={link.href}
-            target={link.external ? '_blank' : undefined}
-            rel={link.external ? 'noopener noreferrer' : undefined}
-          >
-            {link.label}
-          </a>
-        ))}
-      </div>
-
-      <p class="site-footer__copyright">&copy; {currentYear} {SITE_AUTHOR}</p>
-    </div>
-  </div>
+  <p>{SITE_AUTHOR} <span>· Wellington, New Zealand</span></p>
+  <nav aria-label="Contact and profiles">
+    <a href={`mailto:${CONTACT_EMAIL}`}>Email</a>
+    <a href="https://github.com/Slaymish">GitHub</a>
+    <a href={SOCIAL_PROFILES.find(url => url.includes('linkedin'))}>LinkedIn</a>
+    <a href="/reading">Reading</a>
+    <a href="/privacy">Privacy</a>
+  </nav>
 </footer>
-
 <style>
-  .site-footer {
-    border-top: 1px solid var(--color-stroke-subtle);
-    margin-block-start: auto;
-    padding-block: 2rem;
-  }
-
-  .site-footer__inner {
-    margin-inline: auto;
-    max-width: var(--content-max-width);
-  }
-
-  .site-footer__meta {
-    align-items: start;
-    color: var(--color-text-secondary);
-    display: grid;
-    font-size: var(--type-label);
-    gap: var(--spacing-5);
-    padding-block-start: var(--spacing-6);
-  }
-
-  .site-footer__meta p {
-    line-height: 1.5;
-    margin: 0;
-  }
-
-  .site-footer nav,
-  .site-footer__profiles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-3) var(--spacing-5);
-  }
-
-  .site-footer nav a,
-  .site-footer__profiles a {
-    align-items: center;
-    color: var(--color-text-secondary);
-    display: inline-flex;
-    min-height: 2.75rem;
-  }
-
-  .footer-logo {
-    color: var(--color-text-primary);
-    display: inline-flex;
-    width: fit-content;
-  }
-
-  @media (min-width: 48rem) {
-    .site-footer__meta {
-      align-items: center;
-      grid-template-columns: auto minmax(12rem, 1fr) auto auto;
-    }
-
-    .site-footer__copyright {
-      grid-column: 2;
-    }
-  }
+.site-footer { max-width: var(--content-max-width); margin-inline: auto; border-top: 1px solid var(--color-stroke-subtle); padding-block: 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem 2rem; font-size: .875rem; }
+p { margin: 0; } span { color: var(--color-text-secondary); }
+nav { display: flex; flex-wrap: wrap; gap: 1.25rem; } a { color: var(--color-text-secondary); min-height: 2.75rem; display: inline-flex; align-items: center; } a:hover { color: var(--color-action); }
 </style>

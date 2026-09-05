@@ -1,12 +1,11 @@
 ---
 import Logo from '../ui/Logo.astro';
 import ThemeToggle from '../theme/ThemeToggle.astro';
-import { getSiteSettings } from '../../lib/pageContent';
+import { CONTACT_EMAIL } from '../../lib/site';
 
 const pathname = Astro.url.pathname;
 
-const { header } = await getSiteSettings();
-const navLinks = header.navLinks;
+const navLinks = [{href: '/work', label: 'Work'}, {href: '/writing', label: 'Writing'}, {href: '/about', label: 'About'}, {href: `mailto:${CONTACT_EMAIL}`, label: 'Email'}];
 
 function navLinkClasses(href: string) {
   const isActive = pathname === href || pathname.startsWith(href + '/');
@@ -84,7 +83,7 @@ function navLinkClasses(href: string) {
     gap: var(--spacing-4);
     justify-content: space-between;
     margin-inline: auto;
-    max-width: var(--content-max-width);
+    max-width: calc(var(--content-max-width) + 2 * var(--page-gutter));
     min-height: 4.25rem;
     padding-inline: var(--page-gutter);
   }

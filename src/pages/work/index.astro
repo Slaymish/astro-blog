@@ -1,63 +1,13 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
-import ContactBand from '../../components/work/ContactBand.astro';
 import PageHeader from '../../components/layout/PageHeader.astro';
 import WorkCard from '../../components/work/WorkCard.astro';
 import { getWorkStories } from '../../lib/workData';
-import { getWorkIndexPage } from '../../lib/pageContent';
-import { SITE_URL, absoluteUrl } from '../../lib/site';
-
-const [stories, copy] = await Promise.all([getWorkStories(), getWorkIndexPage()]);
-// Independent builds have their own index at /projects; this page is professional work.
-const professional = stories.filter((story) => story.kind === 'professional');
-const leadStories = professional.filter((story) => story.status === 'lead');
-const supportStories = professional.filter((story) => story.status === 'support');
-const { hero, leadSection, supportSection } = copy;
+const stories = (await getWorkStories()).sort((a, b) => b.date.localeCompare(a.date));
 ---
-
-<Layout
-  title={copy.seo.title}
-  description={copy.seo.description}
-  canonicalURL={absoluteUrl('/work', SITE_URL)}
->
-  <PageHeader
-    eyebrow={hero.eyebrow}
-    headline={hero.headlineLines}
-    intro={hero.intro}
-    headlineMeasure="16ch"
-    introMeasure="37rem"
-  />
-
-  <section aria-labelledby="lead-work-heading">
-    <div class="work-index__section-heading">
-      <h2 id="lead-work-heading">{leadSection.heading}</h2>
-      <p>{leadSection.description}</p>
-    </div>
-    <div>
-      {leadStories.map((story, index) => <WorkCard story={story} reverse={index % 2 === 1} />)}
-    </div>
+<Layout title="Work" description="Client websites, independent software, and research by Hamish Burke.">
+  <PageHeader eyebrow="Work" headline="Things I’ve made." intro="Client websites, independent software, and research. Each started with a different question; these are the decisions and results along the way." />
+  <section aria-label="All work, newest first">
+    {stories.map(story => <WorkCard story={story} />)}
   </section>
-
-  {/* The heading and its description only make sense with cards under them, and
-      there are periods with no support-status stories at all. */}
-  {supportStories.length > 0 && (
-    <section class="work-index__support" aria-labelledby="support-work-heading">
-      <div class="work-index__section-heading">
-        <h2 id="support-work-heading">{supportSection.heading}</h2>
-        <p>{supportSection.description}</p>
-      </div>
-      <div>
-        {supportStories.map((story) => <WorkCard story={story} variant="row" />)}
-      </div>
-    </section>
-  )}
-
-  <ContactBand heading={copy.contactHeading} booking />
 </Layout>
-
-<style>
-  .work-index__section-heading { align-items: end; display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-8); justify-content: space-between; padding-block: var(--spacing-8); }
-  .work-index__section-heading h2 { font-size: clamp(1.8rem, 3vw, 3rem); margin: 0; }
-  .work-index__section-heading p { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: 0; max-width: 25rem; }
-  .work-index__support { margin-block-start: clamp(4rem, 10vw, 9rem); }
-</style>

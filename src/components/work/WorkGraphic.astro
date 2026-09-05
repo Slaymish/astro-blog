@@ -29,9 +29,9 @@ const images: Record<ScreenshotGraphicKind, { src: string; position?: string }> 
 const image = isScreenshotGraphic(kind) ? images[kind] : undefined;
 
 const graphicAlts: Partial<Record<GraphicKind, string>> = {
+  wildfire: 'Recorded random-forest results: class G recall rose from zero to 0.7518 with weighting; class G precision was 0.0099 and overall accuracy was 32 percent.',
   brontehf: 'BrontëHF’s public projects page showing a filterable grid of portfolio work.',
-  'you-inc':
-    'A bank transaction from the Akahu feed passing through three classification tiers (a declarative rule, an NZFCC category fallback, then a suspense account) before posting as a balanced double-entry journal where debits equal credits.',
+  'you-inc': 'You Inc dashboard with sample cashflow, income, expenses and recurring payments.',
   'gpu-share':
     'Two layers: an always-on cloud layer holding accounts, ledger and invoices, and a home GPU host running Ollama and Blender that connects outbound through a tunnel with no open ports. Pricing is derived from electricity rate multiplied by GPU wattage.',
   'home-lab':
@@ -76,34 +76,7 @@ const graphicAlt = graphicAlts[kind] ?? alt;
     />
   )}
 
-  {kind === 'you-inc' && (
-    <div class="work-graphic__ledger">
-      <span class="work-graphic__caption">Akahu feed → double entry</span>
-
-      <div class="work-graphic__ledger-flow">
-        <div class="work-graphic__txn">
-          <small>Raw transaction</small>
-          <strong>NEW WORLD</strong>
-          <em>−$82.40</em>
-        </div>
-
-        <ol class="work-graphic__cascade">
-          <li class="is-matched"><i>1</i><span>Rule</span><b>Groceries</b></li>
-          <li><i>2</i><span>NZFCC</span><b>Fallback</b></li>
-          <li><i>3</i><span>Suspense</span><b>Never dropped</b></li>
-        </ol>
-
-        <div class="work-graphic__journal">
-          <small>Journal</small>
-          <div><span>Dr Groceries</span><b>82.40</b></div>
-          <div><span>Cr Cheque</span><b>82.40</b></div>
-          <p><span>Balance</span><b>0.00</b></p>
-        </div>
-      </div>
-
-      <span class="work-graphic__footnote">Idempotent on Akahu id · every entry balances</span>
-    </div>
-  )}
+  {kind === 'you-inc' && <img src="/images/work/youinc-demo-dashboard.png" alt="" width="2462" height="1420" loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} />}
 
   {kind === 'gpu-share' && (
     <div class="work-graphic__gpu">
@@ -170,15 +143,24 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   {kind === 'wildfire' && (
     <div class="work-graphic__experiment">
       <div class="work-graphic__experiment-head"><span>PySpark experiment</span><strong>1.88M records</strong></div>
-      <div class="work-graphic__matrix" aria-hidden="true">
-        {Array.from({ length: 28 }).map((_, index) => <i style={`--value: ${(index * 17) % 100}%`}></i>)}
-      </div>
-      <div class="work-graphic__tradeoff"><span>Rare-event recall ↑</span><span>False positives ↑</span></div>
+      <dl class="wildfire-results">
+        <div><dt>Class G recall</dt><dd>0 → 0.7518</dd></div>
+        <div><dt>Weighted class G precision</dt><dd>0.0099</dd></div>
+        <div><dt>Weighted overall accuracy</dt><dd>32%</dd></div>
+      </dl>
+      <p class="wildfire-caption">Recorded random-forest results · class weighting finds more rare fires, with many more false positives.</p>
     </div>
   )}
 </div>
 
 <style>
+  .work-graphic--you-inc { aspect-ratio: 2462 / 1420; max-height: none; }
+  .work-graphic--you-inc img { object-fit: contain; }
+  .wildfire-results { display: grid; gap: 1rem; margin-block: 1.5rem; }
+  .wildfire-results div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #c5c1b8; padding-bottom: .5rem; }
+  .wildfire-results dt { font-size: .85rem; } .wildfire-results dd { margin: 0; font-weight: 600; }
+  .wildfire-caption { font-size: .75rem; line-height: 1.5; margin: 0; }
+
   .work-graphic {
     aspect-ratio: 16 / 10;
     background: var(--color-bg-inset);
@@ -270,7 +252,6 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   }
 
   /* ---- Shared scaffolding for the composed graphics ---- */
-  .work-graphic--you-inc,
   .work-graphic--gpu-share,
   .work-graphic--home-lab {
     background-color: var(--color-bg-inset);
@@ -328,32 +309,6 @@ const graphicAlt = graphicAlts[kind] ?? alt;
     flex-direction: column;
   }
 
-  /* ---- YouInc: one transaction, classified then balanced ---- */
-  /* flex:1 lets the row own the spare height while align-items keeps the panels
-     sized to their content rather than stretching. */
-  .work-graphic__ledger-flow { align-items: center; display: grid; flex: 1; gap: clamp(.5rem, 2cqi, 1.25rem); grid-template-columns: minmax(0, .85fr) minmax(0, 1fr) minmax(0, 1fr); }
-
-  .work-graphic__txn { border: 1px solid var(--color-stroke-strong); box-shadow: var(--shadow-sm); gap: .15em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(4px); }
-  .work-graphic__txn strong { font-size: clamp(.95rem, 2.6cqi, 1.35rem); letter-spacing: -.01em; }
-  .work-graphic__txn em { color: var(--color-action); font-family: var(--font-mono); font-size: clamp(.9rem, 2.4cqi, 1.25rem); font-style: normal; }
-
-  .work-graphic__cascade { display: flex; flex-direction: column; gap: clamp(.2rem, .8cqi, .45rem); justify-content: center; list-style: none; margin: 0; padding: 0; }
-  /* Unmatched tiers are distinguished by colour and border, not opacity, so all
-     text keeps its contrast against the background. */
-  .work-graphic__cascade li { align-items: center; background: var(--surface); border: 1px solid var(--color-stroke-subtle); box-shadow: var(--shadow-xs); color: var(--color-text-secondary); display: grid; gap: clamp(.3rem, 1.1cqi, .7rem); grid-template-columns: auto auto minmax(0, 1fr); padding: clamp(.4rem, 1.3cqi, .7rem) clamp(.45rem, 1.5cqi, .85rem); transform: translateZ(2px); }
-  /* The tier that actually matched lifts above the ones that were skipped. */
-  .work-graphic__cascade li.is-matched { background: var(--surface); border-color: var(--color-action); box-shadow: var(--shadow-md); color: var(--color-text-primary); transform: translateZ(14px); }
-  .work-graphic__cascade i { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: clamp(.64rem, 1.5cqi, .74rem); font-style: normal; }
-  .work-graphic__cascade li.is-matched i { color: var(--color-action); }
-  .work-graphic__cascade span { font-size: clamp(.66rem, 1.6cqi, .78rem); letter-spacing: .05em; text-transform: uppercase; }
-  .work-graphic__cascade b { font-size: clamp(.7rem, 1.75cqi, .86rem); font-weight: var(--font-weight-medium); text-align: right; }
-
-  .work-graphic__journal { border: 1px solid var(--color-action); box-shadow: var(--shadow-lg); gap: .2em; padding: clamp(.6rem, 2cqi, 1.1rem); transform: translateZ(20px); }
-  .work-graphic__journal div { display: flex; font-family: var(--font-mono); font-size: clamp(.72rem, 1.8cqi, .9rem); gap: .75em; justify-content: space-between; }
-  .work-graphic__journal p { border-top: 1px solid var(--color-stroke-strong); display: flex; font-family: var(--font-mono); font-size: clamp(.72rem, 1.8cqi, .9rem); gap: .75em; justify-content: space-between; margin: .35em 0 0; padding-top: .4em; }
-  .work-graphic__journal p span { color: var(--color-text-secondary); }
-  .work-graphic__journal p b { color: var(--color-action); }
-
   /* ---- GPUShare: what stays up, and what only runs when the host does ---- */
   .work-graphic__gpu-split { align-items: center; display: grid; flex: 1; gap: clamp(.5rem, 1.8cqi, 1.1rem); grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
   .work-graphic__gpu-cloud,
@@ -404,8 +359,6 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   .work-graphic__experiment { display: flex; flex-direction: column; height: 100%; }
   .work-graphic__experiment-head { align-items: start; display: flex; font-size: clamp(.65rem, 1.5vw, 1rem); justify-content: space-between; text-transform: uppercase; }
   .work-graphic__experiment-head strong { font-family: var(--font-display); font-size: clamp(1rem, 2.8vw, 2rem); }
-  .work-graphic__matrix { display: grid; flex: 1; gap: 3px; grid-template-columns: repeat(7, 1fr); margin-block: clamp(.75rem, 2vw, 1.5rem); }
-  .work-graphic__matrix i { background: color-mix(in srgb, #24583e var(--value), #d8ddd6); }
   .work-graphic__tradeoff { display: flex; font-size: clamp(.55rem, 1.2vw, .75rem); font-weight: 700; justify-content: space-between; text-transform: uppercase; }
   .work-graphic__tradeoff span:last-child { color: #a83225; }
 
@@ -422,8 +375,7 @@ const graphicAlt = graphicAlts[kind] ?? alt;
      on phones. Stack each narrative in reading order instead of shrinking its
      labels into desktop columns. */
   @media (max-width: 34rem) {
-    .work-graphic--you-inc,
-    .work-graphic--gpu-share,
+      .work-graphic--gpu-share,
     .work-graphic--home-lab {
       aspect-ratio: auto;
       max-height: none;
@@ -476,4 +428,6 @@ const graphicAlt = graphicAlts[kind] ?? alt;
       margin-left: 0;
     }
   }
+  .work-graphic--wildfire { aspect-ratio: auto; min-height: 20rem; max-height: none; }
+  .work-graphic--you-inc { aspect-ratio: 2462 / 1420; max-height: none; }
 </style>

@@ -1,7 +1,8 @@
 ---
 import Layout from '../../components/layout/Layout.astro';
 import ButtonLink from '../../components/ui/ButtonLink.astro';
-import Icon from '../../components/ui/Icon.astro';
+import { introduction } from '../../lib/workEditorial';
+import { portableTextToHtml } from '../../lib/portableText';
 import IconText from '../../components/ui/IconText.astro';
 import MediaFrame from '../../components/ui/MediaFrame.astro';
 import ContactBand from '../../components/work/ContactBand.astro';
@@ -22,46 +23,26 @@ if (!story) {
   return new Response('Work story not found', { status: 404 });
 }
 
-const storySlug = story.slug;
-const artifacts = [story.primaryArtifact, ...story.supportingArtifacts].filter(Boolean);
-const soleArtifact = artifacts.length === 1 ? artifacts[0] : undefined;
-const sourceHeading = soleArtifact?.liveUrl
-  ? 'Live site'
-  : soleArtifact?.type === 'report'
-    ? 'Project report'
-    : artifacts.length > 1
-      ? 'Project links'
-      : 'Project link';
-const sourceDescription = soleArtifact?.liveUrl
-  ? 'See the finished project in use.'
-  : soleArtifact?.type === 'report'
-    ? 'Read the original project report.'
-    : 'Explore the project source and related writing.';
-
-function artifactUrl(artifact: WorkArtifact) {
-  const externalUrl = artifact.githubUrl || artifact.liveUrl;
-  if (externalUrl) return externalUrl;
-
-  const url = artifactHref(artifact);
-  return artifact.type === 'post'
-    ? `${url}?from=${encodeURIComponent(`/work/${storySlug}`)}`
-    : url;
-}
-
-function isExternal(url: string) {
-  return url.startsWith('http');
-}
-
-// Detail pages are shared, so the back link returns to whichever index listed the story.
-const backLink =
-  story.kind === 'independent'
-    ? { href: '/projects', label: 'All projects' }
-    : { href: '/work', label: 'All work' };
+const artifacts = [story.primaryArtifact, ...story.supportingArtifacts].filter((artifact): artifact is WorkArtifact => Boolean(artifact));
+const links = artifacts.flatMap(artifact => {
+  const destinations = [];
+  if (artifact.liveUrl) destinations.push({ href: artifact.liveUrl, label: story.slug === 'you-inc' ? 'Try demo' : 'Visit site' });
+  if (artifact.githubUrl) destinations.push({ href: artifact.githubUrl, label: 'Source code' });
+  if (artifact.type !== 'project') destinations.push({ href: artifactHref(artifact), label: artifact.title });
+  return destinations;
+});
+const youIncSections = [
+  ['A ledger before a dashboard', 'I wanted a coherent view of what I own, owe, earn and spend. That needed a real accounting model underneath. Synced transactions enter a double-entry ledger where every posting must balance; cashflow, net worth and runway are different views of the same data.'],
+  ['Make uncertainty visible', 'Rules route known transactions. Anything uncertain stays in suspense for review instead of quietly disappearing or being treated as a confident classification. Akahu bank sync feeds the ledger, with credentials encrypted in Supabase Vault and kept out of the browser.'],
+  ['Taking the SaaS layer out', 'The first version had accounts, paid plans and billing. But holding other people’s bank credentials brought an obligation that went well beyond building a useful finance tool. I removed the commercial layer and made You Inc self-hosted and MIT licensed. The person running it supplies their own database and Akahu credentials.'],
+  ['What I would build first next time', story.differently || 'I would settle the ledger schema before building the dashboard.']
+];
+const narrativeHtml = portableTextToHtml(story.narrative?.length ? story.narrative : story.body);
 ---
 
 <Layout
   title={`${story.title} · ${story.descriptor}`}
-  description={story.summary}
+  description={introduction(story)}
   canonicalURL={absoluteUrl(`/work/${story.slug}`, SITE_URL)}
   article
   publishedTime={`${story.date}T00:00:00.000Z`}
@@ -70,23 +51,11 @@ const backLink =
     <header class="case-study__hero">
       <p class="case-study__eyebrow">{story.descriptor} · {story.timeframe ?? new Date(story.date).getFullYear()}</p>
       <h1>{story.title}</h1>
-      <p class="case-study__summary">{story.summary}</p>
-      {artifacts.length > 0 && (
-        <div class="case-study__links">
-          {artifacts.map((artifact, index) => {
-            const url = artifactUrl(artifact!);
-            return (
-              <ButtonLink
-                href={url}
-                external={isExternal(url)}
-                variant={index === 0 ? 'primary' : 'secondary'}
-              >
-                {index === 0 ? 'View the evidence' : artifact!.title}
-              </ButtonLink>
-            );
-          })}
-        </div>
-      )}
+      <p class="case-study__summary">{introduction(story)}</p>
+      <div class="case-study__links">
+        {links.map((link, index) => <ButtonLink href={link.href} external={link.href.startsWith('http')} variant={index === 0 ? 'primary' : 'secondary'}>{link.label}</ButtonLink>)}
+      </div>
+      <p class="case-study__role">{story.role}</p>
     </header>
 
     <div class="case-study__graphic">
@@ -98,27 +67,13 @@ const backLink =
       )}
     </div>
 
-    <section class="case-snapshot" aria-labelledby="case-snapshot-heading">
-      <h2 id="case-snapshot-heading">Case snapshot</h2>
-      <dl>
-        <div><dt>Problem</dt><dd>{story.problem}</dd></div>
-        <div><dt>My role</dt><dd>{story.role}</dd></div>
-        <div><dt>What I changed</dt><dd><ul>{story.interventions.map((item) => <li><Icon name="arrow-right" class="case-snapshot__bullet" />{item}</li>)}</ul></dd></div>
-        <div class="case-snapshot__result"><dt>Result</dt><dd>{story.result}</dd></div>
-      </dl>
-    </section>
-
-    {story.kind === 'independent' && (
-      <section class="case-snapshot case-reflection" aria-labelledby="case-reflection-heading">
-        <h2 id="case-reflection-heading">Reflection</h2>
-        <dl>
-          <div><dt>What was the question?</dt><dd>{story.question}</dd></div>
-          <div><dt>What did I build?</dt><dd>{story.built}</dd></div>
-          <div><dt>What did I learn?</dt><dd>{story.learned}</dd></div>
-          <div class="case-snapshot__result"><dt>What would I do differently?</dt><dd>{story.differently}</dd></div>
-        </dl>
-      </section>
-    )}
+    <div class="case-narrative">
+      {story.slug === 'you-inc' && !story.narrative?.length ? youIncSections.map(([heading, body], index) => <section>
+        <h2>{heading}</h2><p>{body}</p>
+        {index === 1 && <div class="ledger-note"><span>Bank transaction</span><b aria-hidden="true">→</b><span>Rule or suspense review</span><b aria-hidden="true">→</b><span>Balanced ledger</span></div>}
+      </section>) : narrativeHtml ? <div set:html={narrativeHtml} /> : <section><h2>Starting point</h2><p>{story.problem}</p><h2>Decisions along the way</h2><ul>{story.interventions.map(item => <li>{item}</li>)}</ul></section>}
+      <section class="case-outcome"><h2>{story.slug === 'you-inc' ? 'Where it stands' : 'Outcome'}</h2><p>{story.result}</p></section>
+    </div>
 
     {story.graphic.kind === 'sprint-coach' && (
       <section class="case-study__evidence" aria-labelledby="enquiry-flow-heading">
@@ -154,61 +109,29 @@ const backLink =
       </section>
     )}
 
-    {artifacts.length > 0 && (
-      <section class="case-study__sources" aria-labelledby="source-material-heading">
-        <h2 id="source-material-heading">{sourceHeading}</h2>
-        <p>{sourceDescription}</p>
-        <ul>
-          {artifacts.map((artifact) => {
-            const url = artifactUrl(artifact!);
-            return <li><a href={url} target={isExternal(url) ? '_blank' : undefined} rel={isExternal(url) ? 'noopener noreferrer' : undefined}><IconText icon={isExternal(url) ? 'arrow-up-right' : 'arrow-right'}>{artifact!.title}</IconText></a></li>;
-          })}
-        </ul>
-      </section>
-    )}
-
-    <a class="case-study__back" href={backLink.href}><IconText icon="arrow-left" position="start">{backLink.label}</IconText></a>
+    <a class="case-study__back" href="/work"><IconText icon="arrow-left" position="start">All work</IconText></a>
   </article>
 
-  <ContactBand
-    heading={story.kind === 'independent' ? 'Working on something similar?' : 'Need a system like this?'}
-    booking={story.kind === 'professional'}
-  />
+  {story.kind === 'professional' && <ContactBand heading="Have a website in mind?" booking />}
 </Layout>
 
 <style>
   .case-study__hero { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
   .case-study__eyebrow,
   .case-study__section-label { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  .case-study__hero h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 16ch; }
+  .case-study__hero h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: 1.05; margin: 0; max-width: 16ch; }
   .case-study__summary { color: var(--color-text-secondary); font-size: clamp(1.2rem, 2.5vw, 1.7rem); line-height: 1.4; margin: var(--spacing-8) 0 0; max-width: 34rem; }
   .case-study__links { display: flex; flex-wrap: wrap; gap: var(--spacing-3); margin-top: var(--spacing-8); }
   .case-study__graphic :global(.work-graphic) { margin-inline: auto; max-width: 54rem; }
   .case-study__graphic :global(.work-graphic--brontehf) { aspect-ratio: 2550 / 1231; max-height: none; }
   .case-study__graphic :global(.work-graphic--sprint-coach) { aspect-ratio: 2400 / 1250; max-height: none; }
   .case-study__graphic-caption { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: var(--spacing-3) auto 0; max-width: 54rem; }
-  .case-snapshot { margin-block: clamp(4rem, 10vw, 9rem); }
-  .case-snapshot > h2 { font-size: clamp(2.3rem, 5vw, 4.5rem); margin: 0 0 var(--spacing-8); }
-  .case-snapshot dl { border-top: 1px solid var(--color-stroke-subtle); margin: 0; }
-  .case-snapshot dl > div { border-bottom: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-3); padding-block: clamp(1.5rem, 4vw, 2.5rem); }
-  .case-snapshot dt { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
-  .case-snapshot dd { color: var(--color-text-primary); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.5; margin: 0; max-width: 48rem; }
-  .case-snapshot ul { display: grid; gap: var(--spacing-3); list-style: none; margin: 0; padding: 0; }
-  .case-snapshot li { display: grid; gap: var(--spacing-3); grid-template-columns: auto minmax(0, 1fr); }
-  /* Centre the bullet on the first line rather than on the whole block. */
-  .case-snapshot__bullet { color: var(--color-action); margin-block-start: calc((1.5em - var(--icon-size)) / 2); }
-  .case-snapshot__result dd { color: var(--color-action); }
-  .case-study__evidence { display: grid; gap: var(--spacing-8); margin-block: clamp(5rem, 12vw, 10rem); }
-  .case-study__evidence-heading h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin: 0; max-width: 17ch; }
-  .case-study__evidence-heading .case-study__section-label { margin-bottom: var(--spacing-3); }
-  .case-study__sources { border-top: 1px solid var(--color-stroke-subtle); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
-  .case-study__sources h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin: 0; }
-  .case-study__sources p { color: var(--color-text-secondary); max-width: 38rem; }
-  .case-study__sources ul { display: grid; gap: var(--spacing-3); list-style: none; margin: var(--spacing-6) 0 0; padding: 0; }
-  .case-study__sources a { color: var(--color-text-primary); font-weight: 700; }
-  .case-study__sources a:hover { color: var(--color-action); }
-  .case-study__back { color: var(--color-text-secondary); display: inline-flex; font-size: var(--type-body-small); margin-top: var(--spacing-8); }
-  @media (min-width: 48rem) {
-    .case-snapshot dl > div { grid-template-columns: minmax(8rem, .4fr) minmax(0, 1.6fr); }
-  }
+  .case-study__role { color: var(--color-text-secondary); font-size: .875rem; max-width: 65ch; margin-top: 1.5rem; }
+  .case-narrative { max-width: 66ch; margin: 4rem auto; font-size: 1.125rem; line-height: 1.75; }
+  .case-narrative :global(h2) { font-size: clamp(1.65rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.025em; margin: 3rem 0 1rem; }
+  .case-narrative :global(p) { color: var(--color-text-secondary); }
+  .case-outcome { border-top: 1px solid var(--color-stroke-subtle); margin-top: 3rem; }
+  .ledger-note { display: flex; align-items: center; flex-wrap: wrap; gap: .75rem; border-block: 1px solid var(--color-stroke-subtle); padding: 1.5rem 0; font-size: .875rem; } .ledger-note b { color: var(--color-action); }
+  .case-study__evidence { margin-block: 4rem; } .case-study__evidence h2 { font-size: 2rem; margin: 0 0 1.5rem; }
+  .case-study__back { display: inline-block; margin-block: 2rem; color: var(--color-action); }
 </style>

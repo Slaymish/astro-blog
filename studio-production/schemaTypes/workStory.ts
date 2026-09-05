@@ -41,6 +41,8 @@ export const workStory = defineType({
     }
   ],
   fields: [
+    defineField({ name: 'introduction', title: 'Project introduction', type: 'text', rows: 3, description: 'Lead with the reason for the project or the decision that makes it interesting. Overrides the editorial introduction.', validation: rule => rule.max(320) }),
+    defineField({ name: 'narrative', title: 'Project narrative', type: 'array', description: 'The story in project-specific sections: context, consequential decisions, and outcome. Replaces the legacy body when supplied.', of: [defineArrayMember({ type: 'block' })] }),
     defineField({
       name: 'title',
       title: 'Title',

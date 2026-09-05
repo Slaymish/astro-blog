@@ -56,6 +56,9 @@ export interface WorkStory {
   service: WorkService;
   date: string;
   summary: string;
+  introduction?: string;
+  body?: unknown[];
+  narrative?: unknown[];
   /** The measured fact shown on the homepage index. Absent on stories predating the field. */
   metric?: string;
   problem: string;

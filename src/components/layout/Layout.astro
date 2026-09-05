@@ -5,7 +5,7 @@ import "../../design-system/tokens.css";
 import "../../design-system/base.css";
 import "../../design-system/themes/dark.css";
 import "../../design-system/themes/light.css";
-import "../../design-system/circuit.css";
+
 import "../../styles/globals.css";
 
 
@@ -57,7 +57,6 @@ const canonicalHref = canonicalFromAstro(Astro.url, Astro.site, canonicalURL);
 const imageURL = absoluteUrl(image, siteURL);
 const personId = absoluteUrl("/#person", siteURL);
 const websiteId = absoluteUrl("/#website", siteURL);
-const showPageCircuit = Astro.url.pathname !== "/";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -242,9 +241,7 @@ const structuredData = {
         padding-block-end: 0;
       }
 
-      /* Wraps everything below the header. `isolation` gives the ambient
-         background its own stacking context so it can sit behind the shell
-         without a z-index arms race with page content. */
+      /* Shared canvas for the page and footer. */
       .page-body {
         background: var(--bg);
         display: flex;
@@ -252,33 +249,6 @@ const structuredData = {
         isolation: isolate;
         min-height: 100%;
         position: relative;
-      }
-
-      /* One viewport-sized fixed layer keeps the atmosphere continuous between
-         sections. Moving the gradient origins avoids transformed paint extending
-         beyond the viewport, which can create horizontal overflow in WebKit. */
-      .ambient-background {
-        background:
-          radial-gradient(ellipse 44% 38% at calc(14% + var(--ambient-shift-x, -1.5%)) calc(18% + var(--ambient-shift-y, 1%)), var(--ambient-accent), transparent 72%),
-          radial-gradient(ellipse 38% 44% at calc(86% - var(--ambient-shift-x, -1.5%)) calc(46% + var(--ambient-shift-y, 1%)), var(--ambient-neutral), transparent 74%),
-          radial-gradient(ellipse 46% 36% at calc(48% + var(--ambient-shift-x, -1.5%)) calc(94% - var(--ambient-shift-y, 1%)), var(--ambient-highlight), transparent 76%);
-        inset: 0;
-        pointer-events: none;
-        position: fixed;
-        z-index: 0;
-      }
-
-      /* A nearly invisible monochrome grain breaks up 8-bit colour bands in
-         shallow gradients. It is static and moves with the existing layer. */
-      .ambient-background::after {
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        background-repeat: repeat;
-        background-size: 180px 180px;
-        content: "";
-        inset: 0;
-        mix-blend-mode: soft-light;
-        opacity: var(--ambient-noise-opacity);
-        position: absolute;
       }
 
       .page-body > .site-shell {
@@ -297,41 +267,19 @@ const structuredData = {
     <Header />
 
     <div class="page-body">
-      <div class="ambient-background" aria-hidden="true"></div>
       <div class="site-shell">
         <main
           id="main-content"
           class={`grow w-full mx-auto pt-8 pb-8 sm:pt-10 sm:pb-12 md:pt-10 md:pb-16 ${fullWidth ? '' : 'max-w-[var(--content-max-width)]'}`}
           tabindex="-1"
         >
-          {showPageCircuit && (
-            <div class="page-circuit-motif" data-circuit="PAGE_BUS" aria-hidden="true">
-              <span class="page-circuit-motif__anchor page-circuit-motif__anchor--source" data-circuit-source></span>
-              <span
-                class="page-circuit-motif__anchor page-circuit-motif__anchor--middle"
-                data-circuit-node="middle"
-                data-circuit-lane="rail"
-              ></span>
-              <span
-                class="page-circuit-motif__anchor page-circuit-motif__anchor--end"
-                data-circuit-node="end"
-                data-circuit-lane="rail"
-              ></span>
-            </div>
-          )}
           <slot />
         </main>
         <Footer />
       </div>
     </div>
-    <!-- Wires [data-circuit] regions into a bus overlay. Regions opt in through
-         markup only; a page with none pays nothing but the module. -->
-    <script>
-      import { initCircuit } from "../../lib/circuit";
-      initCircuit();
-    </script>
 
-    <!-- The shell's own behaviour: ambient-background drift, the cal.com
+    <!-- The shell's own behaviour: the cal.com
          booking-ref rewriter, the analytics tracker and the code-copy buttons.
          Bundled rather than inline so it is type-checked and can share
          MAX_EVENTS with the server-side validator in src/lib/analytics.ts. -->

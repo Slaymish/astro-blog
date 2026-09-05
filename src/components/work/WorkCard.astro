@@ -1,4 +1,5 @@
 ---
+import { introduction, workCategory } from '../../lib/workEditorial';
 import type { WorkStory } from '../../lib/work';
 import { workStoryHref } from '../../lib/work';
 import IconText from '../ui/IconText.astro';
@@ -28,12 +29,11 @@ const repoUrl = story.primaryArtifact?.githubUrl;
     </div>
     <div class="work-card__content">
       <div class="work-card__meta">
-        <span>{story.descriptor}</span>
+        <span>{workCategory(story)} · {story.descriptor}</span>
         <span>{story.timeframe ?? new Date(story.date).getFullYear()}</span>
       </div>
       <h3>{story.title}</h3>
-      <p class="work-card__summary">{story.summary}</p>
-      <p class="work-card__result"><strong>Result</strong> {story.result}</p>
+      <p class="work-card__summary">{introduction(story)}</p>
       <div class="work-card__actions">
         {/* Stretched link: covers the whole card, so the card stays one big
             click target while the repo link below can sit above it. */}
@@ -74,7 +74,7 @@ const repoUrl = story.primaryArtifact?.githubUrl;
   .work-card__content { align-self: center; }
   .work-card__meta { align-items: start; color: var(--color-text-secondary); display: flex; font-size: var(--type-label); font-weight: 600; gap: var(--spacing-4); justify-content: space-between; letter-spacing: .09em; line-height: 1.4; text-transform: uppercase; }
   .work-card__meta span:last-child { flex-shrink: 0; text-align: right; }
-  h3 { font-size: clamp(2.5rem, 6vw, 5.5rem); letter-spacing: var(--tracking-heading); margin: var(--spacing-5) 0 var(--spacing-4); }
+  h3 { font-size: clamp(1.75rem, 3vw, 2.5rem); letter-spacing: var(--tracking-heading); margin: var(--spacing-5) 0 var(--spacing-4); }
   .work-card__summary { color: var(--color-text-primary); font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.4; margin: 0; max-width: 32rem; }
   .work-card__result { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.55; margin: var(--spacing-5) 0 0; max-width: 36rem; }
   .work-card__result strong { color: var(--color-action); display: block; font-size: var(--type-label); letter-spacing: .08em; margin-bottom: var(--spacing-1); text-transform: uppercase; }

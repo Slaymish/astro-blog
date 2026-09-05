@@ -13,6 +13,7 @@ type ReadingItem = {
   status: ReadingStatus;
   coverImage?: unknown;
   link?: string;
+  note?: string;
 };
 
 const readingItems = await fetchSanity<ReadingItem[]>(`
@@ -21,6 +22,7 @@ const readingItems = await fetchSanity<ReadingItem[]>(`
     author,
     status,
     coverImage,
+    note,
     link
   }
 `);
@@ -72,6 +74,7 @@ const grouped = groups
             <div class="reading__detail">
               <h3>{item.title}</h3>
               <p>{item.author}</p>
+              {item.note && <p class="reading__note">{item.note}</p>}
             </div>
             {item.link && (
               <a href={item.link} target="_blank" rel="noopener noreferrer" aria-label={`View ${item.title}`}>
@@ -98,6 +101,7 @@ const grouped = groups
   .reading__cover-placeholder { background: linear-gradient(135deg, var(--color-stroke-subtle), var(--color-stroke-strong)); }
   .reading__detail h3 { font-size: var(--type-body); line-height: 1.4; margin: 0 0 var(--spacing-1); }
   .reading__detail p { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: 0; }
+  .reading__detail .reading__note { margin-top: 1rem; font-size: 1rem; line-height: 1.65; color: var(--color-text-primary); }
   .reading__item > a { align-items: center; color: var(--color-text-secondary); display: inline-flex; min-height: 2.75rem; }
   .reading__item > a:hover { color: var(--color-action); }
 

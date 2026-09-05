@@ -129,7 +129,7 @@
   --font-size-5xl: 3rem;       /* 48px - H1 desktop */
 
   /* Fluid editorial roles. */
-  --type-display: clamp(3rem, 9vw, 7.5rem);
+  --type-display: clamp(2.75rem, 5vw, 4rem);
   --type-heading-1: clamp(2.75rem, 7vw, 6rem);
   --type-heading-2: clamp(2rem, 4.5vw, 4.5rem);
   --type-heading-3: clamp(1.5rem, 2.5vw, 2.5rem);
@@ -342,21 +342,18 @@
   --container-2xl: 1536px;
 
   /* Content max-widths */
-  --content-max-width: 90rem;
+  --content-max-width: 70rem;
   --reading-width: 68ch;
   --toc-width: 270px;              /* 240-300px TOC */
 
-  /* Fluid shell and section rhythm. The gutter floor is raised above what the
-     type alone would need: the circuit spine runs down the middle of it, so on
-     tablet and mobile the gutter has to stay wide enough to seat the pipework
-     clear of the screen edge. */
-  --page-gutter: clamp(2.25rem, 4vw, 4rem);
-  --section-space: clamp(4.5rem, 10vw, 9rem);
+  /* Reading-led spacing, with 20px minimum gutters on small screens. */
+  --page-gutter: clamp(1.25rem, 4vw, 3rem);
+  --section-space: clamp(3rem, 7vw, 6rem);
   --hero-top-space: 0rem;
   --hero-bottom-space: clamp(3.5rem, 7vw, 6rem);
   /* Applied as symmetric padding so a rule-topped band centres its content
      between its own rule and the next one. */
-  --band-inset: clamp(5.5rem, 13vw, 11.25rem);
+  --band-inset: clamp(2.5rem, 6vw, 5rem);
   --grid-gap: clamp(0.75rem, 2vw, 1.5rem);
   --padding-mobile: var(--page-gutter);
   --padding-tablet: var(--page-gutter);
