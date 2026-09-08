@@ -8,7 +8,7 @@ import { publicPostSlug } from './legacyRoutes';
 
 type WritingType = 'post' | 'report';
 
-export interface WritingEntry {
+interface WritingEntry {
   type: WritingType;
   title: string;
   excerpt?: string;
@@ -18,7 +18,8 @@ export interface WritingEntry {
   tags: string[];
 }
 
-type PostDoc = {
+type WritingDoc = {
+  type: WritingType;
   title: string;
   excerpt?: string;
   publishedAt: string;
@@ -26,70 +27,31 @@ type PostDoc = {
   tags?: string[];
 };
 
-type ReportDoc = {
-  title: string;
-  description?: string;
-  publishedAt: string;
-  slug: string;
-  tags?: string[];
-};
-
-/** Sanity stores a content slug; some posts publish under a different public one. */
-const postHref = (slug: string) => `/posts/${publicPostSlug(slug)}`;
-
-function formatDate(value: string): string {
-  if (!value) return '';
-  return new Date(value).toLocaleDateString('en-NZ', { year: 'numeric', month: 'short' });
-}
-
 export async function getWriting(): Promise<WritingEntry[]> {
-  const [posts, reports] = await Promise.all([
-    fetchSanity<PostDoc[]>(`
-      *[_type == "post" && defined(slug.current)] | order(publishedAt desc){
+  const docs = await fetchSanity<WritingDoc[]>(`
+    *[_type in ["post", "report"] && defined(slug.current)]
+      | order(publishedAt desc, _type asc) {
+        "type": _type,
         title,
-        excerpt,
+        "excerpt": select(_type == "post" => excerpt, description),
         publishedAt,
         "slug": slug.current,
         tags
       }
-    `),
-    fetchSanity<ReportDoc[]>(`
-      *[_type == "report" && defined(slug.current)] | order(publishedAt desc){
-        title,
-        description,
-        publishedAt,
-        "slug": slug.current,
-        tags
-      }
-    `)
-  ]);
+  `);
 
-  const entries: WritingEntry[] = [
-    ...posts.map((post) => ({
-      type: 'post' as const,
-      title: post.title || 'Untitled',
-      excerpt: post.excerpt,
-      href: postHref(post.slug),
-      publishedAt: post.publishedAt,
-      displayDate: formatDate(post.publishedAt),
-      tags: post.tags ?? []
-    })),
-    ...reports.map((report) => ({
-      type: 'report' as const,
-      title: report.title || 'Untitled',
-      excerpt: report.description,
-      href: `/reports/${report.slug}`,
-      publishedAt: report.publishedAt,
-      displayDate: formatDate(report.publishedAt),
-      tags: report.tags ?? []
-    }))
-  ];
-
-  return entries.sort(
-    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
+  return docs.map(doc => ({
+    type: doc.type,
+    title: doc.title || 'Untitled',
+    excerpt: doc.excerpt,
+    href: doc.type === 'post' ? `/posts/${publicPostSlug(doc.slug)}` : `/reports/${doc.slug}`,
+    publishedAt: doc.publishedAt,
+    displayDate: doc.publishedAt
+      ? new Date(doc.publishedAt).toLocaleDateString('en-NZ', { year: 'numeric', month: 'short' })
+      : '',
+    tags: doc.tags ?? [],
+  }));
 }
-
 
 /** Tags worth offering as a filter: anything that would narrow to more than one entry. */
 export function filterableTags(entries: WritingEntry[]): string[] {

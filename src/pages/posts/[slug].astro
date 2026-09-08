@@ -78,7 +78,6 @@ const htmlContent = !post.interactiveElement
 const plainText = post.markdownBody
   ? markdownToPlainText(post.markdownBody)
   : portableTextToPlainText(post.body);
-const markdownContent = plainText;
 
 const readingTime = calculateReadingTime(plainText);
 
@@ -200,7 +199,7 @@ const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOStr
     </article>
 
     <aside class="post-sidebar">
-      <TableOfContents content={markdownContent} htmlContent={htmlContent || undefined} />
+      <TableOfContents htmlContent={htmlContent} />
     </aside>
   </div>
   <!-- The page is prerendered, so restore the "came from a case study" back link

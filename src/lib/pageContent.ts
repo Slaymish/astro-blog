@@ -11,19 +11,19 @@ type PortableTextBlock = unknown;
  * retired on 2026-09-05.
  */
 
-export interface CtaLink {
+interface CtaLink {
   label: string;
   href: string;
   external?: boolean;
   ariaLabel?: string;
 }
 
-export interface Seo {
+interface Seo {
   title: string;
   description: string;
 }
 
-export interface AboutPage {
+interface AboutPage {
   seo: Seo;
   hero: { eyebrow: string; heading: string; intro: string };
   portrait: {
@@ -46,7 +46,7 @@ export interface AboutPage {
   contactHeading: string;
 }
 
-export interface CvPage {
+interface CvPage {
   seo: Seo;
   hero: { eyebrow: string; headlineLines: string[]; intro: string; actions: CtaLink[] };
   facts: { label: string; value: string }[];
@@ -59,21 +59,21 @@ export interface CvPage {
   };
 }
 
-export interface WritingIndexPage {
+interface WritingIndexPage {
   seo: Seo;
   hero: { eyebrow: string; headlineLines: string[]; intro: string };
   filterLabel: string;
   emptyMessage: string;
 }
 
-export interface ContactPage {
+interface ContactPage {
   seo: Seo;
   hero: { eyebrow: string; headlineLines: string[]; intro: string };
   channels: { label: string; note: string; link: CtaLink }[];
   availabilityNote: string;
 }
 
-export interface NotFoundPage {
+interface NotFoundPage {
   seo: Seo;
   code: string;
   heading: string;
@@ -85,7 +85,7 @@ export interface NotFoundPage {
 }
 
 /** Only the contact band still reads this; the header and footer are written in their components. */
-export interface SiteSettings {
+interface SiteSettings {
   contactBand: { label: string; defaultHeading: string; contactLabel: string; bookingLabel: string };
 }
 

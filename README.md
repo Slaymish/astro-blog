@@ -27,10 +27,13 @@ The project id is public; reads need no token. Writes (Studio, `seed:copy`) need
 | `pnpm run studio:dev` | Sanity Studio, a separate app in `studio-production/` |
 | `pnpm exec knip` | Dead code and unused dependency report |
 
+Studio uses the root pnpm dependencies and imports the same schemas as the embedded CMS.
+Run `pnpm run studio:build` to build its separate deployment.
+
 ## Publishing
 
 The site is prerendered, so a change published in Sanity reaches hamishburke.dev when the
-Netlify build hook runs. `CLAUDE.md` holds the working notes (rendering model, footguns,
+Netlify build hook runs. `AGENTS.md` holds the working notes (rendering model, footguns,
 where things live) and `ARCHITECTURE.md` the boundaries and invariants.
 
 ## License

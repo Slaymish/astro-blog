@@ -1,4 +1,4 @@
-export type LegacyRouteType = 'project' | 'post' | 'report';
+type LegacyRouteType = 'project' | 'post' | 'report';
 
 export type LegacyRoutePolicy =
   | { action: 'redirect'; destination: string }
@@ -23,17 +23,17 @@ export const archivedProjects = new Set([
   'wiki-router',
 ]);
 
-export const publicPostSlugs: Record<string, string> = {
+const publicPostSlugs: Record<string, string> = {
   'gpu-share': 'building-a-private-ai-server-for-friends',
 };
 
 /** Archived reports that should answer 410 rather than 404. */
-export const archivedReports = new Set([
+const archivedReports = new Set([
   'a-survey-of-nosql-databases-and-polyglot-persistence-patterns',
 ]);
 
-// Retired URLs are served as real 301s/410s by netlify.toml. The maps above stay
-// exported so the redirect rules there can be checked against one source.
+// Retired URLs are served as real 301s/410s by netlify.toml. The project maps
+// are exported so tests can check the corresponding redirect rules.
 
 const contentPostSlugs = Object.fromEntries(
   Object.entries(publicPostSlugs).map(([contentSlug, publicSlug]) => [publicSlug, contentSlug])
@@ -58,7 +58,7 @@ export function legacyRoutePolicy(type: LegacyRouteType, slug: string): LegacyRo
     return { action: 'redirect', destination: `/posts/${publicPostSlug(slug)}` };
   }
 
-  if (type === 'report' && slug === 'a-survey-of-nosql-databases-and-polyglot-persistence-patterns') {
+  if (type === 'report' && archivedReports.has(slug)) {
     return { action: 'gone' };
   }
 

@@ -30,13 +30,6 @@ body {
   padding: 0;
 }
 
-/* Compatibility treatment for retained grid routes. */
-.tile {
-  border: 1px solid var(--border);
-  background-color: var(--surface);
-  box-shadow: none;
-}
-
 /* ============================================
    ACCESSIBILITY
    ============================================ */
@@ -146,8 +139,6 @@ a {
   text-decoration-color: currentColor;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
-  transition: color var(--motion-duration-interaction) var(--easing-expressive),
-              text-decoration-thickness var(--motion-duration-interaction) var(--easing-expressive);
 }
 
 a:hover {
@@ -188,7 +179,7 @@ td {
    ============================================ */
 
 /* Smooth transitions for interactive elements */
-a, button, .social-icon, .cta-button {
+a, button {
   transition: color var(--motion-duration-interaction) var(--easing-expressive),
               background-color var(--motion-duration-interaction) var(--easing-expressive),
               border-color var(--motion-duration-interaction) var(--easing-expressive),

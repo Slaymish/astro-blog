@@ -1,55 +1,8 @@
 import { defineConfig } from 'astro/config';
-import tailwindcss from "@tailwindcss/vite";
-import react from '@astrojs/react';
-import sanity from '@sanity/astro';
-import { FontaineTransform } from 'fontaine';
+import sharedConfig from './astro.config.shared';
 
-const fontFallbackOptions = {
-  fallbacks: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Arial', 'sans-serif'],
-  resolvePath: (id: string) => new URL(`./public${id}`, import.meta.url),
-};
-
-// Load environment variables from .env file
-import { loadEnv } from 'vite';
-const env = loadEnv('', process.cwd(), '');
-
-// Validate required environment variables
-const projectId = env.SANITY_PROJECT_ID;
-if (!projectId) {
-  throw new Error(
-    'SANITY_PROJECT_ID is not set. Please ensure your .env file contains SANITY_PROJECT_ID=qnuj1c4o'
-  );
-}
-
-// Development configuration without Netlify adapter
+// Local development uses the same integrations without the Netlify adapter.
 export default defineConfig({
-  // Match production's HTML-aware whitespace handling.
-  compressHTML: true,
-  prefetch: {
-    prefetchAll: false,
-    defaultStrategy: 'hover',
-  },
-  integrations: [
-    react(),
-    sanity({
-      projectId,
-      dataset: env.SANITY_DATASET || 'production',
-      apiVersion: '2024-01-01',
-      useCdn: false,
-      studioBasePath: '/cms'
-    })
-  ],
-  markdown: {
-    shikiConfig: {
-      theme: 'github-light-high-contrast',
-    },
-  },
-  vite: {
-    plugins: [tailwindcss(), FontaineTransform.vite(fontFallbackOptions)],
-    define: {
-      'import.meta.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(env.SANITY_PROJECT_ID || ''),
-      'import.meta.env.PUBLIC_SANITY_DATASET': JSON.stringify(env.SANITY_DATASET || 'production'),
-      'import.meta.env.PUBLIC_SANITY_API_VERSION': JSON.stringify(env.SANITY_API_VERSION || '2024-01-01')
-    }
-  },
+  ...sharedConfig,
+  prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
 });

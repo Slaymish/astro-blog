@@ -23,10 +23,6 @@ const workStoryFields = `
   timeframe,
   interventions,
   result,
-  question,
-  built,
-  learned,
-  differently,
   graphic,
   "primaryArtifact": primaryArtifact->{
     "id": _id,
@@ -57,28 +53,9 @@ export async function getWorkStories(): Promise<WorkStory[]> {
     }
   `);
 
-  assertValidCollection(stories);
-  return stories;
-}
-
-export async function getWorkStory(slug: string): Promise<WorkStory | null> {
-  const story = await fetchSanity<WorkStory | null>(
-    `*[_type == "workStory" && slug.current == $slug][0] { ${workStoryFields} }`,
-    { slug }
-  );
-
-  if (!story) return null;
-
-  const errors = validateWorkStories([story]);
-  if (errors.length > 0) {
-    throw new Error(`Invalid work story: ${errors.join('; ')}`);
-  }
-  return story;
-}
-
-function assertValidCollection(stories: WorkStory[]): void {
   const errors = validateWorkStories(stories);
   if (errors.length > 0) {
     throw new Error(`Invalid work story collection: ${errors.join('; ')}`);
   }
+  return stories;
 }

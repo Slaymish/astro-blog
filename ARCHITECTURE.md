@@ -25,7 +25,7 @@ Deployment target is Netlify: static output plus those functions.
 - `src/components`: main-site UI building blocks (`layout`, `features`, `theme`, `ui`).
 - `src/lib`: integration and transformation helpers (`sanity`, `portableText`, `markdown`, `site`, `escape`), the work and writing data layers, the analytics validation modules, and `shell/` (the browser behaviour Layout boots).
 - `src/sanity/schemaTypes`: canonical schema definitions used by Sanity Studio configs.
-- `studio-production`: standalone Sanity Studio app with duplicate schema definitions.
+- `studio-production`: separately deployed Sanity Studio app using the root dependencies and shared schemas.
 - `public`: static assets (images, audio, PDFs, icons, manifest).
 - `tests`: route and security-focused tests.
 
@@ -33,6 +33,7 @@ Deployment target is Netlify: static output plus those functions.
 
 - `astro.config.ts`: production Astro config, Netlify adapter, Sanity integration, canonical site URL.
 - `astro.config.dev.ts`: local dev config without Netlify adapter.
+- `astro.config.shared.ts`: shared integrations, fonts, Markdown settings and Sanity environment validation for both configurations.
 - `src/pages/index.astro`: homepage. An introduction beside one featured story (You Inc),
   two more selected stories (Sprint Coach, Home Lab), then one piece of writing and a reading
   link. The selection is explicit in `src/lib/workEditorial.ts`, not sorted by date. See
@@ -52,7 +53,7 @@ Deployment target is Netlify: static output plus those functions.
 - `src/lib/writingData.ts`: the single posts-plus-reports stream behind `/writing` and `/tags/[tag]`. Owns the mapping from Sanity content slug to public post slug, so no caller should build a `/posts/...` href by hand.
 - `src/lib/workData.ts` + `src/lib/work.ts`: the work story query, its types and
   `validateWorkStories`, which fails the build on a story that is missing its summary,
-  alt text or interventions, or that duplicates an order, slug or artifact.
+  alt text or interventions, or that duplicates an order, slug or artifact. `getStaticPaths` passes these validated stories as page props, avoiding a second fetch for each detail page.
 - `src/lib/workEditorial.ts`: the homepage's featured slugs and the short introductions that
   stand in when a story has none of its own.
 - `src/lib/portableText.ts`: Sanity Portable Text -> HTML/plaintext conversion.
@@ -87,17 +88,17 @@ Core document types are defined in `src/sanity/schemaTypes`:
 
 Static page copy lives in singleton documents written by fixed ID, one per page:
 
-- `siteSettings`: header nav, footer, and contact-band copy.
-- `homePage`, `aboutPage`, `cvPage`, `workIndexPage`, `projectsIndexPage`, `writingIndexPage`, `contactPage`, `notFoundPage`.
+- `siteSettings`: contact-band copy. Header and footer copy live in their components.
+- `aboutPage`, `cvPage`, `writingIndexPage`, `contactPage`, `notFoundPage`.
 
-`scripts/seed-page-copy.ts` (`npm run seed:copy`) publishes the initial copy for these and is safe to re-run.
+`scripts/seed-page-copy.ts` (`pnpm run seed:copy`) replaces these documents. Reconcile Studio edits into the script before running it; re-running overwrites those edits.
 
-`studio-production/schemaTypes` mirrors these for the standalone Sanity Studio app.
+Both `sanity.config.ts` and `studio-production/sanity.config.ts` import `src/sanity/schemaTypes` directly. Studio commands run from the root pnpm project; there is one dependency manifest and lockfile.
 
 ## Architectural Invariants
 
 1. Sanity is the runtime source of truth for published content routes.
-- Page routes query Sanity directly via `fetchSanity`; Astro content collections exist but are not the active runtime path.
+- Page routes query Sanity directly via `fetchSanity`; there are no Astro content collections.
 - Sanity-backed pages, metadata, JSON-LD, and discovery outputs use bounded edge caching and are eventually consistent; RSS is the no-cache exception and bypasses the Sanity CDN.
 - Page copy is split. The homepage, the `/work` header, the About project blurbs and the story introductions are written in the templates and `src/lib/workEditorial.ts`; the other pages read singleton documents, and those must exist before the site renders (no fallback defaults).
 
@@ -111,7 +112,7 @@ Static page copy lives in singleton documents written by fixed ID, one per page:
 3a. One work index over one content type.
 - A `workStory` carries a `kind` of `professional` or `independent`. Since September 2026 `/work` lists both, newest first, and `/projects` redirects to it; `kind` still drives the category label and whether a story ends on the booking band.
 - **Every case-study detail page lives at `/work/[slug]`.** Retired `/projects/[slug]` URLs 301 there in `netlify.toml`. Do not move detail pages.
-- The four reflection fields on a story (`question`, `built`, `learned`, `differently`) are legacy and optional; nothing renders them.
+- The four reflection fields on a story (`question`, `built`, `learned`, `differently`) remain optional in the schema for existing content; the site neither queries nor renders them.
 
 4. PDF fetching is constrained by allowlist and content checks.
 - Do not bypass `src/pages/api/pdf.ts` safety checks when handling remote PDFs.
@@ -124,7 +125,7 @@ Static page copy lives in singleton documents written by fixed ID, one per page:
 - Route layer (`src/pages`) owns request-level data fetching and page assembly.
 - Component layer (`src/components`) owns presentation concerns.
 - Integration layer (`src/lib`) owns external client setup and content transformation.
-- Schema layer (`src/sanity/schemaTypes`, `studio-production/schemaTypes`) owns content model contracts with Sanity Studio.
+- Schema layer (`src/sanity/schemaTypes`) owns content model contracts with Sanity Studio.
 
 A useful rule: if a change touches external content source behavior, start in `src/lib/sanity.ts` or schema files; if it touches metadata/crawlability, start in `Layout.astro` or crawl endpoint routes.
 
@@ -155,6 +156,7 @@ Light and dark themes live in `src/design-system/themes/`, and each defines the 
 ### Testing and CI
 
 - Tests live in `tests/` and cover the escape helpers, markdown safety, the PDF route, the analytics validation and rate limiting, the insights and webhook routes, work story validation and the view-transition helpers.
+- `pnpm exec knip` checks unused files, exports and dependencies. `knip.json` explicitly includes `src/lib/shell/index.ts` because the analyzer does not follow its import inside Layout's Astro script block.
 - CI workflow in `.github/workflows/ci.yml` runs `pnpm install --frozen-lockfile`, `pnpm run test`, and `pnpm run build` on Node 22.
 
 ## What To Read First (New Contributor)
@@ -164,3 +166,7 @@ Light and dark themes live in `src/design-system/themes/`, and each defines the 
 3. `src/components/layout/Layout.astro` for global metadata/layout behavior.
 4. `src/lib/sanity.ts` and `src/sanity/schemaTypes/index.ts` for content model and data access.
 5. The specific route file in `src/pages` for the behavior you are changing.
+
+The Studio package manifest is a symlink to the root manifest because the Sanity CLI
+requires a manifest in its project directory. Dependency versions and installation remain
+owned by the root `package.json` and `pnpm-lock.yaml`.

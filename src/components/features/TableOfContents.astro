@@ -1,17 +1,10 @@
 ---
-interface TocItem {
-  id: string;
-  text: string;
-  level: number;
-}
-
 interface Props {
-  content: string;
-  htmlContent?: string;
+  htmlContent: string;
   minItems?: number;
 }
 
-const { content, htmlContent, minItems = 3 } = Astro.props;
+const { htmlContent, minItems = 3 } = Astro.props;
 
 const entityMap: Record<string, string> = {
   '&lt;': '<',
@@ -27,49 +20,13 @@ function decodeEntities(str: string): string {
   return str.replace(/&(?:lt|gt|amp|quot|#39|apos|nbsp);/g, match => entityMap[match] || match);
 }
 
-function extractTableOfContents(markdown: string, html?: string): TocItem[] {
-  const toc: TocItem[] = [];
-
-  if (html) {
-    const headingRegex = /<h([2-4])[^>]*id="([^"]*)"[^>]*>(.*?)<\/h[2-4]>/gi;
-    let match;
-    while ((match = headingRegex.exec(html)) !== null) {
-      const level = parseInt(match[1]);
-      const id = match[2];
-      const rawText = match[3];
-      const text = decodeEntities(rawText.replace(/<[^>]*>/g, '')).trim();
-      if (level >= 2 && level <= 4 && id && text) {
-        toc.push({ id, text, level });
-      }
-    }
-  } else {
-    const headingRegex = /^(#{2,4})\s+(.+)$/gm;
-    let match;
-    while ((match = headingRegex.exec(markdown)) !== null) {
-      const level = match[1].length;
-      const rawText = match[2];
-      const text = rawText
-        .replace(/\*\*([^*]+)\*\*/g, '$1')
-        .replace(/\*([^*]+)\*/g, '$1')
-        .replace(/`([^`]+)`/g, '$1')
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-        .trim();
-      const id = text
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w-]/g, '')
-        .replace(/-{2,}/g, '-')
-        .replace(/^-|-$/g, '');
-      if (level >= 2 && level <= 4 && id) {
-        toc.push({ id, text, level });
-      }
-    }
-  }
-
-  return toc;
-}
-
-const toc = extractTableOfContents(content, htmlContent);
+const toc = Array.from(htmlContent.matchAll(/<h([2-4])[^>]*id="([^"]*)"[^>]*>(.*?)<\/h[2-4]>/gi),
+  ([, level, id, text]) => ({
+    level: Number(level),
+    id,
+    text: decodeEntities(text.replace(/<[^>]*>/g, '')).trim(),
+  })
+).filter(item => item.id && item.text);
 const shouldShowToc = toc.length >= minItems;
 ---
 

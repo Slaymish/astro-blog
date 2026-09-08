@@ -71,45 +71,34 @@ const classes = [
   className
 ];
 
-const shared = {
-  id,
-  'aria-label': ariaLabel,
-  'aria-busy': loading ? ('true' as const) : undefined,
-  'aria-pressed': pressed === undefined ? undefined : pressed ? ('true' as const) : ('false' as const),
-  ...rest
-};
+const Tag = isLink ? 'a' : 'button';
+const attributes = isLink ? {
+  href: disabled || loading ? undefined : href,
+  role: disabled || loading ? 'link' as const : undefined,
+  'aria-disabled': disabled ? 'true' as const : undefined,
+  tabindex: disabled ? -1 : undefined,
+  target: external ? '_blank' : undefined,
+  rel: external ? 'noopener noreferrer' : undefined,
+} : { type, disabled: disabled || loading };
 ---
 
-{isLink ? (
-  <a
-    {...shared}
-    href={disabled || loading ? undefined : href}
-    role={disabled || loading ? 'link' : undefined}
-    aria-disabled={disabled ? 'true' : undefined}
-    tabindex={disabled ? -1 : undefined}
-    target={external ? '_blank' : undefined}
-    rel={external ? 'noopener noreferrer' : undefined}
-    class:list={classes}
-  >
-    {variant === 'icon' ? (
-      resolvedIcon ? <Icon name={resolvedIcon} motion="none" /> : <slot />
-    ) : resolvedIcon ? (
-      <IconText icon={resolvedIcon} position={iconPosition} class="btn__label"><slot /></IconText>
-    ) : (
-      <span class="btn__label"><slot /></span>
-    )}
-  </a>
-) : (
-  <button {...shared} type={type} disabled={disabled || loading} class:list={classes}>
-    {variant === 'icon' ? (
-      resolvedIcon ? <Icon name={resolvedIcon} motion="none" /> : <slot />
-    ) : resolvedIcon ? (
-      <IconText icon={resolvedIcon} position={iconPosition} class="btn__label"><slot /></IconText>
-    ) : (
-      <span class="btn__label"><slot /></span>
-    )}
-  </button>
-)}
+<Tag
+  id={id}
+  aria-label={ariaLabel}
+  aria-busy={loading ? 'true' : undefined}
+  aria-pressed={pressed}
+  {...rest}
+  {...attributes}
+  class:list={classes}
+>
+  {variant === 'icon' ? (
+    resolvedIcon ? <Icon name={resolvedIcon} motion="none" /> : <slot />
+  ) : resolvedIcon ? (
+    <IconText icon={resolvedIcon} position={iconPosition} class="btn__label"><slot /></IconText>
+  ) : (
+    <span class="btn__label"><slot /></span>
+  )}
+</Tag>
 
 <style>
   /* Buttons want more air between label and icon than inline links do. */

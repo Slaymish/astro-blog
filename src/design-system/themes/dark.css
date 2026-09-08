@@ -1,13 +1,5 @@
-/**
- * DARK THEME
- *
- * The release has one deliberate theme. Canonical semantic roles live here;
- * the shorter aliases keep retained routes working during the rebuild.
- */
-
 .dark {
   color-scheme: dark;
-
   --color-bg-canvas: var(--color-ink-950);
   --color-bg-raised: var(--color-ink-900);
   --color-bg-inset: var(--color-ink-1000);
@@ -18,7 +10,6 @@
   --color-action: var(--color-signal-400);
   --color-action-ink: var(--color-signal-950);
   --color-focus-ring: var(--color-signal-400);
-
   --bg: var(--color-bg-canvas);
   --surface: var(--color-bg-raised);
   --surface-2: var(--color-bg-inset);
@@ -27,13 +18,6 @@
   --border: var(--color-stroke-subtle);
   --border-strong: var(--color-stroke-strong);
   --accent: var(--color-action);
-  --accent-contrast: var(--color-action-ink);
   --focus: var(--color-focus-ring);
-
-  --shadow-neu: none;
-  --shadow-neu-inset: none;
-  --shadow-neu-hover: none;
   --tile-image-text: var(--color-text-primary);
-  --tile-image-label-text: var(--color-text-primary);
-  --tile-image-label-bg: rgb(7 9 8 / 0.82);
 }

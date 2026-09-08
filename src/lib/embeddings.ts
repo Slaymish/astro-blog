@@ -16,7 +16,7 @@ import { publicPostSlug } from './legacyRoutes';
 const MIN_SIMILARITY = 0.25;
 const MODEL = 'Xenova/all-MiniLM-L6-v2';
 
-export interface RelatedDoc {
+interface RelatedDoc {
   type: 'post' | 'report' | 'workStory';
   title: string;
   slug: string;

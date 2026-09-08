@@ -8,20 +8,16 @@ import MediaFrame from '../../components/ui/MediaFrame.astro';
 import ContactBand from '../../components/work/ContactBand.astro';
 import WorkGraphic from '../../components/work/WorkGraphic.astro';
 import { SITE_URL, absoluteUrl } from '../../lib/site';
-import { artifactHref, type WorkArtifact } from '../../lib/work';
-import { getWorkStories, getWorkStory } from '../../lib/workData';
+import { artifactHref, type WorkArtifact, type WorkStory } from '../../lib/work';
+import { getWorkStories } from '../../lib/workData';
 
 export async function getStaticPaths() {
   const stories = await getWorkStories();
-  return stories.map((story) => ({ params: { slug: story.slug } }));
+  return stories.map((story) => ({ params: { slug: story.slug }, props: { story } }));
 }
 
-const slug = Astro.params.slug as string;
-const story = await getWorkStory(slug);
-
-if (!story) {
-  return new Response('Work story not found', { status: 404 });
-}
+interface Props { story: WorkStory }
+const { story } = Astro.props;
 
 const artifacts = [story.primaryArtifact, ...story.supportingArtifacts].filter((artifact): artifact is WorkArtifact => Boolean(artifact));
 const links = artifacts.flatMap(artifact => {

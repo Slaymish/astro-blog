@@ -13,7 +13,7 @@ export const PATH_PATTERN = /^\/[\w\-/.]*$/;
 /** A custom event name, as emitted by the client tracker. */
 export const NAME_PATTERN = /^[a-z0-9-]{1,40}$/;
 /** The opaque per-visitor nonce shared between beacons and booking links. */
-export const NONCE_PATTERN = /^[a-z0-9]{4,32}$/;
+const NONCE_PATTERN = /^[a-z0-9]{4,32}$/;
 /**
  * Where the browser keeps that nonce. Named for booking links because they
  * minted it first; the session beacon reuses the same value as its `s` field,
@@ -37,7 +37,7 @@ interface IncomingEvent {
   n?: unknown;
 }
 
-export interface CleanEvent {
+interface CleanEvent {
   /** Milliseconds since the session started. */
   t: number;
   /** Page path. */

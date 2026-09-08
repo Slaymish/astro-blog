@@ -36,3 +36,6 @@ jobs:
 
       - name: Build
         run: pnpm run build
+
+      - name: Build Studio
+        run: pnpm run studio:build

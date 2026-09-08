@@ -41,19 +41,19 @@ export const ANALYTICS_EVENT_NAMES = [
   'work-view'
 ] as const;
 
-export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
+type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
 
 /** Scroll percentages that each fire `scroll-depth` once per page view. */
 export const SCROLL_MILESTONES = [25, 50, 60, 75, 90, 100] as const;
 
 /** One entry of the beacon's `e` array. Mirrors `CleanEvent` on the server. */
-export interface SequenceEvent {
+interface SequenceEvent {
   t: number;
   p: string;
   n?: string;
 }
 
-export interface SequenceBuffer {
+interface SequenceBuffer {
   readonly events: SequenceEvent[];
   push(name: AnalyticsEventName, at: number): void;
 }

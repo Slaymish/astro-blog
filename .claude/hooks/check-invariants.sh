@@ -15,23 +15,6 @@ path="$(relative_path "$raw_path")"
 
 findings=()
 
-# Sanity schemas are mirrored by hand. Drift is invisible: Studio simply lacks
-# the field and nothing errors.
-case "$path" in
-  src/sanity/schemaTypes/*.ts|studio-production/schemaTypes/*.ts)
-    base="$(basename "$path")"
-    a="$root/src/sanity/schemaTypes/$base"
-    b="$root/studio-production/schemaTypes/$base"
-    if [ ! -f "$a" ]; then
-      findings+=("Schema mirror: src/sanity/schemaTypes/$base does not exist. Both schema directories must carry the same file.")
-    elif [ ! -f "$b" ]; then
-      findings+=("Schema mirror: studio-production/schemaTypes/$base does not exist. Create it so the standalone Studio sees this type.")
-    elif ! diff -q "$a" "$b" >/dev/null 2>&1; then
-      findings+=("Schema mirror: src/sanity/schemaTypes/$base and studio-production/schemaTypes/$base now differ. Mirror the change before moving on. (diff -u to see it)")
-    fi
-    ;;
-esac
-
 # The test script globs tests/*.test.ts, so a test in a subdirectory never runs
 # and CI still passes.
 case "$path" in

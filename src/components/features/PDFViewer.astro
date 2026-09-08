@@ -8,112 +8,43 @@ const { pdfPath, title } = Astro.props;
 const proxiedPdfPath = pdfPath?.startsWith('http')
   ? `/api/pdf?url=${encodeURIComponent(pdfPath)}`
   : pdfPath;
+interface ToolbarControl { id?: string; title: string; label: string; icon: string; download?: boolean }
+const toolbar: Array<{ name: string; controls: ToolbarControl[] }> = [
+  { name: 'left', controls: [
+    {"id": "prev-page", "title": "Previous page (←)", "label": "Previous page", "icon": "<polyline points=\"15 18 9 12 15 6\"></polyline>"},
+    {"id": "next-page", "title": "Next page (→)", "label": "Next page", "icon": "<polyline points=\"9 18 15 12 9 6\"></polyline>"},
+  ] },
+  { name: 'center', controls: [
+    {"id": "zoom-out", "title": "Zoom out", "label": "Zoom out", "icon": "<circle cx=\"11\" cy=\"11\" r=\"8\"></circle> <line x1=\"8\" y1=\"11\" x2=\"14\" y2=\"11\"></line> <line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line>"},
+    {"id": "zoom-in", "title": "Zoom in", "label": "Zoom in", "icon": "<circle cx=\"11\" cy=\"11\" r=\"8\"></circle> <line x1=\"11\" y1=\"8\" x2=\"11\" y2=\"14\"></line> <line x1=\"8\" y1=\"11\" x2=\"14\" y2=\"11\"></line> <line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line>"},
+    {"id": "zoom-reset", "title": "Reset zoom", "label": "Reset zoom", "icon": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"></path> <path d=\"M21 3v5h-5\"></path> <path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"></path> <path d=\"M3 21v-5h5\"></path>"},
+  ] },
+  { name: 'right', controls: [
+    {"id": "fullscreen-btn", "title": "Fullscreen", "label": "Toggle fullscreen", "icon": "<path d=\"M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3\"></path>"},
+    {"title": "Download PDF", "label": "Download PDF", "icon": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"></path> <polyline points=\"7 10 12 15 17 10\"></polyline> <line x1=\"12\" y1=\"15\" x2=\"12\" y2=\"3\"></line>", "download": true},
+  ] },
+];
+
 ---
 
 <div class="pdf-viewer-wrapper">
-  <!-- PDF Toolbar -->
   <div class="pdf-toolbar">
-    <div class="toolbar-left">
-      <button 
-        id="prev-page" 
-        class="btn btn--icon btn--sm toolbar-btn" 
-        title="Previous page (←)"
-        aria-label="Previous page"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-      </button>
-      
-      <div class="page-info">
-        <span id="page-num">1</span>
-        <span>/</span>
-        <span id="page-count">--</span>
-      </div>
-      
-      <button 
-        id="next-page" 
-        class="btn btn--icon btn--sm toolbar-btn"
-        title="Next page (→)"
-        aria-label="Next page"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </button>
-    </div>
-
-    <div class="toolbar-center">
-      <button 
-        id="zoom-out" 
-        class="btn btn--icon btn--sm toolbar-btn"
-        title="Zoom out"
-        aria-label="Zoom out"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="8" y1="11" x2="14" y2="11"></line>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-      </button>
-      
-      <span id="zoom-level" class="zoom-display">100%</span>
-      
-      <button 
-        id="zoom-in" 
-        class="btn btn--icon btn--sm toolbar-btn"
-        title="Zoom in"
-        aria-label="Zoom in"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="11" y1="8" x2="11" y2="14"></line>
-          <line x1="8" y1="11" x2="14" y2="11"></line>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-      </button>
-
-      <button 
-        id="zoom-reset" 
-        class="btn btn--icon btn--sm toolbar-btn"
-        title="Reset zoom"
-        aria-label="Reset zoom"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
-          <path d="M21 3v5h-5"></path>
-          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
-          <path d="M3 21v-5h5"></path>
-        </svg>
-      </button>
-    </div>
-
-    <div class="toolbar-right">
-      <button 
-        id="fullscreen-btn" 
-        class="btn btn--icon btn--sm toolbar-btn"
-        title="Fullscreen"
-        aria-label="Toggle fullscreen"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-        </svg>
-      </button>
-      
-      <a 
-        href={proxiedPdfPath}
-        download
-        class="btn btn--icon btn--sm toolbar-btn"
-        title="Download PDF"
-        aria-label="Download PDF"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-      </a>
-    </div>
+    {toolbar.map(group => <div class={`toolbar-${group.name}`}>
+      {group.controls.map((control, index) => {
+        const Tag = control.download ? 'a' : 'button';
+        return <>
+          <Tag id={control.id} href={control.download ? proxiedPdfPath : undefined}
+            download={control.download} class="btn btn--icon btn--sm toolbar-btn"
+            title={control.title} aria-label={control.label}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={control.icon} />
+          </Tag>
+          {index === 0 && group.name === 'left' && <div class="page-info">
+            <span id="page-num">1</span><span>/</span><span id="page-count">--</span>
+          </div>}
+          {index === 0 && group.name === 'center' && <span id="zoom-level" class="zoom-display">100%</span>}
+        </>;
+      })}
+    </div>)}
   </div>
 
   <!-- PDF Canvas Container -->
@@ -135,257 +66,111 @@ const proxiedPdfPath = pdfPath?.startsWith('http')
       </a>
     </div>
     
-    <canvas id="pdf-canvas"></canvas>
+    <canvas id="pdf-canvas" aria-label={title}></canvas>
   </div>
 </div>
 
-<!-- Load self-hosted pinned PDF.js runtime -->
-<script src="/vendor/pdfjs/3.11.174/pdf.min.js" is:inline></script>
+<!-- Blocking scripts preserve PDF.js-before-viewer ordering, including on Cloudflare. -->
+<script src="/vendor/pdfjs/3.11.174/pdf.min.js" is:inline data-cfasync="false"></script>
+<script is:inline data-cfasync="false" define:vars={{ pdfPath: proxiedPdfPath }}>
+  (() => {
+    const get = id => document.getElementById(id);
+    const canvas = get('pdf-canvas');
+    const loading = get('pdf-loading');
+    const error = get('pdf-error');
+    const wrapper = document.querySelector('.pdf-viewer-wrapper');
+    const container = wrapper.querySelector('.pdf-container');
+    const showError = reason => {
+      console.error('PDF viewer:', reason);
+      loading.style.display = 'none';
+      error.style.display = 'flex';
+    };
+    const pdfjs = window.pdfjsLib;
+    if (!pdfjs) return showError('PDF.js runtime did not load');
+    pdfjs.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/3.11.174/pdf.worker.min.js';
 
-<script is:inline define:vars={{ pdfPath: proxiedPdfPath, title }}>
-  // Wait for PDF.js to be loaded. Bounded, so a runtime that never arrives
-  // surfaces the error state instead of spinning indefinitely.
-  var pdfjsWaitAttempts = 0;
-  var PDFJS_MAX_WAIT_ATTEMPTS = 100; // 100 x 100ms = 10s
-
-  function showPdfError(reason) {
-    console.error('PDF viewer:', reason);
-    var loading = document.getElementById('pdf-loading');
-    var error = document.getElementById('pdf-error');
-    if (loading) loading.style.display = 'none';
-    if (error) error.style.display = 'flex';
-  }
-
-  function initPDFViewer() {
-    if (typeof window.pdfjsLib === 'undefined') {
-      if (pdfjsWaitAttempts++ >= PDFJS_MAX_WAIT_ATTEMPTS) {
-        showPdfError('PDF.js runtime did not load');
-        return;
-      }
-      setTimeout(initPDFViewer, 100);
-      return;
-    }
-
-    const pdfjsLib = window.pdfjsLib;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/3.11.174/pdf.worker.min.js';
-
-    // State management
-    let pdfDoc = null;
+    let pdfDoc;
     let pageNum = 1;
-    let pageRendering = false;
-    let pageNumPending = null;
-    let scale = 1.0;
-    const MIN_SCALE = 0.5;
-    const MAX_SCALE = 3.0;
-    const SCALE_STEP = 0.25;
+    let scale = 1;
+    let rendering = false;
+    let pending = false;
 
-    // DOM elements
-    const canvas = document.getElementById('pdf-canvas');
-    const ctx = canvas.getContext('2d');
-    const loadingEl = document.getElementById('pdf-loading');
-    const errorEl = document.getElementById('pdf-error');
-    const pageNumEl = document.getElementById('page-num');
-    const pageCountEl = document.getElementById('page-count');
-    const zoomLevelEl = document.getElementById('zoom-level');
-
-    /**
-     * Render the page
-     */
-    function renderPage(num) {
-      pageRendering = true;
-      
-      pdfDoc.getPage(num).then(page => {
-        // Calculate scale to fit container width on mobile
-        const container = document.querySelector('.pdf-container');
-        const containerWidth = container.clientWidth - 32; // Account for padding
-        const viewport = page.getViewport({ scale: 1.0 });
-        const scaleToFit = containerWidth / viewport.width;
-        
-        // Use the smaller of the user's scale or the scale needed to fit
-        const effectiveScale = Math.min(scale, scaleToFit * 1.5);
-        const scaledViewport = page.getViewport({ scale: effectiveScale });
-
-        canvas.height = scaledViewport.height;
-        canvas.width = scaledViewport.width;
-
-        const renderContext = {
-          canvasContext: ctx,
-          viewport: scaledViewport
-        };
-
-        const renderTask = page.render(renderContext);
-
-        renderTask.promise.then(() => {
-          pageRendering = false;
-          loadingEl.style.display = 'none';
+    // One canvas render at a time. Changes during a render coalesce into the
+    // latest requested page/zoom, then the loop paints that state next.
+    async function renderPage() {
+      pending = true;
+      if (rendering || !pdfDoc) return;
+      rendering = true;
+      try {
+        while (pending) {
+          pending = false;
+          const num = pageNum;
+          const requestedScale = scale;
+          const page = await pdfDoc.getPage(num);
+          const fit = (container.clientWidth - 32) / page.getViewport({ scale: 1 }).width;
+          const viewport = page.getViewport({ scale: Math.min(requestedScale, fit * 1.5) });
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          get('page-num').textContent = num;
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+          loading.style.display = 'none';
+          error.style.display = 'none';
           canvas.style.display = 'block';
-
-          if (pageNumPending !== null) {
-            renderPage(pageNumPending);
-            pageNumPending = null;
-          }
-        }).catch(error => {
-          pageRendering = false;
-          showPdfError(error);
-        });
-      }).catch(error => {
-        pageRendering = false;
-        showPdfError(error);
-      });
-
-      pageNumEl.textContent = num;
-    }
-
-    /**
-     * Queue page rendering if another page is being rendered
-     */
-    function queueRenderPage(num) {
-      if (pageRendering) {
-        pageNumPending = num;
-      } else {
-        renderPage(num);
+        }
+      } catch (reason) {
+        showError(reason);
+      } finally {
+        rendering = false;
       }
     }
 
-    /**
-     * Navigate to previous page
-     */
-    function onPrevPage() {
-      if (pageNum <= 1) return;
-      pageNum--;
-      queueRenderPage(pageNum);
+    function navigate(delta) {
+      if (!pdfDoc) return;
+      const next = Math.max(1, Math.min(pdfDoc.numPages, pageNum + delta));
+      if (next === pageNum) return;
+      pageNum = next;
+      renderPage();
     }
 
-    /**
-     * Navigate to next page
-     */
-    function onNextPage() {
-      if (pageNum >= pdfDoc.numPages) return;
-      pageNum++;
-      queueRenderPage(pageNum);
+    function zoom(value) {
+      scale = Math.max(0.5, Math.min(3, value));
+      get('zoom-level').textContent = Math.round(scale * 100) + '%';
+      renderPage();
     }
 
-    /**
-     * Zoom in
-     */
-    function zoomIn() {
-      if (scale >= MAX_SCALE) return;
-      scale += SCALE_STEP;
-      scale = Math.min(scale, MAX_SCALE);
-      updateZoomDisplay();
-      queueRenderPage(pageNum);
-    }
+    const actions = {
+      'prev-page': () => navigate(-1),
+      'next-page': () => navigate(1),
+      'zoom-in': () => zoom(scale + 0.25),
+      'zoom-out': () => zoom(scale - 0.25),
+      'zoom-reset': () => zoom(1),
+      'fullscreen-btn': () => (document.fullscreenElement
+        ? document.exitFullscreen()
+        : wrapper.requestFullscreen()).catch(reason => console.error('PDF fullscreen:', reason)),
+    };
+    for (const [id, action] of Object.entries(actions)) get(id).addEventListener('click', action);
 
-    /**
-     * Zoom out
-     */
-    function zoomOut() {
-      if (scale <= MIN_SCALE) return;
-      scale -= SCALE_STEP;
-      scale = Math.max(scale, MIN_SCALE);
-      updateZoomDisplay();
-      queueRenderPage(pageNum);
-    }
-
-    /**
-     * Reset zoom
-     */
-    function resetZoom() {
-      scale = 1.0;
-      updateZoomDisplay();
-      queueRenderPage(pageNum);
-    }
-
-    /**
-     * Update zoom display
-     */
-    function updateZoomDisplay() {
-      zoomLevelEl.textContent = Math.round(scale * 100) + '%';
-    }
-
-    /**
-     * Toggle fullscreen
-     */
-    function toggleFullscreen() {
-      const wrapper = document.querySelector('.pdf-viewer-wrapper');
-      
-      if (!document.fullscreenElement) {
-        wrapper.requestFullscreen().catch(err => {
-          console.error('Error attempting to enable fullscreen:', err);
-        });
-      } else {
-        document.exitFullscreen();
-      }
-    }
-
-    // Event listeners
-    document.getElementById('prev-page').addEventListener('click', onPrevPage);
-    document.getElementById('next-page').addEventListener('click', onNextPage);
-    document.getElementById('zoom-in').addEventListener('click', zoomIn);
-    document.getElementById('zoom-out').addEventListener('click', zoomOut);
-    document.getElementById('zoom-reset').addEventListener('click', resetZoom);
-    document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      // Only handle if we're not in an input field
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      
-      switch(e.key) {
-        case 'ArrowLeft':
-          e.preventDefault();
-          onPrevPage();
-          break;
-        case 'ArrowRight':
-          e.preventDefault();
-          onNextPage();
-          break;
-        case '+':
-        case '=':
-          e.preventDefault();
-          zoomIn();
-          break;
-        case '-':
-          e.preventDefault();
-          zoomOut();
-          break;
-        case '0':
-          e.preventDefault();
-          resetZoom();
-          break;
-      }
+    const shortcuts = { ArrowLeft: 'prev-page', ArrowRight: 'next-page', '+': 'zoom-in', '=': 'zoom-in', '-': 'zoom-out', '0': 'zoom-reset' };
+    document.addEventListener('keydown', event => {
+      if (event.target.closest('input, textarea, select, [contenteditable]')) return;
+      const action = actions[shortcuts[event.key]];
+      if (action) { event.preventDefault(); action(); }
     });
 
-    // Load PDF
-    pdfjsLib.getDocument(pdfPath).promise.then(pdf => {
+    pdfjs.getDocument(pdfPath).promise.then(pdf => {
       pdfDoc = pdf;
-      pageCountEl.textContent = pdf.numPages;
-      renderPage(pageNum);
-    }).catch(error => {
-      console.error('Error loading PDF:', error);
-      loadingEl.style.display = 'none';
-      errorEl.style.display = 'flex';
-    });
+      get('page-count').textContent = pdf.numPages;
+      renderPage();
+    }).catch(showError);
 
-    // Handle window resize
     let resizeTimeout;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        if (pdfDoc) {
-          queueRenderPage(pageNum);
-        }
-      }, 250);
+      resizeTimeout = setTimeout(renderPage, 250);
     });
-  }
-
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPDFViewer);
-  } else {
-    initPDFViewer();
-  }
-</script><style>
+  })();
+</script>
+<style>
   .pdf-viewer-wrapper {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);

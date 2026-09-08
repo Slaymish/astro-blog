@@ -25,8 +25,8 @@ Run a single test file: `pnpm exec tsx --test tests/work.test.ts`.
 The glob is `tests/*.test.ts`, not `tests/**` — tests in subdirectories will not run.
 
 `pnpm exec knip` checks for dead code and unused dependencies (config in `knip.json`); there is
-no package.json script for it. It does not follow imports made from an Astro `<script>` block,
-so `src/lib/shell/*` shows up as unused when it is not.
+no package.json script for it. The shell entry point is explicitly listed in `knip.json` because Knip does not follow
+imports made from an Astro `<script>` block.
 
 ## Environment
 
@@ -106,8 +106,7 @@ Layers: routes (`src/pages/`) own request-level fetching and page assembly; comp
   `src/lib/work.ts`; the curated homepage selection: `src/lib/workEditorial.ts`
 - The posts-plus-reports stream shared by `/writing`, `/tags/[tag]` and the homepage:
   `src/lib/writingData.ts`
-- Canonical Sanity schemas: `src/sanity/schemaTypes/*`, mirrored in
-  `studio-production/schemaTypes/*`
+- Shared Sanity schemas: `src/sanity/schemaTypes/*`, imported by both Studio configs.
 - Static assets: `public/*`
 
 Non-obvious pieces:
@@ -163,8 +162,8 @@ HTTPS-only, redirect blocking and PDF MIME checks all stay. Never commit secrets
 ## Repo conventions
 
 - Keep changes minimal and task-scoped.
-- Sanity schema changes must land in **both** `src/sanity/schemaTypes/` and
-  `studio-production/schemaTypes/`.
+- Sanity schemas live only in `src/sanity/schemaTypes/`. Both Studio configs import them;
+  do not recreate a schema mirror or a separate Studio dependency tree.
 - Legacy URL handling is mirrored in two places: `src/lib/legacyRoutes.ts` and the `[[redirects]]`
   blocks in `netlify.toml`. Change both. Astro's `redirects` config is deliberately unused for
   these because it emits meta-refresh pages that outrank the Netlify rules.
@@ -202,7 +201,7 @@ rather than noise.
   commands that throw away uncommitted work (`git checkout -- `, `git restore`,
   `git reset --hard`, `git clean -f`, `git stash drop`) need `GIT_DESTRUCTIVE_ACK=1`, and only
   fire when the tree is actually dirty. Branch switches and reads pass through untouched.
-- **After an edit or write** (`check-invariants.sh`): reports Sanity schema mirror drift, a test
+- **After an edit or write** (`check-invariants.sh`): reports a test
   file placed in a subdirectory where the glob will skip it, edits to `legacyRoutes.ts` that need
   the `netlify.toml` counterpart, edits to the routing and canonical surface, and colour tokens
   used with an opacity modifier.

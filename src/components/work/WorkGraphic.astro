@@ -154,7 +154,6 @@ const graphicAlt = graphicAlts[kind] ?? alt;
 </div>
 
 <style>
-  .work-graphic--you-inc { aspect-ratio: 2462 / 1420; max-height: none; }
   .work-graphic--you-inc img { object-fit: contain; }
   .wildfire-results { display: grid; gap: 1rem; margin-block: 1.5rem; }
   .wildfire-results div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #c5c1b8; padding-bottom: .5rem; }
@@ -259,18 +258,16 @@ const graphicAlt = graphicAlts[kind] ?? alt;
     padding: clamp(.9rem, 3.4vw, 2.25rem);
   }
 
-  .work-graphic__caption,
-  .work-graphic__footnote {
+  .work-graphic__caption {
     color: var(--color-text-secondary);
     font-size: clamp(.68rem, 1.7cqi, .8rem);
     letter-spacing: .09em;
     text-transform: uppercase;
   }
-  .work-graphic__footnote { color: var(--color-action); }
 
   /* Panels sit at three slight elevations so the composition reads as layered
      rather than flat. Depth is small on purpose; the shadows carry most of it. */
-  .work-graphic__ledger,
+
   .work-graphic__gpu,
   .work-graphic__lab {
     display: flex;
@@ -282,7 +279,7 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   }
 
   /* The eyebrow over each panel. */
-  .work-graphic__ledger small,
+
   .work-graphic__gpu small,
   .work-graphic__lab small {
     color: var(--color-text-secondary);
@@ -291,15 +288,12 @@ const graphicAlt = graphicAlts[kind] ?? alt;
     text-transform: uppercase;
   }
 
-  .work-graphic__ledger-flow,
-  .work-graphic__cascade,
   .work-graphic__gpu-split,
   .work-graphic__lab-doors { transform-style: preserve-3d; }
 
   /* Every raised panel across the three compositions. Only what they all share
      lives here — border, shadow and depth are what tell them apart. */
-  .work-graphic__txn,
-  .work-graphic__journal,
+
   .work-graphic__gpu-cloud,
   .work-graphic__gpu-host,
   .work-graphic__lab-doors div,
@@ -359,8 +353,6 @@ const graphicAlt = graphicAlts[kind] ?? alt;
   .work-graphic__experiment { display: flex; flex-direction: column; height: 100%; }
   .work-graphic__experiment-head { align-items: start; display: flex; font-size: clamp(.65rem, 1.5vw, 1rem); justify-content: space-between; text-transform: uppercase; }
   .work-graphic__experiment-head strong { font-family: var(--font-display); font-size: clamp(1rem, 2.8vw, 2rem); }
-  .work-graphic__tradeoff { display: flex; font-size: clamp(.55rem, 1.2vw, .75rem); font-weight: 700; justify-content: space-between; text-transform: uppercase; }
-  .work-graphic__tradeoff span:last-child { color: #a83225; }
 
   @media (max-width: 30rem) {
     .work-graphic__pipeline b { display: none; }
@@ -382,27 +374,17 @@ const graphicAlt = graphicAlts[kind] ?? alt;
       padding: 1rem;
     }
 
-    .work-graphic__ledger,
     .work-graphic__gpu,
     .work-graphic__lab {
       gap: 1rem;
     }
 
-    .work-graphic__footnote {
-      font-size: .66rem;
-      letter-spacing: .045em;
-      text-wrap: balance;
-    }
-
-    .work-graphic__ledger-flow,
     .work-graphic__gpu-split,
     .work-graphic__lab-doors {
       gap: .75rem;
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .work-graphic__txn,
-    .work-graphic__journal,
     .work-graphic__gpu-cloud,
     .work-graphic__gpu-host,
     .work-graphic__lab-doors div,
