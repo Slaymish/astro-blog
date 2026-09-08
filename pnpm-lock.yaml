@@ -27,8 +27,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       '@portabletext/to-html':
-        specifier: ^5.0.1
-        version: 5.0.2
+        specifier: ^6.0.0
+        version: 6.0.0
       '@sanity/astro':
         specifier: ^3.5.1
         version: 3.5.1(4e437c5eabeae1c258d8ee1319863f14)
@@ -2857,17 +2857,9 @@ packages:
     resolution: {integrity: sha512-mNv1YShl0e6XJZIntQYm7nr9UbLXCf3+JktfGp1OO8iPxpdMRnhaIq3iGSMVrO9fIBcB7TNQgFfOdqQCSfXFew==}
     engines: {node: '>=22.12'}
 
-  '@portabletext/to-html@5.0.2':
-    resolution: {integrity: sha512-w59PcErj5JXUCv9tbV2npqJmcnORTAftCMLp0vc9FnWrXL3C9qYvuB2MQbdHsZEOesF3VmwqUsYUgjm7PX4JTw==}
-    engines: {node: '>=20.19 <22 || >=22.12'}
-
   '@portabletext/to-html@6.0.0':
     resolution: {integrity: sha512-kMqr55pJDBsIyOHLeVccFMFfJxSdozS+A1TeYhiihIinSDhb6ibUxpQIpg0B1n54vZJJW8rDs+QayP3vQqLKUg==}
     engines: {node: '>=22.12'}
-
-  '@portabletext/toolkit@5.0.2':
-    resolution: {integrity: sha512-Njc1LE1PMJkTx/wEPqZ6sOWGgFgX2B47fxpOQ/Ia4ByhsZoA5Sq8dNvvV5F052j/xE8TbOLiBEjS848FkKADDQ==}
-    engines: {node: '>=20.19 <22 || >=22.12'}
 
   '@portabletext/toolkit@6.0.0':
     resolution: {integrity: sha512-+qSqe0KnefuZfNLUhzQRTpbSKxslZof+3pNwxg0DC8dfZ1yLKyyBUw6iR7EpDL+SJlrnpiBfEcfmEuFitK1NSQ==}
@@ -11441,18 +11433,9 @@ snapshots:
 
   '@portabletext/schema@3.0.0': {}
 
-  '@portabletext/to-html@5.0.2':
-    dependencies:
-      '@portabletext/toolkit': 5.0.2
-      '@portabletext/types': 4.0.2
-
   '@portabletext/to-html@6.0.0':
     dependencies:
       '@portabletext/toolkit': 6.0.0
-      '@portabletext/types': 4.0.2
-
-  '@portabletext/toolkit@5.0.2':
-    dependencies:
       '@portabletext/types': 4.0.2
 
   '@portabletext/toolkit@6.0.0':
