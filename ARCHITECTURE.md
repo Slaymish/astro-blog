@@ -106,6 +106,7 @@ Static page copy lives in singleton documents written by fixed ID, one per page:
 
 3. Canonical URL logic is centralized.
 - Route-level canonical and absolute URL generation should use helpers/constants from `src/lib/site.ts`.
+- The shared public-path helper converts Astro's file-format prerender paths (`/index.html`, `/work.html`) to public routes (`/`, `/work`), keeping canonical metadata aligned with the sitemap and navigation's active state aligned with the visitor's route.
 
 3a. One work index over one content type.
 - A `workStory` carries a `kind` of `professional` or `independent`. Since September 2026 `/work` lists both, newest first, and `/projects` redirects to it; `kind` still drives the category label and whether a story ends on the booking band.

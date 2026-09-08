@@ -1,9 +1,9 @@
 ---
 import Logo from '../ui/Logo.astro';
 import ThemeToggle from '../theme/ThemeToggle.astro';
-import { CONTACT_EMAIL } from '../../lib/site';
+import { CONTACT_EMAIL, publicPathFromAstro } from '../../lib/site';
 
-const pathname = Astro.url.pathname;
+const pathname = publicPathFromAstro(Astro.url);
 
 const navLinks = [{href: '/work', label: 'Work'}, {href: '/writing', label: 'Writing'}, {href: '/about', label: 'About'}, {href: `mailto:${CONTACT_EMAIL}`, label: 'Email'}];
 
@@ -34,9 +34,9 @@ function navLinkClasses(href: string) {
         <Logo size={36} />
       </a>
 
-      <div class="site-nav__desktop" role="list">
+      <div class="site-nav__desktop">
         {navLinks.map(({ href, label }) => (
-          <a href={href} role="listitem" {...navLinkClasses(href)}>
+          <a href={href} {...navLinkClasses(href)}>
             {label}
           </a>
         ))}

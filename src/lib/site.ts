@@ -22,13 +22,20 @@ export function absoluteUrl(pathOrUrl: string, base = SITE_URL): string {
   return new URL(normalizedPath, `${base}/`).toString();
 }
 
+/** Public path for Astro's file-format prerender URL, also used by navigation. */
+export function publicPathFromAstro(requestUrl: URL): string {
+  return requestUrl.pathname.replace(/\/index\.html$/, '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+}
+
 export function canonicalFromAstro(
   requestUrl: URL,
   configuredSite?: URL,
   override?: string
 ): string {
   const base = configuredSite?.toString() || SITE_URL;
-  const target = override || requestUrl.pathname;
+  // With build.format = 'file', Astro.url contains the output filename during
+  // prerendering. Metadata must use the public route, like the sitemap does.
+  const target = override || publicPathFromAstro(requestUrl);
 
   if (target.startsWith('http://') || target.startsWith('https://')) {
     const absolute = new URL(target);
