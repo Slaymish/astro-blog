@@ -23,6 +23,8 @@ if (!projectId) {
 
 // Development configuration without Netlify adapter
 export default defineConfig({
+  // Match production's HTML-aware whitespace handling.
+  compressHTML: true,
   prefetch: {
     prefetchAll: false,
     defaultStrategy: 'hover',

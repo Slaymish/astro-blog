@@ -1,6 +1,9 @@
 {
   "name": "hamish-blog",
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "version": "1.0.0",
   "description": "Hamish's personal blog built with Astro and Sanity",
   "scripts": {
@@ -20,17 +23,17 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.114.0",
-    "@astrojs/check": "^0.9.4",
-    "@astrojs/netlify": "^6.5.4",
-    "@astrojs/react": "^4.4.2",
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/netlify": "^8.2.5",
+    "@astrojs/react": "^6.0.5",
     "@netlify/blobs": "^10.7.9",
     "@netlify/functions": "^5.3.0",
     "@portabletext/to-html": "^5.0.1",
-    "@sanity/astro": "^3.2.11",
-    "@sanity/client": "^7.14.1",
+    "@sanity/astro": "^3.5.1",
+    "@sanity/client": "^7.27.0",
     "@sanity/image-url": "^2.0.3",
     "@tailwindcss/vite": "^4.0.1",
-    "astro": "^5.1.10",
+    "astro": "^7.3.1",
     "fontaine": "^0.8.0",
     "github-slugger": "^2.0.0",
     "motion": "^12.38.0",
@@ -53,6 +56,6 @@
     "knip": "^6.0.2",
     "tailwindcss": "^4.0.1",
     "tsx": "^4.20.3",
-    "vite": "^6.4.1"
+    "vite": "^8.2.2"
   }
 }

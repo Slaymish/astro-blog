@@ -5,7 +5,7 @@ Astro, prerendered to static HTML and hosted on Netlify; content is edited in Sa
 
 ## Setup
 
-- Node 22 and pnpm 10 (what CI and Netlify build with)
+- Node 22.12.0 or newer and pnpm 10 (CI and Netlify use Node 22)
 
 ```bash
 pnpm install --frozen-lockfile

@@ -23,6 +23,8 @@ if (!projectId) {
 }
 
 export default defineConfig({
+  // Keep HTML-aware whitespace handling when upgrading to Astro 7.
+  compressHTML: true,
   site: 'https://hamishburke.dev',
   prefetch: {
     prefetchAll: true,
@@ -68,6 +70,6 @@ export default defineConfig({
   // config emits meta-refresh HTML pages that Netlify serves in preference to
   // the _redirects rule, which downgrades a 301 to a soft client-side hop.
   adapter: netlify({
-    edgeMiddleware: false,
+    middlewareMode: 'classic',
   })
 });
