@@ -26,7 +26,7 @@ You can see it working by running `pnpm run build` and then `pnpm run preview`, 
 - [x] Milestone 6: done. All four written. RSS reads past the CDN, uses the excerpt as the description, drops the slug exclusion and declares `en-nz`; the sitemap carries no `now` timestamps and never lists `/stats` or `/reading/sent`; robots.txt drops the `Host:` line and the per-crawler blocks. Verified after the build: `xmllint` reports both `rss.xml` and `sitemap.xml` well-formed, the sitemap has exactly 36 `<loc>` entries (9 static + 7 stories + 3 posts + 2 reports + 15 tags), and `rss.xml` has no `posts/gpu-share` and two hits for the new slug (link and guid).
 - [x] Milestone 7: done. Fonts in `src/assets/fonts`, headshot re-encoded to 1600x2400 at 192 KB in `src/assets/images`, `scripts/generate-icons.mjs` written and run, `public/site.webmanifest` written. `public/` is 156 KB (from 24 MB) and holds exactly `410.html`, `apple-touch-icon.png`, `cv.pdf`, `favicon.svg`, `icon-192.png`, `icon-512.png`, `og-default.png`, `site.webmanifest`. The six images the migration uploads were staged in `migration-assets/` and deleted once the additive write had uploaded them; all six are now Sanity assets, so a re-run reuses them by original filename.
 - [x] Milestone 8: done. Twelve pure suites restored and repointed, five added (`stats-auth`, `gpu-calculator`, `portable-text`, `validate`, `writing`), `markdown-safety` and `recommend-route` extended, `site.test.ts` rewritten onto `buildMetadata`, and the two build-output suites added. CI runs test, build, test, knip, studio:build. Both hooks updated and their new branches exercised. `AGENTS.md`, `ARCHITECTURE.md` and `README.md` rewritten; `legacy-src/`, `legacy-tests/`, `docs/design-docs/`, `docs/exec-plans/visitor-context.md` and `docs/portfolio-redesign.md` deleted. Acceptance met: 139 tests, 130 pass and 9 skipped before a build, 0 fail; `knip` silent; `astro check` 0/0/0. `src` is 9,040 lines across 100 files, against the 6,000-line target (see Surprises).
-- [ ] Milestone 9: not started. Needs the additive migration applied first, then a push, a deploy preview, `pnpm run studio:deploy`, the merge, the subtractive migration, Rocket Loader off in Cloudflare, and the smoke test.
+- [~] Milestone 9: merged and deployed. `rewrite` committed as `299863e`, fast-forwarded into `main` and pushed; CI green; the Netlify production deploy of `299863e` reached `ready`. Smoke test recorded in `docs/production-smoke-2026-09-11.md`: the whole preserve list returns 200, every redirect and 410 behaves, `/stats` is 401, and the crawl endpoints and metadata are correct. Deviations from the plan: no deploy preview or pull request, because Hamish asked for a direct merge; no Lighthouse run; the Studio is not deployed because no `studioHost` is configured and `sanity deploy` would prompt for a new public hostname. Still to do: turn off Rocket Loader and enable HSTS in Cloudflare (see Surprises), the browser-dependent checks, and the subtractive migration.
 
 
 ## Surprises & Discoveries
@@ -85,6 +85,14 @@ Found at cutover verification:
   Fixed with `netlify({ imageCDN: false })`: the headshot now builds four WebP variants under `/_astro` and the About page's `srcset` carries three candidates. A static site has nothing to defer to a per-request transform.
 - Observation: `pdfjs-dist` ships both minified and unminified builds, and `pdf.worker.mjs` is 2.18 MB against `pdf.worker.min.mjs` at 1.2 MB. Importing the minified worker took `dist/_astro` from 3.0 MB to 2.2 MB.
 - Observation: `dist/_astro` is 2.2 MB against the plan's under-2 MB, and 1.66 MB of that is PDF.js, which loads only on the two report pages. Every other chunk is at most 6 KB. The homepage's own payload is 8.4 KB of JavaScript and 61 KB of HTML, CSS and JavaScript together, so the visitor-facing claim in the Purpose section holds comfortably; the 2 MB figure does not, by 10 per cent, and the overage is one vendored PDF renderer.
+
+
+Found at deploy:
+
+- Observation: Cloudflare's Rocket Loader rewrites the `type` attribute of every script, including the inline theme resolver, to `e92c55ad...-text/javascript`. A script with an unrecognised `type` is not executed by the browser, so the resolver no longer runs before first paint and a light-theme visitor sees a dark flash until Rocket Loader gets to it. The CSP hash still matches, because Astro hashes the script's text and not its attributes, so this degrades the theme rather than breaking the page. This is the step the plan already called for; it is now measured rather than assumed.
+- Observation: Cloudflare strips `Strict-Transport-Security`. The header leaves the Netlify origin correctly (`max-age=31536000; includeSubDomains; preload`) and is absent through the edge, so it has to be enabled under SSL/TLS > Edge Certificates rather than fixed in `netlify.toml`. The plan did not anticipate this.
+- Observation: Cloudflare's email obfuscation injects `email-decode.min.js` because the footer carries a `mailto:` link. Same-origin, so the policy permits it.
+- Observation: publishing the additive migration fired the Netlify build hook, and the old site rebuilt twice (07:06 and 07:07) and reached `ready` both times. That is direct confirmation that the additive step is harmless to the live site, which the plan asserted but could not demonstrate until now.
 
 Found during Milestone 0:
 
@@ -244,7 +252,7 @@ Measured on the `rewrite` branch on 2026-09-11, after the additive migration and
 
 Two things the rewrite found that the audit had not: the migration as planned would have left both post covers without the alt text its own schema requires, and it would have destroyed the About page's body copy by unsetting the `portrait` object that `largeCopy` was nested inside. One was build-breaking and the other content-destroying, and neither was visible from the audit.
 
-**Not yet done.** Milestone 9 in full, and the browser-dependent checks listed under Milestone 4.
+**Not yet done.** The browser-dependent checks listed under Milestone 4, Lighthouse, the two Cloudflare settings, the hosted Studio deploy, and the subtractive migration.
 
 
 ## Context and Orientation
