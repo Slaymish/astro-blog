@@ -53,7 +53,6 @@ const updated = new Date(`${copy.updatedAt}T00:00:00Z`).toLocaleDateString('en-N
       }
     </section>
 
-    <p class="now__closing">{copy.closing}</p>
   </article>
 </Base>
 
@@ -64,7 +63,6 @@ const updated = new Date(`${copy.updatedAt}T00:00:00Z`).toLocaleDateString('en-N
   .now__entries h2 { color: var(--color-action); font-size: var(--type-label); font-weight: var(--font-weight-bold); letter-spacing: .08em; margin: 0; text-transform: uppercase; }
   .now__entries p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 1.5vw, 1.2rem); line-height: 1.7; margin: 0; max-width: 42rem; }
   .now__entries .text-link { display: inline-block; margin-top: var(--spacing-4); }
-  .now__closing { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.7; margin-block: clamp(3rem, 8vw, 5rem); max-width: 42rem; }
   @media (min-width: 48rem) {
     .now__entries > div { grid-template-columns: minmax(9rem, .4fr) minmax(0, 1.6fr); }
   }

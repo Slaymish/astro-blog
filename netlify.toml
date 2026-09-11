@@ -102,6 +102,81 @@
   status = 301
   force = true
 
+# Tag consolidation, September 2026. Fifteen tags across five entries became
+# five, so these twelve tag pages no longer generate. Each points at the tag
+# that absorbed it, or at the index where nothing did.
+[[redirects]]
+  from = "/tags/update"
+  to = "/writing"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/research"
+  to = "/writing"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/web-app"
+  to = "/writing"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/ollama"
+  to = "/tags/ai"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/cloudflare"
+  to = "/tags/self-hosted"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/infrastructure"
+  to = "/tags/architecture"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/devops"
+  to = "/tags/architecture"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/health"
+  to = "/tags/data-pipelines"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/data-engineering"
+  to = "/tags/data-pipelines"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/bigdata"
+  to = "/tags/data-pipelines"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/pyspark"
+  to = "/tags/data-pipelines"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tags/hadoop"
+  to = "/tags/data-pipelines"
+  status = 301
+  force = true
+
 # Retired content answers 410 rather than 404.
 [[redirects]]
   from = "/projects/bedroom-layout-designer"

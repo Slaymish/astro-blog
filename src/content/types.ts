@@ -156,7 +156,6 @@ export interface HomePage {
   seo: Seo;
   eyebrow: string;
   heading: string;
-  lede: string;
   intro: string;
   aboutLabel: string;
   featured: string[];
@@ -194,7 +193,6 @@ export interface NowPage {
   updatedAt: string;
   updatedLabel: string;
   entries: { label: string; body: string; link?: CtaLink }[];
-  closing: string;
 }
 
 export interface ReadingPage {
@@ -230,8 +228,6 @@ export interface WritingIndexPage {
   seo: Seo;
   hero: Hero;
   filterLabel: string;
-  readingNote: string;
-  readingLinkLabel: string;
   emptyMessage: string;
 }
 

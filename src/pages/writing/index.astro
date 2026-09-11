@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Button from '../../components/Button.astro';
 import EntryList from '../../components/EntryList.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import { getWritingIndexPage } from '../../content/queries';
@@ -38,10 +37,6 @@ const { hero } = copy;
 
   <p class="writing-empty" id="writing-empty" hidden={entries.length > 0}>{copy.emptyMessage}</p>
 
-  <aside class="writing-reading">
-    <p>{copy.readingNote}</p>
-    <Button href="/reading" variant="secondary">{copy.readingLinkLabel}</Button>
-  </aside>
 </Base>
 
 <style>
@@ -69,24 +64,5 @@ const { hero } = copy;
     color: var(--color-text-secondary);
     padding-block: var(--spacing-16);
     text-align: center;
-  }
-
-  /* Closing pointer to /reading. One line of copy and one button, sitting under
-     the rule the last list item already draws, so it reads as the end of the
-     page rather than a card. */
-  .writing-reading {
-    align-items: start;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-4);
-    padding-block: var(--spacing-8);
-  }
-
-  .writing-reading p {
-    color: var(--color-text-secondary);
-    font-size: var(--type-body-small);
-    line-height: 1.6;
-    margin: 0;
-    max-width: 42rem;
   }
 </style>

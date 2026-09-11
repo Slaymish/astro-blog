@@ -60,14 +60,6 @@ export const nowPage = defineType({
         })
       ],
       validation: (rule) => rule.required().min(1)
-    }),
-    defineField({
-      name: 'closing',
-      title: 'Closing note',
-      type: 'text',
-      rows: 3,
-      description: 'The line under the entries. Explains what a now page is.',
-      validation: (rule) => rule.required().max(300)
     })
   ],
   preview: {

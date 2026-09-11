@@ -52,7 +52,7 @@ export const getHomePage = () =>
     singleton<HomePage>(
       'homePage',
       `{
-        seo, eyebrow, heading, lede, intro, aboutLabel,
+        seo, eyebrow, heading, intro, aboutLabel,
         "featured": featured[]->slug.current,
         leadLinkLabel, moreWorkHeading, allWorkLabel, writingLabel,
         "writingEntry": writingEntry->{ _type, title, "slug": slug.current },
@@ -67,7 +67,7 @@ export const getWorkIndexPage = () =>
 
 export const getNowPage = () =>
   once('nowPage', () =>
-    singleton<NowPage>('nowPage', '{ seo, hero, updatedAt, updatedLabel, entries, closing }'),
+    singleton<NowPage>('nowPage', '{ seo, hero, updatedAt, updatedLabel, entries }'),
   );
 
 export const getReadingPage = () =>
@@ -89,7 +89,7 @@ export const getWritingIndexPage = () =>
   once('writingIndexPage', () =>
     singleton<WritingIndexPage>(
       'writingIndexPage',
-      '{ seo, hero, filterLabel, readingNote, readingLinkLabel, emptyMessage }',
+      '{ seo, hero, filterLabel, emptyMessage }',
     ),
   );
 
