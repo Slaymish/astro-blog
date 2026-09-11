@@ -8,7 +8,7 @@ export const BOOKING_URL = 'https://cal.com/hamishburke/30min';
 
 export const SOCIAL_PROFILES = {
   github: 'https://github.com/Slaymish',
-  linkedin: 'https://www.linkedin.com/in/hamish-burke-2301669a',
+  linkedin: 'https://www.linkedin.com/in/hamishburke',
   twitter: 'https://twitter.com/Slaymishh',
   instagram: 'https://instagram.com/hamishburke.studio',
 } as const;

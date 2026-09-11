@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import IconText from '../components/IconText.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { getNowPage } from '../content/queries';
+
+const copy = await getNowPage();
+const { hero } = copy;
+
+const updated = new Date(`${copy.updatedAt}T00:00:00Z`).toLocaleDateString('en-NZ', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<Base
+  title={copy.seo.title}
+  description={copy.seo.description}
+  breadcrumbs={[{ name: 'Now', path: '/now' }]}
+>
+  <article class="now">
+    <PageHeader eyebrow={hero.eyebrow} headline={hero.headlineLines} intro={hero.intro} measure="regular">
+      <p class="now__updated">
+        {copy.updatedLabel} <time datetime={copy.updatedAt}>{updated}</time>
+      </p>
+    </PageHeader>
+
+    <section class="now__entries" aria-label="What I'm on at the moment">
+      {
+        copy.entries.map((entry) => (
+          <div>
+            <h2>{entry.label}</h2>
+            <div>
+              <p>{entry.body}</p>
+              {entry.link && (
+                <a
+                  class="text-link"
+                  href={entry.link.href}
+                  aria-label={entry.link.ariaLabel}
+                  target={entry.link.external ? '_blank' : undefined}
+                  rel={entry.link.external ? 'noopener noreferrer' : undefined}
+                >
+                  <IconText icon={entry.link.external ? 'arrow-up-right' : 'arrow-right'}>
+                    {entry.link.label}
+                  </IconText>
+                </a>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </section>
+
+    <p class="now__closing">{copy.closing}</p>
+  </article>
+</Base>
+
+<style>
+  .now__updated { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: var(--spacing-6) 0 0; }
+  .now__entries { border-top: 1px solid var(--color-stroke-subtle); margin-top: clamp(3rem, 8vw, 5rem); }
+  .now__entries > div { border-bottom: 1px solid var(--color-stroke-subtle); display: grid; gap: var(--spacing-4); padding-block: clamp(1.8rem, 5vw, 3rem); }
+  .now__entries h2 { color: var(--color-action); font-size: var(--type-label); font-weight: var(--font-weight-bold); letter-spacing: .08em; margin: 0; text-transform: uppercase; }
+  .now__entries p { color: var(--color-text-secondary); font-size: clamp(1.05rem, 1.5vw, 1.2rem); line-height: 1.7; margin: 0; max-width: 42rem; }
+  .now__entries .text-link { display: inline-block; margin-top: var(--spacing-4); }
+  .now__closing { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.7; margin-block: clamp(3rem, 8vw, 5rem); max-width: 42rem; }
+  @media (min-width: 48rem) {
+    .now__entries > div { grid-template-columns: minmax(9rem, .4fr) minmax(0, 1.6fr); }
+  }
+</style>

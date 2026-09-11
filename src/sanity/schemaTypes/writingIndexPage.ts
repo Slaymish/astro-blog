@@ -36,6 +36,20 @@ export const writingIndexPage = defineType({
       validation: (rule) => rule.required().max(40)
     }),
     defineField({
+      name: 'readingNote',
+      title: 'Reading note',
+      type: 'text',
+      rows: 4,
+      description: 'The paragraph pointing at /reading, under the entry list.',
+      validation: (rule) => rule.required().max(300)
+    }),
+    defineField({
+      name: 'readingLinkLabel',
+      title: 'Reading link label',
+      type: 'string',
+      validation: (rule) => rule.required().max(40)
+    }),
+    defineField({
       name: 'emptyMessage',
       title: 'Empty state message',
       type: 'string',

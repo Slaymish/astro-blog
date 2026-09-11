@@ -10,7 +10,7 @@ export const homePage = defineType({
   fields: [
     defineField({ name: 'seo', title: 'SEO', type: 'seo', validation: (r) => r.required() }),
     text('eyebrow', 'Eyebrow', 60),
-    text('heading', 'Heading', 60),
+    text('heading', 'Heading', 80),
     defineField({ name: 'lede', title: 'Lede', type: 'text', rows: 2, validation: (r) => r.required().max(200) }),
     defineField({ name: 'intro', title: 'Intro', type: 'text', rows: 3, validation: (r) => r.required().max(280) }),
     text('aboutLabel', 'About link label', 40),

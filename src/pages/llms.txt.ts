@@ -21,6 +21,7 @@ The personal site of Hamish Burke, a software developer at Alphero in Wellington
 
 ## Key URLs
 - Home: ${absoluteUrl('/')}
+- Now (what he is working on and thinking about at the moment): ${absoluteUrl('/now')}
 - Writing: ${absoluteUrl('/writing')}
 - About: ${absoluteUrl('/about')}
 - Work (client, independent, and research projects): ${absoluteUrl('/work')}

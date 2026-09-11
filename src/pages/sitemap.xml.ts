@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getPosts, getReports, getTags, getWorkStories } from '../content/queries';
+import { getNowPage, getPosts, getReports, getTags, getWorkStories } from '../content/queries';
 import { tagSlug } from '../content/writing';
 import { escapeXml } from '../site/escape';
 import { absoluteUrl } from '../site/config';
@@ -27,15 +27,17 @@ function entry(path: string, lastmod?: string): string {
 }
 
 export const GET: APIRoute = async () => {
-  const [stories, posts, reports, tags] = await Promise.all([
+  const [stories, posts, reports, tags, now] = await Promise.all([
     getWorkStories(),
     getPosts(),
     getReports(),
     getTags(),
+    getNowPage(),
   ]);
 
   const urls = [
     ...STATIC_PATHS.map((path) => entry(path)),
+    entry('/now', now.updatedAt),
     ...stories.map((story) => entry(`/work/${story.slug}`, story.date)),
     ...posts.map((post) => entry(`/posts/${post.slug}`, post.updatedAt ?? post.publishedAt)),
     ...reports.map((report) => entry(`/reports/${report.slug}`, report.publishedAt)),

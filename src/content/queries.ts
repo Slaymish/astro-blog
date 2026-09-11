@@ -7,6 +7,7 @@ import type {
   CvPage,
   HomePage,
   NotFoundPage,
+  NowPage,
   Post,
   ReadingPage,
   Report,
@@ -64,6 +65,11 @@ export const getHomePage = () =>
 export const getWorkIndexPage = () =>
   once('workIndexPage', () => singleton<WorkIndexPage>('workIndexPage', '{ seo, hero }'));
 
+export const getNowPage = () =>
+  once('nowPage', () =>
+    singleton<NowPage>('nowPage', '{ seo, hero, updatedAt, updatedLabel, entries, closing }'),
+  );
+
 export const getReadingPage = () =>
   once('readingPage', () =>
     singleton<ReadingPage>('readingPage', '{ seo, eyebrow, headline, quote, groups, recommend }'),
@@ -81,7 +87,10 @@ export const getCvPage = () => once('cvPage', () => singleton<CvPage>('cvPage', 
 
 export const getWritingIndexPage = () =>
   once('writingIndexPage', () =>
-    singleton<WritingIndexPage>('writingIndexPage', '{ seo, hero, filterLabel, emptyMessage }'),
+    singleton<WritingIndexPage>(
+      'writingIndexPage',
+      '{ seo, hero, filterLabel, readingNote, readingLinkLabel, emptyMessage }',
+    ),
   );
 
 export const getContactPage = () =>

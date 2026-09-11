@@ -188,6 +188,15 @@ export interface WorkIndexPage {
   hero: Hero;
 }
 
+export interface NowPage {
+  seo: Seo;
+  hero: Hero;
+  updatedAt: string;
+  updatedLabel: string;
+  entries: { label: string; body: string; link?: CtaLink }[];
+  closing: string;
+}
+
 export interface ReadingPage {
   seo: Seo;
   eyebrow: string;
@@ -221,6 +230,8 @@ export interface WritingIndexPage {
   seo: Seo;
   hero: Hero;
   filterLabel: string;
+  readingNote: string;
+  readingLinkLabel: string;
   emptyMessage: string;
 }
 
