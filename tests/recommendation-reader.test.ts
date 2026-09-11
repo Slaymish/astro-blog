@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { readRecommendations, type RecommendationReadStore } from '../src/lib/recommendations';
+import { readRecommendations, type RecommendationReadStore } from '../src/server/recommendations';
 
 function fakeStore(data: Record<string, unknown>): RecommendationReadStore {
   return {

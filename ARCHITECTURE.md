@@ -1,172 +1,147 @@
 # Architecture
 
-This repository is a personal site built with Astro and Sanity. The main goal of this document is to help a new contributor answer two questions quickly:
+The authoritative description of the boundaries and invariants of this site.
+`README.md` covers setup and commands; `AGENTS.md` covers the working rules.
+If something here changes, change this file in the same commit.
 
-1. Where does a given behavior live?
-2. What invariants must stay true when changing it?
+## Rendering model
 
-Keep this file short and stable. It should describe structure and boundaries, not line-by-line implementation details.
+`output: 'static'` with the Netlify adapter. Every content route is written to
+an HTML file at build time from Sanity via `getStaticPaths`. Three consequences
+catch people out:
 
-## Bird's-Eye View
+- **Request-time inputs do not exist on a prerendered page.** Query parameters,
+  headers and cookies have to be resolved in the browser. The tag filter on
+  `/writing` does exactly that, and mirrors its state into the URL itself.
+- **Publishing in Sanity needs a Netlify build hook** to reach the site.
+- `build: { format: 'file' }` and `trailingSlash: 'never'`, so URLs emit as
+  `/work.html` and canonicals omit the trailing slash. `publicPathFromAstro`
+  maps an output filename back to its public route, and everything that builds a
+  URL goes through it. Keep the two settings and that helper in step.
 
-The system has one user-facing surface backed by Sanity data:
+The only routes that run on request are the ones that opt out with
+`export const prerender = false`: `api/collect.ts`, `api/recommend.ts`,
+`api/cal-webhook.ts`, `reading/sent.astro` and the private `stats.astro`.
 
-- Main site (`/`): portfolio, writing, projects, reports, reading list.
+## Layers
 
-At build time, routes fetch content from Sanity using GROQ queries and are prerendered to HTML. Shared layout components provide metadata, JSON-LD, theming, and shell structure. Additional routes emit crawl/discovery artifacts (`sitemap.xml`, `robots.txt`, `rss.xml`, `llms.txt`); a handful of API routes opt out of prerendering (the guarded PDF proxy, the analytics collector and report, the Cal.com webhook, the book recommendation box).
+| Directory | Owns |
+|---|---|
+| `src/pages/` | Routes: page assembly, `getStaticPaths`, and the request-time handlers |
+| `src/layouts/` | `Base.astro`: the document, the head, the policy hash, the shell |
+| `src/components/` | Presentation. No data fetching beyond a page-copy singleton |
+| `src/content/` | Everything about content: the Sanity client, queries, types, validators, the two renderers, image URLs |
+| `src/client/` | Browser behaviour, all of it reached through `shell.ts` or one page-level import |
+| `src/server/` | Request-time helpers: secrets, blob stores, rate limiting, the analytics contract |
+| `src/site/` | Site constants, canonical helpers, metadata, escaping, the logo geometry |
+| `src/styles/` | Tokens, themes, base elements, control primitives, long-form prose |
+| `src/sanity/schemaTypes/` | The content model contract, imported by both Studio configs |
 
-Deployment target is Netlify: static output plus those functions.
+### Where to change X
 
-## Codemap
+- A page, or any API endpoint: `src/pages/*`
+- The document head, metadata, or the policy: `src/layouts/Base.astro` and `src/site/seo.ts`
+- A button, chip or form field: `src/styles/primitives.css` owns every variant
+  and state. Astro renders them through `src/components/Button.astro` (`href`
+  makes it a link) and the `.input`, `.select`, `.range`, `.chip` and `.field__*`
+  classes. Do not style a control in a page's `<style>` block; add the state to
+  the primitives instead.
+- Colour, spacing, type: `src/styles/tokens.css` for primitives,
+  `src/styles/themes.css` for the semantic roles.
+- A GROQ query or a content type: `src/content/queries.ts`, `src/content/types.ts`
+- A cross-document rule Studio cannot enforce: `src/content/validate.ts`
+- Work story fields, and their category labels: `src/sanity/schemaTypes/workStory.ts`
+  and `src/content/work.ts`
+- The posts-plus-reports stream shared by `/writing`, `/tags/[tag]` and the
+  homepage: `src/content/writing.ts`
+- Site constants and canonical helpers: `src/site/config.ts`
 
-### Top-Level
+## Invariants
 
-- `src/pages`: route entrypoints (UI pages + API/text endpoints).
-- `src/components`: main-site UI building blocks (`layout`, `features`, `theme`, `ui`).
-- `src/lib`: integration and transformation helpers (`sanity`, `portableText`, `markdown`, `site`, `escape`), the work and writing data layers, the analytics validation modules, and `shell/` (the browser behaviour Layout boots).
-- `src/sanity/schemaTypes`: canonical schema definitions used by Sanity Studio configs.
-- `studio-production`: separately deployed Sanity Studio app using the root dependencies and shared schemas.
-- `public`: static assets (images, audio, PDFs, icons, manifest).
-- `tests`: route and security-focused tests.
+**Colour is used whole.** Every colour is a semantic role from
+`src/styles/themes.css`, and the roles resolve to primitives in
+`src/styles/tokens.css`. No opacity modifiers, no scale gradations, no literal
+hex outside `tokens.css`. If a tinted variant is needed, add a token.
 
-### Runtime Entry Points
+**No inline styles in rendered markup.** The Content-Security-Policy is
+hash-only, and a `style` attribute cannot be hashed. A page that needs a
+per-instance value sets a custom property on a class, as `PageHeader.astro` does
+with its three measures. `tests/build-output.test.ts` fails on any `style`
+attribute in the build, and a hook warns at edit time.
 
-- `astro.config.ts`: production Astro config, Netlify adapter, Sanity integration, canonical site URL.
-- `astro.config.dev.ts`: local dev config without Netlify adapter.
-- `astro.config.shared.ts`: shared integrations, fonts, Markdown settings and Sanity environment validation for both configurations.
-- `src/pages/index.astro`: homepage. An introduction beside one featured story (You Inc),
-  two more selected stories (Sprint Coach, Home Lab), then one piece of writing and a reading
-  link. The selection is explicit in `src/lib/workEditorial.ts`, not sorted by date. See
-  `docs/portfolio-redesign.md`.
-- `src/pages/work/index.astro`, `src/pages/writing/index.astro`, `src/pages/reading/index.astro`: list/index pages.
-- `src/pages/work/[slug].astro`, `src/pages/posts/[slug].astro`, `src/pages/reports/[...slug].astro`: dynamic detail routes.
-- `src/pages/projects/index.astro`: redirect-only; `/projects` is a 301 to `/work` (also declared in `netlify.toml`).
+**One inline script, hashed.** `src/client/themeBoot.ts` is the only inline
+script, and `Base.astro` hashes that exact constant into `script-src` with
+`Astro.csp.insertScriptHash`. Astro does not hash the content of an
+`is:inline set:html` script by itself, so that call is load-bearing; `Base.astro`
+throws if `security.csp` is ever turned off. Everything else is a bundled module,
+covered by `'self'`.
 
-### Layout and UI Composition
+**No syntax highlighter.** Shiki emits inline styles, so
+`markdown: { syntaxHighlight: false }` is set and code blocks render as plain
+`<pre><code>` on the monospace token.
 
-- `src/components/layout/Layout.astro`: main-site HTML shell, metadata, OG/Twitter tags, JSON-LD graph, robots directives, theme bootstrap.
-- `src/components/layout/Header.astro` + `src/components/layout/Footer.astro`: shared nav/footer.
+**Legacy URL policy lives only in `netlify.toml`.** Every rule carries `status`
+and `force = true`. There is no second copy in Astro's `redirects` config,
+because that emits meta-refresh pages that outrank the Netlify rules.
+`tests/redirects.test.ts` asserts every site-relative target exists in the build.
 
-### Content and Data Access
+**One JSON-LD graph per page.** `src/site/seo.ts` builds it; no page adds its
+own. It always contains a `Person` and a `WebSite`, then either an article node
+or a `WebPage`, then a `BreadcrumbList` when the page passes crumbs.
 
-- `src/lib/sanity.ts`: Sanity client creation and `fetchSanity` query helper. Reads through Sanity's edge CDN (bounded eventual consistency, roughly two minutes); `fetchFreshSanity` bypasses it and is used only by RSS.
-- `src/lib/writingData.ts`: the single posts-plus-reports stream behind `/writing` and `/tags/[tag]`. Owns the mapping from Sanity content slug to public post slug, so no caller should build a `/posts/...` href by hand.
-- `src/lib/workData.ts` + `src/lib/work.ts`: the work story query, its types and
-  `validateWorkStories`, which fails the build on a story that is missing its summary,
-  alt text or interventions, or that duplicates an order, slug or artifact. `getStaticPaths` passes these validated stories as page props, avoiding a second fetch for each detail page.
-- `src/lib/workEditorial.ts`: the homepage's featured slugs and the short introductions that
-  stand in when a story has none of its own.
-- `src/lib/portableText.ts`: Sanity Portable Text -> HTML/plaintext conversion.
-- `src/lib/markdown.ts`: markdown -> HTML/plaintext conversion.
-- `src/lib/site.ts`: canonical site constants and URL helpers used across metadata/feed/crawl endpoints.
-- `src/lib/pageContent.ts`: fetches the page-copy singletons by fixed document ID for the pages that still read one (About, CV, Writing, Contact, 404). Throws a descriptive error when a document is absent rather than rendering empty markup.
+**Locale is `en-NZ` everywhere.** Date formatting, `og:locale` (`en_NZ`),
+JSON-LD `inLanguage`, `<html lang>`, and the RSS `<language>`.
 
-### Crawl and Machine-Readable Endpoints
+**Content validation fails the build.** `getWorkStories`, `getPosts` and
+`getReports` run the validators in `src/content/validate.ts` and throw on a
+non-empty result, so a story with no cover alt text never reaches production.
 
-- `src/pages/sitemap.xml.ts`: static + Sanity-derived URL inventory.
-- `src/pages/robots.txt.ts`: crawler policy and sitemap declaration.
-- `src/pages/rss.xml.ts`: post feed.
-- `src/pages/llms.txt.ts`: LLM-oriented site summary and key URLs.
+## Non-obvious pieces
 
-### Security-Sensitive Path
+- **The page is an ordinary scrolling document.** A WebGL page-fold effect once
+  owned the scroll container and forced capture-phase listeners; it was removed
+  on 2026-08-18. Bind scroll handlers to `window`.
+- **`src/content/images.ts` derives its image builder from the asset URL**, not
+  from the Sanity client, because the client imports `astro:env/server` and the
+  test runner cannot resolve that. A Sanity asset URL carries its project and
+  dataset, so hotspot and crop still work.
+- **`src/content/writing.ts` and `src/content/related.ts` import the query layer
+  lazily**, for the same reason: their pure helpers have to stay importable
+  under `tsx`.
+- **The recommendation form works without JavaScript.** `/api/recommend` answers
+  a form-encoded body with a 303 to `/reading/sent`, and a JSON body with JSON.
+  Astro's `security.checkOrigin` rejects a form post from another origin, which
+  is what stops a third-party page submitting it.
+- **`/stats` authenticates by cookie, not by query string.** A one-time
+  `?token=` is compared in constant time and exchanged for an HttpOnly, Secure,
+  SameSite=Strict cookie via a 303, so the secret lands in one URL rather than in
+  every request and every log line after it. `src/server/statsAuth.ts` is the
+  whole decision and is unit-tested.
+- **Analytics**: `api/collect.ts` writes anonymised session sequences to Netlify
+  Blobs, `netlify/functions/session-insights.mts` synthesises them nightly (the
+  schedule is in that file's own `config` export, not in `netlify.toml`), and
+  `/stats` renders the result. The visitor nonce lives in `sessionStorage` for
+  the life of one tab, which is enough to join a booking to the session that
+  produced it without a persistent identifier.
+- **`pdfjs-dist` comes from npm** and fetches report PDFs straight from the
+  Sanity CDN, which sends CORS headers for this origin. Its worker is imported
+  with `?url`, so it is a hashed asset under `/_astro` and satisfies
+  `worker-src 'self'`.
 
-- `src/pages/api/pdf.ts`: allowlisted HTTPS-only proxy for Sanity-hosted PDFs, with content-type validation and redirect blocking.
-- `src/pages/stats.astro`: private dashboard reading the `recommendations` store and the latest nightly report. Gated by `INSIGHTS_TOKEN` with the same constant-time compare as `/api/insights`, served `no-store` and `noindex`, and listed in neither the sitemap nor `llms.txt`.
-- `src/pages/api/recommend.ts`: stores book titles from the `/reading` recommendation box in the `recommendations` blob store. Validated in `src/lib/recommendations.ts`, metered by the same rate limiter as the collector, and keeps nothing about the sender.
-- `src/pages/api/collect.ts`, `api/insights.ts`, `api/cal-webhook.ts` and `netlify/functions/session-insights.mts`: the analytics pipeline. Payloads are validated in `src/lib/analytics.ts`, rate limited in `src/lib/rateLimit.ts`, and the report is token-gated with a constant-time compare (`src/lib/timingSafe.ts`).
+## Blob stores
 
-### Domain Model (Sanity)
+Four named Netlify Blobs stores, whose names must not change because data
+already sits in them: `sessions`, `session-insights`, `rate-limits` and
+`recommendations`. `src/server/blobs.ts` resolves them together and returns
+`null` when `getStore` throws, which is what happens outside Netlify.
 
-Core document types are defined in `src/sanity/schemaTypes`:
+## Security-sensitive
 
-- `post`: writing entries.
-- `workStory`: one case study, professional or independent, linking to the posts and reports it produced. The legacy `project` type was retired in August 2026; its URLs redirect.
-- `report`: long-form report entries, optional PDF file.
-- `book`: reading list entries.
-- `blockContent`: shared rich text schema.
-- `ctaLink`: shared link object (label, destination, external flag, accessible label).
-
-Static page copy lives in singleton documents written by fixed ID, one per page:
-
-- `siteSettings`: contact-band copy. Header and footer copy live in their components.
-- `aboutPage`, `cvPage`, `writingIndexPage`, `contactPage`, `notFoundPage`.
-
-`scripts/seed-page-copy.ts` (`pnpm run seed:copy`) replaces these documents. Reconcile Studio edits into the script before running it; re-running overwrites those edits.
-
-Both `sanity.config.ts` and `studio-production/sanity.config.ts` import `src/sanity/schemaTypes` directly. Studio commands run from the root pnpm project; there is one dependency manifest and lockfile.
-
-## Architectural Invariants
-
-1. Sanity is the runtime source of truth for published content routes.
-- Page routes query Sanity directly via `fetchSanity`; there are no Astro content collections.
-- Sanity-backed pages, metadata, JSON-LD, and discovery outputs use bounded edge caching and are eventually consistent; RSS is the no-cache exception and bypasses the Sanity CDN.
-- Page copy is split. The homepage, the `/work` header, the About project blurbs and the story introductions are written in the templates and `src/lib/workEditorial.ts`; the other pages read singleton documents, and those must exist before the site renders (no fallback defaults).
-
-2. The main site shell is centralized.
-- Main site uses `src/components/layout/Layout.astro` and shared design-system CSS.
-
-3. Canonical URL logic is centralized.
-- Route-level canonical and absolute URL generation should use helpers/constants from `src/lib/site.ts`.
-- The shared public-path helper converts Astro's file-format prerender paths (`/index.html`, `/work.html`) to public routes (`/`, `/work`), keeping canonical metadata aligned with the sitemap and navigation's active state aligned with the visitor's route.
-
-3a. One work index over one content type.
-- A `workStory` carries a `kind` of `professional` or `independent`. Since September 2026 `/work` lists both, newest first, and `/projects` redirects to it; `kind` still drives the category label and whether a story ends on the booking band.
-- **Every case-study detail page lives at `/work/[slug]`.** Retired `/projects/[slug]` URLs 301 there in `netlify.toml`. Do not move detail pages.
-- The four reflection fields on a story (`question`, `built`, `learned`, `differently`) remain optional in the schema for existing content; the site neither queries nor renders them.
-
-4. PDF fetching is constrained by allowlist and content checks.
-- Do not bypass `src/pages/api/pdf.ts` safety checks when handling remote PDFs.
-
-5. Build/runtime requires Sanity environment configuration.
-- `SANITY_PROJECT_ID` is required by Astro config and Sanity client setup.
-
-## Boundaries
-
-- Route layer (`src/pages`) owns request-level data fetching and page assembly.
-- Component layer (`src/components`) owns presentation concerns.
-- Integration layer (`src/lib`) owns external client setup and content transformation.
-- Schema layer (`src/sanity/schemaTypes`) owns content model contracts with Sanity Studio.
-
-A useful rule: if a change touches external content source behavior, start in `src/lib/sanity.ts` or schema files; if it touches metadata/crawlability, start in `Layout.astro` or crawl endpoint routes.
-
-## Cross-Cutting Concerns
-
-### SEO and Discoverability
-
-Metadata, OpenGraph/Twitter cards, canonical tags, and JSON-LD are centralized in `Layout.astro`. Crawl/discovery artifacts are explicit route handlers (`sitemap`, `robots`, `rss`, `llms`).
-
-### Security
-
-The PDF proxy route performs host allowlisting, protocol checks, redirect blocking, and content-type enforcement. Escaping helpers in `src/lib/escape.ts` are used for attribute/XML serialization.
-
-### Performance and Rendering Model
-
-The site is prerendered. `output: 'static'` with the Netlify adapter bakes every content route to HTML at build time, so pages are served from the CDN with no function invocation and no Sanity round trip per request.
-
-- The on-demand routes are the ones that set `export const prerender = false`: the PDF proxy, the analytics collector and report, the Cal.com webhook, the recommendation box, and the private `/stats` page.
-- Dynamic routes (`posts/[slug]`, `work/[slug]`, `reports/[...slug]`, `tags/[tag]`) enumerate their pages via `getStaticPaths` from Sanity.
-- **Publishing in Sanity must trigger a Netlify build hook.** Without it, published content will not appear until the next deploy.
-- Because pages are prerendered, request-time inputs are unavailable. Anything depending on query params must be resolved on the client — see the back-link script in `posts/[slug].astro`.
-- Retired URLs are Netlify redirects declared in `netlify.toml` (301s and 410s, `force = true`). `src/lib/legacyRoutes.ts` mirrors the same mapping so templates build the public href for a post; the two must be changed together.
-
-### Theme and UX State
-
-Light and dark themes live in `src/design-system/themes/`, and each defines the same set of semantic roles so the two are interchangeable. Interactive controls are defined once in `src/design-system/primitives.css` (buttons with primary, secondary, ghost and icon variants; chips; text, select and range fields; field messages), with every hover, press, focus, disabled, busy, pressed and invalid state, and Astro pages render them through `src/components/ui/Button.astro`. Pages do not style controls locally. An inline script in `Layout.astro` resolves the theme before first paint to avoid a flash: a stored `localStorage` choice wins, otherwise the system preference applies. The site keeps following the system until the visitor explicitly toggles, tracked via `data-theme-source` on the root element.
-
-### Testing and CI
-
-- Tests live in `tests/` and cover the escape helpers, markdown safety, the PDF route, the analytics validation and rate limiting, the insights and webhook routes, work story validation and the view-transition helpers.
-- `pnpm exec knip` checks unused files, exports and dependencies. `knip.json` explicitly includes `src/lib/shell/index.ts` because the analyzer does not follow its import inside Layout's Astro script block.
-- CI workflow in `.github/workflows/ci.yml` runs `pnpm install --frozen-lockfile`, `pnpm run test`, and `pnpm run build` on Node 22.
-
-## What To Read First (New Contributor)
-
-1. `README.md` for setup and commands.
-2. `astro.config.ts` and `package.json` for runtime/build shape.
-3. `src/components/layout/Layout.astro` for global metadata/layout behavior.
-4. `src/lib/sanity.ts` and `src/sanity/schemaTypes/index.ts` for content model and data access.
-5. The specific route file in `src/pages` for the behavior you are changing.
-
-The Studio package manifest is a symlink to the root manifest because the Sanity CLI
-requires a manifest in its project directory. Dependency versions and installation remain
-owned by the root `package.json` and `pnpm-lock.yaml`.
+- The full Content-Security-Policy is a per-page `<meta>` element emitted by
+  Astro's `security.csp`. The HTTP header in `netlify.toml` carries only
+  `frame-ancestors 'none'`, which a meta element cannot express. A header that
+  also named `script-src` would be enforced alongside the meta policy and would
+  block the hashed theme script.
+- `src/server/timingSafe.ts` is the only string comparison used for a secret.
+- Never commit secrets. `INSIGHTS_TOKEN`, `CAL_WEBHOOK_SECRET` and
+  `RATE_LIMIT_SALT` are set in Netlify and read through `src/server/secrets.ts`.

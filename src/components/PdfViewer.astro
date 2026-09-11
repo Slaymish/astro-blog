@@ -1,0 +1,174 @@
+---
+interface Props {
+  url: string;
+  title: string;
+}
+
+const { url, title } = Astro.props;
+
+const controls = [
+  { name: 'prev-page', label: 'Previous page', hint: 'Previous page (←)', icon: '<polyline points="15 18 9 12 15 6"></polyline>' },
+  { name: 'next-page', label: 'Next page', hint: 'Next page (→)', icon: '<polyline points="9 18 15 12 9 6"></polyline>' },
+] as const;
+
+const zoomControls = [
+  { name: 'zoom-out', label: 'Zoom out', hint: 'Zoom out', icon: '<circle cx="11" cy="11" r="8"></circle><line x1="8" y1="11" x2="14" y2="11"></line><line x1="21" y1="21" x2="16.65" y2="16.65"></line>' },
+  { name: 'zoom-in', label: 'Zoom in', hint: 'Zoom in', icon: '<circle cx="11" cy="11" r="8"></circle><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line><line x1="21" y1="21" x2="16.65" y2="16.65"></line>' },
+  { name: 'zoom-reset', label: 'Reset zoom', hint: 'Reset zoom', icon: '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path>' },
+] as const;
+
+const FULLSCREEN_ICON =
+  '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>';
+const DOWNLOAD_ICON =
+  '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>';
+---
+
+<div class="pdf-viewer" data-pdf-viewer data-pdf-url={url}>
+  <div class="pdf-viewer__toolbar">
+    <div class="pdf-viewer__group">
+      {
+        controls.map((control) => (
+          <button
+            type="button"
+            class="btn btn--icon btn--sm"
+            data-pdf={control.name}
+            title={control.hint}
+            aria-label={control.label}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={control.icon} />
+          </button>
+        ))
+      }
+      <p class="pdf-viewer__pages">
+        <span data-pdf="page-num">1</span><span aria-hidden="true">/</span><span data-pdf="page-count">--</span>
+      </p>
+    </div>
+
+    <div class="pdf-viewer__group">
+      {
+        zoomControls.map((control) => (
+          <button
+            type="button"
+            class="btn btn--icon btn--sm"
+            data-pdf={control.name}
+            title={control.hint}
+            aria-label={control.label}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={control.icon} />
+          </button>
+        ))
+      }
+      <span class="pdf-viewer__zoom" data-pdf="zoom-level">100%</span>
+    </div>
+
+    <div class="pdf-viewer__group">
+      <button type="button" class="btn btn--icon btn--sm" data-pdf="fullscreen" title="Fullscreen" aria-label="Toggle fullscreen">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={FULLSCREEN_ICON} />
+      </button>
+      <a class="btn btn--icon btn--sm" href={url} target="_blank" rel="noopener noreferrer" title="Open PDF" aria-label="Open PDF">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={DOWNLOAD_ICON} />
+      </a>
+    </div>
+  </div>
+
+  <div class="pdf-viewer__container" data-pdf="container">
+    <div class="pdf-viewer__state" data-pdf="loading">
+      <p>Loading the PDF.</p>
+    </div>
+
+    <div class="pdf-viewer__state" data-pdf="error" hidden>
+      <p>The PDF did not load in the browser.</p>
+      <a class="btn btn--primary btn--sm" href={url} target="_blank" rel="noopener noreferrer">Open it directly</a>
+    </div>
+
+    <canvas class="pdf-viewer__canvas" data-pdf="canvas" aria-label={title} hidden></canvas>
+  </div>
+</div>
+
+<script>
+  import { initPdfViewer } from '../client/pdfViewer';
+
+  document.querySelectorAll<HTMLElement>('[data-pdf-viewer]').forEach((root) => {
+    void initPdfViewer(root);
+  });
+</script>
+
+<style>
+  .pdf-viewer {
+    background: var(--color-bg-raised);
+    border: 1px solid var(--color-stroke-subtle);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-8);
+    overflow: hidden;
+  }
+
+  .pdf-viewer__toolbar {
+    align-items: center;
+    background: var(--color-bg-canvas);
+    border-bottom: 1px solid var(--color-stroke-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    justify-content: space-between;
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+
+  .pdf-viewer__group {
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  .pdf-viewer__pages,
+  .pdf-viewer__zoom {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    margin: 0;
+  }
+
+  .pdf-viewer__pages {
+    display: flex;
+    gap: var(--spacing-1);
+  }
+
+  .pdf-viewer__container {
+    display: flex;
+    justify-content: center;
+    min-height: 24rem;
+    padding: var(--spacing-4);
+    position: relative;
+  }
+
+  .pdf-viewer__state {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    justify-content: center;
+    padding-block: var(--spacing-16);
+  }
+
+  .pdf-viewer__state p {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    margin: 0;
+  }
+
+  .pdf-viewer__canvas {
+    border-radius: 0;
+    display: block;
+    height: auto;
+    max-width: 100%;
+  }
+
+  .pdf-viewer:fullscreen {
+    background: var(--color-bg-canvas);
+  }
+
+  .pdf-viewer:fullscreen .pdf-viewer__container {
+    align-items: center;
+    height: calc(100vh - 4rem);
+    overflow: auto;
+  }
+</style>

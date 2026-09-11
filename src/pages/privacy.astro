@@ -1,18 +1,18 @@
 ---
-import Layout from '../components/layout/Layout.astro';
-import { CONTACT_EMAIL, SITE_URL, absoluteUrl } from '../lib/site';
+import Base from '../layouts/Base.astro';
+import { CONTACT_EMAIL } from '../site/config';
 ---
 
-<Layout
+<Base
   title="Privacy Policy"
   description="How hamishburke.dev collects, uses, and protects information about visitors."
-  canonicalURL={absoluteUrl('/privacy', SITE_URL)}
+  breadcrumbs={[{ name: 'Privacy', path: '/privacy' }]}
 >
   <article class="legal-page">
     <header>
       <p class="legal-page__eyebrow">Legal</p>
       <h1>Privacy Policy</h1>
-      <p class="legal-page__updated">Last updated 26 July 2026</p>
+      <p class="legal-page__updated">Last updated 11 September 2026</p>
     </header>
 
     <div class="legal-page__content">
@@ -30,9 +30,9 @@ import { CONTACT_EMAIL, SITE_URL, absoluteUrl } from '../lib/site';
             and interactions such as outbound, email, CV, and booking-link clicks.
           </li>
           <li>
-            <strong>Local storage:</strong> your theme choice and a random identifier used to
-            relate a visit to a completed Cal.com booking. This site does not use analytics
-            cookies.
+            <strong>Local storage:</strong> your theme choice, and for the length of one
+            browsing session a random identifier used to relate a visit to a completed
+            Cal.com booking. This site does not use analytics cookies.
           </li>
           <li>
             <strong>Messages and bookings:</strong> information you choose to provide when
@@ -97,7 +97,7 @@ import { CONTACT_EMAIL, SITE_URL, absoluteUrl } from '../lib/site';
       </section>
     </div>
   </article>
-</Layout>
+</Base>
 
 <style>
   .legal-page { margin-inline: auto; max-width: 48rem; padding-block: var(--hero-top-space) clamp(4rem, 10vw, 8rem); }

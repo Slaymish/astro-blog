@@ -1,0 +1,84 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleHeader from '../../components/ArticleHeader.astro';
+import Button from '../../components/Button.astro';
+import PdfViewer from '../../components/PdfViewer.astro';
+import RelatedList from '../../components/RelatedList.astro';
+import { portableTextToHtml } from '../../content/portableText';
+import { getReports } from '../../content/queries';
+import { getRelated } from '../../content/related';
+import { formatFullDate } from '../../content/writing';
+import type { Report } from '../../content/types';
+
+export async function getStaticPaths() {
+  const reports = await getReports();
+  return reports.map((report) => ({ params: { slug: report.slug }, props: { report } }));
+}
+
+interface Props {
+  report: Report;
+}
+
+const { report } = Astro.props;
+
+const megabytes = (report.pdfBytes / 1_000_000).toFixed(1);
+const body = portableTextToHtml(report.body);
+const related = await getRelated({
+  type: 'report',
+  slug: report.slug,
+  tags: report.tags,
+  related: report.related,
+});
+---
+
+<Base
+  title={report.title}
+  description={report.description}
+  article={{ kind: 'report', publishedAt: report.publishedAt, tags: report.tags }}
+  breadcrumbs={[
+    { name: 'Writing', path: '/writing' },
+    { name: report.title, path: `/reports/${report.slug}` },
+  ]}
+>
+  <article class="report">
+    <ArticleHeader
+      eyebrow="Report"
+      title={report.title}
+      lede={report.description}
+      meta={[formatFullDate(report.publishedAt), `${megabytes} MB PDF`]}
+      tags={report.tags}
+      backHref="/writing"
+      backLabel="All writing"
+    />
+
+    <div class="report__actions">
+      <Button href={report.pdfUrl} external>Open PDF</Button>
+    </div>
+
+    <PdfViewer url={report.pdfUrl} title={report.title} />
+
+    {body && <div class="prose report__body" set:html={body} />}
+
+    <RelatedList entries={related} />
+  </article>
+</Base>
+
+<style>
+  .report {
+    margin-inline: auto;
+    max-width: 68rem;
+  }
+
+  .report__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+    margin-top: var(--spacing-8);
+  }
+
+  .report__body {
+    margin-block: var(--section-space);
+    margin-inline: auto;
+    max-width: var(--reading-width);
+  }
+</style>

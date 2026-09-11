@@ -23,30 +23,39 @@ case "$path" in
     ;;
 esac
 
-# Legacy URL handling lives in two places that cannot be diffed against each other.
-case "$path" in
-  src/lib/legacyRoutes.ts)
-    findings+=("Legacy routes are mirrored: the [[redirects]] blocks in netlify.toml must match this file. Astro's redirects config is deliberately unused here because it emits meta-refresh pages.")
-    ;;
-esac
-
 # Routing and canonical behaviour is spread across the layout, the site helpers
 # and the crawl endpoints.
 case "$path" in
-  src/components/layout/Layout.astro|src/lib/site.ts|src/pages/robots.txt.ts|src/pages/sitemap.xml.ts|src/pages/rss.xml.ts|src/pages/llms.txt.ts)
-    findings+=("Routing/canonical surface touched. Review Layout.astro, src/lib/site.ts and the four crawl endpoints together, and keep trailingSlash: 'never' and build format 'file' in step. If an invariant changed, update ARCHITECTURE.md in the same commit.")
+  src/layouts/Base.astro|src/site/seo.ts|src/site/config.ts|src/pages/robots.txt.ts|src/pages/sitemap.xml.ts|src/pages/rss.xml.ts|src/pages/llms.txt.ts)
+    findings+=("Routing/canonical surface touched. Review Base.astro, src/site/seo.ts, src/site/config.ts and the four crawl endpoints together, and keep trailingSlash: 'never' and build format 'file' in step. If an invariant changed, update ARCHITECTURE.md in the same commit.")
     ;;
 esac
 
-# Colour tokens are used whole: no opacity modifiers, no scale gradations.
-# text-lg/7 and friends are line-height syntax, not colour, so they are excluded.
+# Colour lives in tokens.css and nowhere else. A literal hex anywhere else is a
+# fourth vocabulary starting. The exceptions all run before or outside CSS:
+# tokens.css itself, the two <meta name="theme-color"> values in Base.astro (the
+# browser reads them before the first stylesheet parses), the static 410 page,
+# and the icon generator, which rasterises to PNG.
 case "$path" in
-  *.astro|*.tsx|*.jsx|*.css)
+  src/styles/tokens.css|src/layouts/Base.astro|public/410.html|scripts/generate-icons.mjs) ;;
+  *.astro|*.css)
     if [ -f "$root/$path" ]; then
-      hits="$(grep -noE '(bg|text|border|ring|fill|stroke|from|via|to|divide|outline|decoration|accent|caret|placeholder|shadow)-[a-z0-9-]+/[0-9]{1,3}' "$root/$path" \
-        | grep -vE ':text-(xs|sm|base|lg|[0-9]?xl)/' | head -5)"
+      hits="$(grep -noE '#[0-9a-fA-F]{3,8}\b' "$root/$path" | head -5)"
       if [ -n "$hits" ]; then
-        findings+=("Colour token opacity modifier in $path: $(printf '%s' "$hits" | tr '\n' ' '). Tokens are used whole. If a tinted variant is needed, stop and ask for a dedicated token.")
+        findings+=("Literal colour in $path: $(printf '%s' "$hits" | tr '\n' ' '). Colour comes from the roles in src/styles/themes.css, used whole. If a new value is needed, stop and ask for a dedicated token in src/styles/tokens.css.")
+      fi
+    fi
+    ;;
+esac
+
+# A style attribute in rendered markup is refused by the hash-only CSP, and the
+# page silently loses that styling rather than failing the build.
+case "$path" in
+  *.astro)
+    if [ -f "$root/$path" ]; then
+      hits="$(grep -noE 'style="|style=\{' "$root/$path" | head -5)"
+      if [ -n "$hits" ]; then
+        findings+=("Inline style in $path: $(printf '%s' "$hits" | tr '\n' ' '). The Content-Security-Policy is hash-only and cannot hash a style attribute. Use a class, or a custom property set on a class, instead.")
       fi
     fi
     ;;

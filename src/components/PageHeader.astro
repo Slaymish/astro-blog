@@ -1,0 +1,88 @@
+---
+/**
+ * The eyebrow / headline / intro block that opens most top-level pages.
+ * Presentation only: the route supplies the copy and picks one of three
+ * measures. The measures are classes rather than custom properties set from a
+ * `style` attribute, because the CSP forbids inline styles.
+ */
+interface Props {
+  /** Small uppercase label above the headline. */
+  eyebrow: string;
+  /** One line, or several rendered with a line break between them. */
+  headline: string | string[];
+  /** Lede paragraph under the headline. Omit it to put something else in the slot. */
+  intro?: string;
+  /** How wide the headline and intro run. */
+  measure?: 'narrow' | 'regular' | 'wide';
+  /** `large` is the slightly bigger setting /about and /cv use. */
+  introScale?: 'regular' | 'large';
+  /** Sets the intro flush against the headline, as /cv does. */
+  introFlush?: boolean;
+}
+
+const { eyebrow, headline, intro, measure = 'wide', introScale = 'regular', introFlush = false } =
+  Astro.props;
+
+const headlineLines = typeof headline === 'string' ? [headline] : headline;
+---
+
+<header class:list={['page-header', `page-header--${measure}`, introFlush && 'is-flush']}>
+  <p class="page-header__eyebrow">{eyebrow}</p>
+  <h1 class="page-header__headline">
+    {headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}
+  </h1>
+  {intro && <p class:list={['page-header__intro', introScale === 'large' && 'is-large']}>{intro}</p>}<slot />
+</header>
+
+<style>
+  .page-header {
+    --headline-measure: none;
+    --intro-measure: 43rem;
+    --intro-space: var(--spacing-8);
+    padding-block: var(--hero-top-space) var(--hero-bottom-space);
+  }
+
+  .page-header--narrow {
+    --headline-measure: 14ch;
+    --intro-measure: 38rem;
+  }
+
+  .page-header--regular {
+    --headline-measure: 16ch;
+    --intro-measure: 40rem;
+  }
+
+  .page-header.is-flush {
+    --intro-space: 0;
+  }
+
+  .page-header__eyebrow {
+    color: var(--color-action);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.1em;
+    margin: 0 0 var(--spacing-5);
+    text-transform: uppercase;
+  }
+
+  .page-header__headline {
+    font-size: var(--type-display);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.05;
+    margin: 0;
+    max-width: var(--headline-measure);
+  }
+
+  .page-header__intro {
+    color: var(--color-text-secondary);
+    font-size: clamp(1.1rem, 2vw, 1.45rem);
+    line-height: 1.45;
+    margin: var(--intro-space) 0 0;
+    max-width: var(--intro-measure);
+  }
+
+  .page-header__intro.is-large {
+    font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+    line-height: 1.5;
+  }
+</style>

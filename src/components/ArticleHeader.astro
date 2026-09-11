@@ -1,0 +1,108 @@
+---
+import IconText from './IconText.astro';
+import { tagSlug } from '../content/writing';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede?: string;
+  /** Rendered joined by " · ". */
+  meta?: string[];
+  tags?: string[];
+  backHref: string;
+  backLabel: string;
+}
+
+const { eyebrow, title, lede, meta = [], tags = [], backHref, backLabel } = Astro.props;
+---
+
+<header class="article-header">
+  <a class="article-header__back" href={backHref}>
+    <IconText icon="arrow-left" position="start">{backLabel}</IconText>
+  </a>
+  <p class="article-header__eyebrow">{eyebrow}</p>
+  <h1>{title}</h1>
+  {lede && <p class="article-header__lede">{lede}</p>}
+  {meta.length > 0 && <p class="article-header__meta">{meta.join(' · ')}</p>}
+  {
+    tags.length > 0 && (
+      <p class="article-header__tags">
+        {tags.map((tag, index) => (
+          <>
+            {index > 0 && <span aria-hidden="true"> · </span>}
+            <a href={`/tags/${tagSlug(tag)}`}>{tag}</a>
+          </>
+        ))}
+      </p>
+    )
+  }
+</header>
+
+<style>
+  .article-header {
+    border-bottom: 1px solid var(--color-stroke-subtle);
+    padding-block: var(--spacing-8) var(--spacing-10);
+  }
+
+  .article-header__back {
+    --icon-gap: var(--spacing-2);
+    color: var(--color-text-secondary);
+    display: inline-block;
+    font-size: var(--type-body-small);
+    margin-bottom: var(--spacing-8);
+    text-decoration: none;
+  }
+
+  .article-header__back:hover {
+    color: var(--color-action);
+  }
+
+  .article-header__eyebrow {
+    color: var(--color-action);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.1em;
+    margin: 0 0 var(--spacing-4);
+    text-transform: uppercase;
+  }
+
+  .article-header h1 {
+    font-size: clamp(2.1rem, 5vw, 3.4rem);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.1;
+    margin: 0;
+    max-width: 24ch;
+  }
+
+  .article-header__lede {
+    color: var(--color-text-secondary);
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    line-height: 1.5;
+    margin: var(--spacing-6) 0 0;
+    max-width: 46rem;
+  }
+
+  .article-header__meta,
+  .article-header__tags {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    letter-spacing: 0.06em;
+    margin: var(--spacing-6) 0 0;
+    text-transform: uppercase;
+  }
+
+  .article-header__tags {
+    margin-top: var(--spacing-3);
+  }
+
+  .article-header__tags a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+
+  .article-header__tags a:hover {
+    color: var(--color-action);
+  }
+</style>

@@ -1,0 +1,270 @@
+---
+import { MODELS, PRESETS } from '../client/gpuCalculator';
+---
+
+<div class="calc not-prose" data-gpu-calculator>
+  <h3>GPUShare cost calculator</h3>
+  <p class="calc__lede">See what local inference actually costs on a 5070 Ti against cloud APIs.</p>
+
+  <div class="calc__controls">
+    <div class="field calc__control calc__control--wide">
+      <label class="field__label" for="calc-model">Model</label>
+      <span class="select">
+        <select id="calc-model" class="input input--sm" data-input="model">
+          {
+            MODELS.map((model, index) => (
+              <option value={index}>
+                {model.name} - {model.vram}, ~{model.tokPerSec} tok/s - {model.quality}
+              </option>
+            ))
+          }
+        </select>
+      </span>
+    </div>
+
+    <div class="field calc__control">
+      <label class="field__label" for="calc-tokens">
+        Tokens per response: <span class="calc__value" data-result="tokens">500</span>
+      </label>
+      <input
+        id="calc-tokens"
+        class="range"
+        type="range"
+        min="50"
+        max="4000"
+        step="50"
+        value="500"
+        data-input="tokens"
+      />
+      <div class="calc__scale"><span>50</span><span>4,000</span></div>
+    </div>
+
+    <div class="field calc__control">
+      <label class="field__label" for="calc-responses">
+        Responses per day: <span class="calc__value" data-result="responses">50</span>
+      </label>
+      <input
+        id="calc-responses"
+        class="range"
+        type="range"
+        min="1"
+        max="500"
+        step="1"
+        value="50"
+        data-input="responses"
+      />
+      <div class="calc__scale"><span>1</span><span>500</span></div>
+    </div>
+
+    <div class="field calc__control calc__control--wide">
+      <div class="calc__rate-head">
+        <label class="field__label" for="calc-rate">
+          Electricity rate: <span class="calc__value" data-result="rate">$0.346/kWh</span>
+        </label>
+        <div class="calc__presets">
+          {
+            Object.keys(PRESETS).map((label) => (
+              <button type="button" class="chip" data-preset={label} aria-pressed={label === 'NZ'}>
+                {label}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <input
+        id="calc-rate"
+        class="range"
+        type="range"
+        min="0.01"
+        max="0.60"
+        step="0.001"
+        value="0.346"
+        data-input="rate"
+      />
+      <div class="calc__scale"><span>$0.01</span><span>$0.60</span></div>
+    </div>
+  </div>
+
+  <div class="calc__results">
+    <div class="calc__result">
+      <p class="calc__result-label">Per response</p>
+      <p class="calc__result-value" data-result="per-response">—</p>
+    </div>
+    <div class="calc__result">
+      <p class="calc__result-label">Daily</p>
+      <p class="calc__result-value" data-result="daily">—</p>
+    </div>
+    <div class="calc__result">
+      <p class="calc__result-label">Monthly</p>
+      <p class="calc__result-value" data-result="monthly">—</p>
+    </div>
+    <div class="calc__result calc__result--accent">
+      <p class="calc__result-label">vs cloud</p>
+      <p class="calc__result-value" data-result="multiplier">—</p>
+    </div>
+  </div>
+
+  <div class="calc__comparison">
+    <p>
+      Cloud equivalent (<span data-result="cloud-provider">GPT-4o mini</span>):
+      <strong data-result="cloud-monthly">—</strong>
+    </p>
+    <p>
+      Local (<span data-result="local-model">Llama 3.1 8B</span>):
+      <strong class="calc__accent" data-result="local-monthly">—</strong>
+    </p>
+  </div>
+
+  <p class="calc__footnote" data-result="footnote"></p>
+</div>
+
+<script>
+  import { initGpuCalculator } from '../client/gpuCalculator';
+
+  document.querySelectorAll<HTMLElement>('[data-gpu-calculator]').forEach(initGpuCalculator);
+</script>
+
+<style>
+  .calc {
+    background: var(--color-bg-raised);
+    border: 1px solid var(--color-stroke-subtle);
+    border-radius: var(--radius-lg);
+    margin-block: var(--spacing-10);
+    padding: var(--spacing-5);
+  }
+
+  .calc h3 {
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-heading);
+    margin: 0 0 var(--spacing-1);
+  }
+
+  .calc__lede {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    margin: 0 0 var(--spacing-6);
+  }
+
+  .calc__controls {
+    display: grid;
+    gap: var(--spacing-5);
+  }
+
+  .calc__value {
+    color: var(--color-action);
+    font-family: var(--font-mono);
+  }
+
+  .calc__scale {
+    color: var(--color-text-secondary);
+    display: flex;
+    font-size: var(--type-label);
+    justify-content: space-between;
+  }
+
+  .calc__rate-head {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+    justify-content: space-between;
+  }
+
+  .calc__presets {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  .calc__results {
+    display: grid;
+    gap: var(--spacing-3);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: var(--spacing-6);
+  }
+
+  .calc__result {
+    background: var(--color-bg-canvas);
+    border: 1px solid var(--color-stroke-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-3);
+    text-align: center;
+  }
+
+  .calc__result--accent {
+    border-color: var(--color-action);
+  }
+
+  .calc__result-label {
+    color: var(--color-text-secondary);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-wide);
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .calc__result-value {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: var(--font-weight-semibold);
+    margin: var(--spacing-1) 0 0;
+  }
+
+  .calc__result--accent .calc__result-value {
+    color: var(--color-action);
+  }
+
+  .calc__comparison {
+    background: var(--color-bg-canvas);
+    border: 1px solid var(--color-stroke-subtle);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2) var(--spacing-6);
+    justify-content: space-between;
+    margin-top: var(--spacing-4);
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+
+  .calc__comparison p {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    margin: 0;
+  }
+
+  .calc__comparison strong {
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .calc__accent {
+    color: var(--color-action);
+  }
+
+  .calc__footnote {
+    color: var(--color-text-secondary);
+    font-size: var(--type-label);
+    line-height: 1.6;
+    margin: var(--spacing-3) 0 0;
+  }
+
+  @media (min-width: 40rem) {
+    .calc {
+      padding: var(--spacing-6);
+    }
+
+    .calc__controls {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .calc__control--wide {
+      grid-column: 1 / -1;
+    }
+
+    .calc__results {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

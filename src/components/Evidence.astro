@@ -1,0 +1,67 @@
+---
+import SanityImage from './SanityImage.astro';
+import type { Evidence } from '../content/types';
+
+interface Props {
+  item: Evidence;
+}
+
+const { item } = Astro.props;
+---
+
+<figure class="evidence">
+  {item.label && <p class="evidence__label">{item.label}</p>}
+  {item.heading && <h3 class="evidence__heading">{item.heading}</h3>}
+  <div class="evidence__frame">
+    <SanityImage
+      image={item.image}
+      alt={item.alt}
+      widths={[720, 1200, 1800, 2400]}
+      sizes="(min-width: 64rem) 60rem, 100vw"
+    />
+  </div>
+  {item.caption && <figcaption>{item.caption}</figcaption>}
+</figure>
+
+<style>
+  .evidence {
+    margin: var(--section-space) 0 0;
+  }
+
+  .evidence__label {
+    color: var(--color-action);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.1em;
+    margin: 0 0 var(--spacing-3);
+    text-transform: uppercase;
+  }
+
+  .evidence__heading {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    letter-spacing: var(--tracking-heading);
+    margin: 0 0 var(--spacing-6);
+    max-width: 28ch;
+  }
+
+  .evidence__frame {
+    border: 1px solid var(--color-stroke-subtle);
+    overflow: hidden;
+  }
+
+  .evidence__frame img {
+    border-radius: 0;
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+
+  .evidence figcaption {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    line-height: 1.6;
+    margin-top: var(--spacing-4);
+    max-width: 52ch;
+  }
+</style>

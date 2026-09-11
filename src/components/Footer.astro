@@ -1,0 +1,73 @@
+---
+import { CONTACT_EMAIL, SOCIAL_PROFILES } from '../site/config';
+
+const links = [
+  { href: `mailto:${CONTACT_EMAIL}`, label: 'Email' },
+  { href: SOCIAL_PROFILES.github, label: 'GitHub', external: true },
+  { href: SOCIAL_PROFILES.linkedin, label: 'LinkedIn', external: true },
+  { href: '/contact', label: 'Contact' },
+  { href: '/cv', label: 'CV' },
+  { href: '/rss.xml', label: 'RSS' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: '/terms', label: 'Terms' },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p class="site-footer__tagline">Hamish Burke · Wellington, New Zealand</p>
+    <nav class="site-footer__nav" aria-label="Footer">
+      {
+        links.map(({ href, label, external }) => (
+          <a
+            href={href}
+            rel={external ? 'noopener noreferrer' : undefined}
+            target={external ? '_blank' : undefined}
+          >
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-stroke-subtle);
+    margin-top: var(--section-space);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4) var(--spacing-8);
+    justify-content: space-between;
+    margin-inline: auto;
+    max-width: calc(var(--content-max-width) + 2 * var(--page-gutter));
+    padding-block: var(--spacing-8);
+    padding-inline: var(--page-gutter);
+  }
+
+  .site-footer__tagline {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    margin: 0;
+  }
+
+  .site-footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2) var(--spacing-5);
+  }
+
+  .site-footer__nav a {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    text-decoration: none;
+  }
+
+  .site-footer__nav a:hover {
+    color: var(--color-action);
+  }
+</style>

@@ -1,231 +1,221 @@
-import { defineArrayMember, defineField, defineType } from 'sanity';
+import { defineField, defineType } from 'sanity';
 
-const artifactTypes = [{ type: 'post' }, { type: 'report' }];
-
-const isIndependent = (document: unknown): boolean =>
-  (document as { kind?: string } | undefined)?.kind === 'independent';
-
-/**
- * Legacy reflection answers, kept so existing drafts stay visible in Studio.
- * Optional since the September 2026 redesign: nothing renders them, and the
- * "what would I do differently" formula is one the site's copy avoids.
- */
-function reflectionField(name: string, title: string) {
-  return defineField({
-    name,
-    title,
-    type: 'text',
-    rows: 3,
-    fieldset: 'reflection',
-    hidden: ({ document }) => !isIndependent(document),
-    validation: (rule) => rule.max(400)
-  });
-}
+const KINDS = [
+  { title: 'Client', value: 'professional' },
+  { title: 'Independent', value: 'independent' },
+  { title: 'Research', value: 'research' },
+] as const;
 
 export const workStory = defineType({
   name: 'workStory',
-  title: 'Work Story',
+  title: 'Work story',
   type: 'document',
-  fieldsets: [
-    {
-      name: 'reflection',
-      title: 'Reflection (legacy, not rendered)',
-      options: { collapsible: true, collapsed: true }
-    }
-  ],
   fields: [
-    defineField({ name: 'introduction', title: 'Project introduction', type: 'text', rows: 3, description: 'Lead with the reason for the project or the decision that makes it interesting. Overrides the editorial introduction.', validation: rule => rule.max(320) }),
-    defineField({ name: 'narrative', title: 'Project narrative', type: 'array', description: 'The story in project-specific sections: context, consequential decisions, and outcome. Replaces the legacy body when supplied.', of: [defineArrayMember({ type: 'block' })] }),
-    defineField({
-      name: 'title',
-      title: 'Title',
-      type: 'string',
-      validation: (rule) => rule.required().max(80)
-    }),
+    defineField({ name: 'title', title: 'Title', type: 'string', validation: (r) => r.required().max(80) }),
     defineField({
       name: 'descriptor',
-      title: 'Plain-language descriptor',
+      title: 'Descriptor',
       type: 'string',
-      description: 'A literal noun phrase such as “Client portfolio website”.',
-      validation: (rule) => rule.required().max(60)
+      description: 'What the thing is, in a few words. Shown beside the title.',
+      validation: (r) => r.required().max(60),
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
       options: { source: 'title', maxLength: 96 },
-      validation: (rule) => rule.required()
+      validation: (r) => r.required(),
     }),
     defineField({
       name: 'kind',
       title: 'Kind',
       type: 'string',
-      description:
-        'Which index this story appears on. Professional shows on /work, independent on /projects. Detail pages live at /work/<slug> either way.',
-      options: {
-        list: [
-          { title: 'Professional', value: 'professional' },
-          { title: 'Independent', value: 'independent' }
-        ],
-        layout: 'radio'
-      },
-      initialValue: 'professional',
-      validation: (rule) => rule.required()
+      options: { list: [...KINDS], layout: 'radio' },
+      validation: (r) => r.required(),
     }),
-    defineField({
-      name: 'status',
-      title: 'Portfolio status',
-      type: 'string',
-      description: 'Presentation within an index: lead stories get a full card, support stories a compact row.',
-      options: {
-        list: [
-          { title: 'Lead', value: 'lead' },
-          { title: 'Support', value: 'support' }
-        ],
-        layout: 'radio'
-      },
-      validation: (rule) => rule.required()
-    }),
-    defineField({
-      name: 'order',
-      title: 'Display order',
-      type: 'number',
-      validation: (rule) => rule.required().integer().positive()
-    }),
-    defineField({
-      name: 'service',
-      title: 'Primary service',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'AI automation', value: 'ai-automation' },
-          { title: 'Websites and digital products', value: 'digital-products' },
-          { title: 'Solution architecture and technical direction', value: 'technical-direction' }
-        ]
-      },
-      validation: (rule) => rule.required()
-    }),
-    defineField({
-      name: 'date',
-      title: 'Story date',
-      type: 'date',
-      validation: (rule) => rule.required()
-    }),
+    defineField({ name: 'order', title: 'Order', type: 'number', validation: (r) => r.required().integer() }),
+    defineField({ name: 'date', title: 'Date', type: 'date', validation: (r) => r.required() }),
+    defineField({ name: 'timeframe', title: 'Timeframe', type: 'string', validation: (r) => r.max(60) }),
     defineField({
       name: 'summary',
-      title: 'Glance summary',
+      title: 'Summary',
       type: 'text',
       rows: 2,
-      validation: (rule) => rule.required().max(180)
+      description: 'One sentence, used in lists.',
+      validation: (r) => r.required().max(180),
     }),
     defineField({
-      name: 'metric',
-      title: 'Index metric',
-      type: 'string',
-      description:
-        'The measured fact shown on the homepage index. Print the number that exists, whether or not it flatters — an unflattering measurement is the point. Distinct from Result, which is prose for the case-study page.',
-      validation: (rule) => rule.max(100)
-    }),
-    defineField({
-      name: 'problem',
-      title: 'Problem',
+      name: 'introduction',
+      title: 'Introduction',
       type: 'text',
       rows: 3,
-      validation: (rule) => rule.required().max(240)
+      description: 'The opening of the case study, and its meta description.',
+      validation: (r) => r.required().max(320),
     }),
     defineField({
       name: 'role',
-      title: 'Hamish’s role',
+      title: 'Role',
       type: 'text',
       rows: 2,
-      validation: (rule) => rule.required().max(180)
+      validation: (r) => r.required().max(180),
     }),
+    defineField({ name: 'body', title: 'Narrative', type: 'blockContent', validation: (r) => r.required() }),
     defineField({
-      name: 'timeframe',
-      title: 'Timeframe',
+      name: 'resultHeading',
+      title: 'Result heading',
       type: 'string',
-      validation: (rule) => rule.max(60)
+      description: 'Defaults to Outcome.',
+      validation: (r) => r.max(40),
     }),
+    defineField({ name: 'result', title: 'Result', type: 'text', rows: 3, validation: (r) => r.required().max(280) }),
     defineField({
-      name: 'interventions',
-      title: 'Key interventions',
+      name: 'links',
+      title: 'Links',
       type: 'array',
       of: [
-        defineArrayMember({
-          type: 'string',
-          validation: (rule) => rule.required().max(120)
-        })
+        {
+          type: 'object',
+          name: 'workLink',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string', validation: (r) => r.required().max(30) }),
+            defineField({
+              name: 'href',
+              title: 'Destination',
+              type: 'string',
+              description: 'A full URL, or a site path such as “/writing”.',
+              validation: (r) => r.required(),
+            }),
+            defineField({ name: 'external', title: 'Opens in a new tab', type: 'boolean', initialValue: false }),
+          ],
+          preview: { select: { title: 'label', subtitle: 'href' } },
+        },
       ],
-      validation: (rule) => rule.required().min(1).max(3).unique()
     }),
     defineField({
-      name: 'result',
-      title: 'Result or learning',
-      type: 'text',
-      rows: 3,
-      validation: (rule) => rule.required().max(280)
-    }),
-    reflectionField('question', 'What was the question?'),
-    reflectionField('built', 'What did I build?'),
-    reflectionField('learned', 'What did I learn?'),
-    reflectionField('differently', 'What would I do differently?'),
-    defineField({
-      name: 'graphic',
-      title: 'Editorial graphic',
+      name: 'cover',
+      title: 'Cover',
       type: 'object',
       fields: [
         defineField({
           name: 'kind',
-          title: 'Composition',
+          title: 'Kind',
           type: 'string',
           options: {
             list: [
-              { title: 'Sprint Coach release path', value: 'sprint-coach' },
-              { title: 'BrontëHF publishing path', value: 'brontehf' },
-              { title: 'You Inc ledger flow', value: 'you-inc' },
-              { title: 'GPUShare trust boundary', value: 'gpu-share' },
-              { title: 'HealthAgent data pipeline', value: 'health-agent' },
-              { title: 'Home Lab recovery architecture', value: 'home-lab' },
-              { title: 'Wildfire Spark experiment', value: 'wildfire' }
-            ]
+              { title: 'Image', value: 'image' },
+              { title: 'Figure', value: 'figure' },
+            ],
+            layout: 'radio',
           },
-          validation: (rule) => rule.required()
+          validation: (r) => r.required(),
         }),
         defineField({
           name: 'alt',
-          title: 'Alternative text',
+          title: 'Alt text',
           type: 'text',
           rows: 3,
-          validation: (rule) => rule.required().max(240)
-        })
+          description: 'Describes the cover for a reader who cannot see it. Required for both kinds.',
+          validation: (r) => r.required().max(240),
+        }),
+        defineField({
+          name: 'image',
+          title: 'Image',
+          type: 'image',
+          options: { hotspot: true },
+          hidden: ({ parent }) => parent?.kind !== 'image',
+        }),
+        defineField({
+          name: 'figure',
+          title: 'Figure',
+          type: 'object',
+          hidden: ({ parent }) => parent?.kind !== 'figure',
+          fields: [
+            defineField({ name: 'label', title: 'Label', type: 'string', validation: (r) => r.max(40) }),
+            defineField({ name: 'title', title: 'Title', type: 'string', validation: (r) => r.max(60) }),
+            defineField({
+              name: 'facts',
+              title: 'Facts',
+              type: 'array',
+              of: [
+                {
+                  type: 'object',
+                  name: 'fact',
+                  fields: [
+                    defineField({ name: 'label', title: 'Label', type: 'string', validation: (r) => r.required().max(40) }),
+                    defineField({ name: 'value', title: 'Value', type: 'string', validation: (r) => r.required().max(40) }),
+                    defineField({ name: 'note', title: 'Note', type: 'string', validation: (r) => r.max(80) }),
+                  ],
+                  preview: { select: { title: 'value', subtitle: 'label' } },
+                },
+              ],
+              validation: (r) => r.min(1).max(5),
+            }),
+            defineField({ name: 'footnote', title: 'Footnote', type: 'text', rows: 2, validation: (r) => r.max(160) }),
+          ],
+        }),
       ],
-      validation: (rule) => rule.required()
+      validation: (r) =>
+        r.required().custom((cover) => {
+          const value = cover as
+            | { kind?: string; image?: unknown; figure?: { title?: string; facts?: unknown[] } }
+            | undefined;
+          if (!value?.kind) return 'Pick a cover kind';
+          if (value.kind === 'image' && !value.image) return 'An image cover needs an image';
+          if (value.kind === 'figure') {
+            if (!value.figure?.title) return 'A figure cover needs a title';
+            if (!value.figure?.facts?.length) return 'A figure cover needs at least one fact';
+          }
+          return true;
+        }),
     }),
     defineField({
-      name: 'primaryArtifact',
-      title: 'Primary source artifact',
-      type: 'reference',
-      to: artifactTypes
-    }),
-    defineField({
-      name: 'supportingArtifacts',
-      title: 'Supporting artifacts',
+      name: 'evidence',
+      title: 'Evidence',
       type: 'array',
-      of: [defineArrayMember({ type: 'reference', to: artifactTypes })],
-      validation: (rule) => rule.unique()
-    })
+      of: [
+        {
+          type: 'object',
+          name: 'evidenceItem',
+          fields: [
+            defineField({
+              name: 'image',
+              title: 'Image',
+              type: 'image',
+              options: { hotspot: true },
+              validation: (r) => r.required(),
+            }),
+            defineField({ name: 'alt', title: 'Alt text', type: 'text', rows: 3, validation: (r) => r.required().max(240) }),
+            defineField({ name: 'label', title: 'Label', type: 'string', validation: (r) => r.max(40) }),
+            defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (r) => r.max(80) }),
+            defineField({ name: 'caption', title: 'Caption', type: 'text', rows: 3, validation: (r) => r.max(240) }),
+          ],
+          preview: { select: { title: 'heading', subtitle: 'label', media: 'image' } },
+        },
+      ],
+    }),
+    defineField({
+      name: 'artifacts',
+      title: 'From this project',
+      type: 'array',
+      description: 'Posts and reports that came out of this work.',
+      of: [{ type: 'reference', to: [{ type: 'post' }, { type: 'report' }] }],
+      validation: (r) => r.unique(),
+    }),
+    defineField({
+      name: 'related',
+      title: 'Related',
+      type: 'array',
+      description: 'Up to three.',
+      of: [{ type: 'reference', to: [{ type: 'workStory' }, { type: 'post' }, { type: 'report' }] }],
+      validation: (r) => r.max(3).unique(),
+    }),
   ],
-  orderings: [
-    {
-      title: 'Portfolio order',
-      name: 'portfolioOrder',
-      by: [{ field: 'order', direction: 'asc' }]
-    }
-  ],
+  orderings: [{ name: 'orderAsc', title: 'Order', by: [{ field: 'order', direction: 'asc' }] }],
   preview: {
-    select: { title: 'title', descriptor: 'descriptor', status: 'status', kind: 'kind' },
-    prepare({ title, descriptor, status, kind }) {
-      return { title, subtitle: `${kind ?? 'professional'} · ${status ?? 'Unclassified'} · ${descriptor ?? ''}` };
-    }
-  }
+    select: { title: 'title', kind: 'kind', descriptor: 'descriptor' },
+    prepare: ({ title, kind, descriptor }) => ({
+      title,
+      subtitle: [kind, descriptor].filter(Boolean).join(' · '),
+    }),
+  },
 });

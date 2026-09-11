@@ -1,13 +1,13 @@
 {
   "$schema": "https://unpkg.com/knip@latest/schema.json",
-  "entry": [
-    "astro.config.dev.ts",
-    "src/lib/shell/index.ts",
-    "studio-production/sanity.config.ts",
-    "studio-production/sanity.cli.ts"
-  ],
-  "ignore": [
-    "public/vendor/**",
-    "studio-production/.sanity/**"
-  ]
+  "workspaces": {
+    ".": {
+      "entry": [
+        "src/client/shell.ts",
+        "netlify/functions/*.mts",
+        "scripts/*.{ts,mjs}"
+      ]
+    },
+    "studio": {}
+  }
 }

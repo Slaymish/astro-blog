@@ -31,11 +31,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run tests
+      # The pure tests, before there is a build. The build-output suites skip.
+      - name: Run unit tests
         run: pnpm run test
 
       - name: Build
         run: pnpm run build
+
+      # Again, now that dist/ exists: the build-output and redirect suites run.
+      - name: Run tests against the build
+        run: pnpm run test
+
+      - name: Check for dead code
+        run: pnpm exec knip
 
       - name: Build Studio
         run: pnpm run studio:build

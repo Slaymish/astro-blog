@@ -1,128 +1,95 @@
 ---
-import Layout from '../../components/layout/Layout.astro';
-import PageHeader from '../../components/layout/PageHeader.astro';
-import Button from '../../components/ui/Button.astro';
-import { getWriting, filterableTags } from '../../lib/writingData';
-import { getWritingIndexPage } from '../../lib/pageContent';
-import { SITE_URL, absoluteUrl } from '../../lib/site';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/Button.astro';
+import EntryList from '../../components/EntryList.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { getWritingIndexPage } from '../../content/queries';
+import { filterableTags, getWriting, tagSlug } from '../../content/writing';
 
 const [entries, copy] = await Promise.all([getWriting(), getWritingIndexPage()]);
 const tags = filterableTags(entries);
 const { hero } = copy;
 ---
 
-<Layout
+<Base
   title={copy.seo.title}
   description={copy.seo.description}
-  canonicalURL={absoluteUrl('/writing', SITE_URL)}
+  breadcrumbs={[{ name: 'Writing', path: '/writing' }]}
 >
-  <PageHeader
-    eyebrow={hero.eyebrow}
-    headline={hero.headlineLines}
-    intro={hero.intro}
-    headlineMeasure="16ch"
-    introMeasure="40rem"
-  />
+  <PageHeader eyebrow={hero.eyebrow} headline={hero.headlineLines} intro={hero.intro} measure="regular" />
 
-  {tags.length > 0 && (
-    <div class="writing-filter">
-      <p id="writing-filter-label">{copy.filterLabel}</p>
-      <div class="writing-filter__tags" role="group" aria-labelledby="writing-filter-label">
-        <button type="button" class="chip writing-filter__tag" data-tag="all" aria-pressed="true">All</button>
-        {tags.map((tag) => (
-          <button type="button" class="chip writing-filter__tag" data-tag={tag} aria-pressed="false">{tag}</button>
-        ))}
+  {
+    tags.length > 0 && (
+      <div class="writing-filter" id="writing-filter">
+        <p id="writing-filter-label">{copy.filterLabel}</p>
+        <div class="writing-filter__tags" role="group" aria-labelledby="writing-filter-label">
+          <button type="button" class="chip" data-tag="all" aria-pressed="true">All</button>
+          {tags.map((tag) => (
+            <button type="button" class="chip" data-tag={tagSlug(tag)} aria-pressed="false">
+              {tag}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
-  )}
+    )
+  }
 
-  <ul class="writing-list" id="writing-list">
-    {entries.map((entry) => (
-      <li class="writing-list__item" data-tags={entry.tags.join('|').toLowerCase()}>
-        <a href={entry.href}>
-          <span class="writing-list__meta">
-            <span class="writing-list__date">{entry.displayDate}</span>
-            {entry.type === 'report' && <span class="writing-list__type">Report</span>}
-          </span>
-          <span class="writing-list__body">
-            <span class="writing-list__title">{entry.title}</span>
-            {entry.excerpt && <span class="writing-list__excerpt">{entry.excerpt}</span>}
-          </span>
-        </a>
-      </li>
-    ))}
-  </ul>
+  <EntryList entries={entries} />
 
   <p class="writing-empty" id="writing-empty" hidden={entries.length > 0}>{copy.emptyMessage}</p>
 
   <aside class="writing-reading">
     <p>
-      I keep notes on the books I get through as well, how I came to each one and whatever thought was left over at
-      the end, which is closer to thinking out loud than reviewing anything.
+      I keep notes on the books I get through as well, how I came to each one and whatever thought was
+      left over at the end, which is closer to thinking out loud than reviewing anything.
     </p>
     <Button href="/reading" variant="secondary">Read my book reflections</Button>
   </aside>
-</Layout>
-
-<script>
-  function initTagFilter() {
-    const list = document.getElementById('writing-list');
-    if (!list) return;
-
-    const buttons = document.querySelectorAll<HTMLButtonElement>('.writing-filter__tag');
-    const items = list.querySelectorAll<HTMLElement>('.writing-list__item');
-    const empty = document.getElementById('writing-empty');
-    if (!buttons.length) return;
-
-    buttons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const tag = button.dataset.tag;
-        if (!tag) return;
-
-        buttons.forEach((other) => {
-          other.setAttribute('aria-pressed', String(other === button));
-        });
-
-        let visible = 0;
-        items.forEach((item) => {
-          const tags = (item.dataset.tags || '').split('|');
-          const show = tag === 'all' || tags.includes(tag.toLowerCase());
-          item.hidden = !show;
-          if (show) visible += 1;
-        });
-
-        if (empty) empty.hidden = visible > 0;
-      });
-    });
-  }
-
-  initTagFilter();
-</script>
+</Base>
 
 <style>
-  .writing-filter { border-top: 1px solid var(--color-stroke-subtle); padding-block: var(--spacing-6); }
-  .writing-filter p { color: var(--color-text-secondary); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }
-  .writing-filter__tags { display: flex; flex-wrap: wrap; gap: var(--spacing-2); }
+  .writing-filter {
+    border-top: 1px solid var(--color-stroke-subtle);
+    padding-block: var(--spacing-6);
+  }
 
-  .writing-list { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }
-  .writing-list__item { border-bottom: 1px solid var(--color-stroke-subtle); }
-  .writing-list__item a { align-items: baseline; color: var(--color-text-primary); display: grid; gap: var(--spacing-2) var(--spacing-8); padding-block: clamp(1.5rem, 3.5vw, 2.5rem); }
-  .writing-list__item a:hover .writing-list__title { color: var(--color-action); }
-  .writing-list__meta { align-items: baseline; display: flex; gap: var(--spacing-3); }
-  .writing-list__date { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--type-label); }
-  .writing-list__type { border: 1px solid var(--color-stroke-subtle); color: var(--color-text-secondary); font-size: var(--type-label); letter-spacing: .08em; padding: .1rem .4rem; text-transform: uppercase; }
-  .writing-list__title { display: block; font-size: clamp(1.35rem, 2.6vw, 2.1rem); letter-spacing: var(--tracking-heading); line-height: 1.2; }
-  .writing-list__excerpt { color: var(--color-text-secondary); display: block; font-size: var(--type-body-small); line-height: 1.6; margin-top: var(--spacing-2); max-width: 54rem; }
+  .writing-filter p {
+    color: var(--color-text-secondary);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.1em;
+    margin: 0 0 var(--spacing-4);
+    text-transform: uppercase;
+  }
 
-  .writing-empty { color: var(--color-text-secondary); padding-block: var(--spacing-16); text-align: center; }
+  .writing-filter__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+  }
+
+  .writing-empty {
+    color: var(--color-text-secondary);
+    padding-block: var(--spacing-16);
+    text-align: center;
+  }
 
   /* Closing pointer to /reading. One line of copy and one button, sitting under
      the rule the last list item already draws, so it reads as the end of the
      page rather than a card. */
-  .writing-reading { align-items: start; display: flex; flex-direction: column; gap: var(--spacing-4); padding-block: var(--spacing-8); }
-  .writing-reading p { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.6; margin: 0; max-width: 42rem; }
+  .writing-reading {
+    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding-block: var(--spacing-8);
+  }
 
-  @media (min-width: 48rem) {
-    .writing-list__item a { grid-template-columns: 9rem minmax(0, 1fr); }
+  .writing-reading p {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 42rem;
   }
 </style>

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { MAX_EVENTS, NAME_PATTERN, PATH_PATTERN, cleanEvents } from '../src/lib/analytics';
+import { MAX_EVENTS, NAME_PATTERN, PATH_PATTERN, cleanEvents } from '../src/server/analytics';
 import {
   ANALYTICS_EVENT_NAMES,
   SCROLL_MILESTONES,
@@ -9,7 +9,7 @@ import {
   outboundDestination,
   scrollDepthPercent,
   sharePlatform
-} from '../src/lib/shell/analyticsTracker';
+} from '../src/client/analyticsTracker';
 
 const START = 1_700_000_000_000;
 

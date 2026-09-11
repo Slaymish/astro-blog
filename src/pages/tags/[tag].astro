@@ -1,83 +1,88 @@
 ---
-import Layout from '../../components/layout/Layout.astro';
-import IconText from '../../components/ui/IconText.astro';
-import { fetchSanity } from '../../lib/sanity';
-import { getWriting } from '../../lib/writingData';
-import { createSlug } from '../../utils/slug';
+import Base from '../../layouts/Base.astro';
+import EntryList from '../../components/EntryList.astro';
+import IconText from '../../components/IconText.astro';
+import { getTags } from '../../content/queries';
+import { getWriting, tagSlug } from '../../content/writing';
 
 export async function getStaticPaths() {
-  const tags = await fetchSanity<string[]>(`
-    array::unique(*[_type in ["post", "report"]].tags[])
-  `);
-  return (tags ?? []).filter(Boolean).map((tag) => ({ params: { tag: createSlug(tag) } }));
+  const [tags, entries] = await Promise.all([getTags(), getWriting()]);
+  return tags.map((tag) => ({
+    params: { tag: tagSlug(tag) },
+    props: { tag, entries: entries.filter((entry) => entry.tags.includes(tag)) },
+  }));
 }
 
-const { tag } = Astro.params as { tag: string };
+interface Props {
+  tag: string;
+  entries: Awaited<ReturnType<typeof getWriting>>;
+}
 
-// Entries carry their own correct hrefs, including the public-slug aliasing for posts.
-const entries = await getWriting();
-const label = entries.flatMap((entry) => entry.tags).find((entry) => createSlug(entry) === tag) ?? tag;
-const matches = entries.filter((entry) => entry.tags.some((entryTag) => createSlug(entryTag) === tag));
+const { tag, entries } = Astro.props;
+const count = `${entries.length} ${entries.length === 1 ? 'entry' : 'entries'}`;
 ---
 
-<Layout
-  title={`Writing tagged “${label}”`}
-  description={`Writing and reports tagged ${label} on Hamish Burke's site.`}
+<Base
+  title={`Writing tagged “${tag}”`}
+  description={`Posts and reports by Hamish Burke tagged ${tag}.`}
+  breadcrumbs={[
+    { name: 'Writing', path: '/writing' },
+    { name: tag, path: `/tags/${tagSlug(tag)}` },
+  ]}
 >
-  <header class="tag-page__header">
-    <p class="tag-page__eyebrow">Tagged</p>
-    <h1>{label}</h1>
-    <p class="tag-page__count">
-      {matches.length} {matches.length === 1 ? 'entry' : 'entries'}
-    </p>
-    <a class="tag-page__back" href="/writing">
+  <header class="tag-header">
+    <a class="tag-header__back" href="/writing">
       <IconText icon="arrow-left" position="start">All writing</IconText>
     </a>
+    <p class="tag-header__eyebrow">Tagged</p>
+    <h1>{tag}</h1>
+    <p class="tag-header__count">{count}</p>
   </header>
 
-  {matches.length > 0 ? (
-    <ul class="tag-page__list">
-      {matches.map((entry) => (
-        <li>
-          <a href={entry.href}>
-            <span class="tag-page__meta">
-              <span class="tag-page__date">{entry.displayDate}</span>
-              {entry.type === 'report' && <span class="tag-page__type">Report</span>}
-            </span>
-            <span>
-              <span class="tag-page__title">{entry.title}</span>
-              {entry.excerpt && <span class="tag-page__excerpt">{entry.excerpt}</span>}
-            </span>
-          </a>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p class="tag-page__empty">Nothing is tagged “{label}” yet.</p>
-  )}
-</Layout>
+  <EntryList entries={entries} />
+</Base>
 
 <style>
-  .tag-page__header { padding-block: var(--hero-top-space) var(--hero-bottom-space); }
-  .tag-page__eyebrow { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-5); text-transform: uppercase; }
-  .tag-page__header h1 { font-size: var(--type-heading-1); letter-spacing: var(--tracking-display); line-height: .9; margin: 0; }
-  .tag-page__count { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: var(--spacing-6) 0 0; }
-  .tag-page__back { color: var(--color-text-primary); display: inline-block; font-size: var(--type-body-small); font-weight: 700; margin-top: var(--spacing-6); }
-  .tag-page__back:hover { color: var(--color-action); }
+  .tag-header {
+    padding-block: var(--spacing-8) var(--spacing-10);
+  }
 
-  .tag-page__list { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }
-  .tag-page__list li { border-bottom: 1px solid var(--color-stroke-subtle); }
-  .tag-page__list a { align-items: baseline; color: var(--color-text-primary); display: grid; gap: var(--spacing-2) var(--spacing-8); padding-block: clamp(1.5rem, 3.5vw, 2.5rem); }
-  .tag-page__list a:hover .tag-page__title { color: var(--color-action); }
-  .tag-page__meta { align-items: baseline; display: flex; gap: var(--spacing-3); }
-  .tag-page__date { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--type-label); }
-  .tag-page__type { border: 1px solid var(--color-stroke-subtle); color: var(--color-text-secondary); font-size: var(--type-label); letter-spacing: .08em; padding: .1rem .4rem; text-transform: uppercase; }
-  .tag-page__title { display: block; font-size: clamp(1.35rem, 2.6vw, 2.1rem); letter-spacing: var(--tracking-heading); line-height: 1.2; }
-  .tag-page__excerpt { color: var(--color-text-secondary); display: block; font-size: var(--type-body-small); line-height: 1.6; margin-top: var(--spacing-2); max-width: 54rem; }
+  .tag-header__back {
+    --icon-gap: var(--spacing-2);
+    color: var(--color-text-secondary);
+    display: inline-block;
+    font-size: var(--type-body-small);
+    margin-bottom: var(--spacing-8);
+    text-decoration: none;
+  }
 
-  .tag-page__empty { color: var(--color-text-secondary); padding-block: var(--spacing-16); }
+  .tag-header__back:hover {
+    color: var(--color-action);
+  }
 
-  @media (min-width: 48rem) {
-    .tag-page__list a { grid-template-columns: 9rem minmax(0, 1fr); }
+  .tag-header__eyebrow {
+    color: var(--color-action);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.1em;
+    margin: 0 0 var(--spacing-4);
+    text-transform: uppercase;
+  }
+
+  .tag-header h1 {
+    font-size: var(--type-display);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  .tag-header__count {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    letter-spacing: 0.06em;
+    margin: var(--spacing-5) 0 0;
+    text-transform: uppercase;
   }
 </style>

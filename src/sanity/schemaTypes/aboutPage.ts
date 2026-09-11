@@ -1,107 +1,58 @@
-import { defineArrayMember, defineField, defineType } from 'sanity';
+import { defineField, defineType } from 'sanity';
 
 export const aboutPage = defineType({
   name: 'aboutPage',
-  title: 'About Page',
+  title: 'About page',
   type: 'document',
   fields: [
+    defineField({ name: 'seo', title: 'SEO', type: 'seo', validation: (rule) => rule.required() }),
+    defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string', validation: (r) => r.required().max(60) }),
+    defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (r) => r.required().max(80) }),
+    defineField({ name: 'intro', title: 'Intro', type: 'text', rows: 5, validation: (r) => r.required().max(600) }),
     defineField({
-      name: 'seo',
-      title: 'SEO',
-      type: 'object',
-      fields: [
-        defineField({ name: 'title', title: 'Page title', type: 'string', validation: (rule) => rule.required().max(70) }),
-        defineField({ name: 'description', title: 'Meta description', type: 'text', rows: 3, validation: (rule) => rule.required().max(200) })
-      ],
-      validation: (rule) => rule.required()
+      name: 'portraitAlt',
+      title: 'Portrait alt text',
+      type: 'string',
+      validation: (r) => r.required().max(160),
     }),
+    defineField({ name: 'largeCopy', title: 'Large copy', type: 'blockContent' }),
     defineField({
-      name: 'hero',
-      title: 'Hero',
-      type: 'object',
-      fields: [
-        defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string', validation: (rule) => rule.required().max(60) }),
-        defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required().max(90) }),
-        defineField({ name: 'intro', title: 'Intro', type: 'text', rows: 4, validation: (rule) => rule.required().max(400) })
-      ],
-      validation: (rule) => rule.required()
-    }),
-    defineField({
-      name: 'portrait',
-      title: 'Portrait section',
-      type: 'object',
-      fields: [
-        defineField({ name: 'imageAlt', title: 'Portrait alt text', type: 'string', validation: (rule) => rule.required().max(140) }),
-        defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule) => rule.required().max(40) }),
-        defineField({
-          name: 'largeCopy',
-          title: 'Large copy',
-          type: 'blockContent',
-          description: 'Rich text so the employer link stays editable inline.'
-        }),
-        defineField({ name: 'body', title: 'Supporting paragraph', type: 'text', rows: 4, validation: (rule) => rule.required().max(400) })
-      ],
-      validation: (rule) => rule.required()
-    }),
-    defineField({
-      name: 'capabilities',
-      title: 'Capabilities section',
-      type: 'object',
-      fields: [
-        defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule) => rule.required().max(40) }),
-        defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required().max(60) }),
-        defineField({
-          name: 'items',
-          title: 'Items',
-          type: 'array',
-          description: 'Numbering (01, 02, …) is applied automatically in display order.',
-          of: [
-            defineArrayMember({
-              type: 'object',
-              fields: [
-                defineField({ name: 'title', title: 'Title', type: 'string', validation: (rule) => rule.required().max(60) }),
-                defineField({ name: 'body', title: 'Body', type: 'text', rows: 3, validation: (rule) => rule.required().max(300) })
-              ],
-              preview: { select: { title: 'title', subtitle: 'body' } }
-            })
+      name: 'projects',
+      title: 'Projects',
+      type: 'array',
+      description: 'Exactly two.',
+      of: [
+        {
+          type: 'object',
+          name: 'aboutProject',
+          fields: [
+            defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (r) => r.required().max(80) }),
+            defineField({ name: 'body', title: 'Body', type: 'text', rows: 5, validation: (r) => r.required().max(600) }),
+            defineField({ name: 'link', title: 'Link', type: 'ctaLink', validation: (r) => r.required() }),
           ],
-          validation: (rule) => rule.required().min(1)
-        })
+          preview: { select: { title: 'heading', subtitle: 'link.href' } },
+        },
       ],
-      validation: (rule) => rule.required()
+      validation: (r) => r.required().length(2),
     }),
     defineField({
       name: 'background',
-      title: 'Background section',
+      title: 'Background',
       type: 'object',
+      validation: (r) => r.required(),
       fields: [
-        defineField({ name: 'label', title: 'Label', type: 'string', validation: (rule) => rule.required().max(40) }),
-        defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (rule) => rule.required().max(90) }),
+        defineField({ name: 'label', title: 'Label', type: 'string', validation: (r) => r.required().max(60) }),
+        defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (r) => r.required().max(80) }),
         defineField({
           name: 'paragraphs',
           title: 'Paragraphs',
           type: 'array',
-          of: [defineArrayMember({ type: 'text', validation: (rule) => rule.required().max(500) })],
-          validation: (rule) => rule.required().min(1)
+          of: [{ type: 'text', rows: 6 }],
+          validation: (r) => r.required().min(1),
         }),
-        defineField({
-          name: 'links',
-          title: 'Links',
-          type: 'array',
-          of: [defineArrayMember({ type: 'ctaLink' })],
-          validation: (rule) => rule.required().min(1)
-        })
+        defineField({ name: 'links', title: 'Links', type: 'array', of: [{ type: 'ctaLink' }] }),
       ],
-      validation: (rule) => rule.required()
     }),
-    defineField({
-      name: 'contactHeading',
-      title: 'Contact band heading',
-      type: 'string',
-      validation: (rule) => rule.required().max(90)
-    })
   ],
-  preview: {
-    prepare: () => ({ title: 'About Page' })
-  }
+  preview: { prepare: () => ({ title: 'About page' }) },
 });

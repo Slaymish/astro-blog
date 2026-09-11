@@ -1,18 +1,18 @@
 ---
-import Layout from '../components/layout/Layout.astro';
-import { CONTACT_EMAIL, SITE_URL, absoluteUrl } from '../lib/site';
+import Base from '../layouts/Base.astro';
+import { CONTACT_EMAIL } from '../site/config';
 ---
 
-<Layout
+<Base
   title="Terms of Use"
   description="Terms that apply when using hamishburke.dev."
-  canonicalURL={absoluteUrl('/terms', SITE_URL)}
+  breadcrumbs={[{ name: 'Terms', path: '/terms' }]}
 >
   <article class="legal-page">
     <header>
       <p class="legal-page__eyebrow">Legal</p>
       <h1>Terms of Use</h1>
-      <p class="legal-page__updated">Last updated 26 July 2026</p>
+      <p class="legal-page__updated">Last updated 11 September 2026</p>
     </header>
 
     <div class="legal-page__content">
@@ -104,7 +104,7 @@ import { CONTACT_EMAIL, SITE_URL, absoluteUrl } from '../lib/site';
       </section>
     </div>
   </article>
-</Layout>
+</Base>
 
 <style>
   .legal-page { margin-inline: auto; max-width: 48rem; padding-block: var(--hero-top-space) clamp(4rem, 10vw, 8rem); }

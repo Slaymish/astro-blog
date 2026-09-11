@@ -1,0 +1,32 @@
+---
+import { sanitySrcSet } from '../content/images';
+import type { SanityImage } from '../content/types';
+
+interface Props {
+  image: SanityImage;
+  alt: string;
+  widths: number[];
+  sizes: string;
+  aspect?: number;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+}
+
+const { image, alt, widths, sizes, aspect, class: className, loading = 'lazy', fetchpriority } = Astro.props;
+
+const { src, srcset, width, height } = sanitySrcSet(image, widths, { aspect });
+---
+
+<img
+  class={className}
+  src={src}
+  srcset={srcset}
+  sizes={sizes}
+  width={width}
+  height={height}
+  alt={alt}
+  loading={loading}
+  decoding="async"
+  fetchpriority={fetchpriority}
+/>

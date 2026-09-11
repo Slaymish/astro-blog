@@ -32,3 +32,33 @@ test('POST /api/recommend accepts a title and does not cache the reply', async (
   // Outside Netlify there is no blob store, so the route reports the write it skipped.
   assert.equal(body.stored, false);
 });
+
+function postForm(title: string): Promise<Response> {
+  return POST({
+    request: new Request('https://hamishburke.dev/api/recommend', {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ title }).toString(),
+    }),
+  });
+}
+
+test('a form-encoded post redirects instead of answering JSON, so the form works without scripts', async () => {
+  const response = await postForm('The Myth of Sisyphus');
+
+  assert.equal(response.status, 303);
+  assert.equal(response.headers.get('location'), '/reading/sent?state=ok');
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+});
+
+test('a form-encoded post with an unusable title redirects to the error state', async () => {
+  assert.equal((await postForm('   ')).headers.get('location'), '/reading/sent?state=error');
+  assert.equal((await postForm('')).headers.get('location'), '/reading/sent?state=error');
+});
+
+test('a form-encoded post is not answered with a JSON body', async () => {
+  const response = await postForm('A Book');
+
+  assert.equal(await response.text(), '');
+  assert.equal(response.headers.get('content-type'), null);
+});

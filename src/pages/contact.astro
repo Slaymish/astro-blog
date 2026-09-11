@@ -1,25 +1,24 @@
 ---
-import Layout from '../components/layout/Layout.astro';
-import Icon from '../components/ui/Icon.astro';
-import PageHeader from '../components/layout/PageHeader.astro';
-import { getContactPage } from '../lib/pageContent';
-import { SITE_URL, absoluteUrl } from '../lib/site';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ContactBand from '../components/ContactBand.astro';
+import { getContactPage } from '../content/queries';
 
 const copy = await getContactPage();
 const { hero } = copy;
 ---
 
-<Layout
+<Base
   title={copy.seo.title}
   description={copy.seo.description}
-  canonicalURL={absoluteUrl('/contact', SITE_URL)}
+  breadcrumbs={[{ name: 'Contact', path: '/contact' }]}
 >
   <PageHeader
     eyebrow={hero.eyebrow}
     headline={hero.headlineLines}
     intro={hero.intro}
-    headlineMeasure="14ch"
-    introMeasure="38rem"
+    measure="narrow"
   />
 
   <section class="contact__channels" aria-label="Ways to get in touch">
@@ -47,7 +46,9 @@ const { hero } = copy;
   <section class="contact__availability" aria-label="Availability">
     <p>{copy.availabilityNote}</p>
   </section>
-</Layout>
+
+  <ContactBand booking />
+</Base>
 
 <style>
   .contact__channels ul { border-top: 1px solid var(--color-stroke-subtle); list-style: none; margin: 0; padding: 0; }

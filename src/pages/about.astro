@@ -1,28 +1,58 @@
 ---
-import Layout from '../components/layout/Layout.astro';
-import MediaFrame from '../components/ui/MediaFrame.astro';
-import { getAboutPage } from '../lib/pageContent';
-import { portableTextToHtml } from '../lib/portableText';
-import { SITE_URL, absoluteUrl } from '../lib/site';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import IconText from '../components/IconText.astro';
+import { getAboutPage } from '../content/queries';
+import { portableTextToHtml } from '../content/portableText';
+import headshot from '../assets/images/headshot.jpg';
 
 const copy = await getAboutPage();
-const { hero, portrait, background } = copy;
-const largeCopyHtml = portableTextToHtml(portrait.largeCopy);
+const { background } = copy;
+const largeCopy = portableTextToHtml(copy.largeCopy);
 ---
 
-<Layout
+<Base
   title={copy.seo.title}
   description={copy.seo.description}
-  canonicalURL={absoluteUrl('/about', SITE_URL)}
+  breadcrumbs={[{ name: 'About', path: '/about' }]}
 >
   <article class="about">
     <section class="about__opening" aria-labelledby="about-heading">
-      <div><p class="about__label">About</p><h1 id="about-heading">Hi, I’m Hamish.</h1><p>{hero.intro}</p><div set:html={largeCopyHtml} /></div>
-      <MediaFrame src="/images/headshot.jpg" alt={portrait.imageAlt} width={3264} height={4896} ratio="portrait" position="center top" loading="eager" />
+      <div>
+        <p class="about__label">{copy.eyebrow}</p>
+        <h1 id="about-heading">{copy.heading}</h1>
+        <p>{copy.intro}</p>
+        {largeCopy && <Fragment set:html={largeCopy} />}
+      </div>
+      <div class="about__portrait">
+        <Image
+          src={headshot}
+          alt={copy.portraitAlt}
+          widths={[400, 800, 1200]}
+          sizes="(min-width: 48rem) 22rem, 100vw"
+          loading="eager"
+        />
+      </div>
     </section>
+
     <section class="about__experiences" aria-label="Two projects">
-      <div><h2>Taking the SaaS layer out of You Inc</h2><p>I built the accounts, plans and billing around You Inc, then took them all back out again. Running a finance service meant I was taking responsibility for other people’s bank credentials, and once I actually sat with that, a tool people could run themselves on their own machine made a lot more sense.</p><a href="/work/you-inc">The You Inc story →</a></div>
-      <div><h2>Running a server at home</h2><p>Got into running a server at home (and a GPU a few of us share) as it keeps handing me concrete questions I don’t get from work, like how you actually recover a machine, who can reach it from outside, and what happens when it just switches off one day.</p><a href="/work/home-lab">Testing a full recovery →</a></div>
+      {
+        copy.projects.map((project) => (
+          <div>
+            <h2>{project.heading}</h2>
+            <p>{project.body}</p>
+            <a
+              href={project.link.href}
+              target={project.link.external ? '_blank' : undefined}
+              rel={project.link.external ? 'noopener noreferrer' : undefined}
+            >
+              <IconText icon={project.link.external ? 'arrow-up-right' : 'arrow-right'}>
+                {project.link.label}
+              </IconText>
+            </a>
+          </div>
+        ))
+      }
     </section>
 
     <section class="about__background" aria-labelledby="background-heading">
@@ -31,47 +61,108 @@ const largeCopyHtml = portableTextToHtml(portrait.largeCopy);
         <h2 id="background-heading">{background.heading}</h2>
         {background.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
         <nav aria-label="About links">
-          {background.links.filter(link => link.href !== '/projects').map((link) => (
-            <a
-              href={link.href}
-              target={link.external ? '_blank' : undefined}
-              rel={link.external ? 'noopener noreferrer' : undefined}
-            >
-              {link.label}
-            </a>
-          ))}
+          {
+            background.links.map((link) => (
+              <a
+                href={link.href}
+                aria-label={link.ariaLabel}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener noreferrer' : undefined}
+              >
+                <IconText icon={link.external ? 'arrow-up-right' : 'arrow-right'}>{link.label}</IconText>
+              </a>
+            ))
+          }
         </nav>
       </div>
     </section>
   </article>
-
-
-  <script type="application/ld+json" is:inline set:html={JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    '@id': absoluteUrl('/#person', SITE_URL),
-    name: 'Hamish Burke',
-    url: absoluteUrl('/', SITE_URL),
-    image: absoluteUrl('/images/headshot.jpg', SITE_URL),
-    jobTitle: 'Web Developer',
-    worksFor: { '@type': 'Organization', name: 'Alphero', url: 'https://www.alphero.com/' },
-    alumniOf: { '@type': 'EducationalOrganization', name: 'Victoria University of Wellington', sameAs: 'https://www.wgtn.ac.nz' },
-    knowsAbout: ['Software Engineering', 'Artificial Intelligence', 'Distributed Systems', 'System Architecture', 'Full-Stack Development'],
-    sameAs: ['https://github.com/Slaymish', 'https://www.linkedin.com/in/hamish-burke-2301669a'],
-    mainEntityOfPage: { '@type': 'ProfilePage', '@id': absoluteUrl('/about', SITE_URL) }
-  })} />
-</Layout>
+</Base>
 
 <style>
-.about__opening { display: grid; gap: 2rem; padding-block: 1.5rem 4rem; align-items: center; }
-h1 { font-size: var(--type-display); letter-spacing: -.035em; line-height: 1.05; margin: 1rem 0 2rem; }
-.about__label { font-size: .75rem; color: var(--color-text-secondary); }
-p, .about__opening :global(p) { font-size: 1.125rem; line-height: 1.7; color: var(--color-text-secondary); max-width: 65ch; }
-.about__opening :global(.media-frame) { max-width: 22rem; }
-h2 { font-size: clamp(1.6rem, 3vw, 2rem); line-height: 1.25; letter-spacing: -.025em; }
-a { color: var(--color-action); }
-.about__experiences { display: grid; gap: 2rem; border-top: 1px solid var(--color-stroke-subtle); padding-block: 2rem 4rem; }
-.about__background { border-top: 1px solid var(--color-stroke-subtle); padding-block: 2rem; }
-nav { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem; }
-@media(min-width: 48rem) { .about__opening { grid-template-columns: 1.5fr 1fr; gap: 5rem; } .about__experiences { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+  .about__opening {
+    align-items: center;
+    display: grid;
+    gap: var(--spacing-8);
+    padding-block: var(--spacing-6) var(--spacing-16);
+  }
+
+  h1 {
+    font-size: var(--type-display);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.05;
+    margin: var(--spacing-4) 0 var(--spacing-8);
+  }
+
+  .about__label {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  p,
+  .about__opening :global(p) {
+    color: var(--color-text-secondary);
+    font-size: 1.125rem;
+    line-height: 1.7;
+    max-width: 65ch;
+  }
+
+  .about__portrait {
+    border: 1px solid var(--color-stroke-subtle);
+    max-width: 22rem;
+    overflow: hidden;
+  }
+
+  .about__portrait img {
+    border-radius: 0;
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+
+  h2 {
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    letter-spacing: var(--tracking-heading);
+    line-height: 1.25;
+  }
+
+  a {
+    --icon-gap: var(--spacing-2);
+    color: var(--color-action);
+    text-decoration: none;
+  }
+
+  .about__experiences {
+    border-top: 1px solid var(--color-stroke-subtle);
+    display: grid;
+    gap: var(--spacing-8);
+    padding-block: var(--spacing-8) var(--spacing-16);
+  }
+
+  .about__background {
+    border-top: 1px solid var(--color-stroke-subtle);
+    padding-block: var(--spacing-8);
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-6);
+    margin-top: var(--spacing-8);
+  }
+
+  @media (min-width: 48rem) {
+    .about__opening {
+      gap: 5rem;
+      grid-template-columns: 1.5fr 1fr;
+    }
+
+    .about__experiences {
+      gap: var(--spacing-16);
+      grid-template-columns: 1fr 1fr;
+    }
+  }
 </style>

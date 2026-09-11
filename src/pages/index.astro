@@ -1,72 +1,217 @@
 ---
-import Layout from '../components/layout/Layout.astro';
-import WorkGraphic from '../components/work/WorkGraphic.astro';
-import { getWorkStories } from '../lib/workData';
-import { getWriting } from '../lib/writingData';
-import { featuredSlugs, introduction, workCategory } from '../lib/workEditorial';
-const [stories, writing] = await Promise.all([getWorkStories(), getWriting()]);
-const featured = featuredSlugs.map(slug => stories.find(story => story.slug === slug)).filter(story => story !== undefined);
+import Base from '../layouts/Base.astro';
+import IconText from '../components/IconText.astro';
+import WorkCover from '../components/WorkCover.astro';
+import { getHomePage, getWorkStories } from '../content/queries';
+import { categoryLabel } from '../content/work';
+import { artifactHref } from '../content/work';
+
+const [copy, stories] = await Promise.all([getHomePage(), getWorkStories()]);
+
+const featured = copy.featured
+  .map((slug) => stories.find((story) => story.slug === slug))
+  .filter((story): story is NonNullable<typeof story> => story !== undefined);
+
+if (featured.length !== copy.featured.length) {
+  const missing = copy.featured.filter((slug) => !stories.some((story) => story.slug === slug));
+  throw new Error(`homePage.featured references missing work stories: ${missing.join(', ')}`);
+}
+
 const [lead, ...secondary] = featured;
-const article = writing.find(entry => entry.href === '/posts/building-a-private-ai-server-for-friends');
+const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug);
 ---
-<Layout title="Hamish Burke" description="Software, small systems, and the decisions behind them. Selected work and writing by Hamish Burke in Wellington.">
+
+<Base title={copy.seo.title} description={copy.seo.description}>
   <section class="opening" aria-labelledby="intro-heading">
     <div class="introduction">
-      <p class="label">Software developer · Wellington, NZ</p>
-      <h1 id="intro-heading">Hamish Burke</h1>
-      <p class="intro-copy">I build software, from a coach’s first website to tools I run on my own hardware.</p>
-      <p>I’m interested in what makes a system useful, what it takes to keep it running, and when to make it smaller.</p>
-      <a class="text-link" href="/about">About me <span aria-hidden="true">↗</span></a>
+      <p class="label">{copy.eyebrow}</p>
+      <h1 id="intro-heading">{copy.heading}</h1>
+      <p class="intro-copy">{copy.lede}</p>
+      <p>{copy.intro}</p>
+      <a class="text-link" href="/about"><IconText icon="arrow-up-right">{copy.aboutLabel}</IconText></a>
     </div>
-    {lead && <article class="lead-feature">
-      <a class="visual-link" href={`/work/${lead.slug}`} aria-label={`Explore ${lead.title}`}><img src="/images/work/youinc-demo-dashboard.png" alt="You Inc dashboard showing cashflow, expenses and income using sample data." width="2462" height="1420" fetchpriority="high" /></a>
-      <p class="label">Featured work · {workCategory(lead)}</p>
-      <h2><a href={`/work/${lead.slug}`}>{lead.title} <span aria-hidden="true">↗</span></a></h2>
-      <p>{introduction(lead)}</p>
-      <a class="text-link" href={`/work/${lead.slug}`}>Why I took the SaaS layer out <span aria-hidden="true">→</span></a>
-    </article>}
+    {
+      lead && (
+        <article class="lead-feature">
+          <a class="visual-link" href={`/work/${lead.slug}`} aria-label={`Explore ${lead.title}`}>
+            <WorkCover cover={lead.cover} priority />
+          </a>
+          <p class="label">Featured work · {categoryLabel(lead.kind)}</p>
+          <h2><a href={`/work/${lead.slug}`}>{lead.title}</a></h2>
+          <p>{lead.introduction}</p>
+          <a class="text-link" href={`/work/${lead.slug}`}>
+            <IconText>{copy.leadLinkLabel}</IconText>
+          </a>
+        </article>
+      )
+    }
   </section>
+
   <section class="selected" aria-labelledby="selected-heading">
-    <div class="section-heading"><h2 id="selected-heading">More work</h2><a class="text-link" href="/work">All work <span aria-hidden="true">→</span></a></div>
-    <div class="secondary-grid">{secondary.map(story => <article>
-      <a class="visual-link" href={`/work/${story.slug}`} aria-label={`Explore ${story.title}`}><WorkGraphic kind={story.graphic.kind} alt={story.graphic.alt} /></a>
-      <p class="label">{workCategory(story)} · {story.slug === 'home-lab' ? 'Systems & recovery' : 'Design & development'}</p>
-      <h3><a href={`/work/${story.slug}`}>{story.title} <span aria-hidden="true">↗</span></a></h3>
-      <p>{introduction(story)}</p>
-    </article>)}</div>
+    <div class="section-heading">
+      <h2 id="selected-heading">{copy.moreWorkHeading}</h2>
+      <a class="text-link" href="/work"><IconText>{copy.allWorkLabel}</IconText></a>
+    </div>
+    <div class="secondary-grid">
+      {
+        secondary.map((story) => (
+          <article>
+            <a class="visual-link" href={`/work/${story.slug}`} aria-label={`Explore ${story.title}`}>
+              <WorkCover cover={story.cover} compact />
+            </a>
+            <p class="label">{categoryLabel(story.kind)} · {story.descriptor}</p>
+            <h3><a href={`/work/${story.slug}`}>{story.title}</a></h3>
+            <p>{story.introduction}</p>
+          </article>
+        ))
+      }
+    </div>
   </section>
+
   <section class="notes" aria-label="Writing and reading">
     <div>
-      <p class="label">Writing</p>
-      {article ? <><h2><a href={article.href}>{article.title}</a></h2><p>A GPU for friends sounds simple. Here’s what happens when accounts, costs, and a machine that sometimes switches off enter the picture.</p><a class="text-link" href={article.href}>Read the story <span aria-hidden="true">→</span></a></> : <><h2>Notes from building things.</h2><p>Experiments, decisions, and things I’d change next time.</p></>}
-      <a class="more-writing" href="/writing">All writing →</a>
+      <p class="label">{copy.writingLabel}</p>
+      <h2><a href={writingHref}>{copy.writingEntry.title}</a></h2>
+      <p>{copy.writingBlurb}</p>
+      <a class="text-link" href={writingHref}><IconText>{copy.writingLinkLabel}</IconText></a>
+      <a class="more-writing" href="/writing">{copy.allWritingLabel}</a>
     </div>
     <aside>
-      <p class="label">Reading</p>
-      <p>I’m trying to make more time for reading, the piano, and being away from a screen.</p>
-      <a class="text-link" href="/reading">On my bookshelf <span aria-hidden="true">→</span></a>
+      <p class="label">{copy.readingLabel}</p>
+      <p>{copy.readingText}</p>
+      <a class="text-link" href="/reading"><IconText>{copy.readingLinkLabel}</IconText></a>
     </aside>
   </section>
-</Layout>
+</Base>
+
 <style>
-.opening { display: grid; gap: 3rem; padding-block: 2rem 4rem; }
-h1 { font-size: clamp(3rem, 5vw, 4rem); line-height: 1.04; letter-spacing: -.045em; margin: 1.25rem 0 2rem; }
-p { line-height: 1.65; color: var(--color-text-secondary); margin: 1rem 0; font-size: 1.125rem; }
-.label { font-size: .75rem; letter-spacing: .06em; color: var(--color-text-secondary); margin: 1.5rem 0 .65rem; }
-.introduction .label { margin-top: 0; }
-.intro-copy { font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.5; color: var(--color-text-primary); }
-h2, h3 { font-size: clamp(1.65rem, 3vw, 2.1rem); line-height: 1.2; letter-spacing: -.025em; margin: 0; }
-h2 a, h3 a { color: inherit; text-decoration: none; } h2 a:hover, h3 a:hover { color: var(--color-action); }
-h2 span, h3 span { color: var(--color-action); font-size: .7em; }
-.text-link { font-size: .95rem; color: var(--color-action); font-weight: 550; display: inline-block; padding-block: .65rem; }
-.visual-link { display: block; overflow: hidden; border: 1px solid var(--color-stroke-subtle); } .visual-link:hover { opacity: 1; }
-.visual-link img { display: block; width: 100%; height: auto; }
-.selected { border-top: 1px solid var(--color-stroke-subtle); padding-block: 2rem 4rem; }
-.section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
-.section-heading h2 { font-size: 1.25rem; }
-.secondary-grid { display: grid; gap: 3rem; } .secondary-grid :global(.work-graphic) { aspect-ratio: 1.65; min-height: 0; width: 100%; }
-.notes { border-top: 1px solid var(--color-stroke-subtle); display: grid; gap: 3rem; padding-block: 2rem 3rem; }
-.notes h2 { max-width: 28ch; } .notes aside h2 { font-size: 1.5rem; } .more-writing { display: block; margin-top: .75rem; font-size: .875rem; color: var(--color-text-secondary); }
-@media(min-width: 48rem) { .opening { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 3.5rem; padding-block: 3rem 5rem; } .secondary-grid { grid-template-columns: 1.15fr 1fr; } .notes { grid-template-columns: 1.4fr 1fr; gap: 5rem; } }
-@media(max-width: 34rem) { .secondary-grid :global(.work-graphic--home-lab) { aspect-ratio: auto; } }
+  .opening {
+    display: grid;
+    gap: var(--spacing-12);
+    padding-block: var(--spacing-8) var(--spacing-16);
+  }
+
+  h1 {
+    font-size: clamp(3rem, 5vw, 4rem);
+    letter-spacing: -0.045em;
+    line-height: 1.04;
+    margin: var(--spacing-5) 0 var(--spacing-8);
+  }
+
+  p {
+    color: var(--color-text-secondary);
+    font-size: 1.125rem;
+    line-height: 1.65;
+    margin: var(--spacing-4) 0;
+  }
+
+  .label {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    letter-spacing: 0.06em;
+    margin: var(--spacing-6) 0 var(--spacing-2);
+    text-transform: uppercase;
+  }
+
+  .introduction .label {
+    margin-top: 0;
+  }
+
+  .intro-copy {
+    color: var(--color-text-primary);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    line-height: 1.5;
+  }
+
+  h2,
+  h3 {
+    font-size: clamp(1.65rem, 3vw, 2.1rem);
+    letter-spacing: var(--tracking-heading);
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  h2 a,
+  h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  h2 a:hover,
+  h3 a:hover {
+    color: var(--color-action);
+  }
+
+  .text-link {
+    --icon-gap: var(--spacing-2);
+    color: var(--color-action);
+    display: inline-block;
+    font-size: 0.95rem;
+    font-weight: var(--font-weight-medium);
+    padding-block: var(--spacing-2);
+    text-decoration: none;
+  }
+
+  .visual-link {
+    display: block;
+  }
+
+  .selected {
+    border-top: 1px solid var(--color-stroke-subtle);
+    padding-block: var(--spacing-8) var(--spacing-16);
+  }
+
+  .section-heading {
+    align-items: baseline;
+    display: flex;
+    gap: var(--spacing-4);
+    justify-content: space-between;
+    margin-bottom: var(--spacing-8);
+  }
+
+  .section-heading h2 {
+    font-size: 1.25rem;
+  }
+
+  .secondary-grid {
+    display: grid;
+    gap: var(--spacing-12);
+  }
+
+  .notes {
+    border-top: 1px solid var(--color-stroke-subtle);
+    display: grid;
+    gap: var(--spacing-12);
+    padding-block: var(--spacing-8) var(--spacing-12);
+  }
+
+  .notes h2 {
+    max-width: 28ch;
+  }
+
+  .more-writing {
+    color: var(--color-text-secondary);
+    display: block;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-3);
+    text-decoration: none;
+  }
+
+  @media (min-width: 48rem) {
+    .opening {
+      gap: 3.5rem;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      padding-block: var(--spacing-12) 5rem;
+    }
+
+    .secondary-grid {
+      grid-template-columns: 1.15fr 1fr;
+    }
+
+    .notes {
+      gap: 5rem;
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
 </style>

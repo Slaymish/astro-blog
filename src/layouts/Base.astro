@@ -1,0 +1,118 @@
+---
+import { createHash } from 'node:crypto';
+import { Font } from 'astro:assets';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { THEME_BOOT } from '../client/themeBoot';
+import { SITE_NAME, TWITTER_HANDLE, UMAMI_WEBSITE_ID, publicPathFromAstro } from '../site/config';
+import { buildMetadata, type MetadataInput } from '../site/seo';
+import '../styles/tokens.css';
+import '../styles/themes.css';
+import '../styles/base.css';
+import '../styles/primitives.css';
+import '../styles/prose.css';
+
+interface Props extends Omit<MetadataInput, 'path'> {
+  path?: string;
+  wide?: boolean;
+}
+
+const { title, description, path, image, article, robots, breadcrumbs, wide } = Astro.props;
+
+const meta = buildMetadata({
+  title,
+  description,
+  path: path ?? publicPathFromAstro(Astro.url),
+  image,
+  article,
+  robots,
+  breadcrumbs,
+});
+
+// The one inline script on the page. Astro does not hash the content of an
+// `is:inline set:html` script, so this call is what puts the theme resolver in
+// script-src; hashing the same constant that is embedded means the policy and
+// the script cannot drift.
+if (!Astro.csp) {
+  throw new Error('security.csp is disabled, so the inline theme script would be blocked');
+}
+Astro.csp.insertScriptHash(`sha256-${createHash('sha256').update(THEME_BOOT).digest('base64')}`);
+---
+
+<!doctype html>
+<html lang="en-NZ" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline set:html={THEME_BOOT} />
+    <title>{meta.fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={meta.canonical} />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0d0c" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f7f3" />
+
+    <Font cssVariable="--font-geist" preload />
+    <Font cssVariable="--font-instrument" />
+    <Font cssVariable="--font-jetbrains" />
+
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:url" content={meta.canonical} />
+    <meta property="og:title" content={meta.fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={meta.ogImage} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="en_NZ" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={TWITTER_HANDLE} />
+    <meta name="twitter:creator" content={TWITTER_HANDLE} />
+    <meta name="twitter:title" content={meta.fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={meta.ogImage} />
+
+    {article && <meta property="article:published_time" content={article.publishedAt} />}
+    {article?.updatedAt && <meta property="article:modified_time" content={article.updatedAt} />}
+    {article?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+
+    <meta name="robots" content={robots ?? 'index, follow, max-image-preview:large'} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="alternate" type="application/rss+xml" title="Hamish Burke" href="/rss.xml" />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(meta.jsonLd)} />
+    <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={UMAMI_WEBSITE_ID}
+    ></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" class:list={['site-main', wide && 'site-main--wide']} tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import { initShell } from '../client/shell';
+      initShell();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .site-main {
+    margin-inline: auto;
+    max-width: calc(var(--content-max-width) + 2 * var(--page-gutter));
+    padding-inline: var(--page-gutter);
+  }
+
+  .site-main:focus {
+    outline: none;
+  }
+
+  .site-main--wide {
+    max-width: none;
+    padding-inline: 0;
+  }
+</style>

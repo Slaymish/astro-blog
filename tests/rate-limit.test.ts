@@ -7,7 +7,7 @@ import {
   isExpiredCounter,
   windowId,
   type CounterStore
-} from '../src/lib/rateLimit';
+} from '../src/server/rateLimit';
 
 function fakeStore(): CounterStore & { data: Map<string, unknown> } {
   const data = new Map<string, unknown>();

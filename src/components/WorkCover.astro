@@ -1,0 +1,165 @@
+---
+/**
+ * A work story's cover: either a Sanity image in a bordered frame, or a figure
+ * built from stored facts. The figure replaces the three hand-built CSS
+ * diagrams; their value was the measured numbers, which now live in Sanity.
+ */
+import SanityImage from './SanityImage.astro';
+import type { Cover } from '../content/types';
+
+interface Props {
+  cover: Cover;
+  /** The lead feature on a page loads eagerly at high priority. */
+  priority?: boolean;
+  /** The narrower frame used in index rows and secondary cards. */
+  compact?: boolean;
+}
+
+const { cover, priority = false, compact = false } = Astro.props;
+
+const WIDTHS = [640, 960, 1280, 1920];
+const SIZES = compact
+  ? '(min-width: 52rem) 24rem, 100vw'
+  : '(min-width: 52rem) 40rem, 100vw';
+
+const orientation =
+  cover.kind === 'image'
+    ? cover.image.asset.width / cover.image.asset.height >= 1
+      ? 'landscape'
+      : 'portrait'
+    : null;
+---
+
+{
+  cover.kind === 'image' ? (
+    <div class:list={['work-cover', 'work-cover--image', `is-${orientation}`, compact && 'is-compact']}>
+      <SanityImage
+        image={cover.image}
+        alt={cover.alt}
+        widths={WIDTHS}
+        sizes={SIZES}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
+      />
+    </div>
+  ) : (
+    <figure class:list={['work-cover', 'work-cover--figure', compact && 'is-compact']}>
+      <span class="sr-only">{cover.alt}</span>
+      {cover.figure.label && <p class="work-cover__label">{cover.figure.label}</p>}
+      <p class="work-cover__title">{cover.figure.title}</p>
+      <dl class="work-cover__facts">
+        {cover.figure.facts.map((fact) => (
+          <div class="work-cover__fact">
+            <dt>{fact.label}</dt>
+            <dd>
+              <strong>{fact.value}</strong>
+              {fact.note && <span>{fact.note}</span>}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {cover.figure.footnote && <figcaption>{cover.figure.footnote}</figcaption>}
+    </figure>
+  )
+}
+
+<style>
+  .work-cover {
+    border: 1px solid var(--color-stroke-subtle);
+    min-width: 0;
+  }
+
+  .work-cover--image {
+    overflow: hidden;
+  }
+
+  .work-cover--image img {
+    border-radius: 0;
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .work-cover--image.is-landscape {
+    aspect-ratio: 1.65;
+  }
+
+  .work-cover--image.is-portrait {
+    aspect-ratio: 0.8;
+  }
+
+  .work-cover--figure {
+    background-color: var(--color-bg-inset);
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2.6cqi, 1.25rem);
+    margin: 0;
+    padding: clamp(1rem, 3.4cqi, 2.25rem);
+  }
+
+  .work-cover__label {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: clamp(0.68rem, 1.7cqi, 0.8rem);
+    letter-spacing: 0.09em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .work-cover__title {
+    color: var(--color-text-primary);
+    font-size: clamp(1.1rem, 3.4cqi, 1.6rem);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-heading);
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .work-cover__facts {
+    display: grid;
+    gap: clamp(0.5rem, 1.8cqi, 0.9rem);
+    margin: 0;
+  }
+
+  .work-cover__fact {
+    border-top: 1px solid var(--color-stroke-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2) var(--spacing-4);
+    justify-content: space-between;
+    padding-top: clamp(0.4rem, 1.4cqi, 0.7rem);
+  }
+
+  .work-cover__fact dt {
+    color: var(--color-text-secondary);
+    font-size: clamp(0.7rem, 1.7cqi, 0.85rem);
+  }
+
+  .work-cover__fact dd {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    margin: 0;
+    text-align: right;
+  }
+
+  .work-cover__fact strong {
+    color: var(--color-text-primary);
+    font-size: clamp(0.8rem, 2cqi, 1rem);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .work-cover__fact span {
+    color: var(--color-text-secondary);
+    font-size: clamp(0.66rem, 1.5cqi, 0.78rem);
+  }
+
+  .work-cover--figure figcaption {
+    color: var(--color-text-secondary);
+    font-size: clamp(0.7rem, 1.7cqi, 0.85rem);
+    line-height: 1.5;
+    margin: 0;
+  }
+</style>

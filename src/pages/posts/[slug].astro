@@ -1,355 +1,107 @@
 ---
-import Layout from "../../components/layout/Layout.astro";
-import ParallaxHero from "../../components/features/ParallaxHero.astro";
-import TableOfContents from "../../components/features/TableOfContents.astro";
-import RelatedPosts from "../../components/features/RelatedPosts.astro";
-import { calculateReadingTime } from "../../utils/reading-time";
-import { createSlug } from "../../utils/slug";
-import { fetchSanity } from "../../lib/sanity";
-import { SITE_URL, absoluteUrl } from "../../lib/site";
-import { portableTextToHtml, portableTextToPlainText, type PortableTextBody } from "../../lib/portableText";
-import { markdownToHtml, markdownToPlainText } from "../../lib/markdown";
-import { splitHtmlAtInteractive, stripInteractivePlaceholder } from "../../utils/split-html";
-import InteractiveElement from "../../components/interactive/InteractiveElement.astro";
-import Icon from "../../components/ui/Icon.astro";
-import { contentPostSlug, legacyRoutePolicy, publicPostSlug } from "../../lib/legacyRoutes";
-
-type PostDoc = {
-  title: string;
-  slug: string;
-  publishedAt: string;
-  updatedAt?: string;
-  tags?: string[];
-  excerpt?: string;
-  body?: PortableTextBody;
-  markdownBody?: string;
-  interactiveElement?: string;
-};
+import Base from '../../layouts/Base.astro';
+import ArticleHeader from '../../components/ArticleHeader.astro';
+import GpuCalculator from '../../components/GpuCalculator.astro';
+import RelatedList from '../../components/RelatedList.astro';
+import SanityImage from '../../components/SanityImage.astro';
+import { sanitySrcSet } from '../../content/images';
+import { markdownToHtml, markdownToPlainText, splitAtComponent } from '../../content/markdown';
+import { getPosts } from '../../content/queries';
+import { readingTime } from '../../content/readingTime';
+import { getRelated } from '../../content/related';
+import { formatFullDate } from '../../content/writing';
+import type { Post } from '../../content/types';
 
 export async function getStaticPaths() {
-  const slugs = await fetchSanity<string[]>(`*[_type == "post" && defined(slug.current)].slug.current`);
-  // Generate under the public slug; the legacy content slug redirects via config.
-  return slugs.map((slug) => ({ params: { slug: publicPostSlug(slug) } }));
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
 }
 
-const { slug } = Astro.params;
-
-const routePolicy = legacyRoutePolicy('post', slug as string);
-if (routePolicy?.action === 'redirect') {
-  return Astro.redirect(routePolicy.destination, 301);
+interface Props {
+  post: Post;
 }
 
-const contentSlug = contentPostSlug(slug as string);
-// The page is prerendered, so the "from" query param is resolved on the client
-// (see the back-link script below) rather than at build time.
-const backHref = '/work';
-const backLabel = 'Work';
+const { post } = Astro.props;
 
-const post = await fetchSanity<PostDoc | null>(`
-  *[_type == "post" && slug.current == $slug][0]{
-    title,
-    "slug": slug.current,
-    publishedAt,
-    updatedAt,
-    tags,
-    excerpt,
-    body,
-    markdownBody,
-    interactiveElement
-  }
-`, { slug: contentSlug });
-
-if (!post) {
-  return Astro.redirect("/404");
-}
-
-const rawHtml = post.markdownBody
-  ? markdownToHtml(post.markdownBody)
-  : portableTextToHtml(post.body);
-
-const interactiveSplit = post.interactiveElement
-  ? splitHtmlAtInteractive(rawHtml)
-  : null;
-
-const htmlContent = !post.interactiveElement
-  ? stripInteractivePlaceholder(rawHtml)
-  : rawHtml;
-
-const plainText = post.markdownBody
-  ? markdownToPlainText(post.markdownBody)
-  : portableTextToPlainText(post.body);
-
-const readingTime = calculateReadingTime(plainText);
-
-const description = post.excerpt
-  ? post.excerpt
-  : plainText.length > 160
-    ? plainText.substring(0, 157) + '...'
-    : plainText;
-
-const publishedTime = new Date(post.publishedAt).toISOString();
-const modifiedTime = post.updatedAt ? new Date(post.updatedAt).toISOString() : publishedTime;
-
-const contentTags = (post.tags ?? []) as string[];
-const tagLinks: Array<{ name: string; slug: string }> = contentTags.map((tag: string) => ({
-  name: tag,
-  slug: createSlug(tag),
-}));
-
-const postTitle = post.title ?? "Untitled";
-const postPublicSlug = publicPostSlug(post.slug);
-const postDate = post.publishedAt ?? new Date().toISOString();
-const postDateISO = new Date(postDate).toISOString();
-const showUpdated = post.updatedAt && post.updatedAt !== post.publishedAt;
-const postUpdatedISO = showUpdated ? new Date(post.updatedAt as string).toISOString() : '';
+const html = markdownToHtml(post.markdownBody);
+const split = splitAtComponent(html, 'gpu-calculator');
+const { minutes } = readingTime(markdownToPlainText(post.markdownBody));
+const related = await getRelated({ type: 'post', slug: post.slug, tags: post.tags, related: post.related });
+const ogImage = post.coverImage ? sanitySrcSet(post.coverImage, [1200]).src : undefined;
 ---
 
-<Layout
-  title={postTitle}
-  description={description}
-  article={true}
-  publishedTime={publishedTime}
-  modifiedTime={modifiedTime}
-  tags={tagLinks.map(tag => tag.name)}
-  canonicalURL={absoluteUrl(`/posts/${postPublicSlug}`, SITE_URL)}
-  fullWidth
+<Base
+  title={post.title}
+  description={post.excerpt}
+  image={ogImage}
+  article={{ kind: 'post', publishedAt: post.publishedAt, updatedAt: post.updatedAt, tags: post.tags }}
+  breadcrumbs={[
+    { name: 'Writing', path: '/writing' },
+    { name: post.title, path: `/posts/${post.slug}` },
+  ]}
 >
-  <ParallaxHero
-    title={postTitle}
-    label="Article"
-    date={postDate}
-    readingTime={readingTime.text}
-    tagLinks={tagLinks}
-    backHref={backHref}
-    backLabel={backLabel}
-  />
+  <article class="article">
+    <ArticleHeader
+      eyebrow="Article"
+      title={post.title}
+      lede={post.excerpt}
+      meta={[formatFullDate(post.publishedAt), `${minutes} min read`]}
+      tags={post.tags}
+      backHref="/writing"
+      backLabel="All writing"
+    />
 
-  <!-- Hidden schema.org metadata -->
-  <meta itemprop="headline" content={postTitle} />
-  <meta itemprop="datePublished" content={postDateISO} />
-  {showUpdated && <meta itemprop="dateModified" content={postUpdatedISO} />}
-  <meta itemprop="timeRequired" content={`PT${readingTime.minutes}M`} />
+    {
+      post.coverImage && (
+        <div class="article__cover">
+          <SanityImage
+            image={post.coverImage}
+            alt={post.coverImage.alt ?? ''}
+            widths={[720, 1200, 1800]}
+            sizes="(min-width: 64rem) 60rem, 100vw"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+      )
+    }
 
-  <div class="post-layout">
-    <article itemscope itemtype="http://schema.org/BlogPosting">
-
-      {interactiveSplit ? (
-        <div class="prose prose-fade-in" itemprop="articleBody">
-          <Fragment set:html={interactiveSplit[0]} />
-          <InteractiveElement componentId={post.interactiveElement!} />
-          <Fragment set:html={interactiveSplit[1]} />
+    {
+      split ? (
+        <div class="prose article__body">
+          <Fragment set:html={split[0]} />
+          <GpuCalculator />
+          <Fragment set:html={split[1]} />
         </div>
       ) : (
-        <div class="prose prose-fade-in" itemprop="articleBody" set:html={htmlContent}></div>
-      )}
+        <div class="prose article__body" set:html={html} />
+      )
+    }
 
-      <RelatedPosts
-        currentPostSlug={post.slug}
-        currentPostTags={tagLinks.map(tag => tag.name)}
-      />
-
-      <!-- Share & Subscribe -->
-      <div class="post-share" data-reveal>
-        <div class="share-links">
-          <span class="text-sm font-medium text-[var(--text-muted)]">Share:</span>
-          <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(absoluteUrl(`/posts/${postPublicSlug}`, SITE_URL))}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="share-link"
-            aria-label="Share on Twitter"
-          >
-            Twitter/X
-          </a>
-          <a
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(absoluteUrl(`/posts/${postPublicSlug}`, SITE_URL))}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="share-link"
-            aria-label="Share on LinkedIn"
-          >
-            LinkedIn
-          </a>
-        </div>
-
-        <div class="subscribe-cta">
-          <p class="text-[var(--text)] font-semibold mb-1">Enjoyed this post?</p>
-          <p class="text-sm text-[var(--text-muted)] mb-3">
-            Subscribe via RSS to get notified when I publish new writing.
-          </p>
-          <a href="/rss.xml" class="btn btn--secondary btn--sm">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M4 11a9 9 0 0 1 9 9"/>
-              <path d="M4 4a16 16 0 0 1 16 16"/>
-              <circle cx="5" cy="19" r="1"/>
-            </svg>
-            Subscribe via RSS
-          </a>
-        </div>
-      </div>
-
-      <footer class="post-footer" data-reveal>
-        <nav aria-label="Post navigation">
-          <a href={backHref} class="back-link">
-            <Icon name="arrow-left" />
-            <span data-back-text>Back to work</span>
-          </a>
-        </nav>
-      </footer>
-    </article>
-
-    <aside class="post-sidebar">
-      <TableOfContents htmlContent={htmlContent} />
-    </aside>
-  </div>
-  <!-- The page is prerendered, so restore the "came from a case study" back link
-       on the client from the ?from= param. -->
-  <script is:inline data-cfasync="false">
-    (function () {
-      var from = new URLSearchParams(window.location.search).get('from');
-      if (!from || !/^\/work\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(from)) return;
-
-      document.querySelectorAll('.back-link, .parallax-hero__back').forEach(function (link) {
-        link.setAttribute('href', from);
-      });
-      document.querySelectorAll('[data-back-text]').forEach(function (node) {
-        node.textContent = 'Back to case study';
-      });
-    })();
-  </script>
-</Layout>
+    <RelatedList entries={related} />
+  </article>
+</Base>
 
 <style>
-  .post-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: 2rem 1.5rem 0;
-  }
-
-  @media (min-width: 640px) {
-    .post-layout { padding: 3rem 2rem 0; }
-  }
-
-  @media (min-width: 1024px) {
-    .post-layout {
-      grid-template-columns: minmax(0, 1fr) var(--toc-width);
-      grid-template-areas: "content sidebar";
-    }
-  }
-
-  article {
+  .article {
+    margin-inline: auto;
     max-width: var(--reading-width);
-    min-width: 0;
-    overflow-x: hidden;
   }
 
-  @media (min-width: 1024px) {
-    article {
-      grid-area: content;
-    }
+  .article__cover {
+    border: 1px solid var(--color-stroke-subtle);
+    margin-top: var(--spacing-10);
+    overflow: hidden;
   }
 
-  .prose {
-    max-width: 65ch;
+  .article__cover img {
+    border-radius: 0;
+    display: block;
+    height: auto;
+    width: 100%;
   }
 
-  .prose-fade-in {
-    animation: prose-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  .article__body {
+    margin-top: var(--spacing-10);
   }
-
-  @keyframes prose-enter {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .prose-fade-in {
-      animation: none;
-    }
-  }
-
-  .post-sidebar {
-    display: none;
-  }
-
-  @media (min-width: 1024px) {
-    .post-sidebar {
-      display: block;
-      grid-area: sidebar;
-      align-self: start;
-    }
-  }
-
-  /* ── Share & Subscribe ── */
-  .post-share {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .share-links {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .share-link {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    padding: 0.375rem 0.875rem;
-    border: 1px solid var(--border);
-    border-radius: 9999px;
-    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .share-link:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .share-link::after {
-    display: none !important;
-  }
-
-  .subscribe-cta {
-    margin-top: 2rem;
-    padding: 1.5rem 2rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-  }
-
-  /* ── Footer ── */
-  .post-footer {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-muted);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9375rem;
-    transition: color 0.2s ease, gap 0.2s ease;
-  }
-
-  .back-link:hover {
-    color: var(--accent);
-    gap: 0.75rem;
-  }
-
-  .back-link::after {
-    display: none !important;
-  }
-
 </style>

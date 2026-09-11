@@ -1,146 +1,54 @@
 import type { APIRoute } from 'astro';
-import { fetchSanity } from '../lib/sanity';
-import { SITE_URL, absoluteUrl } from '../lib/site';
-import { publicPostSlug } from '../lib/legacyRoutes';
-import { createSlug } from '../utils/slug';
+import { getPosts, getReports, getTags, getWorkStories } from '../content/queries';
+import { tagSlug } from '../content/writing';
+import { escapeXml } from '../site/escape';
+import { absoluteUrl } from '../site/config';
 
-type SitemapEntry = {
-  loc: string;
-  lastmod: string;
-  changefreq: 'daily' | 'weekly' | 'monthly' | 'yearly';
-  priority: string;
-};
+/**
+ * Every public page once. `/stats` and `/reading/sent` are never listed, and the
+ * static pages carry no `lastmod`: a build timestamp would tell a crawler the
+ * page changed every deploy, which is worse than saying nothing.
+ */
+const STATIC_PATHS = [
+  '/',
+  '/work',
+  '/writing',
+  '/reading',
+  '/about',
+  '/cv',
+  '/contact',
+  '/privacy',
+  '/terms',
+];
 
-type PostSitemapDoc = {
-  slug: string;
-  publishedAt: string;
-  updatedAt?: string;
-};
-
-type WorkSitemapDoc = {
-  slug: string;
-  date: string;
-};
-
-type ReportSitemapDoc = {
-  slug: string;
-  publishedAt: string;
-};
-
-async function safeFetch<T>(query: string): Promise<T[]> {
-  try {
-    return await fetchSanity<T[]>(query);
-  } catch (error) {
-    console.error('[sitemap] Failed Sanity fetch:', error);
-    return [];
-  }
-}
-
-function escapeXml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}
-
-function entryToXml(entry: SitemapEntry): string {
-  return `
-  <url>
-    <loc>${escapeXml(entry.loc)}</loc>
-    <lastmod>${entry.lastmod}</lastmod>
-    <changefreq>${entry.changefreq}</changefreq>
-    <priority>${entry.priority}</priority>
-  </url>`;
+function entry(path: string, lastmod?: string): string {
+  const modified = lastmod ? `<lastmod>${escapeXml(lastmod.slice(0, 10))}</lastmod>` : '';
+  return `  <url><loc>${escapeXml(absoluteUrl(path))}</loc>${modified}</url>`;
 }
 
 export const GET: APIRoute = async () => {
-  const now = new Date().toISOString();
-
-  const [posts, workStories, reports, tags] = await Promise.all([
-    safeFetch<PostSitemapDoc>(`
-      *[_type == "post" && defined(slug.current)] | order(coalesce(updatedAt, publishedAt) desc){
-        "slug": slug.current,
-        publishedAt,
-        updatedAt
-      }
-    `),
-    safeFetch<WorkSitemapDoc>(`
-      *[_type == "workStory" && defined(slug.current)] | order(order asc){
-        "slug": slug.current,
-        date
-      }
-    `),
-    safeFetch<ReportSitemapDoc>(`
-      *[_type == "report" && defined(slug.current)] | order(publishedAt desc){
-        "slug": slug.current,
-        publishedAt
-      }
-    `),
-    safeFetch<string>(`
-      array::unique(*[_type in ["post", "report"]].tags[])
-    `)
+  const [stories, posts, reports, tags] = await Promise.all([
+    getWorkStories(),
+    getPosts(),
+    getReports(),
+    getTags(),
   ]);
 
-  const entries: SitemapEntry[] = [
-    { loc: absoluteUrl('/', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '1.0' },
-    { loc: absoluteUrl('/writing', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.9' },
-    { loc: absoluteUrl('/about', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.7' },
-    { loc: absoluteUrl('/work', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.7' },
-    { loc: absoluteUrl('/reading', SITE_URL), lastmod: now, changefreq: 'weekly', priority: '0.6' },
-    { loc: absoluteUrl('/contact', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.5' },
-    { loc: absoluteUrl('/cv', SITE_URL), lastmod: now, changefreq: 'monthly', priority: '0.5' },
-    { loc: absoluteUrl('/privacy', SITE_URL), lastmod: now, changefreq: 'yearly', priority: '0.3' },
-    { loc: absoluteUrl('/terms', SITE_URL), lastmod: now, changefreq: 'yearly', priority: '0.3' }
+  const urls = [
+    ...STATIC_PATHS.map((path) => entry(path)),
+    ...stories.map((story) => entry(`/work/${story.slug}`, story.date)),
+    ...posts.map((post) => entry(`/posts/${post.slug}`, post.updatedAt ?? post.publishedAt)),
+    ...reports.map((report) => entry(`/reports/${report.slug}`, report.publishedAt)),
+    ...tags.map((tag) => entry(`/tags/${tagSlug(tag)}`)),
   ];
 
-  for (const post of posts) {
-    entries.push({
-      // Posts are built under their public slug, which for some differs from the
-      // content slug held in Sanity.
-      loc: absoluteUrl(`/posts/${publicPostSlug(post.slug)}`, SITE_URL),
-      lastmod: new Date(post.updatedAt || post.publishedAt).toISOString(),
-      changefreq: 'monthly',
-      priority: '0.8'
-    });
-  }
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join('\n')}
+</urlset>
+`;
 
-  for (const story of workStories) {
-    entries.push({
-      loc: absoluteUrl(`/work/${story.slug}`, SITE_URL),
-      lastmod: new Date(story.date).toISOString(),
-      changefreq: 'monthly',
-      priority: '0.8'
-    });
-  }
-
-  for (const report of reports) {
-    entries.push({
-      loc: absoluteUrl(`/reports/${report.slug}`, SITE_URL),
-      lastmod: new Date(report.publishedAt).toISOString(),
-      changefreq: 'monthly',
-      priority: '0.7'
-    });
-  }
-
-  for (const tag of tags.filter(Boolean)) {
-    entries.push({
-      loc: absoluteUrl(`/tags/${createSlug(tag)}`, SITE_URL),
-      lastmod: now,
-      changefreq: 'weekly',
-      priority: '0.5'
-    });
-  }
-
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entries.map(entryToXml).join('')}
-</urlset>`;
-
-  return new Response(sitemap, {
-    headers: {
-      'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600'
-    }
+  return new Response(xml, {
+    headers: { 'content-type': 'application/xml; charset=utf-8' },
   });
 };

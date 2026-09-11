@@ -8,7 +8,7 @@ import {
   isExpiredKey,
   retentionCutoff,
   sessionKey
-} from '../src/lib/sessionStore';
+} from '../src/server/sessionStore';
 
 test('keys round-trip back to the day they were written', () => {
   const day = '2026-08-18';

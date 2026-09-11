@@ -1,0 +1,69 @@
+---
+/**
+ * Where the recommendation form lands without JavaScript. `/api/recommend`
+ * answers a form-encoded post with a 303 to here, carrying the outcome in the
+ * query string; the messages themselves come from the same Sanity singleton the
+ * in-page states use.
+ */
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/Button.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { getReadingPage } from '../../content/queries';
+import { CONTACT_EMAIL } from '../../site/config';
+
+export const prerender = false;
+
+const copy = await getReadingPage();
+
+const state = Astro.url.searchParams.get('state');
+const outcome = state === 'ok' || state === 'limited' ? state : 'error';
+
+const HEADLINES = {
+  ok: 'Thanks.',
+  limited: "Thanks, that's plenty.",
+  error: "That didn't send.",
+} as const;
+
+const MESSAGES = {
+  ok: copy.recommend.success,
+  limited: copy.recommend.limited,
+  error: copy.recommend.error,
+} as const;
+
+Astro.response.headers.set('cache-control', 'no-store');
+---
+
+<Base title="Recommendation sent" description="Thanks for the book recommendation." robots="noindex, nofollow">
+  <PageHeader eyebrow={copy.eyebrow} headline={HEADLINES[outcome]} measure="narrow">
+    <p class="sent__message">{MESSAGES[outcome]}</p>
+    <p class="sent__email">
+      <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+    </p>
+    <div class="sent__actions">
+      <Button href="/reading#recommend" variant="secondary" icon="arrow-left" iconPosition="start">
+        Back to reading
+      </Button>
+    </div>
+  </PageHeader>
+</Base>
+
+<style>
+  .sent__message {
+    color: var(--color-text-secondary);
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    line-height: 1.6;
+    margin: var(--spacing-8) 0 0;
+    max-width: 44rem;
+  }
+
+  .sent__email {
+    margin: var(--spacing-4) 0 0;
+  }
+
+  .sent__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+    margin-top: var(--spacing-8);
+  }
+</style>

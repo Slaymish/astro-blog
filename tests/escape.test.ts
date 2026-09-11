@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { escapeHtmlAttribute, escapeXml } from '../src/lib/escape';
+import { escapeHtmlAttribute, escapeXml } from '../src/site/escape';
 
 test('escapeHtmlAttribute encodes dangerous characters', () => {
   const input = `"><script>alert('x')</script>&`;

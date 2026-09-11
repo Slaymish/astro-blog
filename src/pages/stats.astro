@@ -7,31 +7,33 @@
  * interaction counts are deliberately not here; Umami Cloud owns those and a
  * second, worse copy would only drift.
  *
- * Gated by the same `INSIGHTS_TOKEN` as /api/insights, compared in constant
- * time. Server-rendered, never cached, and `noindex` so it stays out of search
- * even though neither the sitemap nor llms.txt lists it.
+ * Gated by `INSIGHTS_TOKEN`. A one-time `?token=` sets an HttpOnly cookie and
+ * redirects, so the secret lands in one URL rather than in every request and
+ * every log line after it. Server-rendered, never cached, and `noindex`.
  */
-import Layout from '../components/layout/Layout.astro';
-import PageHeader from '../components/layout/PageHeader.astro';
-import { INSIGHTS_STORE, LATEST_REPORT_KEY } from '../lib/sessionStore';
-import { RECOMMENDATION_STORE, readRecommendations, type StoredRecommendation } from '../lib/recommendations';
-import { markdownToHtml } from '../lib/markdown';
-import { timingSafeEqual } from '../lib/timingSafe';
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { markdownToHtml } from '../content/markdown';
+import { RECOMMENDATION_STORE, readRecommendations, type StoredRecommendation } from '../server/recommendations';
+import { secrets } from '../server/secrets';
+import { INSIGHTS_STORE, LATEST_REPORT_KEY } from '../server/sessionStore';
+import { authoriseStats } from '../server/statsAuth';
+import { LOCALE } from '../site/config';
 
 export const prerender = false;
 
-const expected = import.meta.env.INSIGHTS_TOKEN ?? process.env.INSIGHTS_TOKEN;
-if (!expected) {
+const auth = authoriseStats(Astro.request, Astro.url, secrets.insightsToken());
+if (auth.kind === 'unconfigured') {
   return new Response('INSIGHTS_TOKEN not configured', { status: 503 });
 }
-
-const provided =
-  Astro.request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ??
-  Astro.url.searchParams.get('token') ??
-  '';
-
-if (!timingSafeEqual(provided, expected)) {
+if (auth.kind === 'unauthorised') {
   return new Response('Unauthorised', { status: 401 });
+}
+if (auth.kind === 'redirect') {
+  return new Response(null, {
+    status: 303,
+    headers: { location: '/stats', 'set-cookie': auth.setCookie, 'cache-control': 'no-store' },
+  });
 }
 
 Astro.response.headers.set('cache-control', 'no-store');
@@ -65,13 +67,13 @@ try {
   storeError = 'Blob stores are unavailable here, which is expected outside Netlify.';
 }
 
-const dateFormat = new Intl.DateTimeFormat('en-NZ', {
+const dateFormat = new Intl.DateTimeFormat(LOCALE, {
   day: 'numeric',
   month: 'short',
   year: 'numeric'
 });
 
-const stampFormat = new Intl.DateTimeFormat('en-NZ', {
+const stampFormat = new Intl.DateTimeFormat(LOCALE, {
   day: 'numeric',
   month: 'short',
   year: 'numeric',
@@ -87,17 +89,12 @@ function formatDate(iso: string, format: Intl.DateTimeFormat): string {
 const reportHtml = report ? markdownToHtml(report.report) : null;
 ---
 
-<Layout
-  title="Stats"
-  description="Private dashboard."
-  robots="noindex, nofollow"
->
+<Base title="Stats" description="Private dashboard." robots="noindex, nofollow">
   <PageHeader
     eyebrow="Private"
     headline="Stats."
     intro="Book recommendations people have sent, and the latest nightly read on how sessions behaved. Page views and events live in Umami."
-    headlineMeasure="14ch"
-    introMeasure="38rem"
+    measure="narrow"
   />
 
   {storeError && <p class="stats__notice">{storeError}</p>}
@@ -150,7 +147,7 @@ const reportHtml = report ? markdownToHtml(report.report) : null;
     </p>
     <p><a class="btn btn--secondary btn--sm" href="https://cloud.umami.is" target="_blank" rel="noopener noreferrer">Open Umami</a></p>
   </section>
-</Layout>
+</Base>
 
 <style>
   .stats__notice { color: var(--color-action); font-size: var(--type-body-small); margin: 0 0 var(--spacing-6); }
@@ -176,12 +173,11 @@ const reportHtml = report ? markdownToHtml(report.report) : null;
   .stats__report { color: var(--color-text-secondary); max-width: 46rem; }
   .stats__report :global(h1),
   .stats__report :global(h2),
-  .stats__report :global(h3) { color: var(--color-text-primary); font-size: var(--type-body); font-weight: 700; letter-spacing: normal; line-height: 1.4; margin: var(--spacing-6) 0 var(--spacing-3); }
+  .stats__report :global(h3) { color: var(--color-text-primary); font-size: var(--type-body); font-weight: var(--font-weight-bold); letter-spacing: normal; line-height: 1.4; margin: var(--spacing-6) 0 var(--spacing-3); }
   .stats__report :global(h1:first-child),
   .stats__report :global(h2:first-child),
   .stats__report :global(h3:first-child) { margin-top: 0; }
   .stats__report :global(p) { font-size: var(--type-body-small); line-height: 1.6; margin: 0 0 var(--spacing-4); }
-  /* globals.css strips list markers site-wide, so the report restores its own. */
   .stats__report :global(ul) { list-style: disc; margin: 0 0 var(--spacing-4); padding-inline-start: var(--spacing-6); }
   .stats__report :global(ol) { list-style: decimal; margin: 0 0 var(--spacing-4); padding-inline-start: var(--spacing-6); }
   .stats__report :global(li) { font-size: var(--type-body-small); line-height: 1.6; margin-bottom: var(--spacing-2); }

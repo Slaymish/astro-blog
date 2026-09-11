@@ -1,50 +1,18 @@
 import type { APIRoute } from 'astro';
-import { SITE_URL, absoluteUrl } from '../lib/site';
+import { absoluteUrl } from '../site/config';
 
 export const GET: APIRoute = () => {
-  const robotsTxt = `User-agent: *
+  // The per-crawler blocks the old file carried all said `Allow: /`, which the
+  // wildcard already says. The non-standard `Host:` line went with them.
+  const body = `User-agent: *
 Allow: /
 Disallow: /stats
+Disallow: /reading/sent
 
-Sitemap: ${absoluteUrl('/sitemap.xml', SITE_URL)}
-Host: ${new URL(SITE_URL).host}
-
-# AI crawlers for recommendation/discovery reach
-User-agent: GPTBot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: CCBot
-Allow: /
-
-User-agent: anthropic-ai
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Claude-Web
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-# LLM guidance file
-# ${absoluteUrl('/llms.txt', SITE_URL)}
+Sitemap: ${absoluteUrl('/sitemap.xml')}
 `;
 
-  return new Response(robotsTxt, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600'
-    }
+  return new Response(body, {
+    headers: { 'content-type': 'text/plain; charset=utf-8' },
   });
 };

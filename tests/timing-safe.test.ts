@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { timingSafeEqual } from '../src/lib/timingSafe';
+import { timingSafeEqual } from '../src/server/timingSafe';
 
 test('timingSafeEqual matches identical strings', () => {
   assert.equal(timingSafeEqual('s3cr3t-token', 's3cr3t-token'), true);

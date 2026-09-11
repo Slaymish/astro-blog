@@ -15,7 +15,7 @@
 import type { Config } from '@netlify/functions';
 import Anthropic from '@anthropic-ai/sdk';
 import { getStore, type Store } from '@netlify/blobs';
-import { RATE_LIMIT_STORE, isExpiredCounter, windowId } from '../../src/lib/rateLimit';
+import { RATE_LIMIT_STORE, isExpiredCounter, windowId } from '../../src/server/rateLimit';
 import {
   INSIGHTS_STORE,
   LATEST_REPORT_KEY,
@@ -25,7 +25,7 @@ import {
   isExpiredKey,
   retentionCutoff,
   sessionPrefix
-} from '../../src/lib/sessionStore';
+} from '../../src/server/sessionStore';
 
 const LOOKBACK_DAYS = 7;
 const MAX_SESSIONS = 200;

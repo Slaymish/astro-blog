@@ -1,0 +1,98 @@
+---
+import { tagSlug } from '../content/writing';
+import type { WritingEntry } from '../content/types';
+
+interface Props {
+  entries: WritingEntry[];
+}
+
+const { entries } = Astro.props;
+---
+
+<ul class="writing-list" id="writing-list">
+  {
+    entries.map((entry) => (
+      <li class="writing-list__item" data-tags={entry.tags.map(tagSlug).join(' ')}>
+        <a href={entry.href}>
+          <span class="writing-list__meta">
+            <span class="writing-list__date">{entry.displayDate}</span>
+            {entry.type === 'report' && <span class="writing-list__type">Report</span>}
+          </span>
+          <span class="writing-list__body">
+            <span class="writing-list__title">{entry.title}</span>
+            {entry.excerpt && <span class="writing-list__excerpt">{entry.excerpt}</span>}
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .writing-list {
+    border-top: 1px solid var(--color-stroke-subtle);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .writing-list__item {
+    border-bottom: 1px solid var(--color-stroke-subtle);
+  }
+
+  .writing-list__item a {
+    align-items: baseline;
+    color: var(--color-text-primary);
+    display: grid;
+    gap: var(--spacing-2) var(--spacing-8);
+    padding-block: clamp(1.5rem, 3.5vw, 2.5rem);
+    text-decoration: none;
+  }
+
+  .writing-list__item a:hover .writing-list__title {
+    color: var(--color-action);
+  }
+
+  .writing-list__meta {
+    align-items: baseline;
+    display: flex;
+    gap: var(--spacing-3);
+  }
+
+  .writing-list__date {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+  }
+
+  .writing-list__type {
+    border: 1px solid var(--color-stroke-subtle);
+    color: var(--color-text-secondary);
+    font-size: var(--type-label);
+    letter-spacing: 0.08em;
+    padding: 0.1rem 0.4rem;
+    text-transform: uppercase;
+  }
+
+  .writing-list__title {
+    display: block;
+    font-size: clamp(1.35rem, 2.6vw, 2.1rem);
+    letter-spacing: var(--tracking-heading);
+    line-height: 1.2;
+  }
+
+  .writing-list__excerpt {
+    color: var(--color-text-secondary);
+    display: block;
+    font-size: var(--type-body-small);
+    line-height: 1.6;
+    margin-top: var(--spacing-2);
+    max-width: 54rem;
+  }
+
+  @media (min-width: 48rem) {
+    .writing-list__item a {
+      grid-template-columns: 9rem minmax(0, 1fr);
+    }
+  }
+</style>

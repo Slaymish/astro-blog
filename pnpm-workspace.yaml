@@ -1,6 +1,6 @@
+packages:
+  - studio
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
-  onnxruntime-node: true
-  protobufjs: true
   sharp: true

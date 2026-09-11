@@ -1,44 +1,26 @@
 ---
-import Layout from '../../components/layout/Layout.astro';
-import Icon from '../../components/ui/Icon.astro';
-import PageHeader from '../../components/layout/PageHeader.astro';
-import Button from '../../components/ui/Button.astro';
-import { fetchSanity, urlFor } from '../../lib/sanity';
-import { CONTACT_EMAIL, SITE_URL, absoluteUrl } from '../../lib/site';
-import { MAX_RECOMMENDATION_LENGTH } from '../../lib/recommendations';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/Button.astro';
+import Icon from '../../components/Icon.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import SanityImage from '../../components/SanityImage.astro';
+import { getBooks, getReadingPage } from '../../content/queries';
+import { MAX_RECOMMENDATION_LENGTH } from '../../server/recommendations';
+import type { Book } from '../../content/types';
 
-type ReadingStatus = 'reading' | 'read' | 'to-read';
-
-type ReadingItem = {
-  title: string;
-  author: string;
-  status: ReadingStatus;
-  coverImage?: unknown;
-  link?: string;
-  note?: string;
-  sharedNote?: string;
-};
+const [books, copy] = await Promise.all([getBooks(), getReadingPage()]);
 
 /** One rendered card: a single book, or several that share a note. */
-type ReadingCard = { books: ReadingItem[]; note?: string };
-
-const readingItems = await fetchSanity<ReadingItem[]>(`
-  *[_type == "book"] | order(coalesce(order, 1000) asc, title asc){
-    title,
-    author,
-    status,
-    coverImage,
-    note,
-    link,
-    sharedNote
-  }
-`);
+interface ReadingCard {
+  books: Book[];
+  note?: string;
+}
 
 /**
  * Books that share a `sharedNote` key (within one status) collapse into one
  * card, covers and titles stacked, with the first book's note beneath them.
  */
-const toCards = (items: ReadingItem[]): ReadingCard[] => {
+const toCards = (items: Book[]): ReadingCard[] => {
   const cards: ReadingCard[] = [];
   const shared = new Map<string, ReadingCard>();
   for (const item of items) {
@@ -52,7 +34,7 @@ const toCards = (items: ReadingItem[]): ReadingCard[] => {
       existing.books.push(item);
       existing.note ||= item.note;
     } else {
-      const card = { books: [item], note: item.note };
+      const card: ReadingCard = { books: [item], note: item.note };
       shared.set(key, card);
       cards.push(card);
     }
@@ -60,236 +42,349 @@ const toCards = (items: ReadingItem[]): ReadingCard[] => {
   return cards;
 };
 
+const ordered = [...books].sort(
+  (a, b) => (a.order ?? 1000) - (b.order ?? 1000) || a.title.localeCompare(b.title),
+);
+
 /** Currently reading first, then the queue, then the archive. */
-const groups: { status: ReadingStatus; heading: string }[] = [
-  { status: 'reading', heading: 'Reading now' },
-  { status: 'to-read', heading: 'Next' },
-  { status: 'read', heading: 'Read' }
+const groups = [
+  { status: 'reading' as const, heading: copy.groups.reading },
+  { status: 'to-read' as const, heading: copy.groups.toRead },
+  { status: 'read' as const, heading: copy.groups.read },
 ];
 
 const grouped = groups
-  .map((group) => ({ ...group, cards: toCards(readingItems.filter((item) => item.status === group.status)) }))
+  .map((group) => ({
+    ...group,
+    cards: toCards(ordered.filter((item) => item.status === group.status)),
+  }))
   .filter((group) => group.cards.length > 0);
 ---
 
-<Layout
-  title="Reading"
-  description="What Hamish Burke is reading, has read, and hopes to read next."
-  canonicalURL={absoluteUrl('/reading', SITE_URL)}
+<Base
+  title={copy.seo.title}
+  description={copy.seo.description}
+  breadcrumbs={[{ name: 'Reading', path: '/reading' }]}
 >
-  <PageHeader
-    eyebrow="Reading"
-    headline="Books."
-    headlineMeasure="14ch"
-  >
+  <PageHeader eyebrow={copy.eyebrow} headline={copy.headline} measure="narrow">
     <blockquote class="reading__quote">
-      <p>Tell me what you read and I'll tell you who you are.</p>
-      <footer>François Mauriac</footer>
+      <p>{copy.quote.text}</p>
+      <footer>{copy.quote.attribution}</footer>
     </blockquote>
   </PageHeader>
 
-  {grouped.map((group) => (
-    <section class="reading__group" aria-labelledby={`reading-${group.status}`} data-count={Math.min(group.cards.length, 2)}>
-      <h2 id={`reading-${group.status}`}>{group.heading}</h2>
-      <ul>
-        {group.cards.map((card) => (
-          <li class="reading__item">
-            <div class="reading__covers">
-              {card.books.map((item) =>
-                item.coverImage ? (
-                  <img
-                    src={urlFor(item.coverImage).width(144).height(216).fit('crop').url()}
-                    alt={`Cover of ${item.title}`}
-                    width="72"
-                    height="108"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div class="reading__cover-placeholder" aria-hidden="true" />
-                )
-              )}
-            </div>
-            <div class="reading__text">
-            {card.books.map((item) => (
-              <div class="reading__book">
-                <h3>
-                  {item.link ? (
-                    <a href={item.link} target="_blank" rel="noopener noreferrer">
-                      {item.title}
-                      <Icon name="arrow-up-right" size="0.8em" />
-                    </a>
+  {
+    grouped.map((group) => (
+      <section
+        class="reading__group"
+        aria-labelledby={`reading-${group.status}`}
+        data-count={Math.min(group.cards.length, 2)}
+      >
+        <h2 id={`reading-${group.status}`}>{group.heading}</h2>
+        <ul>
+          {group.cards.map((card) => (
+            <li class="reading__item">
+              <div class="reading__covers">
+                {card.books.map((item) =>
+                  item.coverImage ? (
+                    <SanityImage
+                      image={item.coverImage}
+                      alt={`Cover of ${item.title}`}
+                      widths={[144, 288]}
+                      sizes="4.5rem"
+                      aspect={2 / 3}
+                    />
                   ) : (
-                    item.title
-                  )}
-                </h3>
-                <p>{item.author}</p>
+                    <div class="reading__cover-placeholder" aria-hidden="true" />
+                  ),
+                )}
               </div>
-            ))}
-            {card.note && <p class="reading__note">{card.note}</p>}
-            </div>
-          </li>
-        ))}
-      </ul>
-      {group.status === 'to-read' && (
-        <form class="recommend" id="recommend" method="post" action="/api/recommend" data-state="idle" novalidate>
-          <p class="recommend__lead">Read something I should have? Tell me what to pick up next.</p>
-          <div class="recommend__row">
-            <label class="sr-only" for="recommend-title">Book title</label>
-            <input
-              id="recommend-title"
-              class="input"
-              name="title"
-              type="text"
-              autocomplete="off"
-              maxlength={MAX_RECOMMENDATION_LENGTH}
-              placeholder="A book you think I'd get something out of"
-              aria-describedby="recommend-status"
-            />
-            <Button type="submit" id="recommend-submit">Recommend me a book</Button>
-          </div>
-          <p class="field__message recommend__status" id="recommend-status" role="status" aria-live="polite">
-            <span data-for="empty">Need a title to go on, even a rough one.</span>
-            <span data-for="sending">Sending it over.</span>
-            <span data-for="error">
-              That didn't go through, so give it one more try or just email it to me at
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
-            </span>
-            <span data-for="limited">
-              You've sent me a few already, thanks, email me the rest at
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> and I'll go through them properly.
-            </span>
-            <span data-for="success">
-              Got it, thanks. If you want to tell me how you came across it, or what it triggered for you, email me at
-              <a href={`mailto:${CONTACT_EMAIL}?subject=A%20book%20recommendation`}>{CONTACT_EMAIL}</a>, as the title on
-              its own only tells me so much and quite honestly the story behind a recommendation is the part I actually enjoy.
-            </span>
-          </p>
-        </form>
-      )}
-    </section>
-  ))}
-</Layout>
+              <div class="reading__text">
+                {card.books.map((item) => (
+                  <div class="reading__book">
+                    <h3>
+                      {item.link ? (
+                        <a href={item.link} target="_blank" rel="noopener noreferrer">
+                          {item.title}
+                          <Icon name="arrow-up-right" class="icon--sm" />
+                        </a>
+                      ) : (
+                        item.title
+                      )}
+                    </h3>
+                    <p>{item.author}</p>
+                  </div>
+                ))}
+                {card.note && <p class="reading__note">{card.note}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
 
-<script>
-  type State = 'idle' | 'empty' | 'sending' | 'error' | 'limited' | 'success';
-
-  const form = document.getElementById('recommend') as HTMLFormElement | null;
-  const input = document.getElementById('recommend-title') as HTMLInputElement | null;
-
-  if (form && input) {
-    const button = document.getElementById('recommend-submit') as HTMLButtonElement | null;
-    const setState = (state: State) => {
-      form.dataset.state = state;
-      const busy = state === 'sending';
-      input.disabled = busy || state === 'success';
-      if (button) {
-        button.disabled = busy || state === 'success';
-        if (busy) button.setAttribute('aria-busy', 'true');
-        else button.removeAttribute('aria-busy');
-      }
-      input.setAttribute('aria-invalid', state === 'empty' ? 'true' : 'false');
-    };
-
-    // Typing again after a rejected send clears the message.
-    input.addEventListener('input', () => {
-      if (form.dataset.state === 'empty' || form.dataset.state === 'error') setState('idle');
-    });
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const title = input.value.replace(/\s+/g, ' ').trim();
-      if (!title) {
-        setState('empty');
-        input.focus();
-        return;
-      }
-
-      setState('sending');
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ title })
-        });
-        if (response.status === 429) {
-          setState('limited');
-        } else if (response.ok) {
-          setState('success');
-        } else {
-          setState('error');
+        {
+          group.status === 'to-read' && (
+            <form class="recommend" id="recommend" method="post" action="/api/recommend" data-state="idle">
+              <p class="recommend__lead">{copy.recommend.lead}</p>
+              <div class="recommend__row">
+                <label class="sr-only" for="recommend-title">Book title</label>
+                <input
+                  id="recommend-title"
+                  class="input"
+                  name="title"
+                  type="text"
+                  autocomplete="off"
+                  required
+                  maxlength={MAX_RECOMMENDATION_LENGTH}
+                  placeholder={copy.recommend.placeholder}
+                  aria-describedby="recommend-status"
+                />
+                <Button type="submit" id="recommend-submit">{copy.recommend.button}</Button>
+              </div>
+              <p class="field__message recommend__status" id="recommend-status" role="status" aria-live="polite">
+                <span data-for="empty">{copy.recommend.empty}</span>
+                <span data-for="sending">{copy.recommend.sending}</span>
+                <span data-for="error">{copy.recommend.error}</span>
+                <span data-for="limited">{copy.recommend.limited}</span>
+                <span data-for="success">{copy.recommend.success}</span>
+              </p>
+            </form>
+          )
         }
-      } catch {
-        setState('error');
-      }
-    });
+      </section>
+    ))
   }
-</script>
+</Base>
 
 <style>
   /* The quote stands where the intro would. Both marks are oversized and hang
      outside the text block: the opening one in the left margin, the closing one
      past the last word, so the sentence itself stays flush with the headline. */
-  .reading__quote { color: var(--color-text-secondary); margin: var(--spacing-8) 0 0; max-width: 38rem; position: relative; }
-  .reading__quote p { font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.45; margin: 0; }
+  .reading__quote {
+    color: var(--color-text-secondary);
+    margin: var(--spacing-8) 0 0;
+    max-width: 38rem;
+    position: relative;
+  }
+
+  .reading__quote p {
+    font-size: clamp(1.1rem, 2vw, 1.45rem);
+    line-height: 1.45;
+    margin: 0;
+  }
+
   .reading__quote p::before,
-  .reading__quote p::after { color: var(--color-action); font-family: var(--font-serif); font-size: 4.5em; line-height: 0; position: absolute; }
-  .reading__quote p::before { content: '\201C'; left: -0.6em; top: 0.62em; }
-  .reading__quote p::after { content: '\201D'; margin-left: 0.05em; position: relative; top: 0.44em; }
+  .reading__quote p::after {
+    color: var(--color-action);
+    font-family: var(--font-serif);
+    font-size: 4.5em;
+    line-height: 0;
+    position: absolute;
+  }
+
+  .reading__quote p::before {
+    content: '\201C';
+    left: -0.6em;
+    top: 0.62em;
+  }
+
+  .reading__quote p::after {
+    content: '\201D';
+    margin-left: 0.05em;
+    position: relative;
+    top: 0.44em;
+  }
+
   /* Hanging into the margin needs about 3rem of it, which the 70rem column only
      has above 76rem. Under that the marks sit inside the column instead. */
   @media (max-width: 76rem) {
-    .reading__quote p { padding-inline-start: 1.5rem; }
-    .reading__quote p::before, .reading__quote p::after { font-size: 3.5em; }
-    .reading__quote p::before { left: -0.05em; top: 0.55em; }
-    .reading__quote p::after { top: 0.36em; }
-  }
-  .reading__quote footer { font-size: var(--font-size-sm); letter-spacing: .04em; margin-top: var(--spacing-4); text-transform: uppercase; }
-  .reading__quote footer::before { background: currentColor; content: ''; display: inline-block; height: 1px; margin-right: var(--spacing-3); vertical-align: middle; width: 1.5rem; }
+    .reading__quote p {
+      padding-inline-start: 1.5rem;
+    }
 
-  .reading__group { border-top: 1px solid var(--color-stroke-subtle); padding-block: var(--spacing-8) var(--spacing-6); }
-  .reading__group h2 { font-size: clamp(1.4rem, 2.4vw, 2rem); letter-spacing: var(--tracking-heading); margin: 0 0 var(--spacing-6); }
-  .reading__group ul { display: grid; gap: var(--spacing-10) var(--spacing-12); list-style: none; margin: 0; padding: 0; }
+    .reading__quote p::before,
+    .reading__quote p::after {
+      font-size: 3.5em;
+    }
+
+    .reading__quote p::before {
+      left: -0.05em;
+      top: 0.55em;
+    }
+
+    .reading__quote p::after {
+      top: 0.36em;
+    }
+  }
+
+  .reading__quote footer {
+    font-size: var(--font-size-sm);
+    letter-spacing: 0.04em;
+    margin-top: var(--spacing-4);
+    text-transform: uppercase;
+  }
+
+  .reading__quote footer::before {
+    background: currentColor;
+    content: '';
+    display: inline-block;
+    height: 1px;
+    margin-right: var(--spacing-3);
+    vertical-align: middle;
+    width: 1.5rem;
+  }
+
+  .reading__group {
+    border-top: 1px solid var(--color-stroke-subtle);
+    padding-block: var(--spacing-8) var(--spacing-6);
+  }
+
+  .reading__group h2 {
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    letter-spacing: var(--tracking-heading);
+    margin: 0 0 var(--spacing-6);
+  }
+
+  .reading__group ul {
+    display: grid;
+    gap: var(--spacing-10) var(--spacing-12);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 
   /* Covers in a narrow column, everything textual in the other, so the note
      follows the author line directly whatever height the covers are. */
-  .reading__item { align-items: start; display: grid; gap: var(--spacing-4); grid-template-columns: 4.5rem minmax(0, 1fr); max-width: 40rem; }
-  .reading__covers { display: flex; flex-direction: column; gap: var(--spacing-2); padding-top: 0.25rem; }
+  .reading__item {
+    align-items: start;
+    display: grid;
+    gap: var(--spacing-4);
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    max-width: 40rem;
+  }
+
+  .reading__covers {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    padding-top: 0.25rem;
+  }
+
   .reading__covers img,
-  .reading__cover-placeholder { display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; }
+  .reading__cover-placeholder {
+    aspect-ratio: 2 / 3;
+    border-radius: 0;
+    display: block;
+    height: auto;
+    object-fit: cover;
+    width: 100%;
+  }
+
   /* Stand-in for books with no cover art. Built from stroke tokens so it reads
      against the canvas in both themes. */
-  .reading__cover-placeholder { background: linear-gradient(135deg, var(--color-stroke-subtle), var(--color-stroke-strong)); }
+  .reading__cover-placeholder {
+    background: linear-gradient(135deg, var(--color-stroke-subtle), var(--color-stroke-strong));
+  }
 
-  .reading__book + .reading__book { margin-top: var(--spacing-3); }
-  .reading__book h3 { font-size: var(--type-body); font-weight: 600; line-height: 1.3; margin: 0; }
-  .reading__book h3 a { color: inherit; text-decoration: none; }
-  .reading__book h3 a:hover { color: var(--color-action); }
-  .reading__book h3 a :global(svg) { margin-left: 0.2em; vertical-align: -0.05em; }
-  .reading__book p { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.4; margin: var(--spacing-1) 0 0; }
+  .reading__book + .reading__book {
+    margin-top: var(--spacing-3);
+  }
 
-  /* The recommendation box closes the queue. Full column width, one input and
-     one button, with every message pre-rendered and shown by `data-state` so the
-     server sends the copy and the script only flips a flag. */
-  .recommend { background: var(--color-bg-raised); border: 1px solid var(--color-stroke-subtle); border-radius: var(--radius-lg); margin-top: var(--spacing-10); padding: clamp(1.25rem, 3vw, 2rem); }
-  .recommend__lead { color: var(--color-text-primary); font-size: var(--type-body); font-weight: 600; margin: 0 0 var(--spacing-4); }
-  .recommend__row { display: flex; flex-wrap: wrap; gap: var(--spacing-3); }
-  .recommend__row .input { flex: 1 1 16rem; inline-size: auto; }
-  .recommend[data-state="success"] .recommend__row { display: none; }
+  .reading__book h3 {
+    font-size: var(--type-body);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+    margin: 0;
+  }
 
-  .recommend__status span { display: none; }
-  .recommend[data-state="empty"] [data-for="empty"],
-  .recommend[data-state="sending"] [data-for="sending"],
-  .recommend[data-state="error"] [data-for="error"],
-  .recommend[data-state="limited"] [data-for="limited"],
-  .recommend[data-state="success"] [data-for="success"] { display: block; margin-top: var(--spacing-3); }
-  .recommend[data-state="empty"] .recommend__status,
-  .recommend[data-state="error"] .recommend__status,
-  .recommend[data-state="limited"] .recommend__status { color: var(--color-action); }
-  .recommend[data-state="success"] .recommend__status { color: var(--color-text-primary); font-size: var(--type-body); }
+  .reading__book h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-  .reading__note { color: var(--color-text-primary); font-size: var(--type-body-small); line-height: 1.6; margin: var(--spacing-3) 0 0; }
+  .reading__book h3 a:hover {
+    color: var(--color-action);
+  }
+
+  .reading__book h3 a :global(svg) {
+    margin-left: 0.2em;
+    vertical-align: -0.05em;
+  }
+
+  .reading__book p {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    line-height: 1.4;
+    margin: var(--spacing-1) 0 0;
+  }
+
+  .reading__note {
+    color: var(--color-text-primary);
+    font-size: var(--type-body-small);
+    line-height: 1.6;
+    margin: var(--spacing-3) 0 0;
+  }
+
+  /* The recommendation box closes the queue. Every message is pre-rendered and
+     shown by `data-state`, so the server sends the copy and the script only
+     flips a flag. Without the script the browser posts the form and follows
+     the 303 to /reading/sent. */
+  .recommend {
+    background: var(--color-bg-raised);
+    border: 1px solid var(--color-stroke-subtle);
+    border-radius: var(--radius-lg);
+    margin-top: var(--spacing-10);
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .recommend__lead {
+    color: var(--color-text-primary);
+    font-size: var(--type-body);
+    font-weight: var(--font-weight-semibold);
+    margin: 0 0 var(--spacing-4);
+  }
+
+  .recommend__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+  }
+
+  .recommend__row .input {
+    flex: 1 1 16rem;
+    inline-size: auto;
+  }
+
+  .recommend[data-state='success'] .recommend__row {
+    display: none;
+  }
+
+  .recommend__status span {
+    display: none;
+  }
+
+  .recommend[data-state='empty'] [data-for='empty'],
+  .recommend[data-state='sending'] [data-for='sending'],
+  .recommend[data-state='error'] [data-for='error'],
+  .recommend[data-state='limited'] [data-for='limited'],
+  .recommend[data-state='success'] [data-for='success'] {
+    display: block;
+    margin-top: var(--spacing-3);
+  }
+
+  .recommend[data-state='empty'] .recommend__status,
+  .recommend[data-state='error'] .recommend__status,
+  .recommend[data-state='limited'] .recommend__status {
+    color: var(--color-action);
+  }
+
+  .recommend[data-state='success'] .recommend__status {
+    color: var(--color-text-primary);
+    font-size: var(--type-body);
+  }
 
   @media (min-width: 48rem) {
-    .reading__group:not([data-count="1"]) ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .reading__group:not([data-count='1']) ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 </style>

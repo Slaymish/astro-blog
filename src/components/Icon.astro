@@ -1,0 +1,106 @@
+---
+/**
+ * Inline stroke icon. Sizes and colours itself from the surrounding text, so it
+ * can be dropped anywhere without per-site overrides. Size and stroke come from
+ * the `--icon-*` tokens, or from the `icon--sm` / `icon--lg` modifier classes;
+ * there is no `style` attribute, because the CSP forbids one.
+ *
+ * Decorative by default (aria-hidden). Pass `title` when the icon is the only
+ * thing conveying the link's meaning.
+ */
+import { ICON_MOTION, ICON_PATHS, type IconName } from './icons';
+
+interface Props {
+  name: IconName;
+  /** 'auto' nudges the icon along its own axis on hover. 'none' holds it still. */
+  motion?: 'auto' | 'none';
+  class?: string;
+  title?: string;
+}
+
+// `rest` carries the parent's scoped-style attribute, so call sites can target
+// the icon from their own <style> block.
+const { name, motion = 'auto', class: className, title, ...rest } = Astro.props as Props &
+  Record<string, unknown>;
+
+const paths = ICON_PATHS[name];
+const direction = motion === 'none' ? undefined : ICON_MOTION[name];
+---
+
+<svg
+  {...rest}
+  class:list={['icon', className]}
+  data-icon-direction={direction}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+>
+  {title && <title>{title}</title>}
+  {paths.map((d) => <path d={d} />)}
+</svg>
+
+<style>
+  .icon {
+    block-size: var(--icon-size);
+    display: inline-block;
+    flex-shrink: 0;
+    inline-size: var(--icon-size);
+    stroke-width: var(--icon-stroke-width);
+    transform: translate(var(--icon-shift-x, 0em), calc(var(--icon-nudge) + var(--icon-shift-y, 0em)));
+    transition: transform var(--motion-duration-interaction) var(--easing-expressive);
+  }
+
+  .icon--sm {
+    --icon-size: 0.9em;
+    --icon-stroke-width: 2;
+  }
+
+  .icon--lg {
+    --icon-size: 1.35em;
+    --icon-stroke-width: 1.75;
+  }
+
+  /* On hover the icon travels a little way along its own axis. Driven from any
+     interactive ancestor, so links, buttons, and whole cards all trigger it —
+     put `data-icon-hover` on a wrapper that is none of those. */
+  :global(a:hover) .icon[data-icon-direction='right'],
+  :global(a:focus-visible) .icon[data-icon-direction='right'],
+  :global(button:hover) .icon[data-icon-direction='right'],
+  :global([data-icon-hover]:hover) .icon[data-icon-direction='right'] {
+    --icon-shift-x: var(--icon-hover-shift);
+  }
+
+  :global(a:hover) .icon[data-icon-direction='left'],
+  :global(a:focus-visible) .icon[data-icon-direction='left'],
+  :global(button:hover) .icon[data-icon-direction='left'],
+  :global([data-icon-hover]:hover) .icon[data-icon-direction='left'] {
+    --icon-shift-x: calc(-1 * var(--icon-hover-shift));
+  }
+
+  :global(a:hover) .icon[data-icon-direction='up-right'],
+  :global(a:focus-visible) .icon[data-icon-direction='up-right'],
+  :global(button:hover) .icon[data-icon-direction='up-right'],
+  :global([data-icon-hover]:hover) .icon[data-icon-direction='up-right'] {
+    --icon-shift-x: var(--icon-hover-shift);
+    --icon-shift-y: calc(-1 * var(--icon-hover-shift));
+  }
+
+  :global(a:hover) .icon[data-icon-direction='down'],
+  :global(a:focus-visible) .icon[data-icon-direction='down'],
+  :global(button:hover) .icon[data-icon-direction='down'],
+  :global([data-icon-hover]:hover) .icon[data-icon-direction='down'] {
+    --icon-shift-y: var(--icon-hover-shift);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .icon {
+      transform: translateY(var(--icon-nudge));
+      transition: none;
+    }
+  }
+</style>

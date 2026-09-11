@@ -10,15 +10,16 @@
  */
 
 import { getStore } from '@netlify/blobs';
-import { parseBookingRef } from '../../lib/analytics';
-import { SESSION_STORE, conversionKey, dayStamp } from '../../lib/sessionStore';
-import { timingSafeEqual } from '../../lib/timingSafe';
+import { parseBookingRef } from '../../server/analytics';
+import { secrets } from '../../server/secrets';
+import { SESSION_STORE, conversionKey, dayStamp } from '../../server/sessionStore';
+import { timingSafeEqual } from '../../server/timingSafe';
+import { SITE_URL, UMAMI_WEBSITE_ID } from '../../site/config';
 
 export const prerender = false;
 
 const UMAMI_ENDPOINT = 'https://cloud.umami.is/api/send';
-const UMAMI_WEBSITE_ID = '3b77a67f-19f6-4f3c-a7ab-8af0d58bfbc6';
-const SITE_HOSTNAME = 'hamishburke.dev';
+const SITE_HOSTNAME = new URL(SITE_URL).hostname;
 
 async function hmacSha256Hex(secret: string, body: string): Promise<string> {
   const key = await crypto.subtle.importKey(
@@ -35,7 +36,7 @@ async function hmacSha256Hex(secret: string, body: string): Promise<string> {
 }
 
 export async function POST({ request }: { request: Request }) {
-  const secret = process.env.CAL_WEBHOOK_SECRET;
+  const secret = secrets.calWebhookSecret();
   if (!secret) {
     return new Response('Webhook secret not configured', { status: 503 });
   }

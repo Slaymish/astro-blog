@@ -1,12 +1,12 @@
 ---
-import Layout from '../components/layout/Layout.astro';
-import Button from '../components/ui/Button.astro';
-import { getNotFoundPage } from '../lib/pageContent';
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import { getNotFoundPage } from '../content/queries';
 
 const copy = await getNotFoundPage();
 ---
 
-<Layout title={copy.seo.title} description={copy.seo.description}>
+<Base title={copy.seo.title} description={copy.seo.description} robots="noindex, follow">
   <div class="not-found">
     <p class="not-found__code">{copy.code}</p>
     <h1>{copy.heading}</h1>
@@ -14,7 +14,9 @@ const copy = await getNotFoundPage();
 
     <div class="not-found__actions">
       <Button href="/" variant="ghost">{copy.homeLabel}</Button>
-      <Button id="go-back-button" variant="ghost" icon="arrow-left" iconPosition="start">{copy.backLabel}</Button>
+      <Button id="go-back-button" variant="ghost" icon="arrow-left" iconPosition="start">
+        {copy.backLabel}
+      </Button>
     </div>
 
     <div class="not-found__suggestions">
@@ -24,34 +26,85 @@ const copy = await getNotFoundPage();
       </nav>
     </div>
   </div>
-</Layout>
+</Base>
 
 <script>
-  function initGoBack() {
-    const goBackButton = document.getElementById('go-back-button');
-    goBackButton?.addEventListener('click', () => {
-      if (window.history.length > 1) {
-        window.history.back();
-        return;
-      }
-      window.location.href = '/';
-    });
-  }
-
-  initGoBack();
+  document.getElementById('go-back-button')?.addEventListener('click', () => {
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    window.location.href = '/';
+  });
 </script>
 
 <style>
-  .not-found { padding-block: var(--hero-top-space) var(--section-space); }
-  .not-found__code { color: var(--color-action); font-family: var(--font-mono); font-size: var(--type-label); letter-spacing: .1em; margin: 0 0 var(--spacing-5); }
-  .not-found h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: .88; margin: 0; max-width: 12ch; }
-  .not-found__body { color: var(--color-text-secondary); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.5; margin: var(--spacing-8) 0 0; max-width: 36rem; }
+  .not-found {
+    padding-block: var(--hero-top-space) var(--section-space);
+  }
 
-  .not-found__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-4) var(--spacing-6); margin-top: var(--spacing-10); }
+  .not-found__code {
+    color: var(--color-action);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    letter-spacing: 0.1em;
+    margin: 0 0 var(--spacing-5);
+  }
 
-  .not-found__suggestions { border-top: 1px solid var(--color-stroke-subtle); margin-top: clamp(3rem, 8vw, 6rem); padding-top: var(--spacing-6); }
-  .not-found__suggestions p { color: var(--color-action); font-size: var(--type-label); font-weight: 700; letter-spacing: .1em; margin: 0 0 var(--spacing-4); text-transform: uppercase; }
-  .not-found__suggestions nav { display: flex; flex-wrap: wrap; gap: var(--spacing-3) var(--spacing-6); }
-  .not-found__suggestions nav a { align-items: center; color: var(--color-text-secondary); display: inline-flex; font-size: var(--type-body-small); min-height: 2.75rem; }
-  .not-found__suggestions nav a:hover { color: var(--color-action); }
+  .not-found h1 {
+    font-size: var(--type-display);
+    letter-spacing: var(--tracking-display);
+    line-height: 0.88;
+    margin: 0;
+    max-width: 12ch;
+  }
+
+  .not-found__body {
+    color: var(--color-text-secondary);
+    font-size: clamp(1.1rem, 2vw, 1.45rem);
+    line-height: 1.5;
+    margin: var(--spacing-8) 0 0;
+    max-width: 36rem;
+  }
+
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4) var(--spacing-6);
+    margin-top: var(--spacing-10);
+  }
+
+  .not-found__suggestions {
+    border-top: 1px solid var(--color-stroke-subtle);
+    margin-top: clamp(3rem, 8vw, 6rem);
+    padding-top: var(--spacing-6);
+  }
+
+  .not-found__suggestions p {
+    color: var(--color-action);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.1em;
+    margin: 0 0 var(--spacing-4);
+    text-transform: uppercase;
+  }
+
+  .not-found__suggestions nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3) var(--spacing-6);
+  }
+
+  .not-found__suggestions nav a {
+    align-items: center;
+    color: var(--color-text-secondary);
+    display: inline-flex;
+    font-size: var(--type-body-small);
+    min-height: 2.75rem;
+    text-decoration: none;
+  }
+
+  .not-found__suggestions nav a:hover {
+    color: var(--color-action);
+  }
 </style>

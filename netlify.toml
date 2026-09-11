@@ -8,50 +8,53 @@
   SANITY_DATASET = "production"
   SANITY_API_VERSION = "2024-01-01"
 
-# Fingerprinted Astro assets — cache forever (filenames change on content change)
+# Fingerprinted Astro assets — cache forever, filenames change with content.
 [[headers]]
   for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# HTML is prerendered and Netlify purges its CDN on deploy, so revalidating
-# rather than holding a timed copy means a publish is live as soon as the
-# rebuild finishes instead of up to five minutes later.
-#
-# The security headers ride on the same rule so every response carries them.
-# The CSP allowlist is derived from what the built output actually loads:
-# Umami for analytics (script from cloud.umami.is, collection posts to
-# gateway.umami.is), jsdelivr for the KaTeX stylesheet and its fonts, Sanity
-# for images and media. PDF.js is self-hosted under /vendor and renders to a
-# canvas, so object-src can stay closed; nothing on the site uses an iframe.
-#
-# script-src keeps 'unsafe-inline' because the theme resolver, the booking-ref
-# rewriter and the analytics tracker are all inline scripts that must run
-# before or independently of the bundle. Hash-based CSP via Astro's
-# experimental.csp flag would close that gap and is the natural follow-up.
+# The full Content-Security-Policy is emitted per page as a <meta> element by
+# Astro's security.csp, with a SHA-256 hash for the one inline script. A header
+# that also named script-src would be enforced alongside that meta policy and
+# would block the hashed script, so the header carries only the directive a
+# meta element cannot express.
 [[headers]]
   for = "/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' blob: https://cloud.umami.is; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://cdn.sanity.io; font-src 'self' data: https://cdn.jsdelivr.net; connect-src 'self' https://cloud.umami.is https://gateway.umami.is; worker-src 'self' blob:; media-src 'self' blob: https://cdn.sanity.io; manifest-src 'self'; upgrade-insecure-requests"
+    Content-Security-Policy = "frame-ancestors 'none'"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
     Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
 
-# RSS is now prerendered alongside the rest of the site and refreshed by the
-# publish rebuild, so it follows the same revalidate rule as every other page.
-
-# API routes — never cache
 [[headers]]
   for = "/api/*"
   [headers.values]
     Cache-Control = "no-store"
 
-# Retired URLs. force=true is required so these win over any generated file.
-# Mirrors projectSuccessors / publicPostSlugs in src/lib/legacyRoutes.ts.
+[[headers]]
+  for = "/stats"
+  [headers.values]
+    Cache-Control = "no-store"
+
+# Legacy URL policy lives only here. force = true so these win over any
+# generated file of the same name.
+[[redirects]]
+  from = "/projects"
+  to = "/work"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tools"
+  to = "/work"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/projects/sprint-coach"
   to = "/work/sprint-coach"
@@ -88,8 +91,7 @@
   status = 301
   force = true
 
-# Retired content answers 410 rather than 404. Mirrors `archivedProjects` and
-# `archivedReports` in src/lib/legacyRoutes.ts — keep the two in step.
+# Retired content answers 410 rather than 404.
 [[redirects]]
   from = "/projects/bedroom-layout-designer"
   to = "/410.html"
@@ -127,6 +129,18 @@
   force = true
 
 [[redirects]]
+  from = "/api/pdf"
+  to = "/410.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/api/insights"
+  to = "/410.html"
+  status = 410
+  force = true
+
+[[redirects]]
   from = "http://hamishburke.dev/*"
   to = "https://hamishburke.dev/:splat"
   status = 301
@@ -135,12 +149,5 @@
 [[redirects]]
   from = "https://www.hamishburke.dev/*"
   to = "https://hamishburke.dev/:splat"
-  status = 301
-  force = true
-
-# One work index; preserve the former independent-project entry point.
-[[redirects]]
-  from = "/projects"
-  to = "/work"
   status = 301
   force = true

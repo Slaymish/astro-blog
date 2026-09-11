@@ -1,0 +1,184 @@
+---
+import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { publicPathFromAstro } from '../site/config';
+
+const pathname = publicPathFromAstro(Astro.url);
+
+const navLinks = [
+  { href: '/work', label: 'Work' },
+  { href: '/writing', label: 'Writing' },
+  { href: '/reading', label: 'Reading' },
+  { href: '/about', label: 'About' },
+];
+
+/** Article and tag routes are part of Writing, so Writing stays lit on them. */
+const WRITING_PREFIXES = ['/writing', '/posts/', '/reports/', '/tags/'];
+
+function isActive(href: string): boolean {
+  if (href === '/writing') return WRITING_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  return pathname === href || pathname.startsWith(href + '/');
+}
+
+function navAttrs(href: string) {
+  const active = isActive(href);
+  return {
+    class: active ? 'site-nav__link site-nav__link--active' : 'site-nav__link',
+    'aria-current': active ? ('page' as const) : undefined,
+  };
+}
+---
+
+<header id="site-header">
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="site-nav__inner">
+      <a
+        href="/"
+        class="nav-logo"
+        aria-label="Hamish Burke, home"
+        aria-current={pathname === '/' ? 'page' : undefined}
+      >
+        <Logo size={36} />
+      </a>
+
+      <div class="site-nav__desktop">
+        {navLinks.map(({ href, label }) => <a href={href} {...navAttrs(href)}>{label}</a>)}
+      </div>
+
+      <div class="site-nav__actions">
+        <ThemeToggle />
+
+        <details class="site-nav__mobile">
+          <summary class="btn btn--icon" aria-label="Open navigation menu">
+            <svg class="menu-icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+            <svg class="menu-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </summary>
+          <div class="site-nav__mobile-panel">
+            {navLinks.map(({ href, label }) => <a href={href} {...navAttrs(href)}>{label}</a>)}
+          </div>
+        </details>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<style>
+  #site-header {
+    background: var(--color-bg-canvas);
+    border-bottom: 1px solid var(--color-stroke-subtle);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+  }
+
+  .site-nav__inner {
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-4);
+    justify-content: space-between;
+    margin-inline: auto;
+    max-width: calc(var(--content-max-width) + 2 * var(--page-gutter));
+    min-height: 4.25rem;
+    padding-inline: var(--page-gutter);
+  }
+
+  .nav-logo {
+    align-items: center;
+    color: var(--color-text-primary);
+    display: inline-flex;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    text-decoration: none;
+  }
+
+  .site-nav__desktop {
+    align-items: center;
+    display: none;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    margin-inline-start: auto;
+  }
+
+  .site-nav__link {
+    align-items: center;
+    color: var(--color-text-secondary);
+    display: inline-flex;
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.1em;
+    min-height: 2.75rem;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .site-nav__link:hover,
+  .site-nav__link--active {
+    color: var(--color-action);
+  }
+
+  .site-nav__actions {
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  .site-nav__mobile {
+    position: relative;
+  }
+
+  .site-nav__mobile summary {
+    list-style: none;
+  }
+
+  .site-nav__mobile[open] summary {
+    background: var(--color-bg-raised);
+    border-color: var(--color-stroke-strong);
+    color: var(--color-action);
+  }
+
+  .site-nav__mobile summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu-icon-close,
+  .site-nav__mobile[open] .menu-icon-open {
+    display: none;
+  }
+
+  .site-nav__mobile[open] .menu-icon-close {
+    display: block;
+  }
+
+  .site-nav__mobile-panel {
+    background: var(--color-bg-canvas);
+    border: 1px solid var(--color-stroke-subtle);
+    display: flex;
+    flex-direction: column;
+    min-width: min(16rem, calc(100vw - 2 * var(--page-gutter)));
+    padding: var(--spacing-3);
+    position: absolute;
+    right: 0;
+    top: calc(100% + var(--spacing-3));
+  }
+
+  @media (min-width: 48rem) {
+    .site-nav__inner {
+      min-height: 4.5rem;
+    }
+
+    .site-nav__desktop {
+      display: flex;
+    }
+
+    .site-nav__mobile {
+      display: none;
+    }
+  }
+</style>

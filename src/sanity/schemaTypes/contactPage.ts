@@ -8,11 +8,7 @@ export const contactPage = defineType({
     defineField({
       name: 'seo',
       title: 'SEO',
-      type: 'object',
-      fields: [
-        defineField({ name: 'title', title: 'Page title', type: 'string', validation: (rule) => rule.required().max(70) }),
-        defineField({ name: 'description', title: 'Meta description', type: 'text', rows: 3, validation: (rule) => rule.required().max(200) })
-      ],
+      type: 'seo',
       validation: (rule) => rule.required()
     }),
     defineField({

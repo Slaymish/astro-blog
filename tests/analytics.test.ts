@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { MAX_EVENTS, cleanEvents, cleanNonce, parseBookingRef } from '../src/lib/analytics';
+import { MAX_EVENTS, cleanEvents, cleanNonce, parseBookingRef } from '../src/server/analytics';
 
 test('cleanEvents keeps well-formed events and drops the rest', () => {
   const cleaned = cleanEvents([

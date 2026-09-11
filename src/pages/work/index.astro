@@ -1,13 +1,23 @@
 ---
-import Layout from '../../components/layout/Layout.astro';
-import PageHeader from '../../components/layout/PageHeader.astro';
-import WorkCard from '../../components/work/WorkCard.astro';
-import { getWorkStories } from '../../lib/workData';
-const stories = (await getWorkStories()).sort((a, b) => b.date.localeCompare(a.date));
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import ContactBand from '../../components/ContactBand.astro';
+import { getWorkIndexPage, getWorkStories } from '../../content/queries';
+
+const [copy, allStories] = await Promise.all([getWorkIndexPage(), getWorkStories()]);
+const stories = [...allStories].sort((a, b) => b.date.localeCompare(a.date));
+const { hero } = copy;
 ---
-<Layout title="Work" description="Client websites, independent software, and research by Hamish Burke.">
-  <PageHeader eyebrow="Work" headline="Things I’ve made." intro="Client websites, independent software, and research." />
+
+<Base
+  title={copy.seo.title}
+  description={copy.seo.description}
+  breadcrumbs={[{ name: 'Work', path: '/work' }]}
+>
+  <PageHeader eyebrow={hero.eyebrow} headline={hero.headlineLines} intro={hero.intro} />
   <section aria-label="All work, newest first">
-    {stories.map(story => <WorkCard story={story} />)}
+    {stories.map((story) => <WorkCard story={story} />)}
   </section>
-</Layout>
+  <ContactBand booking />
+</Base>

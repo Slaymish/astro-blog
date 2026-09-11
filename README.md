@@ -1,41 +1,60 @@
 # hamishburke.dev
 
-Hamish Burke's personal site: selected work, writing, reports, a reading list and a CV.
-Astro, prerendered to static HTML and hosted on Netlify; content is edited in Sanity Studio.
+The personal site of Hamish Burke: selected work, writing, and a reading list.
+Astro renders it to static HTML at build time from content held in Sanity, and
+Netlify serves it.
 
 ## Setup
 
-- Node 22.12.0 or newer and pnpm 10 (CI and Netlify use Node 22)
-
 ```bash
 pnpm install --frozen-lockfile
-printf 'SANITY_PROJECT_ID=qnuj1c4o\nSANITY_DATASET=production\n' > .env
-pnpm run dev            # http://localhost:4321
+cp .env.example .env   # SANITY_PROJECT_ID is required; the rest have defaults
+pnpm run dev           # http://localhost:4321
 ```
 
-The project id is public; reads need no token. Writes (Studio, `seed:copy`) need a
-`SANITY_API_TOKEN` in `.env`, which is gitignored.
+`SANITY_PROJECT_ID` is validated when the config loads, so a missing `.env`
+fails before Astro starts. The id is public (`qnuj1c4o`); it is also in
+`netlify.toml` and in CI.
 
 ## Commands
 
-| Command | What it does |
-|---|---|
-| `pnpm run dev` | Dev server on :4321 using `astro.config.dev.ts` (no Netlify adapter) |
-| `pnpm run build` | `astro check` then a production build into `dist/` |
-| `pnpm run test` | The test suite (`tests/*.test.ts`) |
-| `pnpm run preview` | Serve the production build locally |
-| `pnpm run studio:dev` | Sanity Studio, a separate app in `studio-production/` |
-| `pnpm exec knip` | Dead code and unused dependency report |
+```bash
+pnpm run dev            # dev server on :4321
+pnpm run build          # astro check && astro build - type errors fail the build
+pnpm run preview        # serve the production build
+pnpm run test           # tsx --test tests/*.test.ts
+pnpm run check          # astro check && knip
+pnpm run icons          # regenerate the favicon, app icons and the default OG image
+pnpm run migrate        # dataset migration; see Content below
+pnpm run studio:dev     # Sanity Studio, from the studio/ workspace
+pnpm run studio:build
+pnpm run studio:deploy
+```
 
-Studio uses the root pnpm dependencies and imports the same schemas as the embedded CMS.
-Run `pnpm run studio:build` to build its separate deployment.
+One test file: `pnpm exec tsx --test tests/work.test.ts`. The glob is
+`tests/*.test.ts`, not `tests/**`, so a test in a subdirectory will not run.
 
-## Publishing
+`pnpm run test` is useful before a build and complete after one: the suites in
+`tests/build-output.test.ts` and `tests/redirects.test.ts` read `dist/` and skip
+themselves when it is absent.
 
-The site is prerendered, so a change published in Sanity reaches hamishburke.dev when the
-Netlify build hook runs. `AGENTS.md` holds the working notes (rendering model, footguns,
-where things live) and `ARCHITECTURE.md` the boundaries and invariants.
+## Content
 
-## License
+Every visitor-facing sentence except the two legal pages lives in Sanity and is
+edited in Studio. Publishing reaches the live site only when a Netlify build
+hook fires a rebuild; that hook is configured in Netlify and Sanity, not here.
 
-MIT, see `LICENSE`.
+The schemas are in `src/sanity/schemaTypes/` and are the contract between the
+site and Studio. Both Studio configs import that one module.
+
+`pnpm run migrate` runs `scripts/migrate-2026-09.ts`, which has two modes.
+`additive` adds fields and is re-runnable; `subtractive` unsets legacy fields and
+deletes retired documents and is irreversible. Read a dry run first
+(`pnpm run migrate <mode> --dry-run`), and note that a repository hook blocks the
+write until the command carries `SANITY_WRITE_ACK=1`.
+
+## Where to look next
+
+- `ARCHITECTURE.md` - boundaries, invariants, and why things are where they are.
+- `AGENTS.md` - the working rules for this repository, including the footguns.
+- `PLANS.md` - the ExecPlan format; instances live in `docs/exec-plans/`.
