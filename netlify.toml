@@ -14,14 +14,6 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Video is served from public/ under media-src 'self'. A week rather than
-# immutable: the filenames are stable, so a re-cut clip has to be able to
-# replace itself.
-[[headers]]
-  for = "/media/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
-
 # The full Content-Security-Policy is emitted per page as a <meta> element by
 # Astro's security.csp, with a SHA-256 hash for the one inline script. A header
 # that also named script-src would be enforced alongside that meta policy and
@@ -38,6 +30,17 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
     Cross-Origin-Opener-Policy = "same-origin"
     Cross-Origin-Resource-Policy = "same-origin"
+
+# Video is served from public/ under media-src 'self'. A week rather than
+# immutable: the filenames are stable, so a re-cut clip has to be able to
+# replace itself. This has to sit after the /* catch-all, because two rules
+# that both match resolve to the later one; above it the video was served with
+# the catch-all's max-age=0. The /_astro rule escapes that only because the
+# Astro adapter writes it into .netlify/v1/config.json, which outranks this file.
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
 
 [[headers]]
   for = "/api/*"
