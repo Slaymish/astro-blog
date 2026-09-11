@@ -12,7 +12,7 @@ interface Element extends Node {
 }
 
 /** Elements that carry nothing once the page is text. */
-const DROPPED = new Set(['script', 'style', 'noscript', 'svg', 'form', 'button', 'template', 'dialog', 'iframe']);
+const DROPPED = new Set(['script', 'style', 'noscript', 'svg', 'form', 'button', 'template', 'dialog', 'iframe', 'video']);
 
 function findMain(tree: Node): Element | undefined {
   const found: Element[] = [];

@@ -92,6 +92,8 @@ test('every internal link and image resolves to a built file or a redirect rule'
     const targets = [
       ...document.querySelectorAll('a[href]').map((node) => node.getAttribute('href')!),
       ...document.querySelectorAll('img[src]').map((node) => node.getAttribute('src')!),
+      ...document.querySelectorAll('video[poster]').map((node) => node.getAttribute('poster')!),
+      ...document.querySelectorAll('source[src]').map((node) => node.getAttribute('src')!),
     ].filter((target) => target.startsWith('/'));
 
     for (const target of targets) {

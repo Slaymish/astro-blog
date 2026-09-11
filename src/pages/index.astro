@@ -1,10 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
 import IconText from '../components/IconText.astro';
+import VideoCover from '../components/VideoCover.astro';
 import WorkCover from '../components/WorkCover.astro';
 import { getHomePage, getWorkStories } from '../content/queries';
 import { categoryLabel } from '../content/work';
 import { artifactHref } from '../content/work';
+import { PAUSE_LABEL } from '../client/videoTeaser';
+import youIncPoster from '../assets/images/youinc-teaser-poster.jpg';
+
+/**
+ * The one lead feature with a clip instead of a still. Matched on slug so that
+ * reordering homePage.featured in Studio moves the card without the clip
+ * following the wrong story.
+ */
+const TEASER = {
+  slug: 'you-inc',
+  src: '/media/youinc-teaser.mp4',
+  poster: youIncPoster,
+};
 
 const [copy, stories] = await Promise.all([getHomePage(), getWorkStories()]);
 
@@ -34,8 +49,17 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
       lead && (
         <article class="lead-feature">
           <a class="visual-link" href={`/work/${lead.slug}`} aria-label={`Explore ${lead.title}`}>
-            <WorkCover cover={lead.cover} priority />
+            {lead.slug === TEASER.slug ? (
+              <VideoCover src={TEASER.src} poster={TEASER.poster} alt={lead.cover.alt} />
+            ) : (
+              <WorkCover cover={lead.cover} priority />
+            )}
           </a>
+          {lead.slug === TEASER.slug && (
+            <Button class="teaser-toggle" variant="ghost" size="sm" icon={false} data-teaser-toggle hidden>
+              {PAUSE_LABEL}
+            </Button>
+          )}
           <p class="label">Featured work · {categoryLabel(lead.kind)}</p>
           <h2><a href={`/work/${lead.slug}`}>{lead.title}</a></h2>
           <p>{lead.introduction}</p>
@@ -83,6 +107,14 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
     </aside>
   </section>
 </Base>
+
+<script>
+  import { initVideoTeaser } from '../client/videoTeaser';
+
+  document.querySelectorAll<HTMLElement>('.lead-feature').forEach((root) => {
+    initVideoTeaser(root);
+  });
+</script>
 
 <style>
   .opening {
@@ -155,6 +187,11 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
 
   .visual-link {
     display: block;
+  }
+
+  /* Sits between the clip and the label, outside the card's link. */
+  .teaser-toggle {
+    margin-top: var(--spacing-3);
   }
 
   .selected {

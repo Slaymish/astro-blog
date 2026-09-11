@@ -1,0 +1,57 @@
+---
+/**
+ * A work story's cover as a silent looping clip. A sibling to WorkCover rather
+ * than a third cover.kind, because the clip is chosen by the page and never
+ * authored in Studio.
+ *
+ * Playback is started by src/client/videoTeaser.ts, not by an autoplay
+ * attribute, so prefers-reduced-motion can be honoured before the first frame.
+ */
+import { getImage } from 'astro:assets';
+
+interface Props {
+  /** Site-relative path to the mp4. */
+  src: string;
+  poster: ImageMetadata;
+  /** Describes the footage. Carried by the .sr-only span, not an aria-label. */
+  alt: string;
+}
+
+const { src, poster, alt } = Astro.props;
+
+const still = await getImage({ src: poster, width: 1280, format: 'webp', quality: 80 });
+---
+
+<div class="work-cover work-cover--video">
+  <span class="sr-only">{alt}</span>
+  <video
+    data-video-teaser
+    poster={still.src}
+    width="1280"
+    height="720"
+    muted
+    loop
+    playsinline
+    preload="none"
+  >
+    <source src={src} type="video/mp4" />
+  </video>
+</div>
+
+<style>
+  .work-cover {
+    border: 1px solid var(--color-stroke-subtle);
+    min-width: 0;
+  }
+
+  .work-cover--video {
+    line-height: 0;
+    overflow: hidden;
+  }
+
+  .work-cover--video video {
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+</style>

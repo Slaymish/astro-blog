@@ -145,6 +145,14 @@ non-empty result, so a story with no cover alt text never reaches production.
   locally in this repo (it falls back to a plain static server), so the wiring
   can only be confirmed on a deploy preview; the branch logic is unit-tested
   against a stubbed context in `tests/markdown-negotiation.test.ts`.
+- **The one video is a static file, and it does not autoplay itself.**
+  `public/media/youinc-teaser.mp4` backs the homepage lead feature. It is served
+  from the origin because `media-src 'self'` permits that and nothing else; a
+  clip on the Sanity CDN would be blocked. The markup carries no `autoplay`
+  attribute on purpose, since that fires before `prefers-reduced-motion` can be
+  read — `src/client/videoTeaser.ts` starts playback, pauses it offscreen, and
+  reveals the pause control that ships `hidden`. The poster lives in
+  `src/assets/` instead, so the build hashes and optimises it.
 - **`pdfjs-dist` comes from npm** and fetches report PDFs straight from the
   Sanity CDN, which sends CORS headers for this origin. Its worker is imported
   with `?url`, so it is a hashed asset under `/_astro` and satisfies
