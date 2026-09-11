@@ -23,6 +23,11 @@ The only routes that run on request are the ones that opt out with
 `export const prerender = false`: `api/collect.ts`, `api/recommend.ts`,
 `api/cal-webhook.ts`, `reading/sent.astro` and the private `stats.astro`.
 
+One request-time behaviour sits above the build rather than inside it.
+`netlify/edge-functions/markdown.ts` reads the `Accept` header and serves a
+markdown representation to anything that asks for `text/markdown`, which is how
+a prerendered page negotiates a format it cannot decide for itself.
+
 ## Layers
 
 | Directory | Owns |
@@ -92,6 +97,14 @@ or a `WebPage`, then a `BreadcrumbList` when the page passes crumbs.
 **Locale is `en-NZ` everywhere.** Date formatting, `og:locale` (`en_NZ`),
 JSON-LD `inLanguage`, `<html lang>`, and the RSS `<language>`.
 
+**Markdown twins are derived, never authored.** `scripts/build-markdown.ts`
+runs after `astro build` and converts each page's `<main>` into a `.md` file
+beside it, so `/about.html` gains `/about.md`. Nothing writes markdown by hand:
+a twin cannot drift from its page, and `/privacy` and `/terms` need no second
+copy of text the templates own. `Base.astro` advertises the twin and
+`netlify/edge-functions/markdown.ts` resolves it, both through the same mapping,
+which `tests/build-output.test.ts` asserts they agree on.
+
 **Content validation fails the build.** `getWorkStories`, `getPosts` and
 `getReports` run the validators in `src/content/validate.ts` and throw on a
 non-empty result, so a story with no cover alt text never reaches production.
@@ -123,6 +136,15 @@ non-empty result, so a story with no cover alt text never reaches production.
   `/stats` renders the result. The visitor nonce lives in `sessionStorage` for
   the life of one tab, which is enough to join a booking to the session that
   produced it without a persistent identifier.
+- **Content negotiation happens at the edge, not in a route.** The edge
+  function passes anything that is not a markdown request straight through, so
+  HTML keeps the headers `netlify.toml` sets and the site does not depend on the
+  function succeeding. Only the markdown branch sets `Vary: Accept`, because
+  only it varies. Its path config lives in its own `config` export, like the
+  scheduled function's schedule. The Netlify CLI does not run edge functions
+  locally in this repo (it falls back to a plain static server), so the wiring
+  can only be confirmed on a deploy preview; the branch logic is unit-tested
+  against a stubbed context in `tests/markdown-negotiation.test.ts`.
 - **`pdfjs-dist` comes from npm** and fetches report PDFs straight from the
   Sanity CDN, which sends CORS headers for this origin. Its worker is imported
   with `?url`, so it is a hashed asset under `/_astro` and satisfies

@@ -13,7 +13,7 @@ committed lockfile, at `lockfileVersion: '9.0'`).
 ```bash
 pnpm install --frozen-lockfile
 pnpm run dev          # dev server on :4321
-pnpm run build        # astro check && astro build - type errors fail the build
+pnpm run build        # astro check && astro build && the markdown twins - type errors fail the build
 pnpm run test         # tsx --test tests/*.test.ts
 pnpm run preview      # serve the production build
 pnpm run check        # astro check && knip
@@ -64,6 +64,11 @@ The only server routes are the ones exporting `prerender = false`:
 `api/collect.ts`, `api/recommend.ts`, `api/cal-webhook.ts`, `reading/sent.astro`
 and `stats.astro`.
 
+Content negotiation is the one request-time behaviour above the build:
+`netlify/edge-functions/markdown.ts` serves the `.md` twin that
+`scripts/build-markdown.ts` wrote beside each page when a request asks for
+`text/markdown`, and passes everything else through untouched.
+
 `ARCHITECTURE.md` is the authoritative description of the layers and the
 invariants. Read it before anything structural; the short version is below.
 
@@ -106,6 +111,9 @@ in `docs/exec-plans/`, finished ones under `completed/`.
   token.
 - No `style` attribute in any `.astro` template. The policy is hash-only and
   cannot hash one. Use a class, or a custom property set on a class.
+- Markdown twins are generated, never written by hand. If a page needs
+  different markdown, change the page; `scripts/build-markdown.ts` converts
+  whatever `<main>` renders.
 - Sanity schemas live only in `src/sanity/schemaTypes/`. Both Studio configs
   import them; do not recreate a schema mirror or a separate Studio dependency
   tree. React exists only under `studio/`.
@@ -143,6 +151,11 @@ in `docs/exec-plans/`, finished ones under `completed/`.
   change the model or the request shape, check the installed SDK accepts the
   parameters rather than assuming; the current call uses `thinking: { type:
   'adaptive' }`, `betas` and `fallbacks`.
+- The markdown twins only exist after a build, and the Netlify CLI does not run
+  edge functions in this repo (`netlify dev` and `netlify serve` both fall back
+  to a plain static server that never invokes them). Content negotiation
+  therefore cannot be exercised locally; confirm it on a deploy preview with
+  `curl -sI <url> -H 'Accept: text/markdown'`.
 - Astro does not hash the content of an `is:inline set:html` script. `Base.astro`
   calls `Astro.csp.insertScriptHash` for the theme resolver, and removing that
   call silently drops the hash and the browser blocks the script.

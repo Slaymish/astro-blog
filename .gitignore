@@ -29,3 +29,6 @@ pnpm-debug.log*
 
 .github/copilot-instructions.md
 .tokensave
+
+# Netlify edge function bundling
+deno.lock

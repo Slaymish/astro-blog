@@ -5,12 +5,12 @@ import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 
-/** The two shapes this module needs from a unified tree. */
-interface Node {
+/** The two shapes the tree walker needs from a unified tree. */
+export interface Node {
   type: string;
 }
 
-interface Parent extends Node {
+export interface Parent extends Node {
   children: Node[];
 }
 
@@ -33,7 +33,7 @@ export function isSafeUri(value: string): boolean {
   }
 }
 
-function visit(node: Node, handle: (node: Node, parent: Parent | null, index: number) => void): void {
+export function visit(node: Node, handle: (node: Node, parent: Parent | null, index: number) => void): void {
   const walk = (current: Node, parent: Parent | null, index: number): void => {
     handle(current, parent, index);
     const children = (current as Parent).children;

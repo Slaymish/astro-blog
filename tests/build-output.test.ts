@@ -13,6 +13,7 @@ import { dirname, join, relative } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'node-html-parser';
+import { markdownTwin } from '../netlify/edge-functions/markdown';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
@@ -153,5 +154,17 @@ test('the build produced the pages the preserve list promises', { skip }, () => 
       pages.some((page) => page.path === path),
       `${path} is not in the build`,
     );
+  }
+});
+
+// Asserting against markdownTwin is what keeps the href Base.astro advertises
+// and the path the edge function resolves from drifting apart.
+test('every page advertises a markdown twin the build wrote', { skip }, () => {
+  for (const page of pages) {
+    const href = parse(page.html).querySelector('link[type="text/markdown"]')?.getAttribute('href');
+    assert.equal(href, markdownTwin(page.path), `${page.path} advertises ${href}`);
+    const twin = join(dist, href!);
+    assert(existsSync(twin), `${page.path} advertises ${href}, which is not in the build`);
+    assert(readFileSync(twin, 'utf8').trim().length > 0, `${href} is empty`);
   }
 });
