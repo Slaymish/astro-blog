@@ -4,11 +4,12 @@ Run on 11 September 2026, approximately 19:20–19:25 NZST, against https://hami
 after merging `rewrite` into `main` (commit `299863e`) and the Netlify production deploy of
 that commit reached `ready`.
 
-Every public route, redirect, retired-content response and crawl endpoint passed. Two
-Cloudflare edge settings still need changing by hand and are listed under Outstanding; both
-are configuration at the edge, not code, and the Netlify origin serves the correct thing in
-each case. The browser-dependent checks (console, theme persistence, 375 px layout,
-calculator and PDF interaction) are still unverified.
+Every public route, redirect, retired-content response and crawl endpoint passed. Three
+Cloudflare edge settings still need changing by hand and are listed below; all are
+configuration at the edge, not code, and the Netlify origin serves the correct thing in every
+case. A fourth, Rocket Loader, was turned off during this session and is verified fixed. The
+browser-dependent checks (console, theme persistence, 375 px layout, calculator and PDF
+interaction) are still unverified.
 
 ## Production results
 
@@ -28,22 +29,35 @@ calculator and PDF interaction) are still unverified.
 | Booking | `/contact` exposes the Cal.com link for the browser-side `metadata[ref]` rewriter. Browser execution not verified; no appointment created. |
 | Netlify origin | `https://hamishswords.netlify.app/` serves `strict-transport-security: max-age=31536000; includeSubDomains; preload` and unmodified `<script>` tags, confirming the origin configuration is correct. |
 
-## Outstanding: two Cloudflare settings
+## Cloudflare edge settings
 
-1. **Rocket Loader is on, and it defers the theme resolver.** Cloudflare injects
-   `/cdn-cgi/scripts/.../rocket-loader.min.js` and rewrites every script's `type` to
-   `e92c55ad…-text/javascript`, including the inline theme script. An unrecognised `type`
-   means the browser does not execute it, so the resolver no longer runs before first paint
-   and a light-theme visitor sees a dark flash. The CSP hash still matches, because it covers
-   the script's text and not its attributes. Turn Rocket Loader off under Speed >
-   Optimization > Content Optimization. This is the step the rewrite plan already called for.
-2. **Cloudflare strips `Strict-Transport-Security`.** The header leaves Netlify correctly and
-   is absent through the edge. Enable HSTS under SSL/TLS > Edge Certificates, matching
-   `max-age=31536000; includeSubDomains`.
+Rocket Loader was turned off on 11 September and the fix is verified: the inline theme
+resolver is served as a bare `<script>` again, its body hashes to
+`sha256-iySaVqzE48qmeRMfJXfMKOxccAMHjq8hF4bD2ffqaDk=`, and that hash is present in the page's
+`script-src`. It runs before first paint as designed. Three settings remain.
 
-Cloudflare's email obfuscation also injects `email-decode.min.js`, because the footer carries
-a `mailto:` link. It is same-origin so the policy permits it; worth turning off with Rocket
-Loader if the injected scripts are unwanted.
+1. **Email Address Obfuscation is rewriting `mailto:` links, and it costs content.** At the
+   Netlify origin the footer serves `<a href="mailto:hamishapps@gmail.com">`. Through the edge
+   it becomes `<a href="/cdn-cgi/l/email-protection#2048...">`, and on `/contact` the visible
+   address is replaced by a placeholder that only JavaScript decodes: the string
+   `hamishapps@gmail.com` does not appear in the served HTML at all. Without JavaScript, the
+   contact page shows no email address, on a page whose own copy says email is the surest way
+   to reach him. Turn it off under Scrape Shield. (The `email-click` analytics event is not
+   affected: `email-decode.min.js` is a classic script and runs before the deferred shell
+   module, so the href is back to `mailto:` by the time the tracker binds.)
+2. **JavaScript Detections injects an inline script the policy cannot allow.** Cloudflare adds
+   an inline `(function(){...__CF$cv$params...})()` that builds a hidden iframe and loads
+   `/cdn-cgi/challenge-platform/scripts/jsd/main.js`. It carries a per-request ray id and
+   timestamp, so its hash changes on every response and can never be listed. Under a hash-only
+   `script-src` it is blocked, and it is the one thing standing between this site and a clean
+   console. Turn it off under Security > Bots > JavaScript Detections.
+3. **Cloudflare strips `Strict-Transport-Security`.** The header leaves Netlify correctly
+   (`max-age=31536000; includeSubDomains; preload`) and is absent through the edge. Enable HSTS
+   under SSL/TLS > Edge Certificates, matching `max-age=31536000; includeSubDomains`.
+
+Of the three inline scripts the page serves, the theme resolver is covered by a hash, the
+JSON-LD block needs no hash because `application/ld+json` is data rather than executable
+script, and the Cloudflare challenge script above is the only genuine violation.
 
 ## Not yet verified
 
