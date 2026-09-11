@@ -94,7 +94,7 @@ const ogImage = post.coverImage ? sanitySrcSet(post.coverImage, [1200]).src : un
     overflow: hidden;
   }
 
-  .article__cover img {
+  .article__cover :global(img) {
     border-radius: 0;
     display: block;
     height: auto;

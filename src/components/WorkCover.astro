@@ -22,17 +22,11 @@ const SIZES = compact
   ? '(min-width: 52rem) 24rem, 100vw'
   : '(min-width: 52rem) 40rem, 100vw';
 
-const orientation =
-  cover.kind === 'image'
-    ? cover.image.asset.width / cover.image.asset.height >= 1
-      ? 'landscape'
-      : 'portrait'
-    : null;
 ---
 
 {
   cover.kind === 'image' ? (
-    <div class:list={['work-cover', 'work-cover--image', `is-${orientation}`, compact && 'is-compact']}>
+    <div class:list={['work-cover', 'work-cover--image', compact && 'is-compact']}>
       <SanityImage
         image={cover.image}
         alt={cover.alt}
@@ -70,23 +64,18 @@ const orientation =
   }
 
   .work-cover--image {
+    /* No aspect-ratio here on purpose. SanityImage emits the asset's intrinsic
+       width and height, so the image sets the frame's height and the border sits
+       flush against it whatever the screenshot's shape. */
+    line-height: 0;
     overflow: hidden;
   }
 
-  .work-cover--image img {
+  .work-cover--image :global(img) {
     border-radius: 0;
     display: block;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
     width: 100%;
-  }
-
-  .work-cover--image.is-landscape {
-    aspect-ratio: 1.65;
-  }
-
-  .work-cover--image.is-portrait {
-    aspect-ratio: 0.8;
   }
 
   .work-cover--figure {

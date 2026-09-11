@@ -52,6 +52,13 @@ body {
   transform: translateY(0);
 }
 
+/* Toggled from script in the PDF viewer and the writing filter. The UA rule is
+   only `[hidden] { display: none }`, which any author `display` declaration
+   outranks, so this needs to win outright or a hidden panel stays visible. */
+[hidden] {
+  display: none !important;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
