@@ -5,13 +5,12 @@ import IconText from '../components/IconText.astro';
 import VideoCover from '../components/VideoCover.astro';
 import WorkCover from '../components/WorkCover.astro';
 import { getHomePage, getWorkStories } from '../content/queries';
-import { categoryLabel } from '../content/work';
 import { artifactHref } from '../content/work';
 import { PAUSE_LABEL } from '../client/videoTeaser';
 import youIncPoster from '../assets/images/youinc-teaser-poster.jpg';
 
 /**
- * The one lead feature with a clip instead of a still. Matched on slug so that
+ * The one feature with a clip instead of a still. Matched on slug so that
  * reordering homePage.featured in Studio moves the card without the clip
  * following the wrong story.
  */
@@ -20,6 +19,8 @@ const TEASER = {
   src: '/media/youinc-teaser.mp4',
   poster: youIncPoster,
 };
+
+const DEFAULT_CTA = 'View case study';
 
 const [copy, stories] = await Promise.all([getHomePage(), getWorkStories()]);
 
@@ -32,41 +33,50 @@ if (featured.length !== copy.featured.length) {
   throw new Error(`homePage.featured references missing work stories: ${missing.join(', ')}`);
 }
 
-const [lead, ...secondary] = featured;
 const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug);
 ---
 
 <Base title={copy.seo.title} description={copy.seo.description}>
   <section class="opening" aria-labelledby="intro-heading">
-    <div class="introduction">
-      <p class="label">{copy.eyebrow}</p>
+    <div class="opening__inner">
       <h1 id="intro-heading">{copy.heading}</h1>
-      <p>{copy.intro}</p>
       <a class="text-link" href="/about"><IconText icon="arrow-up-right">{copy.aboutLabel}</IconText></a>
     </div>
+  </section>
+
+  <section class="features" aria-label="Featured work">
     {
-      lead && (
-        <article class="lead-feature">
-          <a class="visual-link" href={`/work/${lead.slug}`} aria-label={`Explore ${lead.title}`}>
-            {lead.slug === TEASER.slug ? (
-              <VideoCover src={TEASER.src} poster={TEASER.poster} alt={lead.cover.alt} />
-            ) : (
-              <WorkCover cover={lead.cover} priority />
-            )}
-          </a>
-          {lead.slug === TEASER.slug && (
-            <Button class="teaser-toggle" variant="ghost" size="sm" icon={false} data-teaser-toggle hidden>
-              {PAUSE_LABEL}
-            </Button>
-          )}
-          <p class="label">Featured work · {categoryLabel(lead.kind)}</p>
-          <h2><a href={`/work/${lead.slug}`}>{lead.title}</a></h2>
-          <p>{lead.introduction}</p>
-          <a class="text-link" href={`/work/${lead.slug}`}>
-            <IconText>{copy.leadLinkLabel}</IconText>
-          </a>
-        </article>
-      )
+      featured.map((story, index) => {
+        const href = `/work/${story.slug}`;
+        const teased = story.slug === TEASER.slug;
+        return (
+          <article class="feature">
+            <div class="feature__media">
+              <a class="visual-link" href={href} aria-label={`Explore ${story.title}`}>
+                {teased ? (
+                  <VideoCover src={TEASER.src} poster={TEASER.poster} alt={story.cover.alt} elevated />
+                ) : (
+                  <WorkCover cover={story.cover} priority={index === 0} elevated />
+                )}
+              </a>
+              <div class="feature__actions">
+                {teased && (
+                  <Button class="feature__toggle" variant="secondary" size="sm" icon={false} data-teaser-toggle hidden>
+                    {PAUSE_LABEL}
+                  </Button>
+                )}
+                <Button class="feature__cta" href={href} size="sm">
+                  {story.ctaLabel ?? DEFAULT_CTA}
+                </Button>
+              </div>
+            </div>
+            <div class="feature__text">
+              <h2><a href={href}>{story.title}</a></h2>
+              <p>{story.introduction}</p>
+            </div>
+          </article>
+        );
+      })
     }
   </section>
 
@@ -74,20 +84,6 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
     <div class="section-heading">
       <h2 id="selected-heading">{copy.moreWorkHeading}</h2>
       <a class="text-link" href="/work"><IconText>{copy.allWorkLabel}</IconText></a>
-    </div>
-    <div class="secondary-grid">
-      {
-        secondary.map((story) => (
-          <article>
-            <a class="visual-link" href={`/work/${story.slug}`} aria-label={`Explore ${story.title}`}>
-              <WorkCover cover={story.cover} compact />
-            </a>
-            <p class="label">{categoryLabel(story.kind)} · {story.descriptor}</p>
-            <h3><a href={`/work/${story.slug}`}>{story.title}</a></h3>
-            <p>{story.introduction}</p>
-          </article>
-        ))
-      }
     </div>
   </section>
 
@@ -110,28 +106,42 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
 <script>
   import { initVideoTeaser } from '../client/videoTeaser';
 
-  document.querySelectorAll<HTMLElement>('.lead-feature').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('.feature').forEach((root) => {
     initVideoTeaser(root);
   });
 </script>
 
 <style>
+  /* The home page runs narrower than the 70rem shell, so the feature rows read
+     as one centred column rather than spanning the full container. */
+  .opening,
+  .features,
+  .selected,
+  .notes {
+    margin-inline: auto;
+    max-width: 54rem;
+  }
+
   .opening {
-    display: grid;
-    gap: var(--spacing-12);
-    padding-block: var(--spacing-8) var(--spacing-16);
+    padding-block: clamp(3rem, 8vw, 5.5rem) clamp(3.5rem, 9vw, 6.5rem);
+    text-align: center;
+  }
+
+  /* Shrink-wraps the heading so the About link can sit on its trailing edge. */
+  .opening__inner {
+    display: inline-block;
+    text-align: right;
   }
 
   h1 {
-    font-size: clamp(3rem, 5vw, 4rem);
+    font-size: var(--type-display);
     letter-spacing: -0.045em;
     line-height: 1.04;
-    margin: var(--spacing-5) 0 var(--spacing-8);
+    margin: 0;
   }
 
   p {
     color: var(--color-text-secondary);
-    font-size: 1.125rem;
     line-height: 1.65;
     margin: var(--spacing-4) 0;
   }
@@ -141,30 +151,23 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
     font-family: var(--font-mono);
     font-size: var(--type-label);
     letter-spacing: 0.06em;
-    margin: var(--spacing-6) 0 var(--spacing-2);
+    margin: 0 0 var(--spacing-2);
     text-transform: uppercase;
   }
 
-  .introduction .label {
-    margin-top: 0;
-  }
-
-  h2,
-  h3 {
-    font-size: clamp(1.65rem, 3vw, 2.1rem);
+  h2 {
+    font-size: clamp(1.5rem, 2.6vw, 1.9rem);
     letter-spacing: var(--tracking-heading);
     line-height: 1.2;
     margin: 0;
   }
 
-  h2 a,
-  h3 a {
+  h2 a {
     color: inherit;
     text-decoration: none;
   }
 
-  h2 a:hover,
-  h3 a:hover {
+  h2 a:hover {
     color: var(--color-action);
   }
 
@@ -182,42 +185,78 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
     display: block;
   }
 
-  /* Sits between the clip and the label, outside the card's link. */
-  .teaser-toggle {
-    margin-top: var(--spacing-3);
+  .features {
+    display: grid;
+    gap: clamp(4rem, 9vw, 7.5rem);
+  }
+
+  .feature {
+    display: grid;
+    gap: var(--spacing-8);
+  }
+
+  /* Reserves the half of the controls that hangs below the cover. */
+  .feature__media {
+    min-width: 0;
+    padding-block-end: calc(var(--control-height-sm) / 2);
+    position: relative;
+  }
+
+  .feature__actions {
+    --control-radius: var(--radius-full);
+    align-items: center;
+    display: flex;
+    gap: var(--spacing-3);
+    inset-block-end: calc(var(--control-height-sm) / 2);
+    inset-inline-end: var(--spacing-6);
+    position: absolute;
+    transform: translateY(50%);
+  }
+
+  /* Opaque so the label stays legible over the clip it controls. */
+  .feature__toggle {
+    background: var(--color-bg-raised);
+  }
+
+  .feature__text {
+    align-self: center;
+  }
+
+  .feature__text p {
+    font-size: var(--type-body-small);
+    margin-block-end: 0;
+    max-width: 34ch;
   }
 
   .selected {
-    border-top: 1px solid var(--color-stroke-subtle);
-    padding-block: var(--spacing-8) var(--spacing-16);
+    padding-block: clamp(3rem, 7vw, 5rem) 0;
   }
 
   .section-heading {
     align-items: baseline;
+    border-block-end: 1px solid var(--color-stroke-subtle);
     display: flex;
     gap: var(--spacing-4);
     justify-content: space-between;
-    margin-bottom: var(--spacing-8);
+    padding-block-end: var(--spacing-3);
   }
 
   .section-heading h2 {
     font-size: 1.25rem;
   }
 
-  .secondary-grid {
-    display: grid;
-    gap: var(--spacing-12);
-  }
-
   .notes {
-    border-top: 1px solid var(--color-stroke-subtle);
     display: grid;
     gap: var(--spacing-12);
-    padding-block: var(--spacing-8) var(--spacing-12);
+    padding-block: clamp(3rem, 7vw, 5rem) var(--spacing-16);
   }
 
   .notes h2 {
     max-width: 28ch;
+  }
+
+  .notes p {
+    font-size: var(--type-body-small);
   }
 
   .more-writing {
@@ -229,14 +268,10 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
   }
 
   @media (min-width: 48rem) {
-    .opening {
-      gap: 3.5rem;
-      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-      padding-block: var(--spacing-12) 5rem;
-    }
-
-    .secondary-grid {
-      grid-template-columns: 1.15fr 1fr;
+    .feature {
+      align-items: center;
+      gap: var(--spacing-10);
+      grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
     }
 
     .notes {

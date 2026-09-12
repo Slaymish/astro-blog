@@ -15,14 +15,16 @@ interface Props {
   poster: ImageMetadata;
   /** Describes the footage. Carried by the .sr-only span, not an aria-label. */
   alt: string;
+  /** Home page treatment: no border, rounded, and lifted off the page. Mirrors WorkCover. */
+  elevated?: boolean;
 }
 
-const { src, poster, alt } = Astro.props;
+const { src, poster, alt, elevated = false } = Astro.props;
 
 const still = await getImage({ src: poster, width: 1280, format: 'webp', quality: 80 });
 ---
 
-<div class="work-cover work-cover--video">
+<div class:list={['work-cover', 'work-cover--video', elevated && 'is-elevated']}>
   <span class="sr-only">{alt}</span>
   <video
     data-video-teaser
@@ -42,6 +44,12 @@ const still = await getImage({ src: poster, width: 1280, format: 'webp', quality
   .work-cover {
     border: 1px solid var(--color-stroke-subtle);
     min-width: 0;
+  }
+
+  .work-cover.is-elevated {
+    border-color: transparent;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
   }
 
   .work-cover--video {

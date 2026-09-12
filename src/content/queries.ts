@@ -52,9 +52,9 @@ export const getHomePage = () =>
     singleton<HomePage>(
       'homePage',
       `{
-        seo, eyebrow, heading, intro, aboutLabel,
+        seo, heading, aboutLabel,
         "featured": featured[]->slug.current,
-        leadLinkLabel, moreWorkHeading, allWorkLabel, writingLabel,
+        moreWorkHeading, allWorkLabel, writingLabel,
         "writingEntry": writingEntry->{ _type, title, "slug": slug.current },
         writingBlurb, writingLinkLabel, allWritingLabel,
         readingLabel, readingText, readingLinkLabel
@@ -115,7 +115,7 @@ export const getWorkStories = () =>
   once('workStories', async () => {
     const stories = await fetchSanity<WorkStory[]>(`*[_type == "workStory"] | order(order asc){
       _id, title, descriptor, "slug": slug.current, kind, order, date, timeframe,
-      summary, introduction, role, body, resultHeading, result,
+      summary, introduction, ctaLabel, role, body, resultHeading, result,
       links,
       "cover": cover{ kind, alt, figure, ${image('image')} },
       "evidence": evidence[]{ _key, alt, label, heading, caption, ${image('image')} },

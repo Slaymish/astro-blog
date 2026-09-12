@@ -129,6 +129,7 @@ export interface WorkStory {
   timeframe?: string;
   summary: string;
   introduction: string;
+  ctaLabel?: string;
   role: string;
   body: PortableTextBody;
   resultHeading?: string;
@@ -154,12 +155,9 @@ export interface Book {
 
 export interface HomePage {
   seo: Seo;
-  eyebrow: string;
   heading: string;
-  intro: string;
   aboutLabel: string;
   featured: string[];
-  leadLinkLabel: string;
   moreWorkHeading: string;
   allWorkLabel: string;
   writingLabel: string;

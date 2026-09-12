@@ -53,6 +53,13 @@ export const workStory = defineType({
       validation: (r) => r.required().max(320),
     }),
     defineField({
+      name: 'ctaLabel',
+      title: 'Card link label',
+      type: 'string',
+      description: 'The link on the home page card. Defaults to “View case study”.',
+      validation: (r) => r.max(40),
+    }),
+    defineField({
       name: 'role',
       title: 'Role',
       type: 'text',

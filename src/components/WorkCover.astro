@@ -13,9 +13,11 @@ interface Props {
   priority?: boolean;
   /** The narrower frame used in index rows and secondary cards. */
   compact?: boolean;
+  /** Home page treatment: no border, rounded, and lifted off the page. */
+  elevated?: boolean;
 }
 
-const { cover, priority = false, compact = false } = Astro.props;
+const { cover, priority = false, compact = false, elevated = false } = Astro.props;
 
 const WIDTHS = [640, 960, 1280, 1920];
 const SIZES = compact
@@ -26,7 +28,7 @@ const SIZES = compact
 
 {
   cover.kind === 'image' ? (
-    <div class:list={['work-cover', 'work-cover--image', compact && 'is-compact']}>
+    <div class:list={['work-cover', 'work-cover--image', compact && 'is-compact', elevated && 'is-elevated']}>
       <SanityImage
         image={cover.image}
         alt={cover.alt}
@@ -37,7 +39,7 @@ const SIZES = compact
       />
     </div>
   ) : (
-    <figure class:list={['work-cover', 'work-cover--figure', compact && 'is-compact']}>
+    <figure class:list={['work-cover', 'work-cover--figure', compact && 'is-compact', elevated && 'is-elevated']}>
       <span class="sr-only">{cover.alt}</span>
       {cover.figure.label && <p class="work-cover__label">{cover.figure.label}</p>}
       <p class="work-cover__title">{cover.figure.title}</p>
@@ -61,6 +63,13 @@ const SIZES = compact
   .work-cover {
     border: 1px solid var(--color-stroke-subtle);
     min-width: 0;
+  }
+
+  .work-cover.is-elevated {
+    border-color: transparent;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
   }
 
   .work-cover--image {
