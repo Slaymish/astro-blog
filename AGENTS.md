@@ -136,6 +136,16 @@ in `docs/exec-plans/`, finished ones under `completed/`.
   takes up to about two minutes to reach a build. A build run immediately after a
   write silently produces the old content. Use `fetchFreshSanity` only where
   staleness is unacceptable (currently RSS).
+- The CDN purges **per query**, and the queries purge independently, so a write
+  needs **two** deploys. The build hook is configured in Sanity as well as
+  Netlify, which means the write itself fires a deploy within seconds and that
+  deploy races the purge; you do not get to choose when the first build runs. On
+  2026-09-12 one write across nine documents produced a deploy that baked
+  `aboutPage` and `getWorkStories` fresh while `homePage` and `workIndexPage`
+  came back stale, so `/about` had new copy and `/` and `/work` had old copy from
+  the same build. Output that is *partly* right is the tell. Let the automatic
+  deploy happen, wait for the CDN, confirm the queries the build actually runs,
+  then trigger a second deploy and check more than one page.
 - Publishing in Studio does not deploy the site. A Netlify build hook has to
   fire, and it is configured in Netlify and Sanity, not in this repository.
 - `pnpm run migrate subtractive` unsets the legacy fields on every work story and
