@@ -12,7 +12,6 @@ export const workIndexPage = defineType({
       type: 'object',
       validation: (r) => r.required(),
       fields: [
-        defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string', validation: (r) => r.required().max(60) }),
         defineField({
           name: 'headlineLines',
           title: 'Headline lines',

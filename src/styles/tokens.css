@@ -86,7 +86,7 @@
   --reading-width: 68ch;
   --page-gutter: clamp(1.25rem, 4vw, 3rem);
   --section-space: clamp(3rem, 7vw, 6rem);
-  --hero-top-space: 0rem;
+  --hero-top-space: clamp(3rem, 7vw, 5rem);
   --hero-bottom-space: clamp(3.5rem, 7vw, 6rem);
   --band-inset: clamp(2.5rem, 6vw, 5rem);
 }

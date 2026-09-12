@@ -20,6 +20,8 @@
   --control-height-md: 2.75rem;
   --control-height-lg: 3.25rem;
   --control-radius: var(--radius-sm);
+  /* Buttons are pills; fields keep the square corner of --control-radius. */
+  --button-radius: var(--radius-full);
   --control-ring: 2px solid var(--color-focus-ring);
   --control-transition:
     background-color var(--motion-duration-interaction) var(--easing-expressive),
@@ -43,7 +45,7 @@
   appearance: none;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: var(--control-radius);
+  border-radius: var(--button-radius);
   box-sizing: border-box;
   color: var(--color-text-primary);
   cursor: pointer;

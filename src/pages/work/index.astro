@@ -15,7 +15,7 @@ const { hero } = copy;
   description={copy.seo.description}
   breadcrumbs={[{ name: 'Work', path: '/work' }]}
 >
-  <PageHeader eyebrow={hero.eyebrow} headline={hero.headlineLines} intro={hero.intro} />
+  <PageHeader headline={hero.headlineLines} intro={hero.intro} />
   <section aria-label="All work, newest first">
     {stories.map((story) => <WorkCard story={story} />)}
   </section>

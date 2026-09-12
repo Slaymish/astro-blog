@@ -6,7 +6,6 @@ export const aboutPage = defineType({
   type: 'document',
   fields: [
     defineField({ name: 'seo', title: 'SEO', type: 'seo', validation: (rule) => rule.required() }),
-    defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string', validation: (r) => r.required().max(60) }),
     defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (r) => r.required().max(80) }),
     defineField({ name: 'intro', title: 'Intro', type: 'text', rows: 5, validation: (r) => r.required().max(600) }),
     defineField({

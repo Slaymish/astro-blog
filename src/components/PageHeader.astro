@@ -1,13 +1,11 @@
 ---
 /**
- * The eyebrow / headline / intro block that opens most top-level pages.
+ * The headline / intro block that opens most top-level pages.
  * Presentation only: the route supplies the copy and picks one of three
  * measures. The measures are classes rather than custom properties set from a
  * `style` attribute, because the CSP forbids inline styles.
  */
 interface Props {
-  /** Small uppercase label above the headline. */
-  eyebrow: string;
   /** One line, or several rendered with a line break between them. */
   headline: string | string[];
   /** Lede paragraph under the headline. Omit it to put something else in the slot. */
@@ -20,14 +18,13 @@ interface Props {
   introFlush?: boolean;
 }
 
-const { eyebrow, headline, intro, measure = 'wide', introScale = 'regular', introFlush = false } =
+const { headline, intro, measure = 'wide', introScale = 'regular', introFlush = false } =
   Astro.props;
 
 const headlineLines = typeof headline === 'string' ? [headline] : headline;
 ---
 
 <header class:list={['page-header', `page-header--${measure}`, introFlush && 'is-flush']}>
-  <p class="page-header__eyebrow">{eyebrow}</p>
   <h1 class="page-header__headline">
     {headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}
   </h1>
@@ -54,15 +51,6 @@ const headlineLines = typeof headline === 'string' ? [headline] : headline;
 
   .page-header.is-flush {
     --intro-space: 0;
-  }
-
-  .page-header__eyebrow {
-    color: var(--color-action);
-    font-size: var(--type-label);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: 0.1em;
-    margin: 0 0 var(--spacing-5);
-    text-transform: uppercase;
   }
 
   .page-header__headline {

@@ -19,7 +19,6 @@ const largeCopy = portableTextToHtml(copy.largeCopy);
   <article class="about">
     <section class="about__opening" aria-labelledby="about-heading">
       <div>
-        <p class="about__label">{copy.eyebrow}</p>
         <h1 id="about-heading">{copy.heading}</h1>
         <p>{copy.intro}</p>
         {largeCopy && <Fragment set:html={largeCopy} />}
@@ -84,7 +83,7 @@ const largeCopy = portableTextToHtml(copy.largeCopy);
     align-items: center;
     display: grid;
     gap: var(--spacing-8);
-    padding-block: var(--spacing-6) var(--spacing-16);
+    padding-block: var(--hero-top-space) var(--spacing-16);
   }
 
   h1 {

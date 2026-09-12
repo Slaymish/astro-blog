@@ -26,7 +26,6 @@ const { story } = Astro.props;
 
 const narrative = portableTextToHtml(story.body);
 const related = await getRelated({ type: 'workStory', slug: story.slug, related: story.related });
-const eyebrow = [story.descriptor, story.timeframe ?? new Date(story.date).getFullYear()].join(' · ');
 const coverImage =
   story.cover.kind === 'image' ? sanitySrcSet(story.cover.image, [1200]).src : undefined;
 ---
@@ -43,7 +42,6 @@ const coverImage =
 >
   <article class="case-study">
     <header class="case-study__hero">
-      <p class="case-study__eyebrow">{eyebrow}</p>
       <h1>{story.title}</h1>
       <p class="case-study__summary">{story.introduction}</p>
       {
@@ -65,7 +63,7 @@ const coverImage =
     </header>
 
     <div class="case-study__cover">
-      <WorkCover cover={story.cover} priority />
+      <WorkCover cover={story.cover} priority elevated />
     </div>
 
     <div class="case-narrative">
@@ -106,16 +104,6 @@ const coverImage =
 <style>
   .case-study__hero {
     padding-block: var(--hero-top-space) var(--hero-bottom-space);
-  }
-
-  .case-study__eyebrow {
-    color: var(--color-text-secondary);
-    font-family: var(--font-mono);
-    font-size: var(--type-label);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: 0.1em;
-    margin: 0 0 var(--spacing-5);
-    text-transform: uppercase;
   }
 
   .case-study__hero h1 {

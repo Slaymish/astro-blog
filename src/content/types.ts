@@ -1,4 +1,4 @@
-export type WorkKind = 'professional' | 'independent' | 'research';
+type WorkKind = 'professional' | 'independent' | 'research';
 
 interface SanityAssetRef {
   _id: string;
@@ -171,7 +171,6 @@ export interface HomePage {
 }
 
 interface Hero {
-  eyebrow: string;
   headlineLines: string[];
   intro: string;
 }
@@ -195,7 +194,6 @@ export interface NowPage {
 
 export interface ReadingPage {
   seo: Seo;
-  eyebrow: string;
   headline: string;
   quote: { text: string; attribution: string };
   groups: { reading: string; toRead: string; read: string };
@@ -213,7 +211,6 @@ export interface ReadingPage {
 
 export interface AboutPage {
   seo: Seo;
-  eyebrow: string;
   heading: string;
   intro: string;
   portraitAlt: string;

@@ -14,12 +14,15 @@ export const ICON_PATHS = {
   'arrow-left': ['M19 12H5', 'm12 19-7-7 7-7'],
   'arrow-up-right': ['M7 7h10v10', 'M7 17 17 7'],
   'arrow-down': ['M12 5v14', 'm19 12-7 7-7-7'],
+  pause: ['M6 4h4v16H6z', 'M14 4h4v16h-4z'],
+  play: ['M6 3 20 12 6 21z'],
 } as const;
 
 export type IconName = keyof typeof ICON_PATHS;
 
-/** Directions the icon nudges towards when its parent link is hovered. */
-export const ICON_MOTION: Record<IconName, 'right' | 'left' | 'up-right' | 'down'> = {
+/** Directions the icon nudges towards when its parent link is hovered. Icons
+ *  that are not arrows have no axis to travel along, so they are absent here. */
+export const ICON_MOTION: Partial<Record<IconName, 'right' | 'left' | 'up-right' | 'down'>> = {
   'arrow-right': 'right',
   'arrow-left': 'left',
   'arrow-up-right': 'up-right',

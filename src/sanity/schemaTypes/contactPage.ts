@@ -16,7 +16,6 @@ export const contactPage = defineType({
       title: 'Hero',
       type: 'object',
       fields: [
-        defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string', validation: (rule) => rule.required().max(60) }),
         defineField({
           name: 'headlineLines',
           title: 'Headline lines',

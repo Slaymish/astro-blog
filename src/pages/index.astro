@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
 import IconText from '../components/IconText.astro';
 import VideoCover from '../components/VideoCover.astro';
 import WorkCover from '../components/WorkCover.astro';
@@ -61,8 +62,16 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
               </a>
               <div class="feature__actions">
                 {teased && (
-                  <Button class="feature__toggle" variant="secondary" size="sm" icon={false} data-teaser-toggle hidden>
-                    {PAUSE_LABEL}
+                  <Button
+                    class="feature__toggle"
+                    variant="icon"
+                    size="sm"
+                    ariaLabel={PAUSE_LABEL}
+                    data-teaser-toggle
+                    hidden
+                  >
+                    <Icon name="pause" filled class="feature__glyph feature__glyph--pause" />
+                    <Icon name="play" filled class="feature__glyph feature__glyph--play" />
                   </Button>
                 )}
                 <Button class="feature__cta" href={href} size="sm">
@@ -123,7 +132,7 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
   }
 
   .opening {
-    padding-block: clamp(3rem, 8vw, 5.5rem) clamp(3.5rem, 9vw, 6.5rem);
+    padding-block: var(--hero-top-space) clamp(3.5rem, 9vw, 6.5rem);
     text-align: center;
   }
 
@@ -203,7 +212,6 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
   }
 
   .feature__actions {
-    --control-radius: var(--radius-full);
     align-items: center;
     display: flex;
     gap: var(--spacing-3);
@@ -213,9 +221,28 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
     transform: translateY(50%);
   }
 
-  /* Opaque so the label stays legible over the clip it controls. */
-  .feature__toggle {
+  /* Opaque, and neutral in both states: pressed here means "playing", not
+     "selected", so the accent the icon primitive reaches for would mislead. */
+  .feature__toggle,
+  .feature__toggle[aria-pressed='true'] {
     background: var(--color-bg-raised);
+    border-color: var(--color-stroke-subtle);
+    color: var(--color-text-primary);
+  }
+
+  .feature__toggle:hover {
+    border-color: var(--color-stroke-strong);
+    color: var(--color-action);
+  }
+
+  /* One glyph shows at a time, chosen by what the button will do next. */
+  .feature__toggle .feature__glyph--play,
+  .feature__toggle[aria-pressed='false'] .feature__glyph--pause {
+    display: none;
+  }
+
+  .feature__toggle[aria-pressed='false'] .feature__glyph--play {
+    display: inline-block;
   }
 
   .feature__text {

@@ -45,8 +45,10 @@ const { item } = Astro.props;
     max-width: 28ch;
   }
 
+  /* Matches the elevated covers: no border, rounded, lifted off the page. */
   .evidence__frame {
-    border: 1px solid var(--color-stroke-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
     overflow: hidden;
   }
 

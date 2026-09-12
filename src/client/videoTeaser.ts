@@ -16,15 +16,16 @@ export function initVideoTeaser(root: HTMLElement): void {
   const toggle = root.querySelector<HTMLButtonElement>('[data-teaser-toggle]');
   if (!video || !toggle) return;
 
-  const label = toggle.querySelector<HTMLElement>('.btn__label') ?? toggle;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let userPaused = false;
   let visible = false;
 
   toggle.hidden = false;
 
+  // The button is icon-only, so aria-label carries the whole accessible name
+  // and aria-pressed picks which of the two glyphs the stylesheet shows.
   const sync = (): void => {
-    label.textContent = video.paused ? PLAY_LABEL : PAUSE_LABEL;
+    toggle.setAttribute('aria-label', video.paused ? PLAY_LABEL : PAUSE_LABEL);
     toggle.setAttribute('aria-pressed', video.paused ? 'false' : 'true');
   };
 

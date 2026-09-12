@@ -21,7 +21,7 @@ const updated = new Date(`${copy.updatedAt}T00:00:00Z`).toLocaleDateString('en-N
   breadcrumbs={[{ name: 'Now', path: '/now' }]}
 >
   <article class="now">
-    <PageHeader eyebrow={hero.eyebrow} headline={hero.headlineLines} intro={hero.intro} measure="regular">
+    <PageHeader headline={hero.headlineLines} intro={hero.intro} measure="regular">
       <p class="now__updated">
         {copy.updatedLabel} <time datetime={copy.updatedAt}>{updated}</time>
       </p>

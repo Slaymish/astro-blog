@@ -12,7 +12,6 @@ export const readingPage = defineType({
   type: 'document',
   fields: [
     defineField({ name: 'seo', title: 'SEO', type: 'seo', validation: (r) => r.required() }),
-    line('eyebrow', 'Eyebrow', 40),
     line('headline', 'Headline', 40),
     defineField({
       name: 'quote',

@@ -14,13 +14,15 @@ interface Props {
   name: IconName;
   /** 'auto' nudges the icon along its own axis on hover. 'none' holds it still. */
   motion?: 'auto' | 'none';
+  /** Solid rather than outlined. For glyphs like play and pause that read as shapes. */
+  filled?: boolean;
   class?: string;
   title?: string;
 }
 
 // `rest` carries the parent's scoped-style attribute, so call sites can target
 // the icon from their own <style> block.
-const { name, motion = 'auto', class: className, title, ...rest } = Astro.props as Props &
+const { name, motion = 'auto', filled = false, class: className, title, ...rest } = Astro.props as Props &
   Record<string, unknown>;
 
 const paths = ICON_PATHS[name];
@@ -32,7 +34,7 @@ const direction = motion === 'none' ? undefined : ICON_MOTION[name];
   class:list={['icon', className]}
   data-icon-direction={direction}
   viewBox="0 0 24 24"
-  fill="none"
+  fill={filled ? 'currentColor' : 'none'}
   stroke="currentColor"
   stroke-linecap="round"
   stroke-linejoin="round"

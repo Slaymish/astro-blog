@@ -34,7 +34,7 @@ Astro.response.headers.set('cache-control', 'no-store');
 ---
 
 <Base title="Recommendation sent" description="Thanks for the book recommendation." robots="noindex, nofollow">
-  <PageHeader eyebrow={copy.eyebrow} headline={HEADLINES[outcome]} measure="narrow">
+  <PageHeader headline={HEADLINES[outcome]} measure="narrow">
     <p class="sent__message">{MESSAGES[outcome]}</p>
     <p class="sent__email">
       <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>

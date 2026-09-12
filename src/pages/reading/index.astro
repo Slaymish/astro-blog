@@ -66,7 +66,7 @@ const grouped = groups
   description={copy.seo.description}
   breadcrumbs={[{ name: 'Reading', path: '/reading' }]}
 >
-  <PageHeader eyebrow={copy.eyebrow} headline={copy.headline} measure="narrow">
+  <PageHeader headline={copy.headline} measure="narrow">
     <blockquote class="reading__quote">
       <p>{copy.quote.text}</p>
       <footer>{copy.quote.attribution}</footer>
@@ -189,6 +189,11 @@ const grouped = groups
 
   .reading__quote p::after {
     content: '\201D';
+    /* A fixed advance, because this mark is the one in normal flow and the
+       fallback serif's quote glyph is ~40% wider. Without it the line reflows
+       when Instrument Serif swaps in. The glyph paints past the box. */
+    display: inline-block;
+    inline-size: 0.25em;
     margin-left: 0.05em;
     position: relative;
     top: 0.44em;
@@ -272,7 +277,8 @@ const grouped = groups
   .reading__covers :global(img),
   .reading__cover-placeholder {
     aspect-ratio: 2 / 3;
-    border-radius: 0;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
     display: block;
     height: auto;
     object-fit: cover;

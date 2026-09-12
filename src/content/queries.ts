@@ -72,14 +72,14 @@ export const getNowPage = () =>
 
 export const getReadingPage = () =>
   once('readingPage', () =>
-    singleton<ReadingPage>('readingPage', '{ seo, eyebrow, headline, quote, groups, recommend }'),
+    singleton<ReadingPage>('readingPage', '{ seo, headline, quote, groups, recommend }'),
   );
 
 export const getAboutPage = () =>
   once('aboutPage', () =>
     singleton<AboutPage>(
       'aboutPage',
-      '{ seo, eyebrow, heading, intro, portraitAlt, largeCopy, projects, background }',
+      '{ seo, heading, intro, portraitAlt, largeCopy, projects, background }',
     ),
   );
 
