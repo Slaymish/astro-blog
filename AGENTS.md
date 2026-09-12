@@ -136,16 +136,24 @@ in `docs/exec-plans/`, finished ones under `completed/`.
   takes up to about two minutes to reach a build. A build run immediately after a
   write silently produces the old content. Use `fetchFreshSanity` only where
   staleness is unacceptable (currently RSS).
-- The CDN purges **per query**, and the queries purge independently, so a write
-  needs **two** deploys. The build hook is configured in Sanity as well as
-  Netlify, which means the write itself fires a deploy within seconds and that
-  deploy races the purge; you do not get to choose when the first build runs. On
-  2026-09-12 one write across nine documents produced a deploy that baked
-  `aboutPage` and `getWorkStories` fresh while `homePage` and `workIndexPage`
-  came back stale, so `/about` had new copy and `/` and `/work` had old copy from
-  the same build. Output that is *partly* right is the tell. Let the automatic
-  deploy happen, wait for the CDN, confirm the queries the build actually runs,
-  then trigger a second deploy and check more than one page.
+- A content write needs a **second deploy, several minutes later**. The build
+  hook is configured in Sanity as well as Netlify, so the write itself fires a
+  deploy within seconds; that one always races the CDN purge and you do not get
+  to choose when it runs. Two things make this worse than it sounds:
+  - The CDN purges **per query**, and queries purge independently, so the racing
+    build can bake some documents fresh and others stale. Output that is *partly*
+    right is the tell. On 2026-09-12 one write across nine documents produced a
+    deploy where `/about` had new copy while `/` and `/work` had old copy.
+  - **The purge is regional, so checking from your machine proves nothing.** Also
+    on 2026-09-12, `apicdn` served the new `aboutPage` from Wellington at
+    03:31:45; the deploy that ran 03:32:00-03:33:31 still baked the old value,
+    confirmed against the deploy permalink rather than the apex domain. A local
+    `curl` says only that your nearest edge node has purged.
+  Do not try to verify the race away. Wait several minutes after the write, then
+  trigger a build (`netlify api createSiteBuild --data '{"site_id":"..."}'`, or
+  the dashboard's Trigger deploy) and check more than one page. To tell a stale
+  build from a stale edge cache, fetch the deploy permalink
+  (`https://<deploy-id>--<site>.netlify.app/<path>`).
 - Publishing in Studio does not deploy the site. A Netlify build hook has to
   fire, and it is configured in Netlify and Sanity, not in this repository.
 - `pnpm run migrate subtractive` unsets the legacy fields on every work story and
