@@ -53,6 +53,34 @@ export const workStory = defineType({
       validation: (r) => r.required().max(320),
     }),
     defineField({
+      name: 'introductionLink',
+      title: 'Introduction link',
+      type: 'object',
+      description: 'Links one phrase of the introduction. The meta description stays plain text.',
+      fields: [
+        defineField({
+          name: 'text',
+          title: 'Phrase',
+          type: 'string',
+          description: 'Must appear in the introduction exactly as written.',
+          validation: (r) => r.required().max(60),
+        }),
+        defineField({
+          name: 'href',
+          title: 'Destination',
+          type: 'string',
+          description: 'A full URL, or a site path such as “/writing”.',
+          validation: (r) => r.required(),
+        }),
+      ],
+      validation: (r) =>
+        r.custom((value, context) => {
+          const phrase = (value as { text?: string } | undefined)?.text;
+          const intro = (context.document as { introduction?: string } | undefined)?.introduction ?? '';
+          return !phrase || intro.includes(phrase) ? true : 'The phrase is not in the introduction';
+        }),
+    }),
+    defineField({
       name: 'ctaLabel',
       title: 'Card link label',
       type: 'string',

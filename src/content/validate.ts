@@ -46,6 +46,10 @@ export function validateWorkStories(stories: WorkStory[]): string[] {
       }
     }
 
+    if (story.introductionLink && !story.introduction?.includes(story.introductionLink.text)) {
+      errors.push(`${where}: introductionLink text "${story.introductionLink.text}" is not in the introduction`);
+    }
+
     for (const link of story.links ?? []) {
       if (missing(link.label) || missing(link.href)) {
         errors.push(`${where}: a link is missing its label or href`);

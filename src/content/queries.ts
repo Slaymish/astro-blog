@@ -109,7 +109,7 @@ export const getWorkStories = () =>
   once('workStories', async () => {
     const stories = await fetchSanity<WorkStory[]>(`*[_type == "workStory"] | order(order asc){
       _id, title, descriptor, "slug": slug.current, kind, order, date, timeframe,
-      summary, introduction, ctaLabel, role, body, resultHeading, result,
+      summary, introduction, introductionLink, ctaLabel, role, body, resultHeading, result,
       links,
       "cover": cover{ kind, alt, figure, ${image('image')} },
       "evidence": evidence[]{ _key, alt, label, heading, caption, ${image('image')} },

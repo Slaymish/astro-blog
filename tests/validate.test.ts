@@ -36,6 +36,12 @@ test('a complete set of stories produces no errors', () => {
   assert.deepEqual(validateWorkStories([story(), story({ _id: 's2', slug: 'b', order: 2 })]), []);
 });
 
+test('an introduction link must name a phrase the introduction contains', () => {
+  const link = (text: string) => story({ introductionLink: { text, href: 'https://example.com' } });
+  assert.deepEqual(validateWorkStories([link('introduction')]), []);
+  assert.equal(validateWorkStories([link('missing')]).length, 1);
+});
+
 test('duplicate orders and slugs are both reported', () => {
   const errors = validateWorkStories([story(), story({ _id: 's2' })]);
   assert(errors.includes('duplicate order 1'));

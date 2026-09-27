@@ -1,6 +1,7 @@
 ---
 import Button from './Button.astro';
 import IconText from './IconText.astro';
+import IntroductionText from './IntroductionText.astro';
 import WorkCover from './WorkCover.astro';
 import type { WorkStory } from '../content/types';
 
@@ -30,7 +31,7 @@ const href = `/work/${story.slug}`;
     </div>
     <div class="work-card__content">
       <h3><a href={href}>{story.title}</a></h3>
-      <p class="work-card__summary">{story.introduction}</p>
+      <p class="work-card__summary"><IntroductionText text={story.introduction} link={story.introductionLink} /></p>
       {
         repo && (
           <a

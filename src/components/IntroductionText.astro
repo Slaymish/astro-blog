@@ -1,0 +1,19 @@
+---
+/**
+ * A work story's introduction, with its one optional linked phrase. Renders
+ * inline so each caller keeps its own paragraph and styles.
+ */
+import type { IntroductionLink } from '../content/types';
+
+interface Props {
+  text: string;
+  link?: IntroductionLink | null;
+}
+
+const { text, link } = Astro.props;
+
+const at = link ? text.indexOf(link.text) : -1;
+const external = link?.href.startsWith('http') ?? false;
+---
+
+{link && at >= 0 ? <Fragment>{text.slice(0, at)}<a href={link.href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>{link.text}</a>{text.slice(at + link.text.length)}</Fragment> : text}

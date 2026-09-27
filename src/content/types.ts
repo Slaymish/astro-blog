@@ -34,6 +34,11 @@ interface Link {
   external?: boolean;
 }
 
+export interface IntroductionLink {
+  text: string;
+  href: string;
+}
+
 interface FigureFact {
   label: string;
   value: string;
@@ -129,6 +134,7 @@ export interface WorkStory {
   timeframe?: string;
   summary: string;
   introduction: string;
+  introductionLink?: IntroductionLink | null;
   ctaLabel?: string;
   role: string;
   body: PortableTextBody;

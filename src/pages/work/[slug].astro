@@ -4,6 +4,7 @@ import Button from '../../components/Button.astro';
 import ContactBand from '../../components/ContactBand.astro';
 import Evidence from '../../components/Evidence.astro';
 import IconText from '../../components/IconText.astro';
+import IntroductionText from '../../components/IntroductionText.astro';
 import RelatedList from '../../components/RelatedList.astro';
 import WorkCover from '../../components/WorkCover.astro';
 import { portableTextToHtml } from '../../content/portableText';
@@ -43,7 +44,7 @@ const coverImage =
   <article class="case-study">
     <header class="case-study__hero">
       <h1>{story.title}</h1>
-      <p class="case-study__summary">{story.introduction}</p>
+      <p class="case-study__summary"><IntroductionText text={story.introduction} link={story.introductionLink} /></p>
       {
         story.links.length > 0 && (
           <div class="case-study__links">

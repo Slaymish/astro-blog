@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
 import IconText from '../components/IconText.astro';
+import IntroductionText from '../components/IntroductionText.astro';
 import VideoCover from '../components/VideoCover.astro';
 import WorkCover from '../components/WorkCover.astro';
 import { getHomePage, getWorkStories } from '../content/queries';
@@ -17,7 +18,7 @@ import youIncPoster from '../assets/images/youinc-teaser-poster.jpg';
  * following the wrong story.
  */
 const TEASERS: Record<string, { src: string; poster: ImageMetadata; width: number; height: number }> = {
-  'the-city': { src: '/media/thecity-teaser.mp4', poster: theCityPoster, width: 800, height: 500 },
+  'the-city': { src: '/media/thecity-teaser.mp4', poster: theCityPoster, width: 1280, height: 800 },
   'you-inc': { src: '/media/youinc-teaser.mp4', poster: youIncPoster, width: 1280, height: 720 },
 };
 
@@ -81,7 +82,7 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
             </div>
             <div class="feature__text">
               <h2><a href={href}>{story.title}</a></h2>
-              <p>{story.introduction}</p>
+              <p><IntroductionText text={story.introduction} link={story.introductionLink} /></p>
             </div>
           </article>
         );
