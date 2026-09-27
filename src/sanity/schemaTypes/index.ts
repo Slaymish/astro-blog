@@ -6,7 +6,6 @@ import { ctaLink } from './ctaLink';
 import { cvPage } from './cvPage';
 import { homePage } from './homePage';
 import { notFoundPage } from './notFoundPage';
-import { nowPage } from './nowPage';
 import { post } from './post';
 import { readingPage } from './readingPage';
 import { report } from './report';
@@ -31,7 +30,6 @@ export const schemaTypes = [
   workIndexPage,
   writingIndexPage,
   readingPage,
-  nowPage,
   aboutPage,
   cvPage,
   contactPage,

@@ -8,17 +8,17 @@ import WorkCover from '../components/WorkCover.astro';
 import { getHomePage, getWorkStories } from '../content/queries';
 import { artifactHref } from '../content/work';
 import { PAUSE_LABEL } from '../client/videoTeaser';
+import theCityPoster from '../assets/images/thecity-teaser-poster.jpg';
 import youIncPoster from '../assets/images/youinc-teaser-poster.jpg';
 
 /**
- * The one feature with a clip instead of a still. Matched on slug so that
+ * The features with a clip instead of a still. Keyed on slug so that
  * reordering homePage.featured in Studio moves the card without the clip
  * following the wrong story.
  */
-const TEASER = {
-  slug: 'you-inc',
-  src: '/media/youinc-teaser.mp4',
-  poster: youIncPoster,
+const TEASERS: Record<string, { src: string; poster: ImageMetadata; width: number; height: number }> = {
+  'the-city': { src: '/media/thecity-teaser.mp4', poster: theCityPoster, width: 800, height: 500 },
+  'you-inc': { src: '/media/youinc-teaser.mp4', poster: youIncPoster, width: 1280, height: 720 },
 };
 
 const DEFAULT_CTA = 'View case study';
@@ -49,19 +49,19 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
     {
       featured.map((story, index) => {
         const href = `/work/${story.slug}`;
-        const teased = story.slug === TEASER.slug;
+        const teaser = TEASERS[story.slug];
         return (
           <article class="feature">
             <div class="feature__media">
               <a class="visual-link" href={href} aria-label={`Explore ${story.title}`}>
-                {teased ? (
-                  <VideoCover src={TEASER.src} poster={TEASER.poster} alt={story.cover.alt} elevated />
+                {teaser ? (
+                  <VideoCover {...teaser} alt={story.cover.alt} elevated />
                 ) : (
                   <WorkCover cover={story.cover} priority={index === 0} elevated />
                 )}
               </a>
               <div class="feature__actions">
-                {teased && (
+                {teaser && (
                   <Button
                     class="feature__toggle"
                     variant="icon"

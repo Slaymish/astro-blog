@@ -184,14 +184,6 @@ export interface WorkIndexPage {
   hero: Hero;
 }
 
-export interface NowPage {
-  seo: Seo;
-  hero: Hero;
-  updatedAt: string;
-  updatedLabel: string;
-  entries: { label: string; body: string; link?: CtaLink }[];
-}
-
 export interface ReadingPage {
   seo: Seo;
   headline: string;

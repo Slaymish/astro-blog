@@ -7,7 +7,6 @@ import type {
   CvPage,
   HomePage,
   NotFoundPage,
-  NowPage,
   Post,
   ReadingPage,
   Report,
@@ -64,11 +63,6 @@ export const getHomePage = () =>
 
 export const getWorkIndexPage = () =>
   once('workIndexPage', () => singleton<WorkIndexPage>('workIndexPage', '{ seo, hero }'));
-
-export const getNowPage = () =>
-  once('nowPage', () =>
-    singleton<NowPage>('nowPage', '{ seo, hero, updatedAt, updatedLabel, entries }'),
-  );
 
 export const getReadingPage = () =>
   once('readingPage', () =>

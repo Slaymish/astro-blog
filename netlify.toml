@@ -67,6 +67,12 @@
   force = true
 
 [[redirects]]
+  from = "/now"
+  to = "/about"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/projects/sprint-coach"
   to = "/work/sprint-coach"
   status = 301

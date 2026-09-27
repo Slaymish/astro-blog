@@ -142,7 +142,6 @@ test('every page declares the New Zealand English locale', { skip }, () => {
 test('the build produced the pages the preserve list promises', { skip }, () => {
   for (const path of [
     '/',
-    '/now',
     '/work',
     '/writing',
     '/reading',

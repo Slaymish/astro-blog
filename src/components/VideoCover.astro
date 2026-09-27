@@ -15,13 +15,16 @@ interface Props {
   poster: ImageMetadata;
   /** Describes the footage. Carried by the .sr-only span, not an aria-label. */
   alt: string;
+  /** The clip's intrinsic size, so the frame is reserved before it loads. */
+  width?: number;
+  height?: number;
   /** Home page treatment: no border, rounded, and lifted off the page. Mirrors WorkCover. */
   elevated?: boolean;
 }
 
-const { src, poster, alt, elevated = false } = Astro.props;
+const { src, poster, alt, width = 1280, height = 720, elevated = false } = Astro.props;
 
-const still = await getImage({ src: poster, width: 1280, format: 'webp', quality: 80 });
+const still = await getImage({ src: poster, width, format: 'webp', quality: 80 });
 ---
 
 <div class:list={['work-cover', 'work-cover--video', elevated && 'is-elevated']}>
@@ -29,8 +32,8 @@ const still = await getImage({ src: poster, width: 1280, format: 'webp', quality
   <video
     data-video-teaser
     poster={still.src}
-    width="1280"
-    height="720"
+    width={width}
+    height={height}
     muted
     loop
     playsinline
