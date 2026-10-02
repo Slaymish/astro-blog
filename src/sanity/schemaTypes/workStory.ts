@@ -61,11 +61,12 @@ export const workStory = defineType({
       title: 'Kind',
       type: 'string',
       description:
-        'Which index this story appears on. Professional shows on /work, independent on /projects. Detail pages live at /work/<slug> either way.',
+        'All stories appear on /work. Kind controls the category label and contact band.',
       options: {
         list: [
           { title: 'Professional', value: 'professional' },
-          { title: 'Independent', value: 'independent' }
+          { title: 'Independent', value: 'independent' },
+          { title: 'Research', value: 'research' }
         ],
         layout: 'radio'
       },
@@ -90,7 +91,7 @@ export const workStory = defineType({
       name: 'order',
       title: 'Display order',
       type: 'number',
-      validation: (rule) => rule.required().integer().positive()
+      validation: (rule) => rule.required().integer().min(0)
     }),
     defineField({
       name: 'service',
@@ -186,11 +187,13 @@ export const workStory = defineType({
               { title: 'GPUShare trust boundary', value: 'gpu-share' },
               { title: 'HealthAgent data pipeline', value: 'health-agent' },
               { title: 'Home Lab recovery architecture', value: 'home-lab' },
-              { title: 'Wildfire Spark experiment', value: 'wildfire' }
+              { title: 'Wildfire Spark experiment', value: 'wildfire' },
+              { title: 'The City cover', value: 'the-city' }
             ]
           },
           validation: (rule) => rule.required()
         }),
+        defineField({ name: 'src', title: 'Sanity cover URL', type: 'url', validation: rule => rule.uri({ scheme: ['https'] }) }),
         defineField({
           name: 'alt',
           title: 'Alternative text',

@@ -1,4 +1,5 @@
 import { fetchSanity } from './sanity';
+import { normalizeAboutPage, normalizeWritingPage } from './pageContentShape';
 
 /** Portable Text blocks are passed straight through to the renderer in portableText.ts. */
 type PortableTextBlock = unknown;
@@ -24,6 +25,7 @@ interface Seo {
 }
 
 interface AboutPage {
+  projects?: { heading: string; body: string; link: CtaLink }[];
   seo: Seo;
   hero: { eyebrow: string; heading: string; intro: string };
   portrait: {
@@ -102,9 +104,9 @@ async function fetchSingleton<T>(documentId: string): Promise<T> {
   return doc;
 }
 
-export const getAboutPage = () => fetchSingleton<AboutPage>('aboutPage');
+export const getAboutPage = async () => normalizeAboutPage(await fetchSingleton<AboutPage>('aboutPage')) as AboutPage;
 export const getCvPage = () => fetchSingleton<CvPage>('cvPage');
-export const getWritingIndexPage = () => fetchSingleton<WritingIndexPage>('writingIndexPage');
+export const getWritingIndexPage = async () => normalizeWritingPage(await fetchSingleton<WritingIndexPage>('writingIndexPage')) as WritingIndexPage;
 export const getContactPage = () => fetchSingleton<ContactPage>('contactPage');
 export const getNotFoundPage = () => fetchSingleton<NotFoundPage>('notFoundPage');
 export const getSiteSettings = () => fetchSingleton<SiteSettings>('siteSettings');

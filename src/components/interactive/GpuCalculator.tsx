@@ -5,24 +5,8 @@ const MODELS = [
   { name: 'Llama 3.1 8B (BF16)', vram: '~8 GB', tokPerSec: 55, quality: 'Everyday tasks' },
   { name: 'Qwen3 14B (Q4)', vram: '~10 GB', tokPerSec: 37, quality: 'Reasoning, multilingual' },
   { name: 'Gemma 3 12B (Q4)', vram: '~8 GB', tokPerSec: 45, quality: 'Coding, instruction following' },
-  { name: 'Qwen3 32B (Q4)', vram: '~18 GB', tokPerSec: 15, quality: 'Near GPT-4-mini (needs offload)' },
+  { name: 'Qwen3 32B (Q4)', vram: '~18 GB', tokPerSec: 15, quality: 'Needs offload' },
 ] as const;
-
-/** Approximate cloud cost per output token (USD) for comparable quality tiers */
-const CLOUD_COST_PER_TOKEN: Record<string, { provider: string; costPerToken: number }> = {
-  'Llama 3.1 8B (BF16)': { provider: 'GPT-4o mini', costPerToken: 0.60 / 1_000_000 },
-  'Qwen3 14B (Q4)': { provider: 'GPT-4o mini', costPerToken: 0.60 / 1_000_000 },
-  'Gemma 3 12B (Q4)': { provider: 'GPT-4o mini', costPerToken: 0.60 / 1_000_000 },
-  'Qwen3 32B (Q4)': { provider: 'GPT-4o', costPerToken: 10.00 / 1_000_000 },
-};
-
-const GPU_WATTAGE = 150; // RTX 5070 Ti typical inference draw
-
-const PRESETS: Record<string, number> = {
-  'NZ': 0.346,
-  'US': 0.168,
-  'EU': 0.265,
-};
 
 function formatCost(n: number, currency = 'NZD'): string {
   if (n < 0.0001) return `<${currency === 'NZD' ? 'NZ' : ''}$0.0001`;
@@ -35,35 +19,27 @@ export default function GpuCalculator() {
   const [modelIndex, setModelIndex] = useState(0);
   const [tokensPerResponse, setTokensPerResponse] = useState(500);
   const [responsesPerDay, setResponsesPerDay] = useState(50);
-  const [electricityRate, setElectricityRate] = useState(0.346); // NZ default
-  const [ratePreset, setRatePreset] = useState<string | null>('NZ');
+  const [electricityRate, setElectricityRate] = useState(0.346);
+  const [gpuWattage, setGpuWattage] = useState(150);
+  const [tokensPerSecond, setTokensPerSecond] = useState<number>(MODELS[0].tokPerSec);
 
-  const model = MODELS[modelIndex];
-  const cloud = CLOUD_COST_PER_TOKEN[model.name];
 
   const results = useMemo(() => {
-    const inferenceTimeSec = tokensPerResponse / model.tokPerSec;
+    const inferenceTimeSec = tokensPerResponse / tokensPerSecond;
     const inferenceTimeHrs = inferenceTimeSec / 3600;
-    const kwhPerResponse = (GPU_WATTAGE / 1000) * inferenceTimeHrs;
+    const kwhPerResponse = (gpuWattage / 1000) * inferenceTimeHrs;
     const costPerResponse = kwhPerResponse * electricityRate;
 
     const dailyCost = costPerResponse * responsesPerDay;
     const monthlyCost = dailyCost * 30;
-
-    const cloudCostPerResponse = cloud.costPerToken * tokensPerResponse;
-    const cloudMonthlyCost = cloudCostPerResponse * responsesPerDay * 30;
-    const multiplier = costPerResponse > 0 ? cloudCostPerResponse / costPerResponse : 0;
 
     return {
       inferenceTimeSec,
       costPerResponse,
       dailyCost,
       monthlyCost,
-      cloudCostPerResponse,
-      cloudMonthlyCost,
-      multiplier,
     };
-  }, [model, tokensPerResponse, responsesPerDay, electricityRate, cloud]);
+  }, [tokensPerSecond, gpuWattage, tokensPerResponse, responsesPerDay, electricityRate]);
 
   return (
     <div
@@ -81,22 +57,26 @@ export default function GpuCalculator() {
         GPUShare Cost Calculator
       </h3>
       <p className="mt-0 mb-5 text-sm" style={{ color: 'var(--text-muted)' }}>
-        See what local inference actually costs on a 5070 Ti vs cloud APIs.
+        Estimate the GPU electricity cost of local inference on a 5070 Ti.
       </p>
 
       <div className="grid gap-5 sm:grid-cols-2">
         {/* Model selector */}
         <div className="sm:col-span-2">
-          <Label>Model</Label>
+          <Label>Model assumption</Label>
           <span className="select mt-1">
             <select
               value={modelIndex}
-              onChange={(e) => setModelIndex(Number(e.target.value))}
+              onChange={(event) => {
+                const index = Number(event.target.value);
+                setModelIndex(index);
+                setTokensPerSecond(MODELS[index].tokPerSec);
+              }}
               className="input input--sm"
             >
               {MODELS.map((m, i) => (
                 <option key={m.name} value={i}>
-                  {m.name} - {m.vram}, ~{m.tokPerSec} tok/s - {m.quality}
+                  {m.name}{m.quality === 'Needs offload' ? ' (Needs offload)' : ''}
                 </option>
               ))}
             </select>
@@ -149,22 +129,9 @@ export default function GpuCalculator() {
         <div className="sm:col-span-2">
           <div className="flex items-center justify-between">
             <Label>
-              Electricity rate:{' '}
-              <span style={{ color: 'var(--accent)' }}>${electricityRate.toFixed(3)}/kWh</span>
+              Electricity rate assumption:{' '}
+              <span style={{ color: 'var(--accent)' }}>NZ${electricityRate.toFixed(3)}/kWh</span>
             </Label>
-            <div className="flex gap-1.5">
-              {Object.entries(PRESETS).map(([label, rate]) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => { setElectricityRate(rate); setRatePreset(label); }}
-                  className="chip"
-                  aria-pressed={ratePreset === label}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
           </div>
           <input
             type="range"
@@ -172,56 +139,46 @@ export default function GpuCalculator() {
             max={0.60}
             step={0.001}
             value={electricityRate}
-            onChange={(e) => { setElectricityRate(Number(e.target.value)); setRatePreset(null); }}
+            onChange={(event) => setElectricityRate(Number(event.target.value))}
             className="range mt-1"
           />
           <div className="mt-1 flex justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
-            <span>$0.01</span>
-            <span>$0.60</span>
+            <span>NZ$0.01</span>
+            <span>NZ$0.60</span>
           </div>
+        </div>
+        <div>
+          <Label>GPU power assumption: {gpuWattage}W</Label>
+          <input type="range" min={1} max={600} value={gpuWattage} onChange={(event) => setGpuWattage(Number(event.target.value))} className="range mt-1" />
+        </div>
+        <div>
+          <Label>Output throughput assumption: {tokensPerSecond} tokens/s</Label>
+          <input type="range" min={1} max={200} value={tokensPerSecond} onChange={(event) => setTokensPerSecond(Number(event.target.value))} className="range mt-1" />
         </div>
       </div>
 
       {/* Results */}
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <ResultCard label="Per response" value={formatCost(results.costPerResponse)} />
         <ResultCard label="Daily" value={formatCost(results.dailyCost)} />
         <ResultCard label="Monthly" value={formatCost(results.monthlyCost)} />
-        <ResultCard
-          label="vs cloud"
-          value={results.multiplier >= 1000 ? `${Math.round(results.multiplier / 100) * 100}x cheaper` : `${Math.round(results.multiplier)}x cheaper`}
-          accent
-        />
       </div>
 
-      {/* Cloud comparison */}
       <div
         className="mt-4 rounded-md border px-4 py-3 text-sm"
         style={{ borderColor: 'var(--border)', background: 'var(--bg)' }}
       >
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <span style={{ color: 'var(--text-muted)' }}>Cloud equivalent ({cloud.provider}):</span>{' '}
-            <span className="font-medium" style={{ color: 'var(--text)' }}>
-              {formatCost(results.cloudMonthlyCost, 'USD')}/mo
-            </span>
-          </div>
-          <div>
-            <span style={{ color: 'var(--text-muted)' }}>Local ({model.name.split(' (')[0]}):</span>{' '}
-            <span className="font-medium" style={{ color: 'var(--accent)' }}>
-              {formatCost(results.monthlyCost)}/mo
-            </span>
-          </div>
-        </div>
+        Comparison needs matching currency and cost scope. No cloud price or savings comparison is shown.
       </div>
 
       <p
         className="mt-3 mb-0 text-xs leading-relaxed"
         style={{ color: 'var(--text-muted)' }}
       >
-        Local cost = {GPU_WATTAGE}W GPU draw x inference time x electricity rate.
-        Cloud comparison uses {cloud.provider} output token pricing.
-        Actual throughput varies with quantisation, context length, and batch size.
+        Estimated GPU energy = ({gpuWattage}W / 1,000) × (output tokens / {tokensPerSecond} tokens per second / 3,600).
+        Estimated cost = energy in kWh × electricity tariff in NZD per kWh.
+        Starting values are illustrative assumptions, not measured benchmarks or current tariffs. Change them to your measurements.
+        This excludes input processing, idle power, the rest of the computer, hardware and hosting costs.
       </p>
     </div>
   );

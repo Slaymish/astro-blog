@@ -17,6 +17,10 @@ const dataset = process.env.SANITY_DATASET || 'production';
 const apiVersion = process.env.SANITY_API_VERSION || '2024-01-01';
 const token = process.env.SANITY_API_TOKEN;
 
+if (process.env.SANITY_WRITE_ACK !== '1') {
+  throw new Error('Seeding requires SANITY_WRITE_ACK=1. Existing singletons are never replaced; use the guarded copy migration.');
+}
+
 if (!projectId) {
   console.error('Missing SANITY_PROJECT_ID. Add it to .env.');
   process.exit(1);
@@ -270,11 +274,11 @@ async function seed() {
 
   const transaction = client.transaction();
   for (const doc of selected) {
-    transaction.createOrReplace(doc);
+    transaction.createIfNotExists(doc);
   }
 
   await transaction.commit();
-  console.log(`Seeded ${selected.length} documents into ${projectId}/${dataset}:`);
+  console.log(`Initialised missing documents only (${selected.length} checked) in ${projectId}/${dataset}:`);
   for (const doc of selected) {
     console.log(`  ${doc._id}`);
   }

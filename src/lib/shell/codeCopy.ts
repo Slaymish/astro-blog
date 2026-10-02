@@ -21,7 +21,7 @@ export function initCodeCopy(): void {
       const code = pre.querySelector('code');
       const text = code ? code.textContent : pre.textContent;
       navigator.clipboard.writeText(text || '').then(() => {
-        button.textContent = 'Copied!';
+        button.textContent = 'Copied';
         setTimeout(() => {
           button.textContent = 'Copy';
         }, CONFIRM_MS);

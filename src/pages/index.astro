@@ -9,13 +9,13 @@ const featured = featuredSlugs.map(slug => stories.find(story => story.slug === 
 const [lead, ...secondary] = featured;
 const article = writing.find(entry => entry.href === '/posts/building-a-private-ai-server-for-friends');
 ---
-<Layout title="Hamish Burke" description="Software, small systems, and the decisions behind them. Selected work and writing by Hamish Burke in Wellington.">
+<Layout title="Hamish Burke" description="Software projects and writing by Hamish Burke, a developer in Wellington. Includes You Inc, Sprint Coach and a home lab.">
   <section class="opening" aria-labelledby="intro-heading">
     <div class="introduction">
       <p class="label">Software developer · Wellington, NZ</p>
       <h1 id="intro-heading">Hamish Burke</h1>
       <p class="intro-copy">I build software, from a coach’s first website to tools I run on my own hardware.</p>
-      <p>I’m interested in what makes a system useful, what it takes to keep it running, and when to make it smaller.</p>
+      <p>I’m interested in how these things actually work once they’re running, and what I end up having to look after.</p>
       <a class="text-link" href="/about">About me <span aria-hidden="true">↗</span></a>
     </div>
     {lead && <article class="lead-feature">
@@ -29,7 +29,7 @@ const article = writing.find(entry => entry.href === '/posts/building-a-private-
   <section class="selected" aria-labelledby="selected-heading">
     <div class="section-heading"><h2 id="selected-heading">More work</h2><a class="text-link" href="/work">All work <span aria-hidden="true">→</span></a></div>
     <div class="secondary-grid">{secondary.map(story => <article>
-      <a class="visual-link" href={`/work/${story.slug}`} aria-label={`Explore ${story.title}`}><WorkGraphic kind={story.graphic.kind} alt={story.graphic.alt} /></a>
+      <a class="visual-link" href={`/work/${story.slug}`} aria-label={`Explore ${story.title}`}><WorkGraphic kind={story.graphic.kind} alt={story.graphic.alt} src={story.graphic.src} /></a>
       <p class="label">{workCategory(story)} · {story.slug === 'home-lab' ? 'Systems & recovery' : 'Design & development'}</p>
       <h3><a href={`/work/${story.slug}`}>{story.title} <span aria-hidden="true">↗</span></a></h3>
       <p>{introduction(story)}</p>
@@ -38,7 +38,7 @@ const article = writing.find(entry => entry.href === '/posts/building-a-private-
   <section class="notes" aria-label="Writing and reading">
     <div>
       <p class="label">Writing</p>
-      {article ? <><h2><a href={article.href}>{article.title}</a></h2><p>A GPU for friends sounds simple. Here’s what happens when accounts, costs, and a machine that sometimes switches off enter the picture.</p><a class="text-link" href={article.href}>Read the story <span aria-hidden="true">→</span></a></> : <><h2>Notes from building things.</h2><p>Experiments, decisions, and things I’d change next time.</p></>}
+      {article ? <><h2><a href={article.href}>{article.title}</a></h2><p>Sharing a GPU with friends sounded like a weekend of work. Once I started building it, I had to work out who could reach the hardware and what I was actually charging for, as most of the cost figures were estimates.</p><a class="text-link" href={article.href}>Read the story <span aria-hidden="true">→</span></a></> : <><h2>Notes from building things.</h2><p>Notes from the things I’m building.</p></>}
       <a class="more-writing" href="/writing">All writing →</a>
     </div>
     <aside>

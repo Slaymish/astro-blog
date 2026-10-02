@@ -1,5 +1,5 @@
 import { fetchSanity } from './sanity';
-import { type WorkStory, validateWorkStories } from './work';
+import { type WorkStory, validateWorkStories, normalizeWorkStory } from './work';
 
 const workStoryFields = `
   "id": _id,
@@ -24,6 +24,9 @@ const workStoryFields = `
   interventions,
   result,
   graphic,
+  cover { alt, "imageUrl": image.asset->url },
+  links,
+  evidence[] { heading, caption, alt, "imageUrl": image.asset->url },
   "primaryArtifact": primaryArtifact->{
     "id": _id,
     "type": _type,
@@ -53,9 +56,10 @@ export async function getWorkStories(): Promise<WorkStory[]> {
     }
   `);
 
-  const errors = validateWorkStories(stories);
+  const normalized = stories.map(normalizeWorkStory);
+  const errors = validateWorkStories(normalized);
   if (errors.length > 0) {
     throw new Error(`Invalid work story collection: ${errors.join('; ')}`);
   }
-  return stories;
+  return normalized;
 }

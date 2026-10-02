@@ -137,6 +137,14 @@ const publishedTime = new Date(report.publishedAt).toISOString();
       )}
     </header>
 
+    {report.slug === 'wildfire-analysis-with-pyspark' && (
+      <aside class="mb-8" aria-label="Author note">
+        <h2>Author note</h2>
+        <p>The weighted model found more class G fires in this experiment, though its precision was only 0.0099. I haven’t established that this would make a useful early warning system.</p>
+        <p>The PDF below is the original university report.</p>
+      </aside>
+    )}
+
     {report.pdfUrl && (
       <div class="pdf-section mb-8">
         <PDFViewer pdfPath={report.pdfUrl} title={report.title} />

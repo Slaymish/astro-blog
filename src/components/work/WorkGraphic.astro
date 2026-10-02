@@ -5,11 +5,12 @@ import { isScreenshotGraphic } from '../../lib/work';
 interface Props {
   kind: GraphicKind;
   alt: string;
+  src?: string;
   compact?: boolean;
   priority?: boolean;
 }
 
-const { kind, alt, compact = false, priority = false } = Astro.props;
+const { kind, alt, src, compact = false, priority = false } = Astro.props;
 
 // Keyed by ScreenshotGraphicKind rather than a partial map of every kind, so a
 // kind added to that list without an image here fails the build.
@@ -33,7 +34,7 @@ const graphicAlts: Partial<Record<GraphicKind, string>> = {
   brontehf: 'BrontëHF’s public projects page showing a filterable grid of portfolio work.',
   'you-inc': 'You Inc dashboard with sample cashflow, income, expenses and recurring payments.',
   'gpu-share':
-    'Two layers: an always-on cloud layer holding accounts, ledger and invoices, and a home GPU host running Ollama and Blender that connects outbound through a tunnel with no open ports. Pricing is derived from electricity rate multiplied by GPU wattage.',
+    'Public middleware handles accounts, ledger and invoices. Its availability depends on where it runs. A tunnel targets middleware, and the GPU host runs Ollama and Blender only while powered on. Estimated energy multiplied by the electricity tariff gives an estimated cost.',
   'home-lab':
     'A single 8GB Raspberry Pi reached by two separate paths: a Cloudflare Tunnel for public services and Tailscale for admin services. 7.26 of 8GB of memory is allocated, and a disaster recovery restore was measured at 1 hour 45 minutes against a 2 hour target.',
 };
@@ -78,21 +79,23 @@ const graphicAlt = graphicAlts[kind] ?? alt;
 
   {kind === 'you-inc' && <img src="/images/work/youinc-demo-dashboard.png" alt="" width="2462" height="1420" loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : 'auto'} />}
 
+  {kind === 'the-city' && src && <img src={src} alt="" loading={priority ? 'eager' : 'lazy'} decoding="async" />}
+
   {kind === 'gpu-share' && (
     <div class="work-graphic__gpu">
-      <span class="work-graphic__caption">Idle GPU → billed at cost</span>
+      <span class="work-graphic__caption">GPU usage cost estimate</span>
 
       <div class="work-graphic__gpu-split">
         <div class="work-graphic__gpu-cloud">
-          <small>Always on</small>
+          <small>Public middleware</small>
           <strong>Accounts · ledger · invoices</strong>
-          <span>Reachable with your PC off</span>
+          <span>Availability depends on where this service runs</span>
         </div>
 
         <div class="work-graphic__gpu-link">
           <b>←</b>
           <span>Outbound tunnel</span>
-          <span>No open ports</span>
+          <span>Tunnel targets middleware</span>
         </div>
 
         <div class="work-graphic__gpu-host">
@@ -103,8 +106,7 @@ const graphicAlt = graphicAlts[kind] ?? alt;
       </div>
 
       <p class="work-graphic__gpu-price">
-        <span>kWh rate</span><b>×</b><span>GPU watts</span><b>=</b><em>price</em>
-        <i>No markup</i>
+        <span>Estimated energy</span><b>×</b><span>electricity tariff</span><b>=</b><em>estimated cost</em>
       </p>
     </div>
   )}

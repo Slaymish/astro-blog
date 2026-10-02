@@ -20,6 +20,10 @@ const dataset = process.env.SANITY_DATASET || 'production';
 const apiVersion = process.env.SANITY_API_VERSION || '2024-01-01';
 const token = process.env.SANITY_API_TOKEN;
 
+if (process.env.SANITY_WRITE_ACK !== '1') {
+  throw new Error('Seeding requires SANITY_WRITE_ACK=1. Reconcile vault notes before changing published notes.');
+}
+
 if (!projectId) {
   console.error('Missing SANITY_PROJECT_ID. Add it to .env.');
   process.exit(1);
@@ -149,20 +153,27 @@ const slug = (title: string) =>
     .replace(/^-|-$/g, '');
 
 async function main() {
-  const existing = await client.fetch<{ _id: string; title: string }[]>(
-    '*[_type == "book"]{_id, title}'
+  const existing = await client.fetch<{ _id: string; _rev: string; title: string; note?: string }[]>(
+    '*[_type == "book" && !(_id in path("drafts.**"))]{_id, _rev, title, note}'
   );
-  const byTitle = new Map(existing.map((doc) => [doc.title.trim().toLowerCase(), doc._id]));
+  const byTitle = new Map(existing.map((doc) => [doc.title.trim().toLowerCase(), doc]));
+  const drafts = await client.fetch<string[]>('*[_type == "book" && (_id in path("drafts.**") || _id in path("versions.**"))]._id', {}, { perspective: 'raw' });
+  if (drafts.length) throw new Error('Book drafts/releases exist. Reconcile in Studio before seeding.');
+  const conflicts = books.filter(book => {
+    const document = byTitle.get(book.title.toLowerCase());
+    return document && document.note !== book.note;
+  });
+  if (conflicts.length) throw new Error(`Published notes differ from vault-derived seed: ${conflicts.map(book => book.title).join(', ')}. Nothing written. Reconcile the vault and seed first, or use the guarded migration.`);
 
   const tx = client.transaction();
   const created: string[] = [];
   const patched: string[] = [];
 
   for (const book of books) {
-    const id = byTitle.get(book.title.toLowerCase());
+    const document = byTitle.get(book.title.toLowerCase());
     const fields = { note: book.note, status: book.status, order: book.order, sharedNote: book.sharedNote ?? null };
-    if (id) {
-      tx.patch(id, (p) => p.set(fields));
+    if (document) {
+      tx.patch(document._id, (patch) => patch.ifRevisionId(document._rev).set(fields));
       patched.push(book.title);
     } else {
       tx.create({ _id: `book-${slug(book.title)}`, _type: 'book', title: book.title, author: book.author, ...fields });

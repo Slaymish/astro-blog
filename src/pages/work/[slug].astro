@@ -20,13 +20,13 @@ interface Props { story: WorkStory }
 const { story } = Astro.props;
 
 const artifacts = [story.primaryArtifact, ...story.supportingArtifacts].filter((artifact): artifact is WorkArtifact => Boolean(artifact));
-const links = artifacts.flatMap(artifact => {
+const links = [...(story.links ?? []), ...artifacts.flatMap(artifact => {
   const destinations = [];
   if (artifact.liveUrl) destinations.push({ href: artifact.liveUrl, label: story.slug === 'you-inc' ? 'Try demo' : 'Visit site' });
   if (artifact.githubUrl) destinations.push({ href: artifact.githubUrl, label: 'Source code' });
   if (artifact.type !== 'project') destinations.push({ href: artifactHref(artifact), label: artifact.title });
   return destinations;
-});
+})];
 const youIncSections = [
   ['A ledger before a dashboard', 'I wanted a coherent view of what I own, owe, earn and spend. That needed a real accounting model underneath. Synced transactions enter a double-entry ledger where every posting must balance; cashflow, net worth and runway are different views of the same data.'],
   ['Make uncertainty visible', 'Rules route known transactions. Anything uncertain stays in suspense for review instead of quietly disappearing or being treated as a confident classification. Akahu bank sync feeds the ledger, with credentials encrypted in Supabase Vault and kept out of the browser.'],
@@ -54,7 +54,7 @@ const narrativeHtml = portableTextToHtml(story.narrative?.length ? story.narrati
     </header>
 
     <div class="case-study__graphic">
-      <WorkGraphic kind={story.graphic.kind} alt={story.graphic.alt} priority />
+      <WorkGraphic kind={story.graphic.kind} alt={story.graphic.alt} src={story.graphic.src} priority />
       {story.graphic.kind === 'you-inc' && (
         <p class="case-study__graphic-caption">
           Working YouInc demo dashboard, shown with sample financial data. No user financial data is exposed.
@@ -103,6 +103,11 @@ const narrativeHtml = portableTextToHtml(story.narrative?.length ? story.narrati
         />
       </section>
     )}
+
+    {story.evidence?.filter(item => item.imageUrl).map(item => <section class="case-study__evidence">
+      <h2>{item.heading}</h2>
+      <figure><img src={item.imageUrl} alt={item.alt} loading="lazy" decoding="async" /><figcaption>{item.caption}</figcaption></figure>
+    </section>)}
 
     <a class="case-study__back" href="/work"><IconText icon="arrow-left" position="start">All work</IconText></a>
   </article>

@@ -1,7 +1,7 @@
 import { publicPostSlug } from './legacyRoutes';
 
 /** Which index a story appears on. Detail pages live at /work/<slug> for both. */
-export type WorkKind = 'professional' | 'independent';
+export type WorkKind = 'professional' | 'independent' | 'research';
 export type WorkStatus = 'lead' | 'support';
 export type WorkService = 'ai-automation' | 'digital-products' | 'technical-direction';
 /**
@@ -12,6 +12,7 @@ export type WorkService = 'ai-automation' | 'digital-products' | 'technical-dire
  */
 export type ArtifactType = 'project' | 'post' | 'report';
 export type GraphicKind =
+  | 'the-city'
   | 'sprint-coach'
   | 'brontehf'
   | 'you-inc'
@@ -78,7 +79,11 @@ export interface WorkStory {
   graphic: {
     kind: GraphicKind;
     alt: string;
+    src?: string;
   };
+  cover?: { alt: string; imageUrl?: string };
+  links?: { href: string; label: string; external?: boolean }[];
+  evidence?: { heading: string; caption: string; alt: string; imageUrl?: string }[];
   primaryArtifact?: WorkArtifact;
   supportingArtifacts: WorkArtifact[];
 }
@@ -98,14 +103,18 @@ export function validateWorkStories(stories: WorkStory[]): string[] {
   const errors: string[] = [];
 
   for (const story of stories) {
-    if (!story.summary.trim()) {
+    if (typeof story.summary !== 'string' || !story.summary.trim()) {
       errors.push(`${story.title}: summary is required`);
     }
-    if (story.interventions.length < 1 || story.interventions.length > 3) {
+    if (!Array.isArray(story.interventions) || story.interventions.length < 1 || story.interventions.length > 3) {
       errors.push(`${story.title}: interventions must contain 1 to 3 items`);
     }
-    if (!story.graphic.alt.trim()) {
+    if (typeof story.graphic?.alt !== 'string' || !story.graphic.alt.trim()) {
       errors.push(`${story.title}: graphic alt text is required`);
+    }
+    if (!Number.isInteger(story.order) || story.order < 0) errors.push(`${story.title}: order must be a non-negative integer`);
+    if (story.graphic?.kind === 'the-city' && !story.graphic.src?.startsWith('https://cdn.sanity.io/images/')) {
+      errors.push(`${story.title}: The City requires its Sanity cover image`);
     }
   }
 
@@ -115,7 +124,7 @@ export function validateWorkStories(stories: WorkStory[]): string[] {
   const assignedArtifacts = new Set<string>();
   const reportedArtifacts = new Set<string>();
   for (const story of stories) {
-    const artifacts = [story.primaryArtifact, ...story.supportingArtifacts].filter(
+    const artifacts = [story.primaryArtifact, ...(story.supportingArtifacts ?? [])].filter(
       (artifact): artifact is WorkArtifact => Boolean(artifact)
     );
     for (const artifact of artifacts) {
@@ -128,6 +137,21 @@ export function validateWorkStories(stories: WorkStory[]): string[] {
   }
 
   return errors;
+}
+
+export function normalizeWorkStory(story: WorkStory): WorkStory {
+  if (story.slug !== 'the-city') return story;
+  const headings = (story.body ?? []).filter((block: any) => block.style === 'h2')
+    .slice(0, 3).map((block: any) => block.children.map((child: any) => child.text ?? '').join(''));
+  return {
+    ...story,
+    status: story.status ?? 'support',
+    service: story.service ?? 'digital-products',
+    problem: story.problem ?? story.summary,
+    interventions: story.interventions ?? headings,
+    graphic: story.graphic ?? { kind: 'the-city', alt: story.cover?.alt ?? '', src: story.cover?.imageUrl },
+    supportingArtifacts: story.supportingArtifacts ?? []
+  };
 }
 
 function addDuplicateErrors(
