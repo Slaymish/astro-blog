@@ -12,11 +12,13 @@ import { initAnalytics } from './analyticsTracker';
 import { initBookingRef } from './bookingRef';
 import { initCodeCopy } from './codeCopy';
 import { initRecommendForm } from './recommendForm';
+import { initNavigation } from './navigation';
 import { initTheme } from './theme';
 import { initWritingFilter } from './writingFilter';
 
 export function initShell(): void {
   initTheme();
+  initNavigation();
   // Before the tracker: this is what mints the visitor nonce the beacon reads.
   initBookingRef();
   initAnalytics();

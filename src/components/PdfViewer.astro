@@ -71,7 +71,7 @@ const DOWNLOAD_ICON =
     </div>
   </div>
 
-  <div class="pdf-viewer__container" data-pdf="container">
+  <div class="pdf-viewer__container" data-pdf="container" role="region" aria-label={title} tabindex="0">
     <div class="pdf-viewer__state" data-pdf="loading">
       <p>Loading the PDF.</p>
     </div>
@@ -133,9 +133,9 @@ const DOWNLOAD_ICON =
   }
 
   .pdf-viewer__container {
-    display: flex;
-    justify-content: center;
+    max-height: max(24rem, 75vh);
     min-height: 24rem;
+    overflow: auto;
     padding: var(--spacing-4);
     position: relative;
   }
@@ -159,16 +159,18 @@ const DOWNLOAD_ICON =
     border-radius: 0;
     display: block;
     height: auto;
-    max-width: 100%;
+    margin-inline: auto;
   }
 
   .pdf-viewer:fullscreen {
     background: var(--color-bg-canvas);
+    display: flex;
+    flex-direction: column;
   }
 
   .pdf-viewer:fullscreen .pdf-viewer__container {
-    align-items: center;
-    height: calc(100vh - 4rem);
-    overflow: auto;
+    flex: 1;
+    max-height: none;
+    min-height: 0;
   }
 </style>

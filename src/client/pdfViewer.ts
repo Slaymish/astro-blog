@@ -56,12 +56,13 @@ export async function initPdfViewer(root: HTMLElement): Promise<void> {
     try {
       while (pending) {
         pending = false;
-        const page = await pdfDoc.getPage(pageNum);
+        const renderedPageNum = pageNum;
+        const page = await pdfDoc.getPage(renderedPageNum);
         const fit = (container!.clientWidth - GUTTER_PX) / page.getViewport({ scale: 1 }).width;
-        const viewport = page.getViewport({ scale: Math.min(scale, fit * 1.5) });
+        const viewport = page.getViewport({ scale: fit * scale });
         canvas!.height = viewport.height;
         canvas!.width = viewport.width;
-        if (pageNumEl) pageNumEl.textContent = String(pageNum);
+        if (pageNumEl) pageNumEl.textContent = String(renderedPageNum);
         const context = canvas!.getContext('2d');
         if (!context) throw new Error('Canvas 2D context unavailable');
         await page.render({ canvas: canvas!, canvasContext: context, viewport }).promise;
@@ -115,9 +116,12 @@ export async function initPdfViewer(root: HTMLElement): Promise<void> {
     '0': 'zoom-reset',
   };
 
-  document.addEventListener('keydown', (event) => {
+  root.addEventListener('keydown', (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
     const target = event.target as Element | null;
     if (target?.closest('input, textarea, select, [contenteditable]')) return;
+    // Arrow keys pan the focused scroll region; page shortcuts belong to the toolbar.
+    if (target === container && event.key.startsWith('Arrow')) return;
     const action = actions[shortcuts[event.key] ?? ''];
     if (!action) return;
     event.preventDefault();

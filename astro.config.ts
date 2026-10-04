@@ -17,7 +17,12 @@ export default defineConfig({
   // imageCDN off so local images are transformed at build time into hashed,
   // immutably cached files under /_astro, rather than through a Netlify
   // transform on every request. The site is static; there is nothing to defer.
-  adapter: netlify({ imageCDN: false }),
+  adapter: netlify({
+    imageCDN: false,
+    // Markdown negotiation is tested at the edge on deploy previews. Avoid
+    // booting the Deno emulator for ordinary local HTML development.
+    devFeatures: { environmentVariables: false, images: true, edgeFunctions: false },
+  }),
   build: { format: 'file' },
   trailingSlash: 'never',
   compressHTML: true,

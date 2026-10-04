@@ -1,0 +1,650 @@
+[
+  {
+    "model": "0",
+    "overflow": 0,
+    "rate": "NZ$0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "99.3% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "0",
+    "overflow": 0,
+    "rate": "NZ$0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "NZ$0.0018",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "NZ$0.91",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "NZ$27.27",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "57.5% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "1",
+    "overflow": 0,
+    "rate": "NZ$0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "98.9% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "1",
+    "overflow": 0,
+    "rate": "NZ$0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "NZ$0.0027",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "NZ$1.35",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "NZ$40.54",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "36.8% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "2",
+    "overflow": 0,
+    "rate": "NZ$0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "99.1% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "2",
+    "overflow": 0,
+    "rate": "NZ$0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "NZ$0.0022",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "NZ$1.11",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "NZ$33.33",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "48% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "3",
+    "overflow": 0,
+    "rate": "NZ$0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<NZ$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "99.8% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "3",
+    "overflow": 0,
+    "rate": "NZ$0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "NZ$0.0067",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "NZ$3.33",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "NZ$100.00",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "90.6% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "0",
+    "overflow": 0,
+    "rate": "US$0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "98.7% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "0",
+    "overflow": 0,
+    "rate": "US$0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "US$0.0018",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "US$0.91",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "US$27.27",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "24.2% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "1",
+    "overflow": 0,
+    "rate": "US$0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "98.1% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "1",
+    "overflow": 0,
+    "rate": "US$0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "US$0.0027",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "US$1.35",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "US$40.54",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "12.6% higher",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "2",
+    "overflow": 0,
+    "rate": "US$0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "98.5% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "2",
+    "overflow": 0,
+    "rate": "US$0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "US$0.0022",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "US$1.11",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "US$33.33",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "7.4% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "3",
+    "overflow": 0,
+    "rate": "US$0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<US$0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "99.7% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "3",
+    "overflow": 0,
+    "rate": "US$0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "US$0.0067",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "US$3.33",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "US$100.00",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "83.3% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "0",
+    "overflow": 0,
+    "rate": "€0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "98.6% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "0",
+    "overflow": 0,
+    "rate": "€0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "€0.0018",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "€0.91",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "€27.27",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "15% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "1",
+    "overflow": 0,
+    "rate": "€0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "97.9% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "1",
+    "overflow": 0,
+    "rate": "€0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "€0.0027",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "€1.35",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "€40.54",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "26.4% higher",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "2",
+    "overflow": 0,
+    "rate": "€0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "98.3% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "2",
+    "overflow": 0,
+    "rate": "€0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "€0.0022",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "€1.11",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "€33.33",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "3.9% higher",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "3",
+    "overflow": 0,
+    "rate": "€0.010/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "<€0.0001",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "99.7% lower",
+        "width": 87
+      }
+    ]
+  },
+  {
+    "model": "3",
+    "overflow": 0,
+    "rate": "€0.600/kWh",
+    "results": [
+      {
+        "scroll": 87,
+        "text": "€0.0067",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "€3.33",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "€100.00",
+        "width": 87
+      },
+      {
+        "scroll": 87,
+        "text": "81.3% lower",
+        "width": 87
+      }
+    ]
+  }
+]

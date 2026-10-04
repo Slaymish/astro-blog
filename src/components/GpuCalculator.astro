@@ -1,5 +1,5 @@
 ---
-import { MODELS, PRESETS } from '../client/gpuCalculator';
+import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
 ---
 
 <div class="calc not-prose" data-gpu-calculator>
@@ -59,7 +59,7 @@ import { MODELS, PRESETS } from '../client/gpuCalculator';
     <div class="field calc__control calc__control--wide">
       <div class="calc__rate-head">
         <label class="field__label" for="calc-rate">
-          Electricity rate: <span class="calc__value" data-result="rate">$0.346/kWh</span>
+          Electricity rate: <span class="calc__value" data-result="rate">NZ$0.346/kWh</span>
         </label>
         <div class="calc__presets">
           {
@@ -81,7 +81,7 @@ import { MODELS, PRESETS } from '../client/gpuCalculator';
         value="0.346"
         data-input="rate"
       />
-      <div class="calc__scale"><span>$0.01</span><span>$0.60</span></div>
+      <div class="calc__scale"><span data-result="rate-min">NZ$0.01</span><span data-result="rate-max">NZ$0.60</span></div>
     </div>
   </div>
 
@@ -116,6 +116,11 @@ import { MODELS, PRESETS } from '../client/gpuCalculator';
   </div>
 
   <p class="calc__footnote" data-result="footnote"></p>
+  <p class="calc__footnote">
+    <span data-result="exchange-rate">1 US$ = NZ$1.7819</span>
+    · <a href={FX_SOURCE} target="_blank" rel="noopener noreferrer">ECB reference rates</a>
+    · {FX_DATE}
+  </p>
 </div>
 
 <script>
@@ -206,7 +211,7 @@ import { MODELS, PRESETS } from '../client/gpuCalculator';
 
   .calc__result-value {
     font-family: var(--font-mono);
-    font-size: 1rem;
+    font-size: clamp(.875rem, 4vw, 1rem);
     font-weight: var(--font-weight-semibold);
     margin: var(--spacing-1) 0 0;
   }

@@ -141,8 +141,8 @@ non-empty result, so a story with no cover alt text never reaches production.
   HTML keeps the headers `netlify.toml` sets and the site does not depend on the
   function succeeding. Only the markdown branch sets `Vary: Accept`, because
   only it varies. Its path config lives in its own `config` export, like the
-  scheduled function's schedule. The Netlify CLI does not run edge functions
-  locally in this repo (it falls back to a plain static server), so the wiring
+  scheduled function's schedule. Local development disables the adapter's Edge Functions emulator in
+  `astro.config.ts`, avoiding its Deno runtime requirement. The wiring
   can only be confirmed on a deploy preview; the branch logic is unit-tested
   against a stubbed context in `tests/markdown-negotiation.test.ts`.
 - **The teaser videos are static files, and they do not autoplay themselves.**
@@ -157,7 +157,19 @@ non-empty result, so a story with no cover alt text never reaches production.
 - **`pdfjs-dist` comes from npm** and fetches report PDFs straight from the
   Sanity CDN, which sends CORS headers for this origin. Its worker is imported
   with `?url`, so it is a hashed asset under `/_astro` and satisfies
-  `worker-src 'self'`.
+  `worker-src 'self'`. Its 100% zoom fits the page to the container width;
+  larger scales grow the canvas inside a keyboard-focusable scroll region.
+  Viewer shortcuts stay within the viewer and preserve browser modifier keys.
+- **The GPU calculator compares one currency at a time.** Regional presets
+  select the electricity tariff and its currency (NZD, USD or EUR). Cloud
+  output-token prices start in USD and use the dated ECB snapshot in
+  `src/client/gpuCalculator.ts`; its source and date are displayed beside the
+  estimate. Custom tariffs keep the selected currency. The comparison reports
+  the percentage by which local cost is lower or higher than cloud cost.
+- **Mobile navigation remains a native disclosure.** `src/client/navigation.ts`
+  is reached through the shell entry point and adds Escape, outside-pointer and
+  link dismissal, updates the summary label, and closes it at the desktop
+  breakpoint. Without JavaScript, the native details/summary control still works.
 
 ## Blob stores
 
