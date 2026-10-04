@@ -1,8 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/Button.astro';
-import Icon from '../../components/Icon.astro';
-import PageHeader from '../../components/PageHeader.astro';
 import SanityImage from '../../components/SanityImage.astro';
 import { getBooks, getReadingPage } from '../../content/queries';
 import { MAX_RECOMMENDATION_LENGTH } from '../../server/recommendations';
@@ -66,19 +64,19 @@ const grouped = groups
   description={copy.seo.description}
   breadcrumbs={[{ name: 'Reading', path: '/reading' }]}
 >
-  <PageHeader headline={copy.headline} measure="narrow">
+  <header class="reading__hero">
+    <h1>{copy.headline}</h1>
     <blockquote class="reading__quote">
       <p>{copy.quote.text}</p>
       <footer>{copy.quote.attribution}</footer>
     </blockquote>
-  </PageHeader>
+  </header>
 
   {
     grouped.map((group) => (
       <section
-        class="reading__group"
+        class:list={["reading__group", `reading__group--${group.status}`]}
         aria-labelledby={`reading-${group.status}`}
-        data-count={Math.min(group.cards.length, 2)}
       >
         <h2 id={`reading-${group.status}`}>{group.heading}</h2>
         <ul>
@@ -90,8 +88,8 @@ const grouped = groups
                     <SanityImage
                       image={item.coverImage}
                       alt={`Cover of ${item.title}`}
-                      widths={[144, 288]}
-                      sizes="4.5rem"
+                      widths={[112, 224, 384]}
+                      sizes={group.status === 'reading' ? '(min-width: 48rem) 12rem, 7rem' : '7rem'}
                       aspect={2 / 3}
                     />
                   ) : (
@@ -106,7 +104,6 @@ const grouped = groups
                       {item.link ? (
                         <a href={item.link} target="_blank" rel="noopener noreferrer">
                           {item.title}
-                          <Icon name="arrow-up-right" class="icon--sm" />
                         </a>
                       ) : (
                         item.title
@@ -120,184 +117,134 @@ const grouped = groups
             </li>
           ))}
         </ul>
-
-        {
-          group.status === 'to-read' && (
-            <form class="recommend" id="recommend" method="post" action="/api/recommend" data-state="idle">
-              <p class="recommend__lead">{copy.recommend.lead}</p>
-              <div class="recommend__row">
-                <label class="sr-only" for="recommend-title">Book title</label>
-                <input
-                  id="recommend-title"
-                  class="input"
-                  name="title"
-                  type="text"
-                  autocomplete="off"
-                  required
-                  maxlength={MAX_RECOMMENDATION_LENGTH}
-                  placeholder={copy.recommend.placeholder}
-                  aria-describedby="recommend-status"
-                />
-                <Button type="submit" id="recommend-submit">{copy.recommend.button}</Button>
-              </div>
-              <p class="field__message recommend__status" id="recommend-status" role="status" aria-live="polite">
-                <span data-for="empty">{copy.recommend.empty}</span>
-                <span data-for="sending">{copy.recommend.sending}</span>
-                <span data-for="error">{copy.recommend.error}</span>
-                <span data-for="limited">{copy.recommend.limited}</span>
-                <span data-for="success">{copy.recommend.success}</span>
-              </p>
-            </form>
-          )
-        }
       </section>
     ))
   }
+  <form class="recommend" id="recommend" method="post" action="/api/recommend" data-state="idle">
+    <p class="recommend__lead">{copy.recommend.lead}</p>
+    <div class="recommend__row">
+      <label class="sr-only" for="recommend-title">Book title</label>
+      <input
+        id="recommend-title"
+        class="input input--lg input--square"
+        name="title"
+        type="text"
+        autocomplete="off"
+        required
+        maxlength={MAX_RECOMMENDATION_LENGTH}
+        placeholder={copy.recommend.placeholder}
+        aria-describedby="recommend-status"
+      />
+      <Button size="lg" class="btn--square" type="submit" id="recommend-submit">{copy.recommend.button}</Button>
+    </div>
+    <p class="field__message recommend__status" id="recommend-status" role="status" aria-live="polite">
+      <span data-for="empty">{copy.recommend.empty}</span>
+      <span data-for="sending">{copy.recommend.sending}</span>
+      <span data-for="error">{copy.recommend.error}</span>
+      <span data-for="limited">{copy.recommend.limited}</span>
+      <span data-for="success">{copy.recommend.success}</span>
+    </p>
+  </form>
 </Base>
 
 <style>
-  /* The quote stands where the intro would. Both marks are oversized and hang
-     outside the text block: the opening one in the left margin, the closing one
-     past the last word, so the sentence itself stays flush with the headline. */
-  .reading__quote {
-    color: var(--color-text-secondary);
-    margin: var(--spacing-8) 0 0;
-    max-width: 38rem;
-    position: relative;
+  .reading__hero {
+    display: grid;
+    gap: var(--spacing-12);
+    align-items: end;
+    padding-block: 5.5rem 4.5rem;
+    grid-template-columns: minmax(0, 1fr) 26.25rem;
   }
 
-  .reading__quote p {
-    font-size: clamp(1.1rem, 2vw, 1.45rem);
-    line-height: 1.45;
+  .reading__hero h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(5rem, 9vw, 8rem);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
     margin: 0;
   }
 
-  .reading__quote p::before,
-  .reading__quote p::after {
-    color: var(--color-action);
+  .reading__quote {
+    border-left: 2px solid var(--color-action);
+    color: var(--color-text-secondary);
+    margin: 0;
+    padding-left: var(--spacing-7);
+  }
+
+  .reading__quote p {
     font-family: var(--font-serif);
-    font-size: 4.5em;
-    line-height: 0;
-    position: absolute;
-  }
-
-  .reading__quote p::before {
-    content: '\201C';
-    left: -0.6em;
-    top: 0.62em;
-  }
-
-  .reading__quote p::after {
-    content: '\201D';
-    /* A fixed advance, because this mark is the one in normal flow and the
-       fallback serif's quote glyph is ~40% wider. Without it the line reflows
-       when Instrument Serif swaps in. The glyph paints past the box. */
-    display: inline-block;
-    inline-size: 0.25em;
-    margin-left: 0.05em;
-    position: relative;
-    top: 0.44em;
-  }
-
-  /* Hanging into the margin needs about 3rem of it, which the 70rem column only
-     has above 76rem. Under that the marks sit inside the column instead. */
-  @media (max-width: 76rem) {
-    .reading__quote p {
-      padding-inline-start: 1.5rem;
-    }
-
-    .reading__quote p::before,
-    .reading__quote p::after {
-      font-size: 3.5em;
-    }
-
-    .reading__quote p::before {
-      left: -0.05em;
-      top: 0.55em;
-    }
-
-    .reading__quote p::after {
-      top: 0.36em;
-    }
+    font-size: 2rem;
+    line-height: 1.18;
+    margin: 0;
   }
 
   .reading__quote footer {
-    font-size: var(--font-size-sm);
-    letter-spacing: 0.04em;
-    margin-top: var(--spacing-4);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    margin-top: var(--spacing-6);
     text-transform: uppercase;
   }
 
-  .reading__quote footer::before {
-    background: currentColor;
-    content: '';
-    display: inline-block;
-    height: 1px;
-    margin-right: var(--spacing-3);
-    vertical-align: middle;
-    width: 1.5rem;
-  }
-
   .reading__group {
-    border-top: 1px solid var(--color-stroke-subtle);
-    padding-block: var(--spacing-8) var(--spacing-6);
+    border-top: 1px solid var(--color-stroke-strong);
+    padding-block: 3.5rem;
   }
 
   .reading__group h2 {
-    font-size: clamp(1.4rem, 2.4vw, 2rem);
-    letter-spacing: var(--tracking-heading);
-    margin: 0 0 var(--spacing-6);
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 4vw, 3.375rem);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0 0 2.25rem;
   }
 
   .reading__group ul {
     display: grid;
-    gap: var(--spacing-10) var(--spacing-12);
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  /* Notes use the full mobile width, then sit beside the covers on larger screens. */
   .reading__item {
     align-items: start;
     display: grid;
-    gap: var(--spacing-3) var(--spacing-4);
-    grid-template-columns: 4.5rem minmax(0, 1fr);
-    max-width: 40rem;
+    gap: var(--spacing-6);
+    grid-template-columns: 7rem minmax(0, 1fr);
+    min-width: 0;
   }
 
   .reading__covers {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-2);
-    padding-top: 0.25rem;
+    gap: var(--spacing-4);
   }
 
   .reading__covers :global(img),
   .reading__cover-placeholder {
     aspect-ratio: 2 / 3;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-md);
     display: block;
     height: auto;
     object-fit: cover;
     width: 100%;
   }
 
-  /* Stand-in for books with no cover art. Built from stroke tokens so it reads
-     against the canvas in both themes. */
   .reading__cover-placeholder {
-    background: linear-gradient(135deg, var(--color-stroke-subtle), var(--color-stroke-strong));
+    background: var(--color-bg-inset);
+    border: 1px solid var(--color-stroke-strong);
   }
 
   .reading__book + .reading__book {
-    margin-top: var(--spacing-3);
+    margin-top: var(--spacing-6);
   }
 
   .reading__book h3 {
-    font-size: var(--type-body);
-    font-weight: var(--font-weight-semibold);
-    line-height: 1.3;
+    font-family: var(--font-serif);
+    font-size: 1.875rem;
+    font-weight: var(--font-weight-normal);
+    line-height: 1.1;
     margin: 0;
   }
 
@@ -310,70 +257,120 @@ const grouped = groups
     color: var(--color-action);
   }
 
-  .reading__book h3 a :global(svg) {
-    margin-left: 0.2em;
-    vertical-align: -0.05em;
-  }
-
   .reading__book p {
     color: var(--color-text-secondary);
-    font-size: var(--type-body-small);
+    font-size: 0.8125rem;
     line-height: 1.4;
-    margin: var(--spacing-1) 0 0;
+    margin: var(--spacing-3) 0 0;
   }
 
   .reading__note {
-    color: var(--color-text-primary);
-    font-size: var(--type-body-small);
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: 1.65;
     grid-column: 1 / -1;
     margin: 0;
   }
 
-  @media (min-width: 40rem) {
-    .reading__item:has(.reading__note) .reading__covers {
-      grid-row: span 2;
-    }
-
-    .reading__note {
-      grid-column: 2;
-    }
+  .reading__group--reading {
+    background: var(--color-bg-inset);
+    border: 0;
+    box-shadow: inset 0 1px 2px var(--color-stroke-subtle), var(--shadow-xs);
+    padding: var(--spacing-12);
   }
 
-  /* The recommendation box closes the queue. Every message is pre-rendered and
-     shown by `data-state`, so the server sends the copy and the script only
-     flips a flag. Without the script the browser posts the form and follows
-     the 303 to /reading/sent. */
-  .recommend {
+  .reading__group--reading h2 {
+    color: var(--color-action);
+    font-family: var(--font-sans);
+    font-size: var(--type-label);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.16em;
+    margin-bottom: var(--spacing-8);
+    text-transform: uppercase;
+  }
+
+  .reading__group--reading ul {
+    gap: var(--spacing-12);
+  }
+
+  .reading__group--reading .reading__item {
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: var(--spacing-5) var(--spacing-12);
+  }
+
+  .reading__group--reading .reading__covers {
+    grid-row: span 2;
+  }
+
+  .reading__group--reading .reading__book h3 {
+    font-size: 2.875rem;
+  }
+
+  .reading__group--reading .reading__book p {
+    font-size: 1rem;
+  }
+
+  .reading__group--reading .reading__note {
+    grid-column: 2;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  .reading__group--to-read {
+    margin-top: 3.5rem;
+  }
+
+  .reading__group--to-read ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-8);
+  }
+
+  .reading__group--to-read .reading__item {
     background: var(--color-bg-raised);
     border: 1px solid var(--color-stroke-subtle);
-    border-radius: var(--radius-lg);
-    margin-top: var(--spacing-10);
-    padding: clamp(1.25rem, 3vw, 2rem);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-8);
+  }
+
+  .reading__group--read .reading__item {
+    border-top: 1px solid var(--color-stroke-subtle);
+    grid-template-columns: 7rem 15rem minmax(0, 1fr);
+    gap: var(--spacing-10);
+    padding-block: var(--spacing-10);
+  }
+
+  .reading__group--read .reading__note {
+    grid-column: 3;
+  }
+
+  .recommend {
+    background: var(--color-bg-inset);
+    border-top: 3px solid var(--color-action);
+    box-shadow: inset 0 1px 2px var(--color-stroke-subtle), var(--shadow-xs);
+    margin-bottom: var(--spacing-16);
+    padding: var(--spacing-10);
   }
 
   .recommend__lead {
-    color: var(--color-text-primary);
-    font-size: var(--type-body);
-    font-weight: var(--font-weight-semibold);
-    margin: 0 0 var(--spacing-4);
+    font-family: var(--font-serif);
+    font-size: 1.875rem;
+    font-weight: var(--font-weight-normal);
+    line-height: 1.25;
+    margin: 0 0 var(--spacing-6);
   }
 
   .recommend__row {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-3);
+    gap: var(--spacing-4);
   }
 
   .recommend__row .input {
     flex: 1 1 16rem;
     inline-size: auto;
+    min-width: 0;
   }
 
-  .recommend[data-state='success'] .recommend__row {
-    display: none;
-  }
-
+  .recommend[data-state='success'] .recommend__row,
   .recommend__status span {
     display: none;
   }
@@ -398,9 +395,82 @@ const grouped = groups
     font-size: var(--type-body);
   }
 
-  @media (min-width: 48rem) {
-    .reading__group:not([data-count='1']) ul {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (max-width: 60rem) {
+    .reading__hero {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .reading__group--to-read ul {
+      grid-template-columns: 1fr;
+    }
+
+    .reading__group--read .reading__item {
+      grid-template-columns: 7rem minmax(0, 1fr);
+      gap: var(--spacing-6);
+    }
+
+    .reading__group--read .reading__note {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .reading__hero {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-8);
+      padding-block: var(--spacing-12);
+    }
+
+    .reading__quote p {
+      font-size: 1.75rem;
+    }
+
+    .reading__group {
+      padding-block: var(--spacing-10);
+    }
+
+    .reading__group--reading,
+    .reading__group--to-read .reading__item,
+    .recommend {
+      padding: var(--spacing-6);
+    }
+
+    .reading__group--reading .reading__item {
+      grid-template-columns: 7rem minmax(0, 1fr);
+      gap: var(--spacing-6);
+    }
+
+    .reading__group--reading .reading__covers {
+      grid-row: auto;
+    }
+
+    .reading__group--reading .reading__book h3 {
+      font-size: 2rem;
+    }
+
+    .reading__group--reading .reading__note {
+      grid-column: 1 / -1;
+      font-size: 1rem;
+    }
+
+    .reading__group--to-read {
+      margin-top: var(--spacing-10);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .reading__group--to-read .reading__item {
+      grid-template-columns: 5rem minmax(0, 1fr);
+      gap: var(--spacing-5);
+    }
+
+    .recommend__row {
+      flex-direction: column;
+    }
+
+    .recommend__row .input {
+      flex-basis: auto;
+      inline-size: 100%;
     }
   }
 </style>

@@ -137,6 +137,7 @@
 /* --- Sizes --- */
 
 .btn--sm { font-size: 0.875rem; min-block-size: var(--control-height-sm); padding-inline: var(--spacing-4); }
+.btn--square { --button-radius: 0; }
 .btn--lg { font-size: var(--type-body); min-block-size: var(--control-height-lg); padding-inline: var(--spacing-6); }
 .btn--icon.btn--sm { inline-size: var(--control-height-sm); padding: 0; }
 .btn--icon.btn--lg { inline-size: var(--control-height-lg); padding: 0; }
@@ -274,6 +275,8 @@
   cursor: not-allowed;
 }
 .input:read-only:not(:disabled) { background: var(--color-bg-inset); }
+.input--lg { min-block-size: 3.5rem; }
+.input--square { border-radius: 0; }
 .input--sm { font-size: var(--type-body-small); min-block-size: var(--control-height-sm); padding-inline: var(--spacing-3); }
 
 textarea.input { line-height: 1.5; min-block-size: calc(var(--control-height-md) * 3); padding-block: var(--spacing-3); resize: vertical; }
