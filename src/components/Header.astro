@@ -2,21 +2,22 @@
 import Logo from './Logo.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { publicPathFromAstro } from '../site/config';
+import { getFeedIndexCopy } from '../content/feed';
 
 const pathname = publicPathFromAstro(Astro.url);
+const copy = await getFeedIndexCopy();
 
 const navLinks = [
-  { href: '/work', label: 'Work' },
-  { href: '/writing', label: 'Writing' },
+  { href: '/work', label: copy.navigationLabel },
   { href: '/reading', label: 'Reading' },
   { href: '/about', label: 'About' },
 ];
 
-/** Article and tag routes are part of Writing, so Writing stays lit on them. */
-const WRITING_PREFIXES = ['/writing', '/posts/', '/reports/', '/tags/'];
+/** All detail and topic routes belong to the combined index. */
+const FEED_PREFIXES = ['/work', '/writing', '/posts/', '/reports/', '/tags/'];
 
 function isActive(href: string): boolean {
-  if (href === '/writing') return WRITING_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  if (href === '/work') return FEED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
   return pathname === href || pathname.startsWith(href + '/');
 }
 

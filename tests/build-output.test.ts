@@ -58,12 +58,50 @@ function resolves(path: string, sources: string[]): boolean {
   return candidates.some((candidate) => existsSync(join(dist, candidate)));
 }
 
-test('every page has a canonical matching its own route', { skip }, () => {
+test('every page has a canonical matching its route or its declared index alias', { skip }, () => {
   for (const page of pages) {
     const href = parse(page.html).querySelector('link[rel="canonical"]')?.getAttribute('href');
-    const expected = page.path === '/' ? `${SITE_URL}/` : `${SITE_URL}${page.path}`;
+    const canonicalPath = page.path === '/writing' ? '/work' : page.path;
+    const expected = canonicalPath === '/' ? `${SITE_URL}/` : `${SITE_URL}${canonicalPath}`;
     assert.equal(href, expected, `${page.path} has canonical ${href}`);
   }
+});
+
+test('the combined index preserves distinct cards, chronological order and unique years', { skip }, () => {
+  const document = parse(readFileSync(join(dist, 'work.html'), 'utf8'));
+  const entries = document.querySelectorAll('[data-feed-entry]');
+  assert(entries.length > 0);
+  assert(entries.some((entry) => entry.getAttribute('data-feed-type') === 'work'));
+  assert(entries.some((entry) => entry.getAttribute('data-feed-type') === 'writing'));
+  const dates = entries.map((entry) => Date.parse(entry.getAttribute('data-date')!));
+  assert.deepEqual(dates, [...dates].sort((a, b) => b - a));
+  const workLinks = entries.filter((entry) => entry.getAttribute('data-feed-type') === 'work')
+    .map((entry) => entry.querySelector('.work-card h3 a')?.getAttribute('href'));
+  assert.equal(new Set(workLinks).size, workLinks.length);
+  assert(entries.filter((entry) => entry.getAttribute('data-feed-type') === 'writing')
+    .every((entry) => entry.querySelector('.writing-list')));
+  const headings = document.querySelectorAll('[data-feed-year] h2').map((heading) => heading.getAttribute('id'));
+  assert.equal(new Set(headings).size, headings.length);
+  assert(document.querySelector('label[for="feed-view"]'));
+  assert(document.querySelector('[data-feed-status][role="status"]'));
+});
+
+test('writing fallback is excluded from indexing and sitemap while retaining its markdown twin', { skip }, () => {
+  const fallback = parse(readFileSync(join(dist, 'writing.html'), 'utf8'));
+  assert.equal(fallback.querySelector('meta[name="robots"]')?.getAttribute('content'), 'noindex, follow');
+  assert.equal(fallback.querySelector('[data-default-type]')?.getAttribute('data-default-type'), 'writing');
+  const sitemap = readFileSync(join(dist, 'sitemap.xml'), 'utf8');
+  assert(sitemap.includes(`<loc>${SITE_URL}/work</loc>`));
+  assert(!sitemap.includes(`<loc>${SITE_URL}/writing</loc>`));
+});
+
+test('RSS includes both work and writing with unique preserved detail URLs', { skip }, () => {
+  const rss = parse(readFileSync(join(dist, 'rss.xml'), 'utf8'));
+  const items = rss.querySelectorAll('item');
+  const urls = items.map((item) => item.querySelector('guid')!.textContent);
+  assert.equal(new Set(urls).size, urls.length);
+  for (const section of ['work', 'posts', 'reports']) assert(urls.some((url) => url.startsWith(`${SITE_URL}/${section}/`)), section);
+  assert(items.every((item) => Number.isFinite(Date.parse(item.querySelector('pubdate')!.textContent))));
 });
 
 test('every Open Graph image is absolute and actually resolves', { skip }, () => {

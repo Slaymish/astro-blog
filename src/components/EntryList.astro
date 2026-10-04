@@ -4,24 +4,28 @@ import type { WritingEntry } from '../content/types';
 
 interface Props {
   entries: WritingEntry[];
+  typeLabel?: string;
+  headingLevel?: 'h2' | 'h3';
 }
 
-const { entries } = Astro.props;
+const { entries, typeLabel, headingLevel = 'h2' } = Astro.props;
+const Title = headingLevel;
 ---
 
-<ul class="writing-list" id="writing-list">
+<ul class="writing-list">
   {
     entries.map((entry) => (
       <li class="writing-list__item" data-tags={entry.tags.map(tagSlug).join(' ')}>
         <a href={entry.href}>
           <span class="writing-list__meta">
-            <span class="writing-list__date">{entry.displayDate}</span>
+            <time class="writing-list__date" datetime={entry.publishedAt}>{entry.displayDate}</time>
+            {typeLabel && <span class="writing-list__type">{typeLabel}</span>}
             {entry.type === 'report' && <span class="writing-list__type">Report</span>}
           </span>
-          <span class="writing-list__body">
-            <span class="writing-list__title">{entry.title}</span>
+          <div class="writing-list__body">
+            <Title class="writing-list__title">{entry.title}</Title>
             {entry.excerpt && <span class="writing-list__excerpt">{entry.excerpt}</span>}
-          </span>
+          </div>
         </a>
       </li>
     ))
@@ -56,6 +60,7 @@ const { entries } = Astro.props;
   .writing-list__meta {
     align-items: baseline;
     display: flex;
+    flex-wrap: wrap;
     gap: var(--spacing-3);
   }
 
@@ -79,6 +84,8 @@ const { entries } = Astro.props;
     font-size: clamp(1.35rem, 2.6vw, 2.1rem);
     letter-spacing: var(--tracking-heading);
     line-height: 1.2;
+    font-weight: var(--font-weight-bold);
+    margin: 0;
   }
 
   .writing-list__excerpt {
@@ -92,7 +99,7 @@ const { entries } = Astro.props;
 
   @media (min-width: 48rem) {
     .writing-list__item a {
-      grid-template-columns: 9rem minmax(0, 1fr);
+      grid-template-columns: 12rem minmax(0, 1fr);
     }
   }
 </style>

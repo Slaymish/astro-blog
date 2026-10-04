@@ -93,7 +93,7 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
   <section class="selected" aria-labelledby="selected-heading">
     <div class="section-heading">
       <h2 id="selected-heading">{copy.moreWorkHeading}</h2>
-      <a class="text-link" href="/work"><IconText>{copy.allWorkLabel}</IconText></a>
+      <a class="text-link" href="/work?type=work"><IconText>{copy.allWorkLabel}</IconText></a>
     </div>
   </section>
 
@@ -103,7 +103,7 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
       <h2><a href={writingHref}>{copy.writingEntry.title}</a></h2>
       <p>{copy.writingBlurb}</p>
       <a class="text-link" href={writingHref}><IconText>{copy.writingLinkLabel}</IconText></a>
-      <a class="more-writing" href="/writing">{copy.allWritingLabel}</a>
+      <a class="more-writing" href="/work?type=writing">{copy.allWritingLabel}</a>
     </div>
     <aside>
       <p class="label">{copy.readingLabel}</p>

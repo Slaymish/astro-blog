@@ -1,52 +1,40 @@
 ---
 import Base from '../../layouts/Base.astro';
-import EntryList from '../../components/EntryList.astro';
+import FeedList from '../../components/FeedList.astro';
 import IconText from '../../components/IconText.astro';
-import { getTags } from '../../content/queries';
-import { getWriting, tagSlug } from '../../content/writing';
+import { feedTags, getFeed, getFeedIndexCopy, type FeedEntry } from '../../content/feed';
+import { tagSlug } from '../../content/writing';
 
 export async function getStaticPaths() {
-  const [tags, entries] = await Promise.all([getTags(), getWriting()]);
-  return tags.map((tag) => ({
+  const entries = await getFeed();
+  return feedTags(entries).map((tag) => ({
     params: { tag: tagSlug(tag) },
-    props: { tag, entries: entries.filter((entry) => entry.tags.includes(tag)) },
+    props: { tag, entries: entries.filter((entry) => entry.tags.some((topic) => tagSlug(topic) === tagSlug(tag))) },
   }));
 }
 
-interface Props {
-  tag: string;
-  entries: Awaited<ReturnType<typeof getWriting>>;
-}
-
+interface Props { tag: string; entries: FeedEntry[] }
 const { tag, entries } = Astro.props;
-const count = `${entries.length} ${entries.length === 1 ? 'entry' : 'entries'}`;
+const copy = await getFeedIndexCopy();
 ---
 
-<Base
-  title={`Writing tagged “${tag}”`}
-  description={`Posts and reports by Hamish Burke tagged ${tag}.`}
+<Base title={`${copy.navigationLabel}: ${tag}`} description={copy.seo.description}
   breadcrumbs={[
-    { name: 'Writing', path: '/writing' },
+    { name: copy.navigationLabel, path: '/work' },
     { name: tag, path: `/tags/${tagSlug(tag)}` },
-  ]}
->
+  ]}>
   <header class="tag-header">
-    <a class="tag-header__back" href="/writing">
-      <IconText icon="arrow-left" position="start">All writing</IconText>
+    <a class="tag-header__back" href={`/work?tag=${tagSlug(tag)}`}>
+      <IconText icon="arrow-left" position="start">{copy.navigationLabel}</IconText>
     </a>
-    <p class="tag-header__eyebrow">Tagged</p>
     <h1>{tag}</h1>
-    <p class="tag-header__count">{count}</p>
+    <p class="tag-header__count">{entries.length} {copy.resultsLabel}</p>
   </header>
-
-  <EntryList entries={entries} />
+  <FeedList entries={entries} copy={copy} />
 </Base>
 
 <style>
-  .tag-header {
-    padding-block: var(--hero-top-space) var(--spacing-10);
-  }
-
+  .tag-header { padding-block: var(--hero-top-space) var(--spacing-10); }
   .tag-header__back {
     --icon-gap: var(--spacing-2);
     color: var(--color-text-secondary);
@@ -55,34 +43,17 @@ const count = `${entries.length} ${entries.length === 1 ? 'entry' : 'entries'}`;
     margin-bottom: var(--spacing-8);
     text-decoration: none;
   }
-
-  .tag-header__back:hover {
-    color: var(--color-action);
-  }
-
-  .tag-header__eyebrow {
-    color: var(--color-action);
-    font-family: var(--font-mono);
-    font-size: var(--type-label);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: 0.1em;
-    margin: 0 0 var(--spacing-4);
-    text-transform: uppercase;
-  }
-
+  .tag-header__back:hover { color: var(--color-action); }
   .tag-header h1 {
     font-size: var(--type-display);
     letter-spacing: var(--tracking-display);
     line-height: 1.05;
     margin: 0;
   }
-
   .tag-header__count {
     color: var(--color-text-secondary);
     font-family: var(--font-mono);
     font-size: var(--type-label);
-    letter-spacing: 0.06em;
     margin: var(--spacing-5) 0 0;
-    text-transform: uppercase;
   }
 </style>

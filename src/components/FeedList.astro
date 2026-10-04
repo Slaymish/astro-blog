@@ -1,0 +1,66 @@
+---
+import WorkCard from './WorkCard.astro';
+import EntryList from './EntryList.astro';
+import { groupFeedByYear, type FeedEntry } from '../content/feed';
+import { formatFullDate, tagSlug } from '../content/writing';
+import type { FeedIndexCopy } from '../content/types';
+
+interface Props { entries: FeedEntry[]; copy: FeedIndexCopy }
+const { entries, copy } = Astro.props;
+const groups = groupFeedByYear(entries);
+const kinds = { professional: 'Client', independent: 'Independent', research: 'Research' };
+---
+
+<div class="feed-list">
+  {groups.map(({ year, entries }) => (
+    <section class="feed-year" data-feed-year aria-labelledby={`year-${year}`}>
+      <h2 class="feed-year__heading" id={`year-${year}`}>{year}</h2>
+      <ul class="feed-year__entries">
+        {entries.map((entry) => (
+          <li class="feed-entry" data-feed-entry data-feed-type={entry.type}
+            data-tags={entry.tags.map(tagSlug).join(' ')} data-date={entry.publishedAt}>
+            {entry.type === 'work' ? (
+              <>
+                <p class="feed-entry__meta">
+                  <time datetime={entry.publishedAt}>{formatFullDate(entry.publishedAt)}</time>
+                  <span>{copy.workLabel} · {kinds[entry.story.kind]}</span>
+                </p>
+                <WorkCard story={entry.story} />
+              </>
+            ) : (
+              <EntryList entries={[{ ...entry.writing, displayDate: formatFullDate(entry.publishedAt) }]}
+                typeLabel={copy.writingLabel} headingLevel="h3" />
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</div>
+
+<style>
+  .feed-year { margin-block: var(--spacing-12) var(--spacing-16); }
+  .feed-year__heading {
+    border-top: 3px solid var(--color-text-primary);
+    font-family: var(--font-body);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+    margin: 0;
+    padding-block: var(--spacing-6) var(--spacing-10);
+  }
+  .feed-year__entries { list-style: none; margin: 0; padding: 0; }
+  .feed-entry + .feed-entry { margin-top: var(--spacing-6); }
+  .feed-entry__meta {
+    align-items: baseline;
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    gap: var(--spacing-2) var(--spacing-6);
+    margin: 0;
+    padding-block: var(--spacing-4);
+  }
+</style>

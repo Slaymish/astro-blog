@@ -1,0 +1,22 @@
+{
+  "_id": "workIndexPage",
+  "combined": {
+    "seo": {
+      "title": "Work & Writing",
+      "description": "Projects and writing by Hamish Burke, a software developer in Wellington, New Zealand."
+    },
+    "hero": {
+      "headlineLines": ["Work & Writing"],
+      "intro": "I write these to work out what I think, and most of the projects are things I wanted to use myself, so they sit together here."
+    },
+    "navigationLabel": "Work & Writing",
+    "typeFilterLabel": "View",
+    "allLabel": "All",
+    "workLabel": "Work",
+    "writingLabel": "Writing",
+    "tagFilterLabel": "Filter by tag",
+    "emptyMessage": "Nothing matches these filters. Try another tag, or show everything.",
+    "resetLabel": "Show all",
+    "resultsLabel": "entries"
+  }
+}

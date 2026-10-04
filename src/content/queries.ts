@@ -62,7 +62,7 @@ export const getHomePage = () =>
   );
 
 export const getWorkIndexPage = () =>
-  once('workIndexPage', () => singleton<WorkIndexPage>('workIndexPage', '{ seo, hero }'));
+  once('workIndexPage', () => singleton<WorkIndexPage>('workIndexPage', '{ seo, hero, combined }'));
 
 export const getReadingPage = () =>
   once('readingPage', () =>
@@ -108,13 +108,14 @@ export const getSiteSettings = () =>
 export const getWorkStories = () =>
   once('workStories', async () => {
     const stories = await fetchSanity<WorkStory[]>(`*[_type == "workStory"] | order(order asc){
-      _id, title, descriptor, "slug": slug.current, kind, order, date, timeframe,
+      _id, title, descriptor, "slug": slug.current, kind, order, date, timeframe, tags,
       summary, introduction, introductionLink, ctaLabel, role, body, resultHeading, result,
       links,
       "cover": cover{ kind, alt, figure, ${image('image')} },
       "evidence": evidence[]{ _key, alt, label, heading, caption, ${image('image')} },
       "artifacts": artifacts[]->{
         _type, title, "slug": slug.current, publishedAt,
+        "tags": coalesce(tags, []),
         "excerpt": coalesce(excerpt, description)
       },
       ${RELATED}
@@ -154,13 +155,6 @@ export const getBooks = () =>
       _id, title, author, status, note, link, order, sharedNote,
       ${image('coverImage')}
     }`),
-  );
-
-export const getTags = () =>
-  once('tags', () =>
-    fetchSanity<string[]>('array::unique(*[_type in ["post", "report"]].tags[])').then((tags) =>
-      (tags ?? []).filter(Boolean),
-    ),
   );
 
 function assertValid(type: string, errors: string[]): void {

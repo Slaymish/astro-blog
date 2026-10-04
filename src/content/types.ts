@@ -79,6 +79,7 @@ interface Artifact {
   slug: string;
   publishedAt: string;
   excerpt: string;
+  tags?: string[];
 }
 
 /** A curated related entry, before it is turned into a RelatedEntry. */
@@ -131,6 +132,8 @@ export interface WorkStory {
   kind: WorkKind;
   order: number;
   date: string;
+  /** Missing inherits linked artifact topics; an empty array opts out. */
+  tags?: string[];
   timeframe?: string;
   summary: string;
   introduction: string;
@@ -188,6 +191,21 @@ interface CvHero extends Hero {
 export interface WorkIndexPage {
   seo: Seo;
   hero: Hero;
+  combined?: Partial<FeedIndexCopy>;
+}
+
+export interface FeedIndexCopy {
+  seo: Seo;
+  hero: Hero;
+  navigationLabel: string;
+  typeFilterLabel: string;
+  allLabel: string;
+  workLabel: string;
+  writingLabel: string;
+  tagFilterLabel: string;
+  emptyMessage: string;
+  resetLabel: string;
+  resultsLabel: string;
 }
 
 export interface ReadingPage {

@@ -14,10 +14,12 @@ import '../styles/prose.css';
 
 interface Props extends Omit<MetadataInput, 'path'> {
   path?: string;
+  /** Alias pages can share a canonical without changing their markdown twin. */
+  canonicalPath?: string;
   wide?: boolean;
 }
 
-const { title, description, path, image, article, robots, breadcrumbs, wide } = Astro.props;
+const { title, description, path, canonicalPath, image, article, robots, breadcrumbs, wide } = Astro.props;
 
 const routePath = path ?? publicPathFromAstro(Astro.url);
 // Mirrors markdownTwin() in netlify/edge-functions/markdown.ts, which is what
@@ -27,7 +29,7 @@ const markdownPath = `${routePath === '/' ? '/index' : routePath}.md`;
 const meta = buildMetadata({
   title,
   description,
-  path: routePath,
+  path: canonicalPath ?? routePath,
   image,
   article,
   robots,

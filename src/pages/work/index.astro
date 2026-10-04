@@ -1,23 +1,17 @@
 ---
 import Base from '../../layouts/Base.astro';
-import PageHeader from '../../components/PageHeader.astro';
-import WorkCard from '../../components/WorkCard.astro';
+import FeedIndex from '../../components/FeedIndex.astro';
 import ContactBand from '../../components/ContactBand.astro';
-import { getWorkIndexPage, getWorkStories } from '../../content/queries';
+import { getFeed, getFeedIndexCopy } from '../../content/feed';
 
-const [copy, allStories] = await Promise.all([getWorkIndexPage(), getWorkStories()]);
-const stories = [...allStories].sort((a, b) => b.date.localeCompare(a.date));
-const { hero } = copy;
+const [copy, entries] = await Promise.all([getFeedIndexCopy(), getFeed()]);
 ---
 
 <Base
   title={copy.seo.title}
   description={copy.seo.description}
-  breadcrumbs={[{ name: 'Work', path: '/work' }]}
+  breadcrumbs={[{ name: copy.navigationLabel, path: '/work' }]}
 >
-  <PageHeader headline={hero.headlineLines} intro={hero.intro} />
-  <section aria-label="All work, newest first">
-    {stories.map((story) => <WorkCard story={story} />)}
-  </section>
+  <FeedIndex entries={entries} copy={copy} />
   <ContactBand booking />
 </Base>

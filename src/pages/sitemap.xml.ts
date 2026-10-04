@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
-import { getPosts, getReports, getTags, getWorkStories } from '../content/queries';
+import { getPosts, getReports, getWorkStories } from '../content/queries';
+import { feedTags, getFeed } from '../content/feed';
 import { tagSlug } from '../content/writing';
 import { escapeXml } from '../site/escape';
 import { absoluteUrl } from '../site/config';
@@ -12,7 +13,6 @@ import { absoluteUrl } from '../site/config';
 const STATIC_PATHS = [
   '/',
   '/work',
-  '/writing',
   '/reading',
   '/about',
   '/cv',
@@ -27,11 +27,11 @@ function entry(path: string, lastmod?: string): string {
 }
 
 export const GET: APIRoute = async () => {
-  const [stories, posts, reports, tags] = await Promise.all([
+  const [stories, posts, reports, feed] = await Promise.all([
     getWorkStories(),
     getPosts(),
     getReports(),
-    getTags(),
+    getFeed(),
   ]);
 
   const urls = [
@@ -39,7 +39,7 @@ export const GET: APIRoute = async () => {
     ...stories.map((story) => entry(`/work/${story.slug}`, story.date)),
     ...posts.map((post) => entry(`/posts/${post.slug}`, post.updatedAt ?? post.publishedAt)),
     ...reports.map((report) => entry(`/reports/${report.slug}`, report.publishedAt)),
-    ...tags.map((tag) => entry(`/tags/${tagSlug(tag)}`)),
+    ...feedTags(feed).map((tag) => entry(`/tags/${tagSlug(tag)}`)),
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

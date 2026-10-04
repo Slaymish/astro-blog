@@ -1,0 +1,60 @@
+---
+import PageHeader from './PageHeader.astro';
+import FeedList from './FeedList.astro';
+import { feedTags, type FeedEntry } from '../content/feed';
+import { tagSlug } from '../content/writing';
+import type { FeedIndexCopy } from '../content/types';
+import type { FeedView } from '../client/feedFilter';
+
+interface Props { entries: FeedEntry[]; copy: FeedIndexCopy; defaultType?: FeedView }
+const { entries, copy, defaultType = 'all' } = Astro.props;
+const tags = feedTags(entries);
+---
+
+<div id="feed-index" data-default-type={defaultType}>
+  <PageHeader headline={copy.hero.headlineLines} intro={copy.hero.intro} measure="regular" />
+  <div class="feed-controls" data-feed-controls hidden>
+    <div class="feed-controls__top">
+      <div class="field">
+        <label class="field__label" for="feed-view">{copy.typeFilterLabel}</label>
+        <div class="select">
+          <select class="input" id="feed-view" data-feed-view>
+            <option value="all">{copy.allLabel}</option>
+            <option value="work">{copy.workLabel}</option>
+            <option value="writing">{copy.writingLabel}</option>
+          </select>
+        </div>
+      </div>
+      <p class="feed-controls__status" data-feed-status data-results-label={copy.resultsLabel}
+        role="status" aria-live="polite" aria-atomic="true">{entries.length} {copy.resultsLabel}</p>
+    </div>
+    {tags.length > 0 && (
+      <div class="feed-controls__topics">
+        <p class="field__label" id="feed-tags-label">{copy.tagFilterLabel}</p>
+        <div class="feed-controls__tags" role="group" aria-labelledby="feed-tags-label">
+          <button class="chip" type="button" data-feed-tag="" aria-pressed="true">{copy.allLabel}</button>
+          {tags.map((tag) => (
+            <button class="chip" type="button" data-feed-tag={tagSlug(tag)} aria-pressed="false">{tag}</button>
+          ))}
+        </div>
+      </div>
+    )}
+    <button class="btn btn--ghost btn--sm feed-controls__reset" type="button" data-feed-reset hidden>{copy.resetLabel}</button>
+  </div>
+  <FeedList entries={entries} copy={copy} />
+  <p class="feed-empty" data-feed-empty hidden={entries.length > 0}>{copy.emptyMessage}</p>
+</div>
+
+<style>
+  .feed-controls {
+    border-top: 1px solid var(--color-stroke-subtle);
+    padding-block: var(--spacing-6);
+  }
+  .feed-controls__top { align-items: end; display: flex; flex-wrap: wrap; gap: var(--spacing-6); }
+  .feed-controls__top .field { max-width: 100%; width: 16rem; }
+  .feed-controls__status { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: 0 0 var(--spacing-3); }
+  .feed-controls__topics { margin-top: var(--spacing-6); }
+  .feed-controls__tags { display: flex; flex-wrap: wrap; gap: var(--spacing-2); }
+  .feed-controls__reset { margin-top: var(--spacing-4); }
+  .feed-empty { color: var(--color-text-secondary); padding-block: var(--spacing-16); text-align: center; }
+</style>

@@ -4,7 +4,8 @@ import { fetchFreshSanity } from '../content/sanity';
 import { escapeXml } from '../site/escape';
 import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, absoluteUrl } from '../site/config';
 
-interface RssPost {
+interface RssEntry {
+  _type: 'post' | 'report' | 'workStory';
   title: string;
   slug: string;
   publishedAt: string;
@@ -19,20 +20,21 @@ const SUMMARY_LENGTH = 300;
 export const GET: APIRoute = async () => {
   // Read past the CDN: a publish should reach the feed with the rebuild that
   // follows it, not up to two minutes later.
-  const posts = await fetchFreshSanity<RssPost[]>(`
-    *[_type == "post"] | order(publishedAt desc)[0...50]{
-      title,
+  const entries = await fetchFreshSanity<RssEntry[]>(`
+    *[_type in ["post", "report", "workStory"]] | order(coalesce(publishedAt, date) desc)[0...50]{
+      _type, title,
       "slug": slug.current,
-      publishedAt,
-      excerpt,
+      "publishedAt": coalesce(publishedAt, date),
+      "excerpt": coalesce(excerpt, description, summary),
       markdownBody,
-      tags
+      "tags": coalesce(tags, array::unique(artifacts[]->tags[]), [])
     }
   `);
 
-  const items = posts
+  const items = entries
     .map((post) => {
-      const url = absoluteUrl(`/posts/${post.slug}`);
+      const section = post._type === 'workStory' ? 'work' : post._type === 'report' ? 'reports' : 'posts';
+      const url = absoluteUrl(`/${section}/${post.slug}`);
       const description =
         post.excerpt?.trim() || `${markdownToPlainText(post.markdownBody ?? '').slice(0, SUMMARY_LENGTH)}...`;
 
@@ -54,7 +56,7 @@ export const GET: APIRoute = async () => {
   <channel>
     <title>${escapeXml(SITE_NAME)}</title>
     <description>${escapeXml(SITE_DESCRIPTION)}</description>
-    <link>${escapeXml(absoluteUrl('/'))}</link>
+    <link>${escapeXml(absoluteUrl('/work'))}</link>
     <language>en-nz</language>
     <managingEditor>${escapeXml(CONTACT_EMAIL)} (Hamish Burke)</managingEditor>
     <webMaster>${escapeXml(CONTACT_EMAIL)} (Hamish Burke)</webMaster>

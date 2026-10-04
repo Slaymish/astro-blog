@@ -35,6 +35,11 @@ export const workStory = defineType({
     }),
     defineField({ name: 'order', title: 'Order', type: 'number', validation: (r) => r.required().integer() }),
     defineField({ name: 'date', title: 'Date', type: 'date', validation: (r) => r.required() }),
+    defineField({
+      name: 'tags', title: 'Tags', type: 'array', of: [{ type: 'string' }],
+      description: 'Shared topics in the Work & Writing index. Unset inherits topics from linked posts and reports. An empty list opts out.',
+      validation: (r) => r.unique(),
+    }),
     defineField({ name: 'timeframe', title: 'Timeframe', type: 'string', validation: (r) => r.max(60) }),
     defineField({
       name: 'summary',

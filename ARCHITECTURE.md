@@ -12,7 +12,9 @@ catch people out:
 
 - **Request-time inputs do not exist on a prerendered page.** Query parameters,
   headers and cookies have to be resolved in the browser. The tag filter on
-  `/writing` does exactly that, and mirrors its state into the URL itself.
+  `/work` combines type and topic filters and mirrors its state into the URL
+  as `?type=work|writing&tag=<slug>`. All is the default. History navigation
+  restores both filters; empty year sections disappear.
 - **Publishing in Sanity needs a Netlify build hook** to reach the site.
 - `build: { format: 'file' }` and `trailingSlash: 'never'`, so URLs emit as
   `/work.html` and canonicals omit the trailing slash. `publicPathFromAstro`
@@ -57,8 +59,13 @@ a prerendered page negotiates a format it cannot decide for itself.
 - A cross-document rule Studio cannot enforce: `src/content/validate.ts`
 - Work story fields, and their category labels: `src/sanity/schemaTypes/workStory.ts`
   and `src/content/work.ts`
-- The posts-plus-reports stream shared by `/writing`, `/tags/[tag]` and the
-  homepage: `src/content/writing.ts`
+- The posts-plus-reports stream: `src/content/writing.ts`
+- The combined project and writing stream on `/work` and `/tags/[tag]`:
+  `src/content/feed.ts`. Entries sort by their original publication date,
+  newest first, and each project appears once. Topic identity uses tagSlug.
+  Missing work-story tags inherit the unique topics of linked artifacts;
+  an explicit empty array opts out. Single-entry topics are offered too.
+  `FeedList.astro` groups by UTC year, retaining WorkCard and writing rows.
 - Site constants and canonical helpers: `src/site/config.ts`
 
 ## Invariants
@@ -89,6 +96,17 @@ covered by `'self'`.
 and `force = true`. There is no second copy in Astro's `redirects` config,
 because that emits meta-refresh pages that outrank the Netlify rules.
 `tests/redirects.test.ts` asserts every site-relative target exists in the build.
+`/writing` redirects to `/work?type=writing`, retaining query parameters.
+Its local HTML fallback shares `/work`'s canonical and is marked noindex,
+while keeping its own generated markdown twin. No detail address changes.
+RSS includes projects, posts and reports, using their existing unique URLs
+and a fresh Sanity query. The sitemap lists only the canonical index.
+
+**Combined-index copy remains in Sanity.** Optional `workIndexPage.combined`
+fields supply metadata, hero and control copy. Until published, the index
+composes existing work and writing prose; UI labels have short functional
+defaults. Components fetch no content collections. Header reads page copy
+through the same helper as the index.
 
 **One JSON-LD graph per page.** `src/site/seo.ts` builds it; no page adds its
 own. It always contains a `Person` and a `WebSite`, then either an article node

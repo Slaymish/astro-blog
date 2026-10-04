@@ -53,7 +53,7 @@ test('no rule redirects a path to itself', () => {
 test('every site-relative target exists in the build', { skip }, () => {
   for (const rule of rules()) {
     if (!rule.to.startsWith('/')) continue;
-    const clean = rule.to.replace(/:splat$/, '');
+    const clean = rule.to.split('?')[0]!.replace(/:splat$/, '');
     const candidates = [clean, `${clean}.html`, join(clean, 'index.html')];
     assert(
       candidates.some((candidate) => existsSync(join(dist, candidate))),

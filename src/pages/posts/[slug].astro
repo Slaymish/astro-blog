@@ -36,7 +36,7 @@ const ogImage = post.coverImage ? sanitySrcSet(post.coverImage, [1200]).src : un
   image={ogImage}
   article={{ kind: 'post', publishedAt: post.publishedAt, updatedAt: post.updatedAt, tags: post.tags }}
   breadcrumbs={[
-    { name: 'Writing', path: '/writing' },
+    { name: 'Writing', path: '/work' },
     { name: post.title, path: `/posts/${post.slug}` },
   ]}
 >
@@ -47,7 +47,7 @@ const ogImage = post.coverImage ? sanitySrcSet(post.coverImage, [1200]).src : un
       lede={post.excerpt}
       meta={[formatFullDate(post.publishedAt), `${minutes} min read`]}
       tags={post.tags}
-      backHref="/writing"
+      backHref="/work?type=writing"
       backLabel="All writing"
     />
 

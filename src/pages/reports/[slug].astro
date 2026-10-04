@@ -36,7 +36,7 @@ const related = await getRelated({
   description={report.description}
   article={{ kind: 'report', publishedAt: report.publishedAt, tags: report.tags }}
   breadcrumbs={[
-    { name: 'Writing', path: '/writing' },
+    { name: 'Writing', path: '/work' },
     { name: report.title, path: `/reports/${report.slug}` },
   ]}
 >
@@ -47,7 +47,7 @@ const related = await getRelated({
       lede={report.description}
       meta={[formatFullDate(report.publishedAt), `${megabytes} MB PDF`]}
       tags={report.tags}
-      backHref="/writing"
+      backHref="/work?type=writing"
       backLabel="All writing"
     />
 

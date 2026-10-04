@@ -14,7 +14,7 @@ import { initCodeCopy } from './codeCopy';
 import { initRecommendForm } from './recommendForm';
 import { initNavigation } from './navigation';
 import { initTheme } from './theme';
-import { initWritingFilter } from './writingFilter';
+import { initFeedFilter } from './feedFilter';
 
 export function initShell(): void {
   initTheme();
@@ -24,5 +24,5 @@ export function initShell(): void {
   initAnalytics();
   initCodeCopy();
   initRecommendForm();
-  initWritingFilter();
+  initFeedFilter();
 }

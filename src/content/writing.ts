@@ -1,8 +1,8 @@
 import { LOCALE } from '../site/config';
 import type { WritingEntry } from './types';
 
-const monthYear = new Intl.DateTimeFormat(LOCALE, { month: 'short', year: 'numeric' });
-const fullDate = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'long', year: 'numeric' });
+const monthYear = new Intl.DateTimeFormat(LOCALE, { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const fullDate = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 export const formatMonthYear = (iso: string): string => monthYear.format(new Date(iso));
 export const formatFullDate = (iso: string): string => fullDate.format(new Date(iso));
@@ -50,16 +50,4 @@ export async function getWriting(): Promise<WritingEntry[]> {
   ];
 
   return entries.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
-}
-
-/** Tags worth offering as a filter: the ones that would narrow to more than one entry. */
-export function filterableTags(entries: WritingEntry[]): string[] {
-  const counts = new Map<string, number>();
-  for (const entry of entries) {
-    for (const tag of entry.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
-  }
-  return [...counts.entries()]
-    .filter(([, count]) => count >= 2)
-    .map(([tag]) => tag)
-    .sort((a, b) => a.localeCompare(b));
 }

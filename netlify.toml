@@ -55,6 +55,24 @@
 # Legacy URL policy lives only here. force = true so these win over any
 # generated file of the same name.
 [[redirects]]
+  from = "/writing"
+  to = "/work?type=writing"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/writing.html"
+  to = "/work?type=writing"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/writing.md"
+  to = "/work.md"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/projects"
   to = "/work"
   status = 301
@@ -113,19 +131,19 @@
 # that absorbed it, or at the index where nothing did.
 [[redirects]]
   from = "/tags/update"
-  to = "/writing"
+  to = "/work?type=writing"
   status = 301
   force = true
 
 [[redirects]]
   from = "/tags/research"
-  to = "/writing"
+  to = "/work?type=writing"
   status = 301
   force = true
 
 [[redirects]]
   from = "/tags/web-app"
-  to = "/writing"
+  to = "/work?type=writing"
   status = 301
   force = true
 
