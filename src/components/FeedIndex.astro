@@ -29,15 +29,15 @@ const tags = feedTags(entries);
         role="status" aria-live="polite" aria-atomic="true">{entries.length} {copy.resultsLabel}</p>
     </div>
     {tags.length > 0 && (
-      <div class="feed-controls__topics">
-        <p class="field__label" id="feed-tags-label">{copy.tagFilterLabel}</p>
+      <details class="feed-controls__topics" data-feed-topics open>
+        <summary class="field__label feed-controls__summary" id="feed-tags-label">{copy.tagFilterLabel}</summary>
         <div class="feed-controls__tags" role="group" aria-labelledby="feed-tags-label">
           <button class="chip" type="button" data-feed-tag="" aria-pressed="true">{copy.allLabel}</button>
           {tags.map((tag) => (
             <button class="chip" type="button" data-feed-tag={tagSlug(tag)} aria-pressed="false">{tag}</button>
           ))}
         </div>
-      </div>
+      </details>
     )}
     <button class="btn btn--ghost btn--sm feed-controls__reset" type="button" data-feed-reset hidden>{copy.resetLabel}</button>
   </div>
@@ -51,10 +51,34 @@ const tags = feedTags(entries);
     padding-block: var(--spacing-6);
   }
   .feed-controls__top { align-items: end; display: flex; flex-wrap: wrap; gap: var(--spacing-6); }
-  .feed-controls__top .field { max-width: 100%; width: 16rem; }
+  /* Narrow enough on a phone for the result count to share the row. */
+  .feed-controls__top .field { max-width: 100%; width: 12rem; }
+  @media (min-width: 48rem) { .feed-controls__top .field { width: 16rem; } }
   .feed-controls__status { color: var(--color-text-secondary); font-size: var(--type-body-small); margin: 0 0 var(--spacing-3); }
   .feed-controls__topics { margin-top: var(--spacing-6); }
-  .feed-controls__tags { display: flex; flex-wrap: wrap; gap: var(--spacing-2); }
+  /* A disclosure so the tags can fold away on a phone, where they would
+     otherwise push every entry below the first screen. feedFilter.ts opens it
+     on wider screens and whenever a tag is active. */
+  .feed-controls__summary {
+    align-items: center;
+    cursor: pointer;
+    display: inline-flex;
+    gap: var(--spacing-2);
+    list-style: none;
+    min-block-size: var(--control-height-md);
+  }
+  .feed-controls__summary::-webkit-details-marker { display: none; }
+  .feed-controls__summary::after {
+    block-size: 0.45rem;
+    border-block-end: 2px solid currentColor;
+    border-inline-end: 2px solid currentColor;
+    color: var(--color-text-secondary);
+    content: '';
+    inline-size: 0.45rem;
+    transform: translateY(-25%) rotate(45deg);
+  }
+  .feed-controls__topics[open] > .feed-controls__summary::after { transform: translateY(25%) rotate(-135deg); }
+  .feed-controls__tags { display: flex; flex-wrap: wrap; gap: var(--spacing-3) var(--spacing-2); }
   .feed-controls__reset { margin-top: var(--spacing-4); }
   .feed-empty { color: var(--color-text-secondary); padding-block: var(--spacing-16); text-align: center; }
 </style>

@@ -23,10 +23,11 @@ export function initVideoTeaser(root: HTMLElement): void {
   toggle.hidden = false;
 
   // The button is icon-only, so aria-label carries the whole accessible name
-  // and aria-pressed picks which of the two glyphs the stylesheet shows.
+  // and names the action. data-playing picks which glyph the stylesheet shows;
+  // it is not aria-pressed, which on top of a changing label reads as nonsense.
   const sync = (): void => {
     toggle.setAttribute('aria-label', video.paused ? PLAY_LABEL : PAUSE_LABEL);
-    toggle.setAttribute('aria-pressed', video.paused ? 'false' : 'true');
+    toggle.dataset.playing = String(!video.paused);
   };
 
   // play() rejects when the browser refuses autoplay, iOS low-power mode being

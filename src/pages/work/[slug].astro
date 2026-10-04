@@ -8,7 +8,7 @@ import IntroductionText from '../../components/IntroductionText.astro';
 import RelatedList from '../../components/RelatedList.astro';
 import WorkCover from '../../components/WorkCover.astro';
 import { portableTextToHtml } from '../../content/portableText';
-import { getWorkStories } from '../../content/queries';
+import { getSiteSettings, getWorkStories } from '../../content/queries';
 import { getRelated } from '../../content/related';
 import { sanitySrcSet } from '../../content/images';
 import { artifactHref } from '../../content/work';
@@ -26,6 +26,7 @@ interface Props {
 const { story } = Astro.props;
 
 const narrative = portableTextToHtml(story.body);
+const settings = await getSiteSettings();
 const related = await getRelated({ type: 'workStory', slug: story.slug, related: story.related });
 const coverImage =
   story.cover.kind === 'image' ? sanitySrcSet(story.cover.image, [1200]).src : undefined;
@@ -43,6 +44,9 @@ const coverImage =
 >
   <article class="case-study">
     <header class="case-study__hero">
+      <a class="case-study__back case-study__back--top" href="/work?type=work">
+        <IconText icon="arrow-left" position="start">All work</IconText>
+      </a>
       <h1>{story.title}</h1>
       <p class="case-study__summary"><IntroductionText text={story.introduction} link={story.introductionLink} /></p>
       {
@@ -64,7 +68,7 @@ const coverImage =
     </header>
 
     <div class="case-study__cover">
-      <WorkCover cover={story.cover} priority elevated />
+      <WorkCover cover={story.cover} priority elevated sizes="(min-width: 60rem) 54rem, 100vw" />
     </div>
 
     <div class="case-narrative">
@@ -99,7 +103,7 @@ const coverImage =
     </a>
   </article>
 
-  {story.kind === 'professional' && <ContactBand heading="Have a website in mind?" booking />}
+  {story.kind === 'professional' && <ContactBand heading={settings.contactBand.professionalHeading} booking />}
 </Base>
 
 <style>
@@ -199,5 +203,16 @@ const coverImage =
     display: inline-block;
     margin-block: var(--spacing-8);
     text-decoration: none;
+  }
+
+  /* Matches the back link that opens a post or report. */
+  .case-study__back--top {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    margin-block: 0 var(--spacing-8);
+  }
+
+  .case-study__back--top:hover {
+    color: var(--color-action);
   }
 </style>

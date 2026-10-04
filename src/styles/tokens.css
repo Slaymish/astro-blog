@@ -11,6 +11,7 @@
   --color-paper-200: #eceee6;
   --color-paper-400: #aab3ac;
   --color-line-700: #2b332e;
+  --color-line-600: #7f887e;
   --color-line-500: #69736b;
   --color-line-400: #b0b6ab;
   --color-line-200: #e0e3d9;
@@ -68,6 +69,9 @@
   --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* The sticky header's tallest height (Header.astro), plus its 1px rule. */
+  --site-header-height: calc(4.5rem + 1px);
 
   --z-sticky: 1020;
   --z-tooltip: 1070;

@@ -1,4 +1,5 @@
 ---
+import { NEW_TAB_NOTE_ID } from '../site/config';
 /**
  * The one button. Renders an <a> when given `href`, otherwise a <button>, and
  * carries every variant, size and state the primitives stylesheet defines
@@ -80,6 +81,7 @@ const attributes = isLink ? {
   'aria-disabled': disabled ? 'true' as const : undefined,
   tabindex: disabled ? -1 : undefined,
   target: external ? '_blank' : undefined,
+  'aria-describedby': external ? NEW_TAB_NOTE_ID : undefined,
   rel: external ? 'noopener noreferrer' : undefined,
 } : { type, disabled: disabled || loading };
 ---

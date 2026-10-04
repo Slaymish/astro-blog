@@ -208,3 +208,18 @@ test('every page advertises a markdown twin the build wrote', { skip }, () => {
     assert(readFileSync(twin, 'utf8').trim().length > 0, `${href} is empty`);
   }
 });
+
+test('every link that opens a new tab says so, and the note it points at exists', { skip }, () => {
+  const failures: string[] = [];
+  for (const page of pages) {
+    const document = parse(page.html);
+    if (!document.querySelector('#new-tab-note')) failures.push(`${page.path}: no #new-tab-note`);
+    for (const link of document.querySelectorAll('a[target="_blank"]')) {
+      const described = (link.getAttribute('aria-describedby') ?? '').split(/\s+/);
+      if (!described.includes('new-tab-note')) {
+        failures.push(`${page.path}: ${link.getAttribute('href')} opens a new tab without the note`);
+      }
+    }
+  }
+  assert.deepEqual(failures, []);
+});

@@ -1,8 +1,10 @@
 ---
+import { NEW_TAB_NOTE_ID } from '../site/config';
 import Button from './Button.astro';
 import IconText from './IconText.astro';
 import IntroductionText from './IntroductionText.astro';
 import WorkCover from './WorkCover.astro';
+import { getSiteSettings } from '../content/queries';
 import type { WorkStory } from '../content/types';
 
 interface Props {
@@ -13,6 +15,7 @@ interface Props {
 
 const { story, variant = 'featured', reverse = false } = Astro.props;
 
+const { workCtaLabel } = await getSiteSettings();
 const repo = story.links.find((link) => link.label === 'Source code');
 const href = `/work/${story.slug}`;
 ---
@@ -20,12 +23,13 @@ const href = `/work/${story.slug}`;
 <article class:list={['work-card', `work-card--${variant}`, reverse && 'work-card--reverse']}>
   <div class="work-card__link">
     <div class="work-card__visual">
-      <a class="work-card__visual-link" href={href} aria-label={`Explore ${story.title}`}>
+      {/* A mouse shortcut only: the title and the button already link here. */}
+      <a class="work-card__visual-link" href={href} tabindex="-1" aria-hidden="true">
         <WorkCover cover={story.cover} compact={variant === 'row'} elevated />
       </a>
       <div class="work-card__actions">
         <Button class="work-card__cta" href={href} size="sm">
-          {story.ctaLabel ?? 'View case study'}
+          {story.ctaLabel ?? workCtaLabel}
         </Button>
       </div>
     </div>
@@ -37,7 +41,7 @@ const href = `/work/${story.slug}`;
           <a
             href={repo.href}
             class="work-card__repo"
-            target="_blank"
+            target="_blank" aria-describedby={NEW_TAB_NOTE_ID}
             rel="noopener noreferrer"
             aria-label={`${story.title} source code on GitHub`}
           >
@@ -75,6 +79,9 @@ const href = `/work/${story.slug}`;
 
   .work-card__repo {
     color: inherit;
+    display: inline-block;
+    margin-top: var(--spacing-3);
+    padding-block: var(--spacing-3);
     text-decoration: none;
   }
 
@@ -123,7 +130,6 @@ const href = `/work/${story.slug}`;
     display: inline-block;
     font-size: var(--type-body-small);
     font-weight: var(--font-weight-bold);
-    margin-top: var(--spacing-6);
   }
 
   @media (min-width: 52rem) {

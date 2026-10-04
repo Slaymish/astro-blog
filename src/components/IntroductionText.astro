@@ -1,4 +1,5 @@
 ---
+import { NEW_TAB_NOTE_ID } from '../site/config';
 /**
  * A work story's introduction, with its one optional linked phrase. Renders
  * inline so each caller keeps its own paragraph and styles.
@@ -16,4 +17,4 @@ const at = link ? text.indexOf(link.text) : -1;
 const external = link?.href.startsWith('http') ?? false;
 ---
 
-{link && at >= 0 ? <Fragment>{text.slice(0, at)}<a href={link.href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}>{link.text}</a>{text.slice(at + link.text.length)}</Fragment> : text}
+{link && at >= 0 ? <Fragment>{text.slice(0, at)}<a href={link.href} target={external ? '_blank' : undefined} aria-describedby={external ? NEW_TAB_NOTE_ID : undefined} rel={external ? 'noopener noreferrer' : undefined}>{link.text}</a>{text.slice(at + link.text.length)}</Fragment> : text}

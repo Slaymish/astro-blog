@@ -94,11 +94,16 @@ const { eyebrow, title, lede, meta = [], tags = [], backHref, backLabel } = Astr
   }
 
   .article-header__tags {
-    margin-top: var(--spacing-3);
+    margin-top: 0;
   }
 
+  /* Tall enough to tap without changing how the line reads. */
   .article-header__tags a {
     color: var(--color-text-secondary);
+    display: inline-block;
+    min-inline-size: var(--spacing-6);
+    padding-block: var(--spacing-3);
+    text-align: center;
     text-decoration: none;
   }
 

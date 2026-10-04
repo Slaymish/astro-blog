@@ -1,10 +1,5 @@
 import { defineField, defineType } from 'sanity';
-
-const KINDS = [
-  { title: 'Client', value: 'professional' },
-  { title: 'Independent', value: 'independent' },
-  { title: 'Research', value: 'research' },
-] as const;
+import { WORK_KINDS } from '../../content/work';
 
 export const workStory = defineType({
   name: 'workStory',
@@ -30,7 +25,7 @@ export const workStory = defineType({
       name: 'kind',
       title: 'Kind',
       type: 'string',
-      options: { list: [...KINDS], layout: 'radio' },
+      options: { list: [...WORK_KINDS], layout: 'radio' },
       validation: (r) => r.required(),
     }),
     defineField({ name: 'order', title: 'Order', type: 'number', validation: (r) => r.required().integer() }),

@@ -1,6 +1,8 @@
 ---
+import { NEW_TAB_NOTE_ID } from '../../site/config';
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/Button.astro';
+import Icon from '../../components/Icon.astro';
 import SanityImage from '../../components/SanityImage.astro';
 import { getBooks, getReadingPage } from '../../content/queries';
 import { MAX_RECOMMENDATION_LENGTH } from '../../server/recommendations';
@@ -102,7 +104,7 @@ const grouped = groups
                   <div class="reading__book">
                     <h3>
                       {item.link ? (
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
+                        <a href={item.link} target="_blank" aria-describedby={NEW_TAB_NOTE_ID} rel="noopener noreferrer">
                           {item.title}
                         </a>
                       ) : (
@@ -121,9 +123,8 @@ const grouped = groups
     ))
   }
   <form class="recommend" id="recommend" method="post" action="/api/recommend" data-state="idle">
-    <p class="recommend__lead">{copy.recommend.lead}</p>
+    <label class="recommend__lead" for="recommend-title">{copy.recommend.lead}</label>
     <div class="recommend__row">
-      <label class="sr-only" for="recommend-title">Book title</label>
       <input
         id="recommend-title"
         class="input input--lg input--square"
@@ -137,13 +138,17 @@ const grouped = groups
       />
       <Button size="lg" class="btn--square" type="submit" id="recommend-submit">{copy.recommend.button}</Button>
     </div>
-    <p class="field__message recommend__status" id="recommend-status" role="status" aria-live="polite">
-      <span data-for="empty">{copy.recommend.empty}</span>
+    {/* The visible messages switch on data-state. Screen readers hear them
+        through the separate status below, which the script writes, because a
+        live region does not reliably announce content revealed by CSS. */}
+    <p class="field__message recommend__status" id="recommend-status">
+      <span data-for="empty"><Icon name="alert" motion="none" />{copy.recommend.empty}</span>
       <span data-for="sending">{copy.recommend.sending}</span>
-      <span data-for="error">{copy.recommend.error}</span>
-      <span data-for="limited">{copy.recommend.limited}</span>
+      <span data-for="error"><Icon name="alert" motion="none" />{copy.recommend.error}</span>
+      <span data-for="limited"><Icon name="alert" motion="none" />{copy.recommend.limited}</span>
       <span data-for="success">{copy.recommend.success}</span>
     </p>
+    <p class="sr-only" role="status" data-recommend-announce></p>
   </form>
 </Base>
 
@@ -180,7 +185,7 @@ const grouped = groups
   }
 
   .reading__quote footer {
-    font-size: 0.6875rem;
+    font-size: var(--type-label);
     letter-spacing: 0.14em;
     margin-top: var(--spacing-6);
     text-transform: uppercase;
@@ -352,6 +357,7 @@ const grouped = groups
   }
 
   .recommend__lead {
+    display: block;
     font-family: var(--font-serif);
     font-size: 1.875rem;
     font-weight: var(--font-weight-normal);
@@ -371,7 +377,6 @@ const grouped = groups
     min-width: 0;
   }
 
-  .recommend[data-state='success'] .recommend__row,
   .recommend__status span {
     display: none;
   }
@@ -381,8 +386,16 @@ const grouped = groups
   .recommend[data-state='error'] [data-for='error'],
   .recommend[data-state='limited'] [data-for='limited'],
   .recommend[data-state='success'] [data-for='success'] {
-    display: block;
+    align-items: baseline;
+    display: flex;
+    gap: var(--spacing-2);
     margin-top: var(--spacing-3);
+  }
+
+  /* Colour alone does not mark a problem: the messages that ask for another
+     go carry the alert icon too. */
+  .recommend__status :global(.icon) {
+    align-self: center;
   }
 
   .recommend[data-state='empty'] .recommend__status,

@@ -4,6 +4,9 @@ html {
   background: var(--color-bg-canvas);
   color: var(--color-text-primary);
   scroll-behavior: auto;
+  /* The header is sticky, so anything scrolled into view, by focus or by a
+     fragment link, has to clear it or it lands underneath (WCAG 2.4.11). */
+  scroll-padding-top: calc(var(--site-header-height) + var(--spacing-4));
 }
 
 *,

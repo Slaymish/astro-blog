@@ -16,6 +16,12 @@ export const SOCIAL_PROFILES = {
 export const TWITTER_HANDLE = '@Slaymishh';
 export const UMAMI_WEBSITE_ID = '3b77a67f-19f6-4f3c-a7ab-8af0d58bfbc6';
 export const LOCALE = 'en-NZ';
+/**
+ * The id of the visually hidden "opens in a new tab" note Footer.astro renders
+ * once per page. Every link with target="_blank" points aria-describedby at it,
+ * and tests/build-output.test.ts checks that none is missed.
+ */
+export const NEW_TAB_NOTE_ID = 'new-tab-note';
 
 export function absoluteUrl(pathOrUrl: string, base: string = SITE_URL): string {
   if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {

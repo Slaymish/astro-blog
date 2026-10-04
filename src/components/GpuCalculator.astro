@@ -1,5 +1,18 @@
 ---
-import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
+import { NEW_TAB_NOTE_ID } from '../site/config';
+import {
+  DEFAULT_INPUTS,
+  FX_DATE,
+  FX_SOURCE,
+  MODELS,
+  PRESETS,
+  RATE_RANGE,
+  describe,
+} from '../client/gpuCalculator';
+
+// Built with the default inputs, so the figures are right before the script
+// runs and stay right for a visitor whose script never does.
+const initial = describe(DEFAULT_INPUTS);
 ---
 
 <div class="calc not-prose" data-gpu-calculator>
@@ -24,7 +37,7 @@ import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
 
     <div class="field calc__control">
       <label class="field__label" for="calc-tokens">
-        Tokens per response: <span class="calc__value" data-result="tokens">500</span>
+        Tokens per response: <span class="calc__value" data-result="tokens">{initial['tokens']}</span>
       </label>
       <input
         id="calc-tokens"
@@ -34,6 +47,7 @@ import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
         max="4000"
         step="50"
         value="500"
+        aria-valuetext={`${initial.tokens} tokens`}
         data-input="tokens"
       />
       <div class="calc__scale"><span>50</span><span>4,000</span></div>
@@ -41,7 +55,7 @@ import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
 
     <div class="field calc__control">
       <label class="field__label" for="calc-responses">
-        Responses per day: <span class="calc__value" data-result="responses">50</span>
+        Responses per day: <span class="calc__value" data-result="responses">{initial['responses']}</span>
       </label>
       <input
         id="calc-responses"
@@ -51,6 +65,7 @@ import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
         max="500"
         step="1"
         value="50"
+        aria-valuetext={`${initial.responses} responses`}
         data-input="responses"
       />
       <div class="calc__scale"><span>1</span><span>500</span></div>
@@ -58,8 +73,8 @@ import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
 
     <div class="field calc__control calc__control--wide">
       <div class="calc__rate-head">
-        <label class="field__label" for="calc-rate">
-          Electricity rate: <span class="calc__value" data-result="rate">NZ$0.346/kWh</span>
+        <label class="field__label" id="calc-rate-label" for="calc-rate-field">
+          Electricity rate: <span class="calc__value" data-result="rate">{initial['rate']}</span>
         </label>
         <div class="calc__presets">
           {
@@ -71,54 +86,72 @@ import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
           }
         </div>
       </div>
-      <input
-        id="calc-rate"
-        class="range"
-        type="range"
-        min="0.01"
-        max="0.60"
-        step="0.001"
-        value="0.346"
-        data-input="rate"
-      />
-      <div class="calc__scale"><span data-result="rate-min">NZ$0.01</span><span data-result="rate-max">NZ$0.60</span></div>
+      <div class="calc__rate-inputs">
+        <div class="calc__rate-slider">
+          <input
+            id="calc-rate"
+            class="range"
+            type="range"
+            min={RATE_RANGE.min}
+            max={RATE_RANGE.max}
+            step={RATE_RANGE.step}
+            value={DEFAULT_INPUTS.electricityRate}
+            aria-labelledby="calc-rate-label"
+            aria-valuetext={initial.rate}
+            data-input="rate"
+          />
+          <div class="calc__scale"><span data-result="rate-min">{initial['rate-min']}</span><span data-result="rate-max">{initial['rate-max']}</span></div>
+        </div>
+        <input
+          id="calc-rate-field"
+          class="input input--sm calc__rate-field"
+          type="number"
+          inputmode="decimal"
+          min={RATE_RANGE.min}
+          max={RATE_RANGE.max}
+          step={RATE_RANGE.step}
+          value={DEFAULT_INPUTS.electricityRate}
+          data-input="rate-field"
+        />
+      </div>
     </div>
   </div>
 
   <div class="calc__results">
     <div class="calc__result">
       <p class="calc__result-label">Per response</p>
-      <p class="calc__result-value" data-result="per-response">—</p>
+      <p class="calc__result-value" data-result="per-response">{initial['per-response']}</p>
     </div>
     <div class="calc__result">
       <p class="calc__result-label">Daily</p>
-      <p class="calc__result-value" data-result="daily">—</p>
+      <p class="calc__result-value" data-result="daily">{initial['daily']}</p>
     </div>
     <div class="calc__result">
       <p class="calc__result-label">Monthly</p>
-      <p class="calc__result-value" data-result="monthly">—</p>
+      <p class="calc__result-value" data-result="monthly">{initial['monthly']}</p>
     </div>
     <div class="calc__result calc__result--accent">
       <p class="calc__result-label">vs cloud</p>
-      <p class="calc__result-value" data-result="multiplier">—</p>
+      <p class="calc__result-value" data-result="multiplier">{initial['multiplier']}</p>
     </div>
   </div>
 
   <div class="calc__comparison">
     <p>
-      Cloud equivalent (<span data-result="cloud-provider">GPT-4o mini</span>):
-      <strong data-result="cloud-monthly">—</strong>
+      Cloud equivalent (<span data-result="cloud-provider">{initial['cloud-provider']}</span>):
+      <strong data-result="cloud-monthly">{initial['cloud-monthly']}</strong>
     </p>
     <p>
-      Local (<span data-result="local-model">Llama 3.1 8B</span>):
-      <strong class="calc__accent" data-result="local-monthly">—</strong>
+      Local (<span data-result="local-model">{initial['local-model']}</span>):
+      <strong class="calc__accent" data-result="local-monthly">{initial['local-monthly']}</strong>
     </p>
   </div>
 
-  <p class="calc__footnote" data-result="footnote"></p>
+  <p class="sr-only" role="status" data-calc-announce></p>
+  <p class="calc__footnote" data-result="footnote">{initial['footnote']}</p>
   <p class="calc__footnote">
-    <span data-result="exchange-rate">1 US$ = NZ$1.7819</span>
-    · <a href={FX_SOURCE} target="_blank" rel="noopener noreferrer">ECB reference rates</a>
+    <span data-result="exchange-rate">{initial['exchange-rate']}</span>
+    · <a href={FX_SOURCE} target="_blank" aria-describedby={NEW_TAB_NOTE_ID} rel="noopener noreferrer">ECB reference rates</a>
     · {FX_DATE}
   </p>
 </div>
@@ -161,6 +194,22 @@ import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
     font-family: var(--font-mono);
   }
 
+  .calc__rate-inputs {
+    align-items: start;
+    display: flex;
+    gap: var(--spacing-3);
+  }
+
+  .calc__rate-slider {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .calc__rate-field {
+    flex: none;
+    inline-size: 6.5rem;
+  }
+
   .calc__scale {
     color: var(--color-text-secondary);
     display: flex;
@@ -178,7 +227,7 @@ import { MODELS, PRESETS, FX_DATE, FX_SOURCE } from '../client/gpuCalculator';
 
   .calc__presets {
     display: flex;
-    gap: var(--spacing-2);
+    gap: var(--spacing-3) var(--spacing-2);
   }
 
   .calc__results {

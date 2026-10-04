@@ -3,12 +3,12 @@ import WorkCard from './WorkCard.astro';
 import EntryList from './EntryList.astro';
 import { groupFeedByYear, type FeedEntry } from '../content/feed';
 import { formatFullDate, tagSlug } from '../content/writing';
+import { workKindLabel } from '../content/work';
 import type { FeedIndexCopy } from '../content/types';
 
 interface Props { entries: FeedEntry[]; copy: FeedIndexCopy }
 const { entries, copy } = Astro.props;
 const groups = groupFeedByYear(entries);
-const kinds = { professional: 'Client', independent: 'Independent', research: 'Research' };
 ---
 
 <div class="feed-list">
@@ -23,7 +23,7 @@ const kinds = { professional: 'Client', independent: 'Independent', research: 'R
               <>
                 <p class="feed-entry__meta">
                   <time datetime={entry.publishedAt}>{formatFullDate(entry.publishedAt)}</time>
-                  <span>{copy.workLabel} · {kinds[entry.story.kind]}</span>
+                  <span>{copy.workLabel} · {workKindLabel(entry.story.kind)}</span>
                 </p>
                 <WorkCard story={entry.story} />
               </>
@@ -39,7 +39,7 @@ const kinds = { professional: 'Client', independent: 'Independent', research: 'R
 </div>
 
 <style>
-  .feed-year { margin-block: var(--spacing-12) var(--spacing-16); }
+  .feed-year { margin-block: var(--spacing-8) var(--spacing-16); }
   .feed-year__heading {
     border-top: 3px solid var(--color-text-primary);
     font-family: var(--font-body);
@@ -48,7 +48,11 @@ const kinds = { professional: 'Client', independent: 'Independent', research: 'R
     letter-spacing: var(--tracking-display);
     line-height: 1;
     margin: 0;
-    padding-block: var(--spacing-6) var(--spacing-10);
+    padding-block: var(--spacing-6);
+  }
+  @media (min-width: 48rem) {
+    .feed-year { margin-block-start: var(--spacing-12); }
+    .feed-year__heading { padding-block-end: var(--spacing-10); }
   }
   .feed-year__entries { list-style: none; margin: 0; padding: 0; }
   .feed-entry + .feed-entry { margin-top: var(--spacing-6); }

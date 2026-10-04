@@ -1,3 +1,4 @@
+import { NEW_TAB_NOTE_ID } from '../site/config';
 import { toHTML, type PortableTextComponents } from '@portabletext/to-html';
 import { escapeHtmlAttribute } from '../site/escape';
 import { sanitySrcSet } from './images';
@@ -43,7 +44,9 @@ function components(): PortableTextComponents {
         const href = typeof value?.href === 'string' ? value.href : '';
         if (!isSafeUri(href)) return `<span>${children ?? ''}</span>`;
         const external = href.startsWith('http');
-        const rel = external ? ' rel="noopener noreferrer" target="_blank"' : '';
+        const rel = external
+          ? ` rel="noopener noreferrer" target="_blank" aria-describedby="${NEW_TAB_NOTE_ID}"`
+          : '';
         return `<a href="${escapeHtmlAttribute(href)}"${rel}>${children ?? ''}</a>`;
       },
     },

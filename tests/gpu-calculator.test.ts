@@ -1,6 +1,16 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { GPU_WATTAGE, MODELS, PRESETS, compute, formatCost, formatComparison } from '../src/client/gpuCalculator';
+import {
+  DEFAULT_INPUTS,
+  GPU_WATTAGE,
+  MODELS,
+  PRESETS,
+  RATE_RANGE,
+  compute,
+  describe,
+  formatCost,
+  formatComparison,
+} from '../src/client/gpuCalculator';
 
 test('the default inputs retain the local electricity calculation', () => {
   const results = compute({
@@ -116,4 +126,21 @@ test('all three currencies have unambiguous display labels', () => {
   assert.equal(formatCost(1.5, 'EUR'), '€1.50');
   assert.equal(formatCost(0.005, 'USD'), 'US$0.0050');
   assert.equal(formatCost(0.00001, 'EUR'), '<€0.0001');
+});
+
+test('the built-in figures are the ones the script renders, with no placeholder dashes', () => {
+  const text = describe(DEFAULT_INPUTS);
+  const results = compute(DEFAULT_INPUTS);
+  assert.equal(text['monthly'], formatCost(results.monthlyCost, 'NZD'));
+  assert.equal(text['multiplier'], formatComparison(results.multiplier));
+  for (const [key, value] of Object.entries(text)) {
+    assert.ok(value.length > 0 && !value.includes('—'), `${key} renders "${value}"`);
+  }
+});
+
+test('the default electricity rate sits on the slider and inside its range', () => {
+  const { min, max, step } = RATE_RANGE;
+  const rate = DEFAULT_INPUTS.electricityRate;
+  assert.ok(rate >= min && rate <= max);
+  assert.ok(Math.abs(Math.round((rate - min) / step) * step + min - rate) < 1e-9);
 });

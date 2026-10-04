@@ -6,7 +6,7 @@ import IconText from '../components/IconText.astro';
 import IntroductionText from '../components/IntroductionText.astro';
 import VideoCover from '../components/VideoCover.astro';
 import WorkCover from '../components/WorkCover.astro';
-import { getHomePage, getWorkStories } from '../content/queries';
+import { getHomePage, getSiteSettings, getWorkStories } from '../content/queries';
 import { artifactHref } from '../content/work';
 import { PAUSE_LABEL } from '../client/videoTeaser';
 import theCityPoster from '../assets/images/thecity-teaser-poster.jpg';
@@ -22,9 +22,7 @@ const TEASERS: Record<string, { src: string; poster: ImageMetadata; width: numbe
   'you-inc': { src: '/media/youinc-teaser.mp4', poster: youIncPoster, width: 1280, height: 720 },
 };
 
-const DEFAULT_CTA = 'View case study';
-
-const [copy, stories] = await Promise.all([getHomePage(), getWorkStories()]);
+const [copy, stories, settings] = await Promise.all([getHomePage(), getWorkStories(), getSiteSettings()]);
 
 const featured = copy.featured
   .map((slug) => stories.find((story) => story.slug === slug))
@@ -42,7 +40,7 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
   <section class="opening" aria-labelledby="intro-heading">
     <div class="opening__inner">
       <h1 id="intro-heading">{copy.heading}</h1>
-      <a class="text-link" href="/about"><IconText icon="arrow-up-right">{copy.aboutLabel}</IconText></a>
+      <a class="text-link" href="/about"><IconText>{copy.aboutLabel}</IconText></a>
     </div>
   </section>
 
@@ -54,7 +52,9 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
         return (
           <article class="feature">
             <div class="feature__media">
-              <a class="visual-link" href={href} aria-label={`Explore ${story.title}`}>
+              {/* A mouse shortcut only: the title and the button already link here,
+                  so the cover stays out of the tab order and the reading order. */}
+              <a class="visual-link" href={href} tabindex="-1" aria-hidden="true">
                 {teaser ? (
                   <VideoCover {...teaser} alt={story.cover.alt} elevated />
                 ) : (
@@ -76,7 +76,7 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
                   </Button>
                 )}
                 <Button class="feature__cta" href={href} size="sm">
-                  {story.ctaLabel ?? DEFAULT_CTA}
+                  {story.ctaLabel ?? settings.workCtaLabel}
                 </Button>
               </div>
             </div>
@@ -225,8 +225,7 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
 
   /* Opaque, and neutral in both states: pressed here means "playing", not
      "selected", so the accent the icon primitive reaches for would mislead. */
-  .feature__toggle,
-  .feature__toggle[aria-pressed='true'] {
+  .feature__toggle {
     background: var(--color-bg-raised);
     border-color: var(--color-stroke-subtle);
     color: var(--color-text-primary);
@@ -239,11 +238,11 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
 
   /* One glyph shows at a time, chosen by what the button will do next. */
   .feature__toggle .feature__glyph--play,
-  .feature__toggle[aria-pressed='false'] .feature__glyph--pause {
+  .feature__toggle[data-playing='false'] .feature__glyph--pause {
     display: none;
   }
 
-  .feature__toggle[aria-pressed='false'] .feature__glyph--play {
+  .feature__toggle[data-playing='false'] .feature__glyph--play {
     display: inline-block;
   }
 
@@ -292,7 +291,8 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
     color: var(--color-text-secondary);
     display: block;
     font-size: var(--font-size-sm);
-    margin-top: var(--spacing-3);
+    margin-top: var(--spacing-1);
+    padding-block: var(--spacing-2);
     text-decoration: none;
   }
 

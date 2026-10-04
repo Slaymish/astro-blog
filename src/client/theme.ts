@@ -41,8 +41,9 @@ function apply(root: HTMLElement, theme: Theme, source: 'user' | 'system'): void
   root.style.colorScheme = theme;
   applyMetaThemeColor(theme, source === 'user');
 
+  // The label names the action, so the button is not also a toggle: pairing a
+  // changing label with aria-pressed reads as "Switch to dark theme, pressed".
   document.querySelectorAll<HTMLElement>(TOGGLE_SELECTOR).forEach((button) => {
-    button.setAttribute('aria-pressed', String(theme === 'light'));
     const next = theme === 'light' ? 'dark' : 'light';
     button.setAttribute('aria-label', `Switch to ${next} theme`);
   });

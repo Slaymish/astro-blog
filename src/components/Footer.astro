@@ -1,5 +1,5 @@
 ---
-import { CONTACT_EMAIL, SOCIAL_PROFILES } from '../site/config';
+import { CONTACT_EMAIL, SOCIAL_PROFILES, NEW_TAB_NOTE_ID } from '../site/config';
 
 const links = [
   { href: `mailto:${CONTACT_EMAIL}`, label: 'Email' },
@@ -23,6 +23,7 @@ const links = [
             href={href}
             rel={external ? 'noopener noreferrer' : undefined}
             target={external ? '_blank' : undefined}
+            aria-describedby={external ? NEW_TAB_NOTE_ID : undefined}
           >
             {label}
           </a>
@@ -30,6 +31,7 @@ const links = [
       }
     </nav>
   </div>
+  <span id={NEW_TAB_NOTE_ID} hidden>Opens in a new tab</span>
 </footer>
 
 <style>
@@ -58,12 +60,16 @@ const links = [
   .site-footer__nav {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-2) var(--spacing-5);
+    gap: 0 var(--spacing-5);
   }
 
   .site-footer__nav a {
+    align-items: center;
     color: var(--color-text-secondary);
+    display: inline-flex;
     font-size: var(--type-body-small);
+    min-block-size: var(--control-height-md);
+    min-inline-size: var(--control-height-md);
     text-decoration: none;
   }
 

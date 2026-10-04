@@ -222,6 +222,14 @@ export interface ReadingPage {
     error: string;
     limited: string;
     success: string;
+    sent: {
+      title: string;
+      description: string;
+      okHeading: string;
+      limitedHeading: string;
+      errorHeading: string;
+      backLabel: string;
+    };
   };
 }
 
@@ -277,9 +285,11 @@ export interface SiteSettings {
   contactBand: {
     label: string;
     defaultHeading: string;
+    professionalHeading: string;
     contactLabel: string;
     bookingLabel: string;
   };
+  workCtaLabel: string;
 }
 
 /** One entry in the merged posts-and-reports stream. */

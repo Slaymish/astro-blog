@@ -34,6 +34,8 @@ export function initFeedFilter(): void {
   const empty = feed.querySelector<HTMLElement>('[data-feed-empty]');
   const status = feed.querySelector<HTMLElement>('[data-feed-status]');
   const reset = feed.querySelector<HTMLButtonElement>('[data-feed-reset]');
+  const topics = feed.querySelector<HTMLDetailsElement>('[data-feed-topics]');
+  const wide = window.matchMedia('(min-width: 48rem)');
   const knownTags = chips.map((chip) => chip.dataset.feedTag ?? '').filter(Boolean);
   const defaultType = feed.dataset.defaultType === 'writing' ? 'writing' : 'all';
   let state = readFeedFilter(new URL(window.location.href), knownTags, defaultType);
@@ -56,6 +58,8 @@ export function initFeedFilter(): void {
     if (empty) empty.hidden = visible > 0;
     if (status) status.textContent = `${visible} ${status.dataset.resultsLabel ?? ''}`;
     if (reset) reset.hidden = state.type === 'all' && state.tag === null;
+    // An active tag is never folded out of sight.
+    if (topics && state.tag !== null) topics.open = true;
     const current = new URL(window.location.href);
     // Local /writing is a fallback for the Netlify redirect. Canonicalise its
     // filter links too, so resetting All works after reload.
@@ -79,9 +83,17 @@ export function initFeedFilter(): void {
     apply(true);
   });
   window.addEventListener('popstate', () => {
-    state = readFeedFilter(new URL(window.location.href), knownTags);
+    state = readFeedFilter(new URL(window.location.href), knownTags, defaultType);
     apply(false);
   });
+  // Open on wide screens, folded on a phone. The markup ships open so the tags
+  // are never hidden from a visitor whose script does not run.
+  if (topics) {
+    topics.open = wide.matches;
+    wide.addEventListener('change', (event) => {
+      if (event.matches) topics.open = true;
+    });
+  }
   apply(false);
   controls.hidden = false;
 }

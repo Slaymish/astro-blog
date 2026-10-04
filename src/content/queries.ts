@@ -101,7 +101,7 @@ export const getNotFoundPage = () =>
   );
 
 export const getSiteSettings = () =>
-  once('siteSettings', () => singleton<SiteSettings>('siteSettings', '{ contactBand }'));
+  once('siteSettings', () => singleton<SiteSettings>('siteSettings', '{ contactBand, workCtaLabel }'));
 
 // ----------------------------------------------------------------- collections
 

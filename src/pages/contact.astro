@@ -1,4 +1,5 @@
 ---
+import { NEW_TAB_NOTE_ID } from '../site/config';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import PageHeader from '../components/PageHeader.astro';
@@ -27,6 +28,7 @@ const { hero } = copy;
           <a
             href={channel.link.href}
             target={channel.link.external ? '_blank' : undefined}
+            aria-describedby={channel.link.external ? NEW_TAB_NOTE_ID : undefined}
             rel={channel.link.external ? 'noopener noreferrer' : undefined}
             aria-label={channel.link.ariaLabel}
           >

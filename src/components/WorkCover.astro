@@ -15,14 +15,16 @@ interface Props {
   compact?: boolean;
   /** Home page treatment: no border, rounded, and lifted off the page. */
   elevated?: boolean;
+  /** The rendered width, when the frame is not the 40rem card or 24rem row. */
+  sizes?: string;
 }
 
-const { cover, priority = false, compact = false, elevated = false } = Astro.props;
+const { cover, priority = false, compact = false, elevated = false, sizes } = Astro.props;
 
 const WIDTHS = [640, 960, 1280, 1920];
-const SIZES = compact
+const SIZES = sizes ?? (compact
   ? '(min-width: 52rem) 24rem, 100vw'
-  : '(min-width: 52rem) 40rem, 100vw';
+  : '(min-width: 52rem) 40rem, 100vw');
 
 ---
 
@@ -100,7 +102,7 @@ const SIZES = compact
   .work-cover__label {
     color: var(--color-text-secondary);
     font-family: var(--font-mono);
-    font-size: clamp(0.68rem, 1.7cqi, 0.8rem);
+    font-size: clamp(0.75rem, 1.7cqi, 0.8rem);
     letter-spacing: 0.09em;
     margin: 0;
     text-transform: uppercase;
@@ -132,7 +134,7 @@ const SIZES = compact
 
   .work-cover__fact dt {
     color: var(--color-text-secondary);
-    font-size: clamp(0.7rem, 1.7cqi, 0.85rem);
+    font-size: clamp(0.75rem, 1.7cqi, 0.85rem);
   }
 
   .work-cover__fact dd {
@@ -151,12 +153,12 @@ const SIZES = compact
 
   .work-cover__fact span {
     color: var(--color-text-secondary);
-    font-size: clamp(0.66rem, 1.5cqi, 0.78rem);
+    font-size: clamp(0.75rem, 1.5cqi, 0.78rem);
   }
 
   .work-cover--figure figcaption {
     color: var(--color-text-secondary);
-    font-size: clamp(0.7rem, 1.7cqi, 0.85rem);
+    font-size: clamp(0.75rem, 1.7cqi, 0.85rem);
     line-height: 1.5;
     margin: 0;
   }

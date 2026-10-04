@@ -1,4 +1,6 @@
 ---
+import Icon from './Icon.astro';
+import { NEW_TAB_NOTE_ID } from '../site/config';
 interface Props {
   url: string;
   title: string;
@@ -19,8 +21,6 @@ const zoomControls = [
 
 const FULLSCREEN_ICON =
   '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>';
-const DOWNLOAD_ICON =
-  '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line>';
 ---
 
 <div class="pdf-viewer" data-pdf-viewer data-pdf-url={url}>
@@ -39,8 +39,8 @@ const DOWNLOAD_ICON =
           </button>
         ))
       }
-      <p class="pdf-viewer__pages">
-        <span data-pdf="page-num">1</span><span aria-hidden="true">/</span><span data-pdf="page-count">--</span>
+      <p class="pdf-viewer__pages" aria-live="polite" aria-atomic="true">
+        <span data-pdf="page-num">1</span><span>/</span><span data-pdf="page-count">--</span>
       </p>
     </div>
 
@@ -65,8 +65,8 @@ const DOWNLOAD_ICON =
       <button type="button" class="btn btn--icon btn--sm" data-pdf="fullscreen" title="Fullscreen" aria-label="Toggle fullscreen">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={FULLSCREEN_ICON} />
       </button>
-      <a class="btn btn--icon btn--sm" href={url} target="_blank" rel="noopener noreferrer" title="Open PDF" aria-label="Open PDF">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={DOWNLOAD_ICON} />
+      <a class="btn btn--icon btn--sm" href={url} target="_blank" aria-describedby={NEW_TAB_NOTE_ID} rel="noopener noreferrer" title="Open PDF" aria-label="Open PDF">
+        <Icon name="arrow-up-right" motion="none" />
       </a>
     </div>
   </div>
@@ -78,7 +78,7 @@ const DOWNLOAD_ICON =
 
     <div class="pdf-viewer__state" data-pdf="error" hidden>
       <p>The PDF did not load in the browser.</p>
-      <a class="btn btn--primary btn--sm" href={url} target="_blank" rel="noopener noreferrer">Open it directly</a>
+      <a class="btn btn--primary btn--sm" href={url} target="_blank" aria-describedby={NEW_TAB_NOTE_ID} rel="noopener noreferrer">Open it directly</a>
     </div>
 
     <canvas class="pdf-viewer__canvas" data-pdf="canvas" aria-label={title} hidden></canvas>

@@ -11,6 +11,7 @@ const navLinks = [
   { href: '/work', label: copy.navigationLabel },
   { href: '/reading', label: 'Reading' },
   { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 /** All detail and topic routes belong to the combined index. */
@@ -171,7 +172,7 @@ function navAttrs(href: string) {
 
   @media (min-width: 48rem) {
     .site-nav__inner {
-      min-height: 4.5rem;
+      min-height: 4.5rem; /* --site-header-height in tokens.css follows this. */
     }
 
     .site-nav__desktop {

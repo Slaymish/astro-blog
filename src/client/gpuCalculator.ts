@@ -104,17 +104,64 @@ export function formatComparison(multiplier: number): string {
   return `${amount}% ${multiplier > 1 ? 'lower' : 'higher'}`;
 }
 
+/** Every text the calculator shows for a set of inputs, keyed by data-result. */
+export function describe(inputs: CalculatorInputs): Record<string, string> {
+  const currency = inputs.currency ?? 'NZD';
+  const prefix = CURRENCY_PREFIX[currency];
+  const model = MODELS[inputs.modelIndex] ?? MODELS[0];
+  const cloud = CLOUD_COST_PER_TOKEN[model.name]!;
+  const results = compute(inputs);
+  return {
+    tokens: String(inputs.tokensPerResponse),
+    responses: String(inputs.responsesPerDay),
+    rate: `${prefix}${inputs.electricityRate.toFixed(3)}/kWh`,
+    'rate-min': `${prefix}${RATE_RANGE.min.toFixed(2)}`,
+    'rate-max': `${prefix}${RATE_RANGE.max.toFixed(2)}`,
+    'exchange-rate': currency === 'USD' ? 'USD comparison' :
+      `1 US$ = ${prefix}${UNITS_PER_USD[currency].toFixed(4)}`,
+    'per-response': formatCost(results.costPerResponse, currency),
+    daily: formatCost(results.dailyCost, currency),
+    monthly: formatCost(results.monthlyCost, currency),
+    multiplier: formatComparison(results.multiplier),
+    'cloud-monthly': `${formatCost(results.cloudMonthlyCost, currency)}/mo`,
+    'local-monthly': `${formatCost(results.monthlyCost, currency)}/mo`,
+    'cloud-provider': cloud.provider,
+    'local-model': model.name.split(' (')[0]!,
+    footnote:
+      `Local cost = ${GPU_WATTAGE}W GPU draw x inference time x electricity rate. ` +
+      `Cloud comparison uses ${cloud.provider} output token pricing. ` +
+      'Actual throughput varies with quantisation, context length, and batch size.',
+  };
+}
+
+/** The electricity rate's bounds, shared by the slider and the number field. */
+export const RATE_RANGE = { min: 0.01, max: 0.6, step: 0.001 } as const;
+
+/** The state the page is built in, so the results read correctly before any script runs. */
+export const DEFAULT_INPUTS: CalculatorInputs = {
+  modelIndex: 0,
+  tokensPerResponse: 500,
+  responsesPerDay: 50,
+  electricityRate: PRESETS.NZ!.rate,
+  currency: PRESETS.NZ!.currency,
+};
+
+/** How long the results sit still before a screen reader hears them. */
+const ANNOUNCE_DELAY_MS = 700;
+
 export function initGpuCalculator(root: HTMLElement): void {
   const modelSelect = root.querySelector<HTMLSelectElement>('[data-input="model"]');
   const tokens = root.querySelector<HTMLInputElement>('[data-input="tokens"]');
   const responses = root.querySelector<HTMLInputElement>('[data-input="responses"]');
   const rate = root.querySelector<HTMLInputElement>('[data-input="rate"]');
+  const rateField = root.querySelector<HTMLInputElement>('[data-input="rate-field"]');
+  const announcer = root.querySelector<HTMLElement>('[data-calc-announce]');
   if (!modelSelect || !tokens || !responses || !rate) return;
 
   const presets = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-preset]'));
-  const out = (name: string): HTMLElement | null => root.querySelector(`[data-result="${name}"]`);
 
-  let currency: Currency = 'NZD';
+  let currency: Currency = DEFAULT_INPUTS.currency ?? 'NZD';
+  let announceTimer: ReturnType<typeof setTimeout> | undefined;
 
   const render = (): void => {
     const inputs: CalculatorInputs = {
@@ -124,46 +171,50 @@ export function initGpuCalculator(root: HTMLElement): void {
       electricityRate: Number(rate.value),
       currency,
     };
-    const model = MODELS[inputs.modelIndex] ?? MODELS[0];
-    const cloud = CLOUD_COST_PER_TOKEN[model.name]!;
-    const results = compute(inputs);
+    const text = describe(inputs);
 
-    const set = (name: string, value: string): void => {
-      const element = out(name);
-      if (element) element.textContent = value;
-    };
+    for (const element of root.querySelectorAll<HTMLElement>('[data-result]')) {
+      const value = text[element.dataset.result ?? ''];
+      if (value !== undefined) element.textContent = value;
+    }
 
-    set('tokens', String(inputs.tokensPerResponse));
-    set('responses', String(inputs.responsesPerDay));
-    set('rate', `${CURRENCY_PREFIX[currency]}${inputs.electricityRate.toFixed(3)}/kWh`);
-    set('rate-min', `${CURRENCY_PREFIX[currency]}${Number(rate.min).toFixed(2)}`);
-    set('rate-max', `${CURRENCY_PREFIX[currency]}${Number(rate.max).toFixed(2)}`);
-    set('exchange-rate', currency === 'USD' ? 'USD comparison' :
-      `1 US$ = ${CURRENCY_PREFIX[currency]}${UNITS_PER_USD[currency].toFixed(4)}`);
-    set('per-response', formatCost(results.costPerResponse, currency));
-    set('daily', formatCost(results.dailyCost, currency));
-    set('monthly', formatCost(results.monthlyCost, currency));
-    set('multiplier', formatComparison(results.multiplier));
-    set('cloud-monthly', `${formatCost(results.cloudMonthlyCost, currency)}/mo`);
-    set('local-monthly', `${formatCost(results.monthlyCost, currency)}/mo`);
-    set('cloud-provider', cloud.provider);
-    set('local-model', model.name.split(' (')[0]!);
-    set(
-      'footnote',
-      `Local cost = ${GPU_WATTAGE}W GPU draw x inference time x electricity rate. ` +
-        `Cloud comparison uses ${cloud.provider} output token pricing. ` +
-        'Actual throughput varies with quantisation, context length, and batch size.',
-    );
+    // A slider announces its raw number unless told otherwise.
+    tokens.setAttribute('aria-valuetext', `${text.tokens} tokens`);
+    responses.setAttribute('aria-valuetext', `${text.responses} responses`);
+    rate.setAttribute('aria-valuetext', text.rate!);
 
     for (const preset of presets) {
       const value = PRESETS[preset.dataset.preset ?? ''];
       preset.setAttribute('aria-pressed', String(value !== undefined && value.currency === currency && value.rate === inputs.electricityRate));
     }
+
+    // One polite summary once the inputs settle, not one per slider step.
+    if (announcer) {
+      clearTimeout(announceTimer);
+      announceTimer = setTimeout(() => {
+        announcer.textContent =
+          `Monthly: ${text['local-monthly']} locally, ${text['cloud-monthly']} on ${text['cloud-provider']}. ` +
+          `Local is ${text.multiplier}.`;
+      }, ANNOUNCE_DELAY_MS);
+    }
   };
 
-  for (const control of [modelSelect, tokens, responses, rate]) {
+  for (const control of [modelSelect, tokens, responses]) {
     control.addEventListener('input', render);
   }
+
+  rate.addEventListener('input', () => {
+    if (rateField) rateField.value = rate.value;
+    render();
+  });
+
+  // The number field is the precise way in: the slider has 590 steps.
+  rateField?.addEventListener('input', () => {
+    const value = Number(rateField.value);
+    if (!Number.isFinite(value) || value < RATE_RANGE.min || value > RATE_RANGE.max) return;
+    rate.value = String(value);
+    render();
+  });
 
   for (const preset of presets) {
     preset.addEventListener('click', () => {
@@ -171,6 +222,7 @@ export function initGpuCalculator(root: HTMLElement): void {
       if (value === undefined) return;
       currency = value.currency;
       rate.value = String(value.rate);
+      if (rateField) rateField.value = String(value.rate);
       render();
     });
   }

@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { CONTACT_EMAIL } from '../site/config';
+import { CONTACT_EMAIL, NEW_TAB_NOTE_ID } from '../site/config';
 ---
 
 <Base
@@ -83,7 +83,7 @@ import { CONTACT_EMAIL } from '../site/config';
           You can block analytics scripts or clear this site’s local storage in your browser.
           Under the New Zealand Privacy Act 2020, you may ask to access or correct personal
           information I hold about you. You may also raise a concern with the
-          <a href="https://www.privacy.org.nz/" rel="noopener noreferrer" target="_blank">Office of the Privacy Commissioner</a>.
+          <a href="https://www.privacy.org.nz/" rel="noopener noreferrer" target="_blank" aria-describedby={NEW_TAB_NOTE_ID}>Office of the Privacy Commissioner</a>.
         </p>
       </section>
 

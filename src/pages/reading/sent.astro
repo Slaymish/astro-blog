@@ -18,10 +18,12 @@ const copy = await getReadingPage();
 const state = Astro.url.searchParams.get('state');
 const outcome = state === 'ok' || state === 'limited' ? state : 'error';
 
+const { sent } = copy.recommend;
+
 const HEADLINES = {
-  ok: 'Thanks.',
-  limited: "Thanks, that's plenty.",
-  error: "That didn't send.",
+  ok: sent.okHeading,
+  limited: sent.limitedHeading,
+  error: sent.errorHeading,
 } as const;
 
 const MESSAGES = {
@@ -33,7 +35,7 @@ const MESSAGES = {
 Astro.response.headers.set('cache-control', 'no-store');
 ---
 
-<Base title="Recommendation sent" description="Thanks for the book recommendation." robots="noindex, nofollow">
+<Base title={sent.title} description={sent.description} robots="noindex, nofollow">
   <PageHeader headline={HEADLINES[outcome]} measure="narrow">
     <p class="sent__message">{MESSAGES[outcome]}</p>
     <p class="sent__email">
@@ -41,7 +43,7 @@ Astro.response.headers.set('cache-control', 'no-store');
     </p>
     <div class="sent__actions">
       <Button href="/reading#recommend" variant="secondary" icon="arrow-left" iconPosition="start">
-        Back to reading
+        {sent.backLabel}
       </Button>
     </div>
   </PageHeader>

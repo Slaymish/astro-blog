@@ -74,6 +74,10 @@ a prerendered page negotiates a format it cannot decide for itself.
 `src/styles/themes.css`, and the roles resolve to primitives in
 `src/styles/tokens.css`. No opacity modifiers, no scale gradations, no literal
 hex outside `tokens.css`. If a tinted variant is needed, add a token.
+A control's resting border (field, outlined button, chip) is
+`--color-stroke-control`, which clears 3:1 against every surface in both
+themes; `--color-stroke-strong` does not in the light theme and is for
+decoration only.
 
 **No inline styles in rendered markup.** The Content-Security-Policy is
 hash-only, and a `style` attribute cannot be hashed. A page that needs a
@@ -126,6 +130,16 @@ which `tests/build-output.test.ts` asserts they agree on.
 **Content validation fails the build.** `getWorkStories`, `getPosts` and
 `getReports` run the validators in `src/content/validate.ts` and throw on a
 non-empty result, so a story with no cover alt text never reaches production.
+
+**A link that opens a new tab says so.** Every `target="_blank"` link carries
+`aria-describedby` pointing at `NEW_TAB_NOTE_ID` (`src/site/config.ts`), the
+hidden note `Footer.astro` renders once per page. `Button` with `external` and
+the Portable Text renderer do this for you; a hand-written link has to add it.
+`tests/build-output.test.ts` fails the build output on any link that does not.
+
+**The sticky header never covers focus.** `html` carries a `scroll-padding-top`
+of `--site-header-height`, so focus and fragment links land below the header.
+If the header grows, change that token with it.
 
 ## Non-obvious pieces
 

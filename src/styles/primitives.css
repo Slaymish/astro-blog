@@ -7,9 +7,13 @@
  * once here and looks the same on every page.
  *
  * Colour comes only from the semantic roles in themes.css, used whole. There
- * is no danger role yet, so invalid fields borrow --color-action; if that
- * starts to read as "highlighted" rather than "wrong", add a role rather than
- * tinting one here.
+ * is no danger role, so invalid fields borrow --color-action. Colour is never
+ * the only signal: an invalid field also thickens its border, and an error
+ * message carries the alert icon (see .field__message--error).
+ *
+ * Resting borders use --color-stroke-control, which clears 3:1 against every
+ * surface in both themes (WCAG 1.4.11). --color-stroke-subtle is only for
+ * disabled controls, which are exempt.
  *
  * Prefer <Button> at Astro call sites; the classes exist for the places a
  * component cannot go (<summary>, hand-rolled toolbars).
@@ -95,7 +99,7 @@
 }
 
 .btn--secondary {
-  border-color: var(--color-stroke-strong);
+  border-color: var(--color-stroke-control);
   color: var(--color-text-primary);
 }
 .btn--secondary:hover {
@@ -207,7 +211,7 @@
   align-items: center;
   appearance: none;
   background: transparent;
-  border: 1px solid var(--color-stroke-subtle);
+  border: 1px solid var(--color-stroke-control);
   border-radius: var(--radius-full);
   color: var(--color-text-secondary);
   cursor: pointer;
@@ -221,11 +225,19 @@
   margin: 0;
   min-block-size: 2rem;
   padding: 0 var(--spacing-3);
+  position: relative;
   transition: var(--control-transition);
   user-select: none;
   white-space: nowrap;
 }
-.chip:hover { border-color: var(--color-stroke-strong); color: var(--color-text-primary); }
+/* The chip draws at 2rem but takes taps across 2.75rem. A chip group needs a
+   row gap of at least --spacing-3 so neighbouring hit areas do not overlap. */
+.chip::before {
+  content: '';
+  inset: calc((var(--control-height-md) - 2rem) / -2) 0;
+  position: absolute;
+}
+.chip:hover { border-color: var(--color-text-secondary); color: var(--color-text-primary); }
 .chip:active { transform: scale(0.97); }
 .chip:focus-visible { outline: var(--control-ring); outline-offset: 2px; }
 .chip[aria-pressed="true"] {
@@ -245,7 +257,7 @@
 .input {
   appearance: none;
   background: var(--color-bg-canvas);
-  border: 1px solid var(--color-stroke-strong);
+  border: 1px solid var(--color-stroke-control);
   border-radius: var(--control-radius);
   box-sizing: border-box;
   color: var(--color-text-primary);
@@ -267,7 +279,7 @@
   outline: var(--control-ring);
   outline-offset: 0;
 }
-.input[aria-invalid="true"] { border-color: var(--color-action); }
+.input[aria-invalid="true"] { border-color: var(--color-action); box-shadow: inset 0 0 0 1px var(--color-action); }
 .input:disabled {
   background: var(--color-bg-inset);
   border-color: var(--color-stroke-subtle);
@@ -316,7 +328,8 @@ textarea.input { line-height: 1.5; min-block-size: calc(var(--control-height-md)
 .field__label small { color: var(--color-text-secondary); font-weight: var(--font-weight-normal); margin-inline-start: var(--spacing-2); }
 .field__hint,
 .field__message { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.5; margin: 0; }
-.field__message--error { color: var(--color-action); }
+.field__message--error { align-items: baseline; color: var(--color-action); display: flex; gap: var(--spacing-2); }
+.field__message--error > .icon { align-self: center; }
 .field__message--success { color: var(--color-text-primary); }
 .field__message a { color: var(--color-text-primary); text-decoration: underline; text-underline-offset: 0.15em; }
 .field__message a:hover { color: var(--color-action); }

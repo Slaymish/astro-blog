@@ -4,7 +4,7 @@ export const siteSettings = defineType({
   name: 'siteSettings',
   title: 'Site Settings',
   type: 'document',
-  description: 'Copy for the contact band that closes the work pages. The header and footer are written in their components.',
+  description: 'Copy for the contact band that closes the work pages, and the default work card button. The header and footer are written in their components.',
   fields: [
     defineField({
       name: 'contactBand',
@@ -26,6 +26,13 @@ export const siteSettings = defineType({
           validation: (rule) => rule.required().max(90)
         }),
         defineField({
+          name: 'professionalHeading',
+          title: 'Client work heading',
+          type: 'string',
+          description: 'Closes a client case study, where the band offers a booking.',
+          validation: (rule) => rule.required().max(90)
+        }),
+        defineField({
           name: 'contactLabel',
           title: 'Contact link label',
           type: 'string',
@@ -41,6 +48,13 @@ export const siteSettings = defineType({
         })
       ],
       validation: (rule) => rule.required()
+    }),
+    defineField({
+      name: 'workCtaLabel',
+      title: 'Work card button label',
+      type: 'string',
+      description: 'The button on a work card and a home page feature, unless the story sets its own CTA label.',
+      validation: (rule) => rule.required().max(30)
     })
   ],
   preview: {

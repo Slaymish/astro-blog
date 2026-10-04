@@ -18,7 +18,7 @@ import { RECOMMENDATION_STORE, readRecommendations, type StoredRecommendation } 
 import { secrets } from '../server/secrets';
 import { INSIGHTS_STORE, LATEST_REPORT_KEY } from '../server/sessionStore';
 import { authoriseStats } from '../server/statsAuth';
-import { LOCALE } from '../site/config';
+import { LOCALE, NEW_TAB_NOTE_ID } from '../site/config';
 
 export const prerender = false;
 
@@ -144,7 +144,7 @@ const reportHtml = report ? markdownToHtml(report.report) : null;
     <p class="stats__empty">
       Page views, referrers, countries and the ten tracked events are in Umami Cloud, which owns the dashboards.
     </p>
-    <p><a class="btn btn--secondary btn--sm" href="https://cloud.umami.is" target="_blank" rel="noopener noreferrer">Open Umami</a></p>
+    <p><a class="btn btn--secondary btn--sm" href="https://cloud.umami.is" target="_blank" aria-describedby={NEW_TAB_NOTE_ID} rel="noopener noreferrer">Open Umami</a></p>
   </section>
 </Base>
 

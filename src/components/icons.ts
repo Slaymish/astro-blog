@@ -16,6 +16,7 @@ export const ICON_PATHS = {
   'arrow-down': ['M12 5v14', 'm19 12-7 7-7-7'],
   pause: ['M6 4h4v16H6z', 'M14 4h4v16h-4z'],
   play: ['M6 3 20 12 6 21z'],
+  alert: ['M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0z', 'M12 8v4', 'M12 16h.01'],
 } as const;
 
 export type IconName = keyof typeof ICON_PATHS;
