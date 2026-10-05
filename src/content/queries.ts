@@ -109,6 +109,7 @@ export const getWorkStories = () =>
   once('workStories', async () => {
     const stories = await fetchSanity<WorkStory[]>(`*[_type == "workStory"] | order(order asc){
       _id, title, descriptor, "slug": slug.current, kind, order, date, timeframe, tags,
+      "updatedAt": _updatedAt,
       summary, introduction, introductionLink, ctaLabel, role, body, resultHeading, result,
       links,
       "cover": cover{ kind, alt, figure, ${image('image')} },
@@ -139,7 +140,7 @@ export const getPosts = () =>
 export const getReports = () =>
   once('reports', async () => {
     const reports = await fetchSanity<Report[]>(`*[_type == "report"] | order(publishedAt desc){
-      _id, title, "slug": slug.current, publishedAt, description,
+      _id, title, "slug": slug.current, publishedAt, description, "updatedAt": _updatedAt,
       "tags": coalesce(tags, []), body,
       "pdfUrl": pdfFile.asset->url,
       "pdfBytes": pdfFile.asset->size,

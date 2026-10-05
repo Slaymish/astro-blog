@@ -238,3 +238,64 @@ test('headings and named sections have non-empty accessible labels', { skip }, (
     }
   }
 });
+
+test('knowledge graphs have stable, unique identities and a connected canonical page', { skip }, () => {
+  for (const page of pages) {
+    const document = parse(page.html);
+    const graph = JSON.parse(document.querySelector('script[type="application/ld+json"]')!.textContent)['@graph'] as Array<Record<string, any>>;
+    const canonical = document.querySelector('link[rel="canonical"]')!.getAttribute('href')!;
+    const ids = graph.map((node) => node['@id']);
+    assert(ids.every((id) => typeof id === 'string' && id.startsWith('https://')), page.path);
+    assert.equal(new Set(ids).size, ids.length, `${page.path}: duplicate graph identity`);
+    const webPage = graph.find((node) => node['@id'] === `${canonical}#webpage`)!;
+    assert(webPage, `${page.path}: no canonical page node`);
+    assert.deepEqual(webPage.isPartOf, { '@id': `${SITE_URL}/#website` });
+    const person = graph.find((node) => node['@type'] === 'Person')!;
+    const image = new URL(person.image);
+    assert.equal(image.origin, SITE_URL);
+    assert(existsSync(join(dist, image.pathname)), `${page.path}: missing author portrait`);
+    assert(!image.pathname.includes('apple-touch-icon'));
+    const article = graph.find((node) => node['@id'] === `${canonical}#content`);
+    if (article) {
+      assert.deepEqual(webPage.mainEntity, { '@id': article['@id'] });
+      assert.deepEqual(article.mainEntityOfPage, { '@id': webPage['@id'] });
+    }
+  }
+});
+
+test('index graph lists match the entries visitors can actually browse', { skip }, () => {
+  for (const page of pages.filter((page) => page.path === '/work' || page.path.startsWith('/tags/'))) {
+    const document = parse(page.html);
+    const graph = JSON.parse(document.querySelector('script[type="application/ld+json"]')!.textContent)['@graph'] as Array<Record<string, any>>;
+    const list = graph.find((node) => node['@type'] === 'ItemList')!;
+    const entries = document.querySelectorAll('[data-feed-entry]');
+    assert.equal(list.numberOfItems, entries.length, page.path);
+    const visibleUrls = entries.map((entry) => entry.querySelector('h3 a')?.getAttribute('href') ?? entry.querySelector('.writing-list a')?.getAttribute('href'));
+    const graphUrls = list.itemListElement.map((item: any) => graph.find((node) => node['@id'] === item.item['@id'])!.url);
+    assert.deepEqual(graphUrls, visibleUrls.map((url) => `${SITE_URL}${url}`), page.path);
+  }
+});
+
+test('profiles, book authors and report encodings use their distinct schema types', { skip }, () => {
+  const graphFor = (file: string): Array<Record<string, any>> => JSON.parse(parse(readFileSync(join(dist, file), 'utf8')).querySelector('script[type="application/ld+json"]')!.textContent)['@graph'];
+  assert(graphFor('about.html').some((node) => node['@type'] === 'ProfilePage'));
+  const reading = graphFor('reading.html');
+  assert(reading.some((node) => node['@type'] === 'Book'));
+  assert(reading.filter((node) => node['@type'] === 'Book').every((book) => book.author.name && book.author['@id'] === undefined));
+  for (const page of pages.filter((page) => page.path.startsWith('/reports/'))) {
+    const graph = graphFor(relative(dist, page.file));
+    const pdf = graph.find((node) => node['@type'] === 'MediaObject')!;
+    assert.equal(pdf.encodingFormat, 'application/pdf');
+    assert.equal(pdf.contentUrl, parse(page.html).querySelector('[data-pdf-url]')!.getAttribute('data-pdf-url'));
+  }
+});
+
+test('the machine-readable directory names every project, article and report and links their resources', { skip }, () => {
+  const directory = readFileSync(join(dist, 'llms.txt'), 'utf8');
+  for (const page of pages.filter((page) => /^\/(work|posts|reports)\//.test(page.path))) {
+    assert(directory.includes(`${SITE_URL}${page.path}`), `${page.path} absent from llms.txt`);
+  }
+  assert(directory.includes('Accept: text/markdown'));
+  assert(!directory.includes(`${SITE_URL}/stats`));
+  assert(!directory.includes(`${SITE_URL}/reading/sent`));
+});

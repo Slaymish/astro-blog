@@ -1,4 +1,5 @@
 ---
+import { feedMetadataEntries } from '../../content/metadata';
 import Base from '../../layouts/Base.astro';
 import FeedIndex from '../../components/FeedIndex.astro';
 import { getFeed, getFeedIndexCopy } from '../../content/feed';
@@ -7,7 +8,8 @@ import { getFeed, getFeedIndexCopy } from '../../content/feed';
 const [entries, copy] = await Promise.all([getFeed(), getFeedIndexCopy()]);
 ---
 
-<Base title={copy.seo.title} description={copy.seo.description}
+<Base pageType="CollectionPage"
+  collections={[{ id: 'entries', name: copy.navigationLabel, entries: feedMetadataEntries(entries) }]} title={copy.seo.title} description={copy.seo.description}
   canonicalPath="/work" robots="noindex, follow"
   breadcrumbs={[{ name: copy.navigationLabel, path: '/work' }]}>
   <FeedIndex entries={entries} copy={copy} defaultType="writing" />

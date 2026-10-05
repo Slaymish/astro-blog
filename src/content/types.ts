@@ -113,6 +113,7 @@ export interface Post {
 
 export interface Report {
   _id: string;
+  updatedAt?: string;
   title: string;
   slug: string;
   publishedAt: string;
@@ -126,6 +127,7 @@ export interface Report {
 
 export interface WorkStory {
   _id: string;
+  updatedAt?: string;
   title: string;
   descriptor: string;
   slug: string;

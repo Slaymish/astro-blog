@@ -62,6 +62,20 @@ const grouped = groups
 ---
 
 <Base
+  pageType="CollectionPage"
+  collections={grouped.map((group) => ({
+    id: `books-${group.status}`,
+    name: group.heading,
+    entries: group.cards.flatMap((card) => card.books.map((book) => ({
+      type: 'Book' as const,
+      id: `/reading#book-${book._id}`,
+      name: book.title,
+      author: book.author,
+      url: book.link,
+      description: card.note,
+      image: book.coverImage?.asset.url,
+    }))),
+  }))}
   title={copy.seo.title}
   description={copy.seo.description}
   breadcrumbs={[{ name: 'Reading', path: '/reading' }]}

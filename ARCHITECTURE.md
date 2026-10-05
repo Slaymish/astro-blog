@@ -118,8 +118,15 @@ defaults. Components fetch no content collections. Header reads page copy
 through the same helper as the index.
 
 **One JSON-LD graph per page.** `src/site/seo.ts` builds it; no page adds its
-own. It always contains a `Person` and a `WebSite`, then either an article node
-or a `WebPage`, then a `BreadcrumbList` when the page passes crumbs.
+own. It always contains a `Person`, a `WebSite` and a page node with stable URL
+identifiers. Detail pages add a separate content entity connected to its page;
+collections describe their visible entries in order. Topics share identifiers
+with tag pages. Routes supply rendered text, citations, actual images and PDF
+resources from published content; metadata must not invent credentials, ratings
+or extracted PDF text. The author's image is an optimised portrait, not an app
+icon. `serializeJsonLd` escapes markup delimiters before embedding the graph.
+Breadcrumbs connect to the page when supplied. Public content entities declare
+free access; the generic page node makes no access claim about private routes.
 
 **Locale is `en-NZ` everywhere.** Date formatting, `og:locale` (`en_NZ`),
 JSON-LD `inLanguage`, `<html lang>`, and the RSS `<language>`.

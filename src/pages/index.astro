@@ -1,4 +1,5 @@
 ---
+import type { StructuredEntry } from '../site/seo';
 import Base from '../layouts/Base.astro';
 import Button from '../components/Button.astro';
 import Icon from '../components/Icon.astro';
@@ -34,9 +35,23 @@ if (featured.length !== copy.featured.length) {
 }
 
 const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug);
+const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
+  const entries: StructuredEntry[] = [{
+    type: 'CreativeWork', name: story.title, url: `/work/${story.slug}`,
+    description: story.introduction, publishedAt: story.date,
+  }];
+  if (index === Math.min(1, featured.length - 1)) entries.push({
+    type: copy.writingEntry._type === 'post' ? 'BlogPosting' : 'Report',
+    name: copy.writingEntry.title, url: writingHref, description: copy.writingBlurb,
+  });
+  if (index === Math.min(3, featured.length - 1)) entries.push({
+    type: 'WebPage', name: copy.readingLabel, url: '/reading', description: copy.readingText,
+  });
+  return entries;
+});
 ---
 
-<Base title={copy.seo.title} description={copy.seo.description}>
+<Base pageType="CollectionPage" collections={[{ id: 'featured', name: copy.seo.title, entries: featuredMetadata }]} title={copy.seo.title} description={copy.seo.description}>
   <section class="opening" aria-labelledby="intro-heading">
     <div class="opening__inner">
       <h1 id="intro-heading">{copy.heading}</h1>

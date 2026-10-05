@@ -36,9 +36,9 @@ export const GET: APIRoute = async () => {
 
   const urls = [
     ...STATIC_PATHS.map((path) => entry(path)),
-    ...stories.map((story) => entry(`/work/${story.slug}`, story.date)),
+    ...stories.map((story) => entry(`/work/${story.slug}`, story.updatedAt ?? story.date)),
     ...posts.map((post) => entry(`/posts/${post.slug}`, post.updatedAt ?? post.publishedAt)),
-    ...reports.map((report) => entry(`/reports/${report.slug}`, report.publishedAt)),
+    ...reports.map((report) => entry(`/reports/${report.slug}`, report.updatedAt ?? report.publishedAt)),
     ...feedTags(feed).map((tag) => entry(`/tags/${tagSlug(tag)}`)),
   ];
 

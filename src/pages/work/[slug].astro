@@ -8,6 +8,8 @@ import IntroductionText from '../../components/IntroductionText.astro';
 import RelatedList from '../../components/RelatedList.astro';
 import WorkCover from '../../components/WorkCover.astro';
 import { portableTextToHtml } from '../../content/portableText';
+import { renderedContentMetadata } from '../../content/metadata';
+import { workTags } from '../../content/feed';
 import { getSiteSettings, getWorkStories } from '../../content/queries';
 import { getRelated } from '../../content/related';
 import { sanitySrcSet } from '../../content/images';
@@ -26,6 +28,7 @@ interface Props {
 const { story } = Astro.props;
 
 const narrative = portableTextToHtml(story.body);
+const structuredBody = renderedContentMetadata(narrative);
 const settings = await getSiteSettings();
 const related = await getRelated({ type: 'workStory', slug: story.slug, related: story.related });
 const coverImage =
@@ -36,7 +39,9 @@ const coverImage =
   title={`${story.title} · ${story.descriptor}`}
   description={story.introduction}
   image={coverImage}
-  article={{ kind: 'work', publishedAt: `${story.date}T00:00:00.000Z` }}
+  imageAlt={story.cover.alt}
+  relatedLinks={[...story.links.map((link) => link.href), ...story.artifacts.map((artifact) => artifactHref(artifact._type, artifact.slug)), ...related.map((entry) => entry.href)]}
+  article={{ kind: 'work', publishedAt: `${story.date}T00:00:00.000Z`, updatedAt: story.updatedAt, tags: workTags(story), text: [structuredBody.text, story.resultHeading ?? 'Outcome', story.result].join(' '), citations: structuredBody.citations }}
   breadcrumbs={[
     { name: 'Work', path: '/work' },
     { name: story.title, path: `/work/${story.slug}` },
