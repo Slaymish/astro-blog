@@ -4,10 +4,7 @@
  * keeps following the system while they have not.
  */
 
-/** Duplicates --color-ink-950 and --color-paper-100 for the browser chrome. */
-const THEME_COLORS = { dark: '#0b0d0c', light: '#f6f7f3' } as const;
-
-type Theme = keyof typeof THEME_COLORS;
+type Theme = 'dark' | 'light';
 
 const STORAGE_KEY = 'theme';
 const TOGGLE_SELECTOR = '[data-theme-toggle]';
@@ -18,19 +15,13 @@ function currentTheme(root: HTMLElement): Theme {
 
 /**
  * The <meta name="theme-color"> elements are media-scoped so the browser picks
- * one before any script runs. Once the visitor chooses, both are set to the
- * chosen colour so the choice wins whatever the system says.
+ * one before any script runs. Afterwards the canvas token is the source of
+ * truth for both, including when the system preference changes.
  */
-function applyMetaThemeColor(theme: Theme, pinned: boolean): void {
+function applyMetaThemeColor(root: HTMLElement): void {
+  const color = getComputedStyle(root).getPropertyValue('--color-bg-canvas').trim();
   document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
-    const media = meta.getAttribute('media') ?? '';
-    if (pinned) {
-      meta.setAttribute('content', THEME_COLORS[theme]);
-    } else if (media.includes('light')) {
-      meta.setAttribute('content', THEME_COLORS.light);
-    } else {
-      meta.setAttribute('content', THEME_COLORS.dark);
-    }
+    meta.setAttribute('content', color);
   });
 }
 
@@ -38,8 +29,7 @@ function apply(root: HTMLElement, theme: Theme, source: 'user' | 'system'): void
   root.classList.remove('light', 'dark');
   root.classList.add(theme);
   root.dataset.themeSource = source;
-  root.style.colorScheme = theme;
-  applyMetaThemeColor(theme, source === 'user');
+  applyMetaThemeColor(root);
 
   // The label names the action, so the button is not also a toggle: pairing a
   // changing label with aria-pressed reads as "Switch to dark theme, pressed".

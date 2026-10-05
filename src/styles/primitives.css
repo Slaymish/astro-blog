@@ -131,12 +131,25 @@
   color: var(--color-action);
 }
 .btn--icon[aria-pressed="true"],
-.btn--icon[aria-expanded="true"] {
+.btn--icon[aria-expanded="true"],
+details[open] > .btn--icon {
   background: var(--color-bg-raised);
-  border-color: var(--color-stroke-strong);
+  border-color: var(--color-stroke-control);
   color: var(--color-action);
 }
 .btn--icon svg { block-size: 1.15em; flex: none; inline-size: 1.15em; }
+
+/* Opaque controls placed over media or code, sharing the same states. */
+.btn--surface {
+  background: var(--color-bg-raised);
+  border-color: var(--color-stroke-control);
+  color: var(--color-text-primary);
+}
+.btn--surface:hover {
+  background: var(--color-bg-raised);
+  border-color: var(--color-action);
+  color: var(--color-action);
+}
 
 /* --- Sizes --- */
 

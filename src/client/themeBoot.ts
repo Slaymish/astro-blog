@@ -8,8 +8,7 @@
  * it changes the hash automatically; changing how it is embedded does not, so
  * re-read the CSP section of the rewrite plan before touching either.
  *
- * Writing `r.style.colorScheme` from script is allowed under a hash-only
- * policy: the policy restricts `style` attributes in markup, not CSSOM writes.
+ * The theme classes in themes.css also own the native control colour scheme.
  */
 export const THEME_BOOT =
-  "(function(){var r=document.documentElement,s=null;try{s=localStorage.getItem('theme')}catch(e){}var l=window.matchMedia('(prefers-color-scheme: light)').matches,t=s==='light'||s==='dark'?s:(l?'light':'dark');r.classList.remove('light','dark');r.classList.add(t);r.dataset.themeSource=s?'user':'system';r.style.colorScheme=t;})();";
+  "(function(){var r=document.documentElement,s=null;try{s=localStorage.getItem('theme')}catch(e){}var l=window.matchMedia('(prefers-color-scheme: light)').matches,t=s==='light'||s==='dark'?s:(l?'light':'dark');r.classList.remove('light','dark');r.classList.add(t);r.dataset.themeSource=s==='light'||s==='dark'?'user':'system';})();";

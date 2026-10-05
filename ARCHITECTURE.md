@@ -85,6 +85,11 @@ per-instance value sets a custom property on a class, as `PageHeader.astro` does
 with its three measures. `tests/build-output.test.ts` fails on any `style`
 attribute in the build, and a hook warns at edit time.
 
+**Theme classes own the native colour scheme.** The pre-paint resolver accepts
+only saved `light` and `dark` values; anything else keeps following the system.
+The bundled toggle reads `--color-bg-canvas` for browser chrome rather than
+maintaining another palette, and makes no inline style writes.
+
 **One inline script, hashed.** `src/client/themeBoot.ts` is the only inline
 script, and `Base.astro` hashes that exact constant into `script-src` with
 `Astro.csp.insertScriptHash`. Astro does not hash the content of an

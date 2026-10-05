@@ -223,3 +223,18 @@ test('every link that opens a new tab says so, and the note it points at exists'
   }
   assert.deepEqual(failures, []);
 });
+
+test('headings and named sections have non-empty accessible labels', { skip }, () => {
+  for (const page of pages) {
+    const document = parse(page.html);
+    for (const heading of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
+      assert(heading.textContent.trim(), `${page.path} has an empty ${heading.tagName}`);
+    }
+    for (const section of document.querySelectorAll('section[aria-labelledby]')) {
+      const ids = section.getAttribute('aria-labelledby')!.split(/\s+/);
+      for (const id of ids) {
+        assert(document.getElementById(id)?.textContent.trim(), `${page.path} has an unnamed section referencing ${id}`);
+      }
+    }
+  }
+});
