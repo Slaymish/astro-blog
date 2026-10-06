@@ -58,3 +58,29 @@ write until the command carries `SANITY_WRITE_ACK=1`.
 - `ARCHITECTURE.md` - boundaries, invariants, and why things are where they are.
 - `AGENTS.md` - the working rules for this repository, including the footguns.
 - `PLANS.md` - the ExecPlan format; instances live in `docs/exec-plans/`.
+
+## Email notifications
+
+Book recommendations and email callback requests send notifications through
+[Resend](https://resend.com/docs/api-reference/emails/send-email) to
+`hamishapps@gmail.com`. Set runtime environment variables in Netlify:
+`RESEND_API_KEY` (a sending key) and `NOTIFICATION_FROM` (for example,
+`Hamish's website <notifications@hamishburke.dev>`). The sender's domain must
+be enabled for sending in Resend. Keep the API key out of source control.
+
+Publish the approved `contactBand.form` copy in the Site Settings document to
+show the form wherever `ContactBand` is used. The exact approved Sanity patch
+is in `docs/exec-plans/contact-form-copy.json`. Applying it is a production
+content write and requires approval. Publishing schemas alone does not create
+this content. A content write can trigger a build before Sanity's CDN has
+purged, so wait several minutes and run a second deploy as described in
+`AGENTS.md`.
+
+A contact request sets the notification's reply address to the visitor's email,
+so replying in Gmail reaches them. The site does not store callback addresses
+in Blobs. Book recommendations remain in the existing store and `/stats`.
+A failed delivery shows the existing error state; a recommendation remains
+stored, and a retry can create a second record. Outside Netlify, submissions
+report unavailable rather than pretending to send. Unit tests exercise delivery
+with simulated Blobs and Resend responses; a live inbox check needs a deployed
+site with the runtime variables set.

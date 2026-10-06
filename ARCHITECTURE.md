@@ -22,8 +22,8 @@ catch people out:
   URL goes through it. Keep the two settings and that helper in step.
 
 The only routes that run on request are the ones that opt out with
-`export const prerender = false`: `api/collect.ts`, `api/recommend.ts`,
-`api/cal-webhook.ts`, `reading/sent.astro` and the private `stats.astro`.
+`export const prerender = false`: `api/collect.ts`, `api/recommend.ts`, `api/contact.ts`,
+`api/cal-webhook.ts`, `reading/sent.astro`, `contact/sent.astro` and the private `stats.astro`.
 
 One request-time behaviour sits above the build rather than inside it.
 `netlify/edge-functions/markdown.ts` reads the `Accept` header and serves a
@@ -169,6 +169,20 @@ If the header grows, change that token with it.
   a form-encoded body with a 303 to `/reading/sent`, and a JSON body with JSON.
   Astro's `security.checkOrigin` rejects a form post from another origin, which
   is what stops a third-party page submitting it.
+- **Email notifications use Resend at request time.** `src/server/email.ts`
+  reads `RESEND_API_KEY` and `NOTIFICATION_FROM` through the secrets helper and
+  sends plain-text notifications to `CONTACT_EMAIL`. Recommendations are stored
+  before sending; a delivery failure keeps the blob and returns an error to the
+  visitor. Retrying can create another recommendation. Neither endpoint claims
+  success when Netlify Blobs is unavailable, including local development.
+- **The contact band has an optional email callback form.** Its copy is
+  `siteSettings.contactBand.form` in Sanity. Without that object the band keeps
+  its existing links. `ContactForm.astro` posts to `/api/contact`, with browser
+  enhancement from `src/client/contactForm.ts` through the shell. Native form
+  posts redirect to `/contact/sent`; JSON posts return JSON. The visitor's email
+  is sent as the notification's reply address and is not stored in Blobs.
+  Both submission endpoints bound request bodies, reject foreign Origin headers,
+  and use separate hourly rate counters. No extra blob store is needed.
 - **`/stats` authenticates by cookie, not by query string.** A one-time
   `?token=` is compared in constant time and exchanged for an HttpOnly, Secure,
   SameSite=Strict cookie via a 303, so the secret lands in one URL rather than in
@@ -231,4 +245,4 @@ already sits in them: `sessions`, `session-insights`, `rate-limits` and
   block the hashed theme script.
 - `src/server/timingSafe.ts` is the only string comparison used for a secret.
 - Never commit secrets. `INSIGHTS_TOKEN`, `CAL_WEBHOOK_SECRET` and
-  `RATE_LIMIT_SALT` are set in Netlify and read through `src/server/secrets.ts`.
+  `RATE_LIMIT_SALT`, `RESEND_API_KEY` and `NOTIFICATION_FROM` are set in Netlify and read through `src/server/secrets.ts`.

@@ -11,6 +11,7 @@
 import { initAnalytics } from './analyticsTracker';
 import { initBookingRef } from './bookingRef';
 import { initCodeCopy } from './codeCopy';
+import { initContactForms } from './contactForm';
 import { initRecommendForm } from './recommendForm';
 import { initNavigation } from './navigation';
 import { initTheme } from './theme';
@@ -24,5 +25,6 @@ export function initShell(): void {
   initAnalytics();
   initCodeCopy();
   initRecommendForm();
+  initContactForms();
   initFeedFilter();
 }

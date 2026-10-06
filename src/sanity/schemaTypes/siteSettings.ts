@@ -45,6 +45,21 @@ export const siteSettings = defineType({
           type: 'string',
           description: 'Only rendered where the band is given booking={true}: /work and /contact.',
           validation: (rule) => rule.required().max(30)
+        }),
+        defineField({
+          name: 'form',
+          title: 'Email callback form',
+          description: 'Publish all fields to show the email form in each contact band.',
+          type: 'object',
+          fields: [
+            defineField({ name: 'lead', title: 'Introduction', type: 'string', validation: (rule) => rule.required().max(200) }),
+            defineField({ name: 'emailLabel', title: 'Email field label', type: 'string', validation: (rule) => rule.required().max(200) }),
+            defineField({ name: 'button', title: 'Submit button', type: 'string', validation: (rule) => rule.required().max(200) }),
+            defineField({ name: 'sending', title: 'Sending message', type: 'string', validation: (rule) => rule.required().max(200) }),
+            defineField({ name: 'success', title: 'Success message', type: 'string', validation: (rule) => rule.required().max(200) }),
+            defineField({ name: 'error', title: 'Error message', type: 'string', validation: (rule) => rule.required().max(200) }),
+            defineField({ name: 'limited', title: 'Rate limit message', type: 'string', validation: (rule) => rule.required().max(200) })
+          ]
         })
       ],
       validation: (rule) => rule.required()

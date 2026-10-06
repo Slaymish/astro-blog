@@ -283,6 +283,16 @@ export interface NotFoundPage {
   suggestions: CtaLink[];
 }
 
+export interface ContactFormCopy {
+  lead: string;
+  emailLabel: string;
+  button: string;
+  sending: string;
+  success: string;
+  error: string;
+  limited: string;
+}
+
 export interface SiteSettings {
   contactBand: {
     label: string;
@@ -290,6 +300,7 @@ export interface SiteSettings {
     professionalHeading: string;
     contactLabel: string;
     bookingLabel: string;
+    form?: ContactFormCopy;
   };
   workCtaLabel: string;
 }
