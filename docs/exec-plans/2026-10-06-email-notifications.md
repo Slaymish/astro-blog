@@ -24,7 +24,7 @@ ContactBand rather than adding another design. The form works without JavaScript
 - [x] (2026-10-06) Browser verified desktop layout, mobile layout at 390px without horizontal overflow, delivery error state, and native confirmation page.
 - [x] (2026-10-06) User added RESEND_API_KEY; confirmed it includes functions scope and production context.
 - [x] (2026-10-06) After the propagation wait, deployed to production and verified both live submissions return success from the email provider.
-- [ ] Commit and push the feature, then verify the repository-triggered deployment.
+- [x] (2026-10-06) Feature committed as f643e06 and pushed to main. The repository-triggered production deploy is ready and verified.
 
 ## Surprises & Discoveries
 
@@ -173,3 +173,14 @@ POST https://hamishburke.dev/api/contact with Hamish's own email returned
 notification test)" returned 200 {"ok":true,"stored":true}. Both responses
 require successful Resend acceptance. This deliberately labelled test remains
 in the recommendations store. No direct inbox delivery check was possible.
+
+Revision 2026-10-06: feature commit f643e06 is on origin/main. Repository-triggered
+production deploy 6ac4419e62a772000833251d is ready, preserving both server and
+scheduled functions. Its permalink includes the published form on /contact and
+/work, the contact endpoint rejects invalid input with JSON 400, and the native
+confirmation page renders. Live notification requests were already accepted
+before this source deployment; repeat sending was unnecessary. Resend delivery
+report access returned 403 with the sending key, so Gmail inbox arrival is not
+claimed. Implementation, publication, source persistence and deployment are
+complete. Existing user edits to package.json and .claude/settings.local.json
+were excluded from the feature commits.
