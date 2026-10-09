@@ -35,5 +35,8 @@
         ]
       }
     ]
+  },
+  "skillOverrides": {
+    "commands": "off"
   }
 }
