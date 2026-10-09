@@ -20,8 +20,8 @@ const copy = await getNotFoundPage();
     </div>
 
     <div class="not-found__suggestions">
-      <p>{copy.suggestionsLabel}</p>
-      <nav aria-label="Suggested pages">
+      <p id="suggestions-label">{copy.suggestionsLabel}</p>
+      <nav aria-labelledby="suggestions-label">
         {copy.suggestions.map((link) => <a href={link.href}>{link.label}</a>)}
       </nav>
     </div>

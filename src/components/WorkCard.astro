@@ -15,9 +15,11 @@ interface Props {
 
 const { story, variant = 'featured', reverse = false } = Astro.props;
 
-const { workCtaLabel } = await getSiteSettings();
-const repo = story.links.find((link) => link.label === 'Source code');
+const { workCtaLabel, entryLabels } = await getSiteSettings();
+const repo = story.links.find((link) => link.kind === 'source');
 const href = `/work/${story.slug}`;
+const titleId = `work-card-${story.slug}`;
+const repoId = `work-card-${story.slug}-source`;
 ---
 
 <article class:list={['work-card', `work-card--${variant}`, reverse && 'work-card--reverse']}>
@@ -34,18 +36,19 @@ const href = `/work/${story.slug}`;
       </div>
     </div>
     <div class="work-card__content">
-      <h3><a href={href}>{story.title}</a></h3>
+      <h3><a href={href} id={titleId}>{story.title}</a></h3>
       <p class="work-card__summary"><IntroductionText text={story.introduction} link={story.introductionLink} /></p>
       {
         repo && (
           <a
             href={repo.href}
             class="work-card__repo"
+            id={repoId}
             target="_blank" aria-describedby={NEW_TAB_NOTE_ID}
             rel="noopener noreferrer"
-            aria-label={`${story.title} source code on GitHub`}
+            aria-labelledby={`${repoId} ${titleId}`}
           >
-            <IconText class="work-card__action" icon="arrow-up-right">Source code</IconText>
+            <IconText class="work-card__action" icon="arrow-up-right">{entryLabels.sourceCodeLabel}</IconText>
           </a>
         )
       }

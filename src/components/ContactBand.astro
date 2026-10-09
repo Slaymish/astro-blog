@@ -15,15 +15,15 @@ const { contactBand } = await getSiteSettings();
 const bandHeading = heading ?? contactBand.defaultHeading;
 ---
 
-<aside class="contact-band" aria-label="Get in touch">
+<aside class="contact-band" aria-labelledby="contact-band-heading">
   <div>
     <p>{contactBand.label}</p>
-    <h2>{bandHeading}</h2>
+    <h2 id="contact-band-heading">{bandHeading}</h2>
   </div>
   <div class="contact-band__actions">
     {
       booking ? (
-        <Button href={BOOKING_URL} external ariaLabel="Book a call on Cal.com">
+        <Button href={BOOKING_URL} external>
           {contactBand.bookingLabel}
         </Button>
       ) : (

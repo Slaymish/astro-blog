@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { validatePosts, validateReports, validateWorkStories } from '../src/content/validate';
-import type { Post, Report, WorkStory } from '../src/content/types';
+import { validatePosts, validateReports, validateSiteSettings, validateWorkStories } from '../src/content/validate';
+import type { Post, Report, SiteSettings, WorkStory } from '../src/content/types';
 
 const asset = {
   _id: 'image-a',
@@ -76,17 +76,17 @@ test('a missing cover, empty alt, assetless image and incomplete figure are each
 
 test('a link missing its parts, or external without the flag, is reported', () => {
   assert(
-    validateWorkStories([story({ links: [{ label: '', href: '/a' }] })]).includes(
+    validateWorkStories([story({ links: [{ label: '', href: '/a', kind: 'other' }] })]).includes(
       'a-story: a link is missing its label or href',
     ),
   );
   assert(
-    validateWorkStories([story({ links: [{ label: 'Site', href: 'https://example.com' }] })]).includes(
+    validateWorkStories([story({ links: [{ label: 'Site', href: 'https://example.com', kind: 'other' }] })]).includes(
       'a-story: link "Site" is external but not marked external',
     ),
   );
   assert.deepEqual(
-    validateWorkStories([story({ links: [{ label: 'Site', href: 'https://example.com', external: true }] })]),
+    validateWorkStories([story({ links: [{ label: 'Site', href: 'https://example.com', external: true, kind: 'other' }] })]),
     [],
   );
 });
@@ -141,4 +141,44 @@ test('reports need a description and a resolvable PDF', () => {
   assert.deepEqual(validateReports([report()]), []);
   assert(validateReports([report({ description: '' })]).includes('a-report: description is empty'));
   assert(validateReports([report({ pdfUrl: '' })]).includes('a-report: pdfUrl is empty'));
+});
+
+const settings = (): SiteSettings => ({
+  header: {
+    readingLabel: 'Reading', aboutLabel: 'About', contactLabel: 'Contact', navigationLabel: 'Primary navigation',
+    homeLinkLabel: 'Home', menuLabel: 'Menu', themeToLightLabel: 'Light', themeToDarkLabel: 'Dark',
+  },
+  footer: {
+    tagline: 'Tagline', navigationLabel: 'Footer', emailLabel: 'Email', githubLabel: 'GitHub', linkedinLabel: 'LinkedIn',
+    cvLabel: 'CV', rssLabel: 'RSS', privacyLabel: 'Privacy', termsLabel: 'Terms',
+  },
+  newTabNote: 'Opens in a new tab',
+  contactBand: { label: 'Label', defaultHeading: 'Heading', professionalHeading: 'Heading', contactLabel: 'Contact', bookingLabel: 'Book' },
+  workCtaLabel: 'View',
+  entryLabels: {
+    allWorkLabel: 'All work', allWritingLabel: 'All writing', outcomeHeading: 'Outcome', artifactsHeading: 'From this project',
+    sourceCodeLabel: 'Source code', relatedHeading: 'Related', articleLabel: 'Article', reportLabel: 'Report',
+    readingTimeSuffix: 'min read', pdfSizeSuffix: 'MB PDF', openPdfLabel: 'Open PDF',
+  },
+  pdfViewer: {
+    previousPage: 'Previous', nextPage: 'Next', zoomOut: 'Out', zoomIn: 'In', resetZoom: 'Reset', fullscreen: 'Fullscreen',
+    loading: 'Loading', error: 'Error', openDirectly: 'Open',
+  },
+});
+
+test('complete site settings pass', () => {
+  assert.deepEqual(validateSiteSettings(settings()), []);
+});
+
+test('site settings name every empty or missing label, nested and top level', () => {
+  const broken = settings() as unknown as Record<string, Record<string, unknown> | string | undefined>;
+  (broken.header as Record<string, unknown>).menuLabel = '  ';
+  delete broken.pdfViewer;
+  broken.newTabNote = '';
+
+  const errors = validateSiteSettings(broken as unknown as SiteSettings);
+
+  assert.ok(errors.includes('header.menuLabel is empty'));
+  assert.ok(errors.includes('pdfViewer.loading is empty'));
+  assert.ok(errors.includes('newTabNote is empty'));
 });

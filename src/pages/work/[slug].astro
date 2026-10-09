@@ -27,6 +27,7 @@ const { story } = Astro.props;
 
 const narrative = portableTextToHtml(story.body);
 const settings = await getSiteSettings();
+const labels = settings.entryLabels;
 const related = await getRelated({ type: 'workStory', slug: story.slug, related: story.related });
 const coverImage =
   story.cover.kind === 'image' ? sanitySrcSet(story.cover.image, [1200]).src : undefined;
@@ -45,7 +46,7 @@ const coverImage =
   <article class="case-study">
     <header class="case-study__hero">
       <a class="case-study__back case-study__back--top" href="/work?type=work">
-        <IconText icon="arrow-left" position="start">All work</IconText>
+        <IconText icon="arrow-left" position="start">{labels.allWorkLabel}</IconText>
       </a>
       <h1>{story.title}</h1>
       <p class="case-study__summary"><IntroductionText text={story.introduction} link={story.introductionLink} /></p>
@@ -74,7 +75,7 @@ const coverImage =
     <div class="case-narrative">
       <Fragment set:html={narrative} />
       <section class="case-outcome">
-        <h2>{story.resultHeading ?? 'Outcome'}</h2>
+        <h2>{story.resultHeading ?? labels.outcomeHeading}</h2>
         <p>{story.result}</p>
       </section>
     </div>
@@ -84,7 +85,7 @@ const coverImage =
     {
       story.artifacts.length > 0 && (
         <section class="case-artifacts" aria-labelledby="artifacts-heading">
-          <h2 id="artifacts-heading">From this project</h2>
+          <h2 id="artifacts-heading">{labels.artifactsHeading}</h2>
           <ul>
             {story.artifacts.map((artifact) => (
               <li>
@@ -99,7 +100,7 @@ const coverImage =
     <RelatedList entries={related} />
 
     <a class="case-study__back" href="/work?type=work">
-      <IconText icon="arrow-left" position="start">All work</IconText>
+      <IconText icon="arrow-left" position="start">{labels.allWorkLabel}</IconText>
     </a>
   </article>
 

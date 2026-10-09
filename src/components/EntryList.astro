@@ -1,5 +1,6 @@
 ---
 import { tagSlug } from '../content/writing';
+import { getSiteSettings } from '../content/queries';
 import type { WritingEntry } from '../content/types';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 const { entries, typeLabel, headingLevel = 'h2' } = Astro.props;
 const Title = headingLevel;
+const { entryLabels } = await getSiteSettings();
 ---
 
 <ul class="writing-list">
@@ -20,7 +22,7 @@ const Title = headingLevel;
           <span class="writing-list__meta">
             <time class="writing-list__date" datetime={entry.publishedAt}>{entry.displayDate}</time>
             {typeLabel && <span class="writing-list__type">{typeLabel}</span>}
-            {entry.type === 'report' && <span class="writing-list__type">Report</span>}
+            {entry.type === 'report' && <span class="writing-list__type">{entryLabels.reportLabel}</span>}
           </span>
           <div class="writing-list__body">
             <Title class="writing-list__title">{entry.title}</Title>

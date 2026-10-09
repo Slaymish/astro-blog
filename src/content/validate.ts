@@ -1,4 +1,4 @@
-import type { Post, Report, WorkStory } from './types';
+import type { Post, Report, SiteSettings, WorkStory } from './types';
 
 const missing = (value: string | undefined | null): boolean => !value || value.trim().length === 0;
 
@@ -101,5 +101,40 @@ export function validateReports(reports: Report[]): string[] {
     if (missing(report.pdfUrl)) errors.push(`${where}: pdfUrl is empty`);
   }
 
+  return errors;
+}
+
+/**
+ * Every string the shell and the entry pages read from Site Settings. Studio
+ * marks them required, but a document saved before a field existed has no
+ * value, and an empty label would render as an unnamed link or button.
+ */
+const SITE_SETTINGS_FIELDS: { [Group in keyof SiteSettings]: SiteSettings[Group] extends string ? true : Array<keyof SiteSettings[Group]> } = {
+  header: ['readingLabel', 'aboutLabel', 'contactLabel', 'navigationLabel', 'homeLinkLabel', 'menuLabel', 'themeToLightLabel', 'themeToDarkLabel'],
+  footer: ['tagline', 'navigationLabel', 'emailLabel', 'githubLabel', 'linkedinLabel', 'cvLabel', 'rssLabel', 'privacyLabel', 'termsLabel'],
+  newTabNote: true,
+  contactBand: ['label', 'defaultHeading', 'professionalHeading', 'contactLabel', 'bookingLabel'],
+  workCtaLabel: true,
+  entryLabels: [
+    'allWorkLabel', 'allWritingLabel', 'outcomeHeading', 'artifactsHeading', 'sourceCodeLabel', 'relatedHeading',
+    'articleLabel', 'reportLabel', 'readingTimeSuffix', 'pdfSizeSuffix', 'openPdfLabel',
+  ],
+  pdfViewer: ['previousPage', 'nextPage', 'zoomOut', 'zoomIn', 'resetZoom', 'fullscreen', 'loading', 'error', 'openDirectly'],
+};
+
+export function validateSiteSettings(settings: SiteSettings): string[] {
+  const errors: string[] = [];
+  for (const [group, fields] of Object.entries(SITE_SETTINGS_FIELDS)) {
+    const value = (settings as unknown as Record<string, unknown>)[group];
+    if (fields === true) {
+      if (typeof value !== 'string' || missing(value)) errors.push(`${group} is empty`);
+      continue;
+    }
+    const object = (value ?? {}) as Record<string, unknown>;
+    for (const field of fields as string[]) {
+      const leaf = object[field];
+      if (typeof leaf !== 'string' || missing(leaf)) errors.push(`${group}.${field} is empty`);
+    }
+  }
   return errors;
 }

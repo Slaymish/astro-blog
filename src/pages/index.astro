@@ -38,19 +38,18 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
 
 <Base title={copy.seo.title} description={copy.seo.description}>
   <section class="opening" aria-labelledby="intro-heading">
-    <div class="opening__inner">
-      <h1 id="intro-heading">{copy.heading}</h1>
-      <a class="text-link" href="/about"><IconText>{copy.aboutLabel}</IconText></a>
-    </div>
+    <h1 id="intro-heading">{copy.heading}</h1>
+    <p class="opening__intro">{copy.intro}</p>
+    <a class="text-link" href="/about"><IconText>{copy.aboutLabel}</IconText></a>
   </section>
 
-  <section class="features" aria-label="Featured work">
+  <div class="features">
     {
       featured.map((story, index) => {
         const href = `/work/${story.slug}`;
         const teaser = TEASERS[story.slug];
         return (
-          <article class="feature">
+          <article class:list={['feature', index === 0 && 'feature--lead']}>
             <div class="feature__media">
               {/* A mouse shortcut only: the title and the button already link here,
                   so the cover stays out of the tab order and the reading order. */}
@@ -58,7 +57,12 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
                 {teaser ? (
                   <VideoCover {...teaser} alt={story.cover.alt} elevated />
                 ) : (
-                  <WorkCover cover={story.cover} priority={index === 0} elevated />
+                  <WorkCover
+                    cover={story.cover}
+                    priority={index === 0}
+                    elevated
+                    sizes={index === 0 ? '(min-width: 62rem) 58rem, 100vw' : '(min-width: 48rem) 28rem, 100vw'}
+                  />
                 )}
               </a>
               <div class="feature__actions">
@@ -88,16 +92,13 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
         );
       })
     }
-  </section>
+  </div>
 
-  <section class="selected" aria-labelledby="selected-heading">
-    <div class="section-heading">
-      <h2 id="selected-heading">{copy.moreWorkHeading}</h2>
-      <a class="text-link" href="/work?type=work"><IconText>{copy.allWorkLabel}</IconText></a>
-    </div>
-  </section>
+  <p class="all-work">
+    <a class="text-link" href="/work?type=work"><IconText>{copy.allWorkLabel}</IconText></a>
+  </p>
 
-  <section class="notes" aria-label="Writing and reading">
+  <div class="notes">
     <div>
       <p class="label">{copy.writingLabel}</p>
       <h2><a href={writingHref}>{copy.writingEntry.title}</a></h2>
@@ -110,7 +111,7 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
       <p>{copy.readingText}</p>
       <a class="text-link" href="/reading"><IconText>{copy.readingLinkLabel}</IconText></a>
     </aside>
-  </section>
+  </div>
 </Base>
 
 <script>
@@ -122,25 +123,27 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
 </script>
 
 <style>
-  /* The home page runs narrower than the 70rem shell, so the feature rows read
-     as one centred column rather than spanning the full container. */
+  /* The home page runs narrower than the 70rem shell, so the work reads as one
+     centred column rather than spanning the full container. */
   .opening,
   .features,
-  .selected,
+  .all-work,
   .notes {
     margin-inline: auto;
-    max-width: 54rem;
+    max-width: 58rem;
   }
 
   .opening {
-    padding-block: var(--hero-top-space) clamp(3.5rem, 9vw, 6.5rem);
+    padding-block: var(--hero-top-space) clamp(3rem, 7vw, 5rem);
     text-align: center;
   }
 
-  /* Shrink-wraps the heading so the About link can sit on its trailing edge. */
-  .opening__inner {
-    display: inline-block;
-    text-align: right;
+  .opening .opening__intro {
+    color: var(--color-text-secondary);
+    font-size: clamp(1.125rem, 1.6vw, 1.3rem);
+    line-height: 1.5;
+    margin: var(--spacing-5) auto var(--spacing-2);
+    max-width: 36ch;
   }
 
   h1 {
@@ -196,14 +199,17 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
     text-decoration: none;
   }
 
+  /* The first feature leads at full width; the rest share a two-column grid
+     below it, so the page does not repeat one row shape five times. */
   .features {
     display: grid;
-    gap: clamp(4rem, 9vw, 7.5rem);
+    gap: clamp(3.5rem, 7vw, 5.5rem) var(--spacing-10);
   }
 
   .feature {
+    align-content: start;
     display: grid;
-    gap: var(--spacing-8);
+    gap: var(--spacing-6);
   }
 
   /* Reserves the half of the controls that hangs below the cover. */
@@ -246,31 +252,21 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
     display: inline-block;
   }
 
-  .feature__text {
-    align-self: center;
-  }
-
   .feature__text p {
     font-size: var(--type-body-small);
     margin-block-end: 0;
-    max-width: 34ch;
+    max-width: 52ch;
   }
 
-  .selected {
-    padding-block: clamp(3rem, 7vw, 5rem) 0;
+  .feature--lead .feature__text p {
+    font-size: var(--type-body);
   }
 
-  .section-heading {
-    align-items: baseline;
+  .all-work {
     border-block-end: 1px solid var(--color-stroke-subtle);
-    display: flex;
-    gap: var(--spacing-4);
-    justify-content: space-between;
+    margin-block: var(--spacing-12) 0;
     padding-block-end: var(--spacing-3);
-  }
-
-  .section-heading h2 {
-    font-size: 1.25rem;
+    text-align: right;
   }
 
   .notes {
@@ -297,10 +293,16 @@ const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug
   }
 
   @media (min-width: 48rem) {
-    .feature {
-      align-items: center;
-      gap: var(--spacing-10);
-      grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    .features {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .feature--lead {
+      grid-column: 1 / -1;
+    }
+
+    .feature--lead h2 {
+      font-size: clamp(1.9rem, 3.2vw, 2.4rem);
     }
 
     .notes {

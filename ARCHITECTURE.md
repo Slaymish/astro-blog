@@ -74,6 +74,10 @@ a prerendered page negotiates a format it cannot decide for itself.
 `src/styles/themes.css`, and the roles resolve to primitives in
 `src/styles/tokens.css`. No opacity modifiers, no scale gradations, no literal
 hex outside `tokens.css`. If a tinted variant is needed, add a token.
+The places CSS cannot reach (the `theme-color` meta tags, `site.webmanifest`
+and the generated icons) resolve the canvas and text roles from the two
+stylesheets through `src/site/themeColors.ts`, and `theme.ts` reads the computed
+canvas colour after a switch, so no hex is copied out of `tokens.css`.
 A control's resting border (field, outlined button, chip) is
 `--color-stroke-control`, which clears 3:1 against every surface in both
 themes; `--color-stroke-strong` does not in the light theme and is for
@@ -112,6 +116,17 @@ composes existing work and writing prose; UI labels have short functional
 defaults. Components fetch no content collections. Header reads page copy
 through the same helper as the index.
 
+**Shared copy lives in Site Settings.** The header, footer, new-tab note,
+contact band, the labels on work stories, posts and reports, and the PDF
+viewer's controls all read `siteSettings`, so no visible string or accessible
+name is written in a component. Routes stay in code; only labels move.
+`getSiteSettings` runs `validateSiteSettings` and fails the build on an empty
+label. A work story link carries a `kind`; the work card finds the source code
+link by `kind === 'source'`, never by its label.
+
+**One icon registry.** Every glyph is a path list in `src/components/icons.ts`
+rendered by `Icon.astro`. The logo is the only other SVG.
+
 **One JSON-LD graph per page.** `src/site/seo.ts` builds it; no page adds its
 own. It always contains a `Person` and a `WebSite`, then either an article node
 or a `WebPage`, then a `BreadcrumbList` when the page passes crumbs.
@@ -127,8 +142,8 @@ copy of text the templates own. `Base.astro` advertises the twin and
 `netlify/edge-functions/markdown.ts` resolves it, both through the same mapping,
 which `tests/build-output.test.ts` asserts they agree on.
 
-**Content validation fails the build.** `getWorkStories`, `getPosts` and
-`getReports` run the validators in `src/content/validate.ts` and throw on a
+**Content validation fails the build.** `getWorkStories`, `getPosts`,
+`getReports` and `getSiteSettings` run the validators in `src/content/validate.ts` and throw on a
 non-empty result, so a story with no cover alt text never reaches production.
 
 **A link that opens a new tab says so.** Every `target="_blank"` link carries

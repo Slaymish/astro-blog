@@ -2,11 +2,13 @@
   "name": "hamishburke-dev",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.12.0" },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build && tsx scripts/build-markdown.ts",
-    "preview": "astro preview",
+    "preview": "tsx scripts/serve-dist.ts",
     "test": "tsx --test tests/*.test.ts",
     "check": "astro check && pnpm exec knip",
     "studio:dev": "pnpm --filter hamishburke-studio dev",
@@ -16,10 +18,11 @@
     "migrate": "tsx --env-file=.env scripts/migrate-2026-09.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.124.0",
     "@astrojs/netlify": "^8.2.5",
     "@netlify/blobs": "^10.7.13",
     "@portabletext/to-html": "^6.0.0",
-    "@sanity/client": "^7.27.0",
+    "@sanity/client": "^8.5.0",
     "@sanity/image-url": "^2.1.1",
     "astro": "^7.3.1",
     "pdfjs-dist": "^6.3.289",
@@ -31,7 +34,6 @@
     "unified": "^11.0.5"
   },
   "devDependencies": {
-    "@anthropic-ai/sdk": "^0.124.0",
     "@astrojs/check": "^0.9.10",
     "@netlify/edge-functions": "^4.0.0",
     "@netlify/functions": "^6.0.0",

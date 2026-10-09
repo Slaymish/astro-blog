@@ -1,31 +1,42 @@
 ---
 // A real button in the markup; initTheme in the client shell binds it. The
 // pre-paint script has already resolved the theme, so there is nothing to do
-// here but render.
+// here but render. The label names the theme the button switches *to*, so
+// both labels ride along as data and the script swaps them.
+import Icon from './Icon.astro';
+
+interface Props {
+  toLightLabel: string;
+  toDarkLabel: string;
+}
+
+const { toLightLabel, toDarkLabel } = Astro.props;
 ---
 
-<button type="button" class="btn btn--icon theme-toggle" data-theme-toggle aria-label="Switch theme">
-  <svg class="theme-toggle__sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <circle cx="12" cy="12" r="4" />
-    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-  </svg>
-  <svg class="theme-toggle__moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-  </svg>
+<button
+  type="button"
+  class="btn btn--icon theme-toggle"
+  data-theme-toggle
+  data-label-light={toLightLabel}
+  data-label-dark={toDarkLabel}
+  aria-label={toLightLabel}
+>
+  <Icon name="sun" motion="none" class="theme-toggle__sun" />
+  <Icon name="moon" motion="none" class="theme-toggle__moon" />
 </button>
 
 <style>
   /* Show whichever icon represents the theme the button switches *to*. */
-  .theme-toggle__sun {
+  .theme-toggle .theme-toggle__sun {
     display: none;
   }
-  .theme-toggle__moon {
+  .theme-toggle .theme-toggle__moon {
     display: block;
   }
-  :global(.dark) .theme-toggle__sun {
+  :global(.dark) .theme-toggle .theme-toggle__sun {
     display: block;
   }
-  :global(.dark) .theme-toggle__moon {
+  :global(.dark) .theme-toggle .theme-toggle__moon {
     display: none;
   }
 </style>

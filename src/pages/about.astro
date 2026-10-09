@@ -35,7 +35,7 @@ const largeCopy = portableTextToHtml(copy.largeCopy);
       </div>
     </section>
 
-    <section class="about__experiences" aria-label="Two projects">
+    <section class="about__experiences">
       {
         copy.projects.map((project) => (
           <div>
@@ -61,7 +61,7 @@ const largeCopy = portableTextToHtml(copy.largeCopy);
       <div>
         <h2 id="background-heading">{background.heading}</h2>
         {background.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-        <nav aria-label="About links">
+        <div class="about__links">
           {
             background.links.map((link) => (
               <a
@@ -75,7 +75,7 @@ const largeCopy = portableTextToHtml(copy.largeCopy);
               </a>
             ))
           }
-        </nav>
+        </div>
       </div>
     </section>
   </article>
@@ -149,7 +149,7 @@ const largeCopy = portableTextToHtml(copy.largeCopy);
     padding-block: var(--spacing-8);
   }
 
-  nav {
+  .about__links {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-6);

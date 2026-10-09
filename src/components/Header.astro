@@ -1,17 +1,19 @@
 ---
+import Icon from './Icon.astro';
 import Logo from './Logo.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { publicPathFromAstro } from '../site/config';
 import { getFeedIndexCopy } from '../content/feed';
+import { getSiteSettings } from '../content/queries';
 
 const pathname = publicPathFromAstro(Astro.url);
-const copy = await getFeedIndexCopy();
+const [copy, { header }] = await Promise.all([getFeedIndexCopy(), getSiteSettings()]);
 
 const navLinks = [
   { href: '/work', label: copy.navigationLabel },
-  { href: '/reading', label: 'Reading' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/reading', label: header.readingLabel },
+  { href: '/about', label: header.aboutLabel },
+  { href: '/contact', label: header.contactLabel },
 ];
 
 /** All detail and topic routes belong to the combined index. */
@@ -32,12 +34,12 @@ function navAttrs(href: string) {
 ---
 
 <header id="site-header">
-  <nav class="site-nav" aria-label="Primary navigation">
+  <nav class="site-nav" aria-label={header.navigationLabel}>
     <div class="site-nav__inner">
       <a
         href="/"
         class="nav-logo"
-        aria-label="Hamish Burke, home"
+        aria-label={header.homeLinkLabel}
         aria-current={pathname === '/' ? 'page' : undefined}
       >
         <Logo size={36} />
@@ -48,19 +50,12 @@ function navAttrs(href: string) {
       </div>
 
       <div class="site-nav__actions">
-        <ThemeToggle />
+        <ThemeToggle toLightLabel={header.themeToLightLabel} toDarkLabel={header.themeToDarkLabel} />
 
         <details class="site-nav__mobile">
-          <summary class="btn btn--icon" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-navigation">
-            <svg class="menu-icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-            <svg class="menu-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+          <summary class="btn btn--icon" aria-label={header.menuLabel} aria-expanded="false" aria-controls="mobile-navigation">
+            <Icon name="menu" motion="none" class="menu-icon-open" />
+            <Icon name="close" motion="none" class="menu-icon-close" />
           </summary>
           <div class="site-nav__mobile-panel" id="mobile-navigation">
             {navLinks.map(({ href, label }) => <a href={href} {...navAttrs(href)}>{label}</a>)}
@@ -149,7 +144,7 @@ function navAttrs(href: string) {
     display: none;
   }
 
-  .menu-icon-close,
+  .site-nav__mobile .menu-icon-close,
   .site-nav__mobile[open] .menu-icon-open {
     display: none;
   }

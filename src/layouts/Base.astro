@@ -6,6 +6,9 @@ import Header from '../components/Header.astro';
 import { THEME_BOOT } from '../client/themeBoot';
 import { SITE_NAME, TWITTER_HANDLE, UMAMI_WEBSITE_ID, publicPathFromAstro } from '../site/config';
 import { buildMetadata, type MetadataInput } from '../site/seo';
+import { resolveThemeColors } from '../site/themeColors';
+import tokensCss from '../styles/tokens.css?raw';
+import themesCss from '../styles/themes.css?raw';
 import '../styles/tokens.css';
 import '../styles/themes.css';
 import '../styles/base.css';
@@ -25,6 +28,8 @@ const routePath = path ?? publicPathFromAstro(Astro.url);
 // Mirrors markdownTwin() in netlify/edge-functions/markdown.ts, which is what
 // actually answers the Accept header; this only advertises the twin.
 const markdownPath = `${routePath === '/' ? '/index' : routePath}.md`;
+
+const themeColors = resolveThemeColors(tokensCss, themesCss);
 
 const meta = buildMetadata({
   title,
@@ -56,11 +61,10 @@ Astro.csp.insertScriptHash(`sha256-${createHash('sha256').update(THEME_BOOT).dig
     <meta name="description" content={description} />
     <link rel="canonical" href={meta.canonical} />
     <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0d0c" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f7f3" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content={themeColors.dark['bg-canvas']} />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content={themeColors.light['bg-canvas']} />
 
     <Font cssVariable="--font-geist" preload />
-    <Font cssVariable="--font-instrument" />
     <Font cssVariable="--font-jetbrains" />
 
     <meta property="og:type" content={article ? 'article' : 'website'} />

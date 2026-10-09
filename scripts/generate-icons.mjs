@@ -3,24 +3,31 @@
  * geometry in src/site/logo.ts. Run with `pnpm run icons` after changing the
  * mark; the output is committed.
  */
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { LOGO_PATHS, LOGO_VIEWBOX } from '../src/site/logo.ts';
+import { resolveThemeColors } from '../src/site/themeColors.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const publicDir = join(root, 'public');
 
-/** --color-ink-950 and --color-paper-100 from src/styles/tokens.css. */
-const INK = '#0b0d0c';
-const PAPER = '#f6f7f3';
+const stylesDir = join(root, 'src', 'styles');
+const colors = resolveThemeColors(
+  await readFile(join(stylesDir, 'tokens.css'), 'utf8'),
+  await readFile(join(stylesDir, 'themes.css'), 'utf8'),
+);
+
+/** The dark canvas inks the mark; the light canvas is the paper behind it. */
+const INK = colors.dark['bg-canvas'];
+const PAPER = colors.light['bg-canvas'];
 
 const paths = (fill) => LOGO_PATHS.map((d) => `<path fill="${fill}" d="${d}"/>`).join('');
 
 /** The favicon inverts itself in a dark UI; everything else is baked. */
 const faviconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${LOGO_VIEWBOX}">\
-<style>@media (prefers-color-scheme: dark){path{fill:#f2f5ef}}</style>\
+<style>@media (prefers-color-scheme: dark){path{fill:${colors.dark['text-primary']}}}</style>\
 ${paths(INK)}</svg>`;
 
 /** A square mark on a paper ground, the logo inset to `scale` of the box. */
@@ -59,3 +66,10 @@ await png(markOn(512, 0.7, INK), 'icon-512.png', 512);
 await png(ogCard(1200, 630, 360), 'og-default.png', 1200, 630);
 
 console.log('Wrote favicon.svg, apple-touch-icon.png, icon-192.png, icon-512.png, og-default.png');
+
+// The manifest is hand-written apart from its two colours, which follow the tokens.
+const manifestPath = join(publicDir, 'site.webmanifest');
+const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+manifest.background_color = PAPER;
+manifest.theme_color = INK;
+await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);

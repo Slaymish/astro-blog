@@ -32,6 +32,7 @@ interface Link {
   label: string;
   href: string;
   external?: boolean;
+  kind: 'source' | 'other';
 }
 
 export interface IntroductionLink {
@@ -165,9 +166,9 @@ export interface Book {
 export interface HomePage {
   seo: Seo;
   heading: string;
+  intro: string;
   aboutLabel: string;
   featured: string[];
-  moreWorkHeading: string;
   allWorkLabel: string;
   writingLabel: string;
   writingEntry: { _type: 'post' | 'report'; title: string; slug: string };
@@ -282,6 +283,28 @@ export interface NotFoundPage {
 }
 
 export interface SiteSettings {
+  header: {
+    readingLabel: string;
+    aboutLabel: string;
+    contactLabel: string;
+    navigationLabel: string;
+    homeLinkLabel: string;
+    menuLabel: string;
+    themeToLightLabel: string;
+    themeToDarkLabel: string;
+  };
+  footer: {
+    tagline: string;
+    navigationLabel: string;
+    emailLabel: string;
+    githubLabel: string;
+    linkedinLabel: string;
+    cvLabel: string;
+    rssLabel: string;
+    privacyLabel: string;
+    termsLabel: string;
+  };
+  newTabNote: string;
   contactBand: {
     label: string;
     defaultHeading: string;
@@ -290,6 +313,30 @@ export interface SiteSettings {
     bookingLabel: string;
   };
   workCtaLabel: string;
+  entryLabels: {
+    allWorkLabel: string;
+    allWritingLabel: string;
+    outcomeHeading: string;
+    artifactsHeading: string;
+    sourceCodeLabel: string;
+    relatedHeading: string;
+    articleLabel: string;
+    reportLabel: string;
+    readingTimeSuffix: string;
+    pdfSizeSuffix: string;
+    openPdfLabel: string;
+  };
+  pdfViewer: {
+    previousPage: string;
+    nextPage: string;
+    zoomOut: string;
+    zoomIn: string;
+    resetZoom: string;
+    fullscreen: string;
+    loading: string;
+    error: string;
+    openDirectly: string;
+  };
 }
 
 /** One entry in the merged posts-and-reports stream. */

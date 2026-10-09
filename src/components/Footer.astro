@@ -1,22 +1,25 @@
 ---
 import { CONTACT_EMAIL, SOCIAL_PROFILES, NEW_TAB_NOTE_ID } from '../site/config';
+import { getSiteSettings } from '../content/queries';
+
+const { footer, header, newTabNote } = await getSiteSettings();
 
 const links = [
-  { href: `mailto:${CONTACT_EMAIL}`, label: 'Email' },
-  { href: SOCIAL_PROFILES.github, label: 'GitHub', external: true },
-  { href: SOCIAL_PROFILES.linkedin, label: 'LinkedIn', external: true },
-  { href: '/contact', label: 'Contact' },
-  { href: '/cv', label: 'CV' },
-  { href: '/rss.xml', label: 'RSS' },
-  { href: '/privacy', label: 'Privacy' },
-  { href: '/terms', label: 'Terms' },
+  { href: `mailto:${CONTACT_EMAIL}`, label: footer.emailLabel },
+  { href: SOCIAL_PROFILES.github, label: footer.githubLabel, external: true },
+  { href: SOCIAL_PROFILES.linkedin, label: footer.linkedinLabel, external: true },
+  { href: '/contact', label: header.contactLabel },
+  { href: '/cv', label: footer.cvLabel },
+  { href: '/rss.xml', label: footer.rssLabel },
+  { href: '/privacy', label: footer.privacyLabel },
+  { href: '/terms', label: footer.termsLabel },
 ];
 ---
 
 <footer class="site-footer">
   <div class="site-footer__inner">
-    <p class="site-footer__tagline">Hamish Burke · Wellington, New Zealand</p>
-    <nav class="site-footer__nav" aria-label="Footer">
+    <p class="site-footer__tagline">{footer.tagline}</p>
+    <nav class="site-footer__nav" aria-label={footer.navigationLabel}>
       {
         links.map(({ href, label, external }) => (
           <a
@@ -31,7 +34,7 @@ const links = [
       }
     </nav>
   </div>
-  <span id={NEW_TAB_NOTE_ID} hidden>Opens in a new tab</span>
+  <span id={NEW_TAB_NOTE_ID} hidden>{newTabNote}</span>
 </footer>
 
 <style>

@@ -16,17 +16,25 @@ export const homePage = defineType({
       description: 'The page’s h1. The name, not a sentence.',
       validation: (r) => r.required().max(60),
     }),
+    defineField({
+      name: 'intro',
+      title: 'Intro',
+      type: 'string',
+      description: 'One line under the name that says what Hamish does. Twenty words at most.',
+      validation: (r) => r.required().max(160),
+    }),
     text('aboutLabel', 'About link label', 40),
     defineField({
       name: 'featured',
       title: 'Featured work',
       type: 'array',
-      description: 'Three to five. Each one renders as a full-width row, in this order.',
+      description: 'Three or five, in this order. The first renders full width as the lead and the rest fill a two-column grid, which an even count would leave with a gap.',
       of: [{ type: 'reference', to: [{ type: 'workStory' }] }],
-      validation: (r) => r.required().min(3).max(5).unique(),
+      validation: (r) =>
+        r.required().min(3).max(5).unique()
+          .custom((items) => (!items || items.length % 2 === 1 ? true : 'Pick three or five, so the grid under the lead has no gap.')),
     }),
-    text('moreWorkHeading', 'More work heading', 40),
-    text('allWorkLabel', 'All work label', 40),
+    text('allWorkLabel', 'All work link label', 40),
     text('writingLabel', 'Writing label', 40),
     defineField({
       name: 'writingEntry',

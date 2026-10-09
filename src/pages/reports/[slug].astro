@@ -5,7 +5,7 @@ import Button from '../../components/Button.astro';
 import PdfViewer from '../../components/PdfViewer.astro';
 import RelatedList from '../../components/RelatedList.astro';
 import { portableTextToHtml } from '../../content/portableText';
-import { getReports } from '../../content/queries';
+import { getReports, getSiteSettings } from '../../content/queries';
 import { getRelated } from '../../content/related';
 import { formatFullDate } from '../../content/writing';
 import type { Report } from '../../content/types';
@@ -21,6 +21,7 @@ interface Props {
 
 const { report } = Astro.props;
 
+const { entryLabels } = await getSiteSettings();
 const megabytes = (report.pdfBytes / 1_000_000).toFixed(1);
 const body = portableTextToHtml(report.body);
 const related = await getRelated({
@@ -42,17 +43,17 @@ const related = await getRelated({
 >
   <article class="report">
     <ArticleHeader
-      eyebrow="Report"
+      eyebrow={entryLabels.reportLabel}
       title={report.title}
       lede={report.description}
-      meta={[formatFullDate(report.publishedAt), `${megabytes} MB PDF`]}
+      meta={[formatFullDate(report.publishedAt), `${megabytes} ${entryLabels.pdfSizeSuffix}`]}
       tags={report.tags}
       backHref="/work?type=writing"
-      backLabel="All writing"
+      backLabel={entryLabels.allWritingLabel}
     />
 
     <div class="report__actions">
-      <Button href={report.pdfUrl} external>Open PDF</Button>
+      <Button href={report.pdfUrl} external>{entryLabels.openPdfLabel}</Button>
     </div>
 
     <PdfViewer url={report.pdfUrl} title={report.title} />

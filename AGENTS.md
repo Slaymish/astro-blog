@@ -15,7 +15,7 @@ pnpm install --frozen-lockfile
 pnpm run dev          # dev server on :4321
 pnpm run build        # astro check && astro build && the markdown twins - type errors fail the build
 pnpm run test         # tsx --test tests/*.test.ts
-pnpm run preview      # serve the production build
+pnpm run preview      # serve dist/ statically (astro preview is unsupported by the Netlify adapter)
 pnpm run check        # astro check && knip
 pnpm run icons        # regenerate favicon, app icons and og-default.png
 pnpm run migrate      # dataset migration; destructive, see Footguns
@@ -156,6 +156,9 @@ in `docs/exec-plans/`, finished ones under `completed/`.
   (`https://<deploy-id>--<site>.netlify.app/<path>`).
 - Publishing in Studio does not deploy the site. A Netlify build hook has to
   fire, and it is configured in Netlify and Sanity, not in this repository.
+- `pnpm run preview` is `scripts/serve-dist.ts`, a static server over `dist/`
+  with Netlify's pretty URLs. Server routes, `netlify.toml` redirects and the
+  markdown edge function do not run there.
 - `pnpm run migrate subtractive` unsets the legacy fields on every work story and
   post and deletes the retired `project`, `aphorism` and `projectsIndexPage`
   documents. Only the pre-rewrite export under `.sanity-backups/` can restore

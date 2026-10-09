@@ -32,9 +32,8 @@
   --spacing-12: 3rem;
   --spacing-16: 4rem;
 
-  /* The three variables Astro's <Font> component defines. */
+  /* The two families Astro's <Font> component defines. */
   --font-sans: var(--font-geist);
-  --font-serif: var(--font-instrument);
   --font-mono: var(--font-jetbrains);
   --font-display: var(--font-sans);
   --font-body: var(--font-sans);
@@ -61,14 +60,13 @@
   --tracking-heading: -0.025em;
 
   --radius-sm: 0.125rem;
-  --radius-md: 0.125rem;
   --radius-lg: 0.25rem;
   --radius-full: 9999px;
 
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  /* Tinted with the ink rather than pure black, so a shadow on paper reads as
+     depth in the same green-grey as the text, not as a grey smudge. */
+  --shadow-ink: rgb(from var(--color-ink-1000) r g b / 0.1);
+  --shadow-lg: 0 20px 25px -5px var(--shadow-ink), 0 8px 10px -6px var(--shadow-ink);
 
   /* The sticky header's tallest height (Header.astro), plus its 1px rule. */
   --site-header-height: calc(4.5rem + 1px);

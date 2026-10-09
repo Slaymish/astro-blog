@@ -1,5 +1,5 @@
 import { fetchSanity } from './sanity';
-import { validatePosts, validateReports, validateWorkStories } from './validate';
+import { validatePosts, validateReports, validateSiteSettings, validateWorkStories } from './validate';
 import type {
   AboutPage,
   Book,
@@ -51,9 +51,9 @@ export const getHomePage = () =>
     singleton<HomePage>(
       'homePage',
       `{
-        seo, heading, aboutLabel,
+        seo, heading, intro, aboutLabel,
         "featured": featured[]->slug.current,
-        moreWorkHeading, allWorkLabel, writingLabel,
+        allWorkLabel, writingLabel,
         "writingEntry": writingEntry->{ _type, title, "slug": slug.current },
         writingBlurb, writingLinkLabel, allWritingLabel,
         readingLabel, readingText, readingLinkLabel
@@ -101,7 +101,14 @@ export const getNotFoundPage = () =>
   );
 
 export const getSiteSettings = () =>
-  once('siteSettings', () => singleton<SiteSettings>('siteSettings', '{ contactBand, workCtaLabel }'));
+  once('siteSettings', async () => {
+    const settings = await singleton<SiteSettings>(
+      'siteSettings',
+      '{ header, footer, newTabNote, contactBand, workCtaLabel, entryLabels, pdfViewer }',
+    );
+    assertValid('siteSettings', validateSiteSettings(settings));
+    return settings;
+  });
 
 // ----------------------------------------------------------------- collections
 
@@ -110,7 +117,7 @@ export const getWorkStories = () =>
     const stories = await fetchSanity<WorkStory[]>(`*[_type == "workStory"] | order(order asc){
       _id, title, descriptor, "slug": slug.current, kind, order, date, timeframe, tags,
       summary, introduction, introductionLink, ctaLabel, role, body, resultHeading, result,
-      links,
+      "links": links[]{ label, href, external, "kind": coalesce(kind, "other") },
       "cover": cover{ kind, alt, figure, ${image('image')} },
       "evidence": evidence[]{ _key, alt, label, heading, caption, ${image('image')} },
       "artifacts": artifacts[]->{

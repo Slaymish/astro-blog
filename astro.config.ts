@@ -67,30 +67,6 @@ export default defineConfig({
     },
     {
       provider: local,
-      name: 'Instrument Serif',
-      cssVariable: '--font-instrument',
-      fallbacks: ['Georgia', 'serif'],
-      options: {
-        variants: [
-          {
-            src: ['./src/assets/fonts/instrument-serif-latin-400-normal.woff2'],
-            weight: 400,
-            style: 'normal',
-            display: 'swap',
-            unicodeRange: [latin],
-          },
-          {
-            src: ['./src/assets/fonts/instrument-serif-latin-ext-400-normal.woff2'],
-            weight: 400,
-            style: 'normal',
-            display: 'swap',
-            unicodeRange: [latinExt],
-          },
-        ],
-      },
-    },
-    {
-      provider: local,
       name: 'JetBrains Mono',
       cssVariable: '--font-jetbrains',
       fallbacks: ['ui-monospace', 'monospace'],

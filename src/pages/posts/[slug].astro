@@ -6,7 +6,7 @@ import RelatedList from '../../components/RelatedList.astro';
 import SanityImage from '../../components/SanityImage.astro';
 import { sanitySrcSet } from '../../content/images';
 import { markdownToHtml, markdownToPlainText, splitAtComponent } from '../../content/markdown';
-import { getPosts } from '../../content/queries';
+import { getPosts, getSiteSettings } from '../../content/queries';
 import { readingTime } from '../../content/readingTime';
 import { getRelated } from '../../content/related';
 import { formatFullDate } from '../../content/writing';
@@ -27,6 +27,7 @@ const html = markdownToHtml(post.markdownBody);
 const split = splitAtComponent(html, 'gpu-calculator');
 const { minutes } = readingTime(markdownToPlainText(post.markdownBody));
 const related = await getRelated({ type: 'post', slug: post.slug, tags: post.tags, related: post.related });
+const { entryLabels } = await getSiteSettings();
 const ogImage = post.coverImage ? sanitySrcSet(post.coverImage, [1200]).src : undefined;
 ---
 
@@ -42,13 +43,13 @@ const ogImage = post.coverImage ? sanitySrcSet(post.coverImage, [1200]).src : un
 >
   <article class="article">
     <ArticleHeader
-      eyebrow="Article"
+      eyebrow={entryLabels.articleLabel}
       title={post.title}
       lede={post.excerpt}
-      meta={[formatFullDate(post.publishedAt), `${minutes} min read`]}
+      meta={[formatFullDate(post.publishedAt), `${minutes} ${entryLabels.readingTimeSuffix}`]}
       tags={post.tags}
       backHref="/work?type=writing"
-      backLabel="All writing"
+      backLabel={entryLabels.allWritingLabel}
     />
 
     {
