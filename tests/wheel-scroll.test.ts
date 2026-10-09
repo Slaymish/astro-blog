@@ -8,6 +8,7 @@ function fixture(run: (f: {
   inputs: EventTarget & { scrollY: number };
   motion: EventTarget & { matches: boolean };
   nested: object;
+  doc: EventTarget & { hidden: boolean };
 }) => void): void {
   let now = 0;
   let id = 0;
@@ -22,13 +23,14 @@ function fixture(run: (f: {
   const nested = new Element();
   const body = new Element();
   const root = Object.assign(new Element(), { scrollHeight: 3000 });
+  const doc = Object.assign(new EventTarget(), { hidden: false, body, documentElement: root });
   const motion = Object.assign(new EventTarget(), { matches: false });
   const inputs = Object.assign(new EventTarget(), {
     scrollY: 0, innerHeight: 1000, matchMedia: () => motion,
     scrollTo: ({ top }: { top: number }) => { inputs.scrollY = top; },
   });
   const globals = {
-    window: inputs, document: { body, documentElement: root }, HTMLElement: Element,
+    window: inputs, document: doc, HTMLElement: Element,
     performance: { now: () => now },
     getComputedStyle: (el: Element) => ({ overflowY: el.overflowY, lineHeight: '24px' }),
     requestAnimationFrame: (cb: FrameRequestCallback) => { frames.set(++id, cb); return id; },
@@ -41,7 +43,7 @@ function fixture(run: (f: {
   }
   try {
     initWheelScroll();
-    run({ inputs, motion, nested,
+    run({ inputs, motion, nested, doc,
       wheel(options = {}) {
         const event = new Event('wheel', { cancelable: true });
         Object.assign(event, { deltaMode: 0, deltaY: 100, deltaX: 0, ctrlKey: false,
@@ -133,5 +135,16 @@ test('line deltas use line height and the document bounds limit travel', () => {
     wheel(); advance(280);
     assert.equal(inputs.scrollY, 2000);
     assert.equal(wheel().defaultPrevented, false);
+  });
+});
+
+test('hiding a tab cancels pending wheel movement before returning', () => {
+  fixture(({ wheel, advance, inputs, doc }) => {
+    wheel(); advance(30);
+    const position = inputs.scrollY;
+    doc.hidden = true;
+    doc.dispatchEvent(new Event('visibilitychange'));
+    advance(1000);
+    assert.equal(inputs.scrollY, position);
   });
 });

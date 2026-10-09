@@ -84,9 +84,20 @@ reshaping them into the initials. The other letters follow individually authored
 pen routes from `src/site/nameMotion.ts`, then hand over to regular Geist HTML
 type after 2.65 seconds. `src/site/namePaths.ts` contains outlines extracted from
 the bundled font. Input or resizing completes the motion immediately. The
-first click, key press, tap or scroll reveals the introduction once;
-`src/client/heroReveal.ts` animates the name between its two positions without
-intercepting scrolling. Small screens keep the stacked layout. Reduced motion
+interruption listeners are installed before fonts finish loading; restored
+scroll positions, fragment links and an already revealed introduction skip
+the logo sequence. Hiding or leaving the page completes both opening states
+so returning cannot resume a partial mark. Changes to reduced motion reveal
+the introduction immediately; resizing cancels any active name relocation.
+The first click, key press, tap or scroll reveals the introduction once;
+`src/client/heroReveal.ts` animates the name between its two positions. A first
+downward wheel gesture at the top holds scrolling once for 400ms while the
+name and introduction settle. Held deltas are discarded, never replayed. The
+capture listener runs before the shell's wheel smoother and is removed on
+release. Keyboard, touch, reversing direction, modified gestures, nested scroll
+regions, resize and reduced motion bypass or interrupt the hold. Returning to
+the top or restoring a scrolled page cannot trigger another hold.
+Small screens keep the stacked layout. Reduced motion
 reveals immediately, and without JavaScript the complete introduction is shown.
 
 ## Invariants
@@ -205,6 +216,7 @@ If the header grows, change that token with it.
   device detection is a conservative heuristic. Touch, keyboard, modified
   wheel events, nested scroll regions and reduced motion bypass smoothing.
   Other input or an external scroll-position change cancels pending motion.
+  Hiding the tab also cancels pending movement before it can resume on return.
 - **`src/content/images.ts` derives its image builder from the asset URL**, not
   from the Sanity client, because the client imports `astro:env/server` and the
   test runner cannot resolve that. A Sanity asset URL carries its project and

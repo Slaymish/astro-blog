@@ -234,6 +234,11 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
     .opening[data-reveal='revealed'] .opening__body {
       animation: intro-reveal 600ms 160ms var(--easing-expressive) both;
     }
+
+    .opening[data-reveal-motion='brief'] .opening__body {
+      animation-duration: 320ms;
+      animation-delay: 80ms;
+    }
   }
 
   @keyframes intro-reveal {

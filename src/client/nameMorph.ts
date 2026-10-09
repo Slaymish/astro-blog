@@ -42,22 +42,38 @@ function draw(from: Point[], to: Point[], progress: number): string {
 export async function initNameMorph(): Promise<void> {
   const heading = document.querySelector<HTMLElement>('[data-name-morph]');
   const svg = heading?.querySelector<SVGSVGElement>('svg');
-  if (!heading || !svg) return;
-  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  if (!heading || !svg || heading.dataset.morph !== 'pending') return;
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let frame = 0;
   let finished = false;
+  let timeout: number | undefined;
   const controller = new AbortController();
   const finish = (): void => {
+    if (finished) return;
     finished = true;
     cancelAnimationFrame(frame);
+    window.clearTimeout(timeout);
     controller.abort();
     heading.dataset.morph = 'complete';
     window.removeEventListener('resize', finish);
     motion.removeEventListener('change', finish);
   };
-  if (motion.matches) { finish(); return; }
+  // Listen before awaiting fonts: input during loading must win too.
+  window.addEventListener('resize', finish, { once: true, signal: controller.signal });
+  motion.addEventListener('change', finish, { once: true, signal: controller.signal });
+  for (const event of ['wheel', 'scroll', 'touchstart', 'pointerdown', 'keydown', 'pagehide']) {
+    window.addEventListener(event, finish, { passive: true, signal: controller.signal });
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) finish();
+  }, { signal: controller.signal });
+  if (motion.matches || document.hidden || window.scrollY > 0 || location.hash ||
+      heading.closest<HTMLElement>('[data-hero-reveal]')?.dataset.reveal === 'revealed') {
+    finish();
+    return;
+  }
   // A failed or delayed font load must never leave the name hidden.
-  const timeout = window.setTimeout(finish, 5000);
+  timeout = window.setTimeout(finish, 5000);
   try {
     await document.fonts.ready;
     if (finished) return;
@@ -173,17 +189,12 @@ export async function initNameMorph(): Promise<void> {
     });
     const paint = (elapsed: number): void => tracks.forEach((track) => track.paint(elapsed));
     paint(0);
-    window.addEventListener('resize', finish, { once: true });
-    motion.addEventListener('change', finish, { once: true });
-    for (const event of ['wheel', 'scroll', 'touchstart', 'pointerdown', 'keydown']) {
-      window.addEventListener(event, finish, { passive: true, signal: controller.signal });
-    }
     const start = performance.now();
     const tick = (now: number): void => {
       if (finished) return;
       const elapsed = now - start;
       paint(elapsed);
-      if (elapsed >= 2650) { clearTimeout(timeout); finish(); }
+      if (elapsed >= 2650) finish();
       else frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);

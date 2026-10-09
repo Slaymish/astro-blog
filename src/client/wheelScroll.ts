@@ -79,5 +79,8 @@ export function initWheelScroll(): void {
   for (const event of ['keydown', 'pointerdown', 'touchstart', 'focusin', 'hashchange', 'resize', 'pagehide']) {
     window.addEventListener(event, stop, { passive: true });
   }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+  });
   motion.addEventListener('change', stop);
 }
