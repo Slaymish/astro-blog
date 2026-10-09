@@ -28,7 +28,7 @@ function navAttrs(href: string) {
   const active = isActive(href);
   return {
     class: active ? 'site-nav__link site-nav__link--active' : 'site-nav__link',
-    'aria-current': active ? ('page' as const) : undefined,
+    'aria-current': active ? (pathname === href ? ('page' as const) : ('location' as const)) : undefined,
   };
 }
 ---
@@ -53,7 +53,7 @@ function navAttrs(href: string) {
         <ThemeToggle toLightLabel={header.themeToLightLabel} toDarkLabel={header.themeToDarkLabel} />
 
         <details class="site-nav__mobile">
-          <summary class="btn btn--icon" aria-label={header.menuLabel} aria-expanded="false" aria-controls="mobile-navigation">
+          <summary class="btn btn--icon" aria-label={header.menuLabel} aria-controls="mobile-navigation">
             <Icon name="menu" motion="none" class="menu-icon-open" />
             <Icon name="close" motion="none" class="menu-icon-close" />
           </summary>
@@ -132,12 +132,6 @@ function navAttrs(href: string) {
 
   .site-nav__mobile summary {
     list-style: none;
-  }
-
-  .site-nav__mobile[open] summary {
-    background: var(--color-bg-raised);
-    border-color: var(--color-stroke-strong);
-    color: var(--color-action);
   }
 
   .site-nav__mobile summary::-webkit-details-marker {

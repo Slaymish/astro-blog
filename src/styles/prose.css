@@ -139,32 +139,13 @@
 
 .code-copy-btn {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  padding: 0.25rem 0.625rem;
-  font-size: var(--type-label);
-  font-family: var(--font-body);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-secondary);
-  background: var(--color-bg-raised);
-  border: 1px solid var(--color-stroke-subtle);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  opacity: 0;
-  transition:
-    opacity var(--motion-duration-interaction) var(--easing-expressive),
-    color var(--motion-duration-interaction) var(--easing-expressive),
-    border-color var(--motion-duration-interaction) var(--easing-expressive);
+  top: var(--spacing-2);
+  right: var(--spacing-2);
 }
 
-.prose pre:hover .code-copy-btn,
-.code-copy-btn:focus-visible {
-  opacity: 1;
-}
-
-.code-copy-btn:hover {
-  color: var(--color-action);
-  border-color: var(--color-action);
+/* Reserve a row for the control so it cannot cover the first line of code. */
+.prose pre:has(.code-copy-btn) {
+  padding-top: calc(var(--control-height-sm) + var(--spacing-4));
 }
 
 .prose table {

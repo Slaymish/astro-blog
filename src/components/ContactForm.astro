@@ -1,0 +1,32 @@
+---
+import Button from './Button.astro';
+import type { ContactFormCopy } from '../content/types';
+interface Props { copy: ContactFormCopy; id?: string }
+const { copy, id = 'contact-email' } = Astro.props;
+---
+<form class="contact-form" method="post" action="/api/contact" data-contact-form data-state="idle">
+  <p class="contact-form__lead">{copy.lead}</p>
+  <div class="field">
+    <label class="field__label" for={id}>{copy.emailLabel}</label>
+    <input class="input" id={id} name="email" type="email" autocomplete="email" required maxlength="254" aria-describedby={`${id}-status`} />
+  </div>
+  <input type="text" name="website" hidden tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <Button type="submit">{copy.button}</Button>
+  <p class="field__message" id={`${id}-status`}>
+    <span data-for="sending">{copy.sending}</span>
+    <span data-for="success">{copy.success}</span>
+    <span data-for="error">{copy.error}</span>
+    <span data-for="limited">{copy.limited}</span>
+  </p>
+  <p class="sr-only" role="status" data-contact-announce></p>
+</form>
+<style>
+  .contact-form { display: grid; gap: var(--spacing-3); width: 100%; }
+  .contact-form__lead { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.6; margin: 0; }
+  .contact-form > :global(.btn) { justify-self: start; }
+  [data-for] { display: none; }
+  [data-state='sending'] [data-for='sending'],
+  [data-state='success'] [data-for='success'],
+  [data-state='error'] [data-for='error'],
+  [data-state='limited'] [data-for='limited'] { display: inline; }
+</style>

@@ -1,11 +1,12 @@
 ---
 import { createHash } from 'node:crypto';
-import { Font } from 'astro:assets';
+import { Font, getImage } from 'astro:assets';
+import headshot from '../assets/images/headshot.jpg';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { THEME_BOOT } from '../client/themeBoot';
 import { SITE_NAME, TWITTER_HANDLE, UMAMI_WEBSITE_ID, publicPathFromAstro } from '../site/config';
-import { buildMetadata, type MetadataInput } from '../site/seo';
+import { buildMetadata, serializeJsonLd, type MetadataInput } from '../site/seo';
 import { resolveThemeColors } from '../site/themeColors';
 import tokensCss from '../styles/tokens.css?raw';
 import themesCss from '../styles/themes.css?raw';
@@ -22,7 +23,7 @@ interface Props extends Omit<MetadataInput, 'path'> {
   wide?: boolean;
 }
 
-const { title, description, path, canonicalPath, image, article, robots, breadcrumbs, wide } = Astro.props;
+const { title, description, path, canonicalPath, image, article, robots, breadcrumbs, wide, pageType, topics, relatedLinks, collections, imageAlt } = Astro.props;
 
 const routePath = path ?? publicPathFromAstro(Astro.url);
 // Mirrors markdownTwin() in netlify/edge-functions/markdown.ts, which is what
@@ -30,6 +31,7 @@ const routePath = path ?? publicPathFromAstro(Astro.url);
 const markdownPath = `${routePath === '/' ? '/index' : routePath}.md`;
 
 const themeColors = resolveThemeColors(tokensCss, themesCss);
+const portrait = await getImage({ src: headshot, width: 800, format: 'webp' });
 
 const meta = buildMetadata({
   title,
@@ -39,6 +41,8 @@ const meta = buildMetadata({
   article,
   robots,
   breadcrumbs,
+  pageType, topics, relatedLinks, collections, imageAlt,
+  profileImage: portrait.src,
 });
 
 // The one inline script on the page. Astro does not hash the content of an
@@ -94,7 +98,7 @@ Astro.csp.insertScriptHash(`sha256-${createHash('sha256').update(THEME_BOOT).dig
     <link rel="alternate" type="application/rss+xml" title="Hamish Burke" href="/rss.xml" />
     <link rel="alternate" type="text/markdown" href={markdownPath} />
 
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(meta.jsonLd)} />
+    <script is:inline type="application/ld+json" set:html={serializeJsonLd(meta.jsonLd)} />
     <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={UMAMI_WEBSITE_ID}
     ></script>
   </head>

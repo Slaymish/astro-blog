@@ -1,5 +1,6 @@
 ---
 import Button from './Button.astro';
+import ContactForm from './ContactForm.astro';
 import { getSiteSettings } from '../content/queries';
 import { BOOKING_URL, CONTACT_EMAIL } from '../site/config';
 
@@ -21,6 +22,7 @@ const bandHeading = heading ?? contactBand.defaultHeading;
     <h2 id="contact-band-heading">{bandHeading}</h2>
   </div>
   <div class="contact-band__actions">
+    {contactBand.form && <ContactForm copy={contactBand.form} />}
     {
       booking ? (
         <Button href={BOOKING_URL} external>

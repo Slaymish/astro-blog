@@ -4,7 +4,7 @@
  * keeps following the system while they have not.
  */
 
-type Theme = 'light' | 'dark';
+type Theme = 'dark' | 'light';
 
 const STORAGE_KEY = 'theme';
 const TOGGLE_SELECTOR = '[data-theme-toggle]';
@@ -15,18 +15,13 @@ function currentTheme(root: HTMLElement): Theme {
 
 /**
  * The <meta name="theme-color"> elements are media-scoped so the browser picks
- * one before any script runs, and Base.astro fills them from tokens.css. Once
- * the visitor chooses, both are set to the canvas colour the chosen theme has
- * just resolved, so the choice wins whatever the system says and the colour
- * never has to be written down twice.
+ * one before any script runs. Afterwards the canvas token is the source of
+ * truth for both, including when the system preference changes.
  */
-const originalThemeColors = new Map<HTMLMetaElement, string>();
-
-function applyMetaThemeColor(root: HTMLElement, pinned: boolean): void {
-  const canvas = getComputedStyle(root).getPropertyValue('--color-bg-canvas').trim();
+function applyMetaThemeColor(root: HTMLElement): void {
+  const color = getComputedStyle(root).getPropertyValue('--color-bg-canvas').trim();
   document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
-    if (!originalThemeColors.has(meta)) originalThemeColors.set(meta, meta.content);
-    meta.setAttribute('content', pinned && canvas ? canvas : (originalThemeColors.get(meta) ?? meta.content));
+    meta.setAttribute('content', color);
   });
 }
 
@@ -34,8 +29,7 @@ function apply(root: HTMLElement, theme: Theme, source: 'user' | 'system'): void
   root.classList.remove('light', 'dark');
   root.classList.add(theme);
   root.dataset.themeSource = source;
-  root.style.colorScheme = theme;
-  applyMetaThemeColor(root, source === 'user');
+  applyMetaThemeColor(root);
 
   // The label names the action, so the button is not also a toggle: pairing a
   // changing label with aria-pressed reads as "Switch to dark theme, pressed".

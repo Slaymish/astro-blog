@@ -1,0 +1,18 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { getSiteSettings } from '../../content/queries';
+import { CONTACT_EMAIL } from '../../site/config';
+export const prerender = false;
+const { contactBand } = await getSiteSettings();
+const copy = contactBand.form;
+const state = Astro.url.searchParams.get('state');
+const message = state === 'ok' ? copy?.success : state === 'limited' ? copy?.limited : copy?.error;
+Astro.response.headers.set('cache-control', 'no-store');
+if (!copy) Astro.response.status = 503;
+---
+<Base title={contactBand.contactLabel} description={contactBand.defaultHeading} robots="noindex, nofollow">
+  <PageHeader headline={contactBand.defaultHeading} intro={message} measure="narrow">
+    <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+  </PageHeader>
+</Base>

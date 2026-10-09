@@ -3,13 +3,15 @@ import { NEW_TAB_NOTE_ID } from '../site/config';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import PageHeader from '../components/PageHeader.astro';
-import { getContactPage } from '../content/queries';
+import ContactForm from '../components/ContactForm.astro';
+import { getContactPage, getSiteSettings } from '../content/queries';
 
-const copy = await getContactPage();
+const [copy, { contactBand }] = await Promise.all([getContactPage(), getSiteSettings()]);
 const { hero } = copy;
 ---
 
 <Base
+  pageType="ContactPage"
   title={copy.seo.title}
   description={copy.seo.description}
   breadcrumbs={[{ name: 'Contact', path: '/contact' }]}
@@ -44,6 +46,7 @@ const { hero } = copy;
   </section>
 
   <p class="contact__availability">{copy.availabilityNote}</p>
+  {contactBand.form && <div class="contact__form"><ContactForm copy={contactBand.form} /></div>}
 </Base>
 
 <style>
@@ -54,6 +57,8 @@ const { hero } = copy;
   .contact__label { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--type-label); letter-spacing: .08em; text-transform: uppercase; }
   .contact__value { align-items: baseline; display: inline-flex; font-size: clamp(1.2rem, 2.4vw, 1.9rem); gap: var(--icon-gap); letter-spacing: var(--tracking-heading); text-decoration: underline; text-underline-offset: .18em; }
   .contact__note { color: var(--color-text-secondary); font-size: var(--type-body-small); line-height: 1.6; max-width: 44rem; }
+
+  .contact__form { margin-block: var(--spacing-8); max-width: 32rem; }
 
   .contact__availability { color: var(--color-text-secondary); font-size: var(--type-body); line-height: 1.7; margin: clamp(3rem, 8vw, 6rem) 0 0; max-width: 44rem; }
 

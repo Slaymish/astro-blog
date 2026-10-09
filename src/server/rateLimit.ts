@@ -46,7 +46,7 @@ const SHARED_BUCKET = 'unknown';
  * their scope, and the union means a typo is a type error rather than a silent
  * collision.
  */
-type RateLimitScope = 'collect' | 'recommend';
+type RateLimitScope = 'collect' | 'recommend' | 'contact';
 
 /**
  * The current fixed window as `YYYY-MM-DDTHH`. Hourly buckets keep the key

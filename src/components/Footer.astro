@@ -1,16 +1,15 @@
 ---
-import { CONTACT_EMAIL, SOCIAL_PROFILES, NEW_TAB_NOTE_ID } from '../site/config';
+import { NEW_TAB_NOTE_ID } from '../site/config';
 import { getSiteSettings } from '../content/queries';
 
 const { footer, header, newTabNote } = await getSiteSettings();
 
 const links = [
-  { href: `mailto:${CONTACT_EMAIL}`, label: footer.emailLabel },
-  { href: SOCIAL_PROFILES.github, label: footer.githubLabel, external: true },
-  { href: SOCIAL_PROFILES.linkedin, label: footer.linkedinLabel, external: true },
   { href: '/contact', label: header.contactLabel },
   { href: '/cv', label: footer.cvLabel },
   { href: '/rss.xml', label: footer.rssLabel },
+];
+const legalLinks = [
   { href: '/privacy', label: footer.privacyLabel },
   { href: '/terms', label: footer.termsLabel },
 ];
@@ -20,18 +19,12 @@ const links = [
   <div class="site-footer__inner">
     <p class="site-footer__tagline">{footer.tagline}</p>
     <nav class="site-footer__nav" aria-label={footer.navigationLabel}>
-      {
-        links.map(({ href, label, external }) => (
-          <a
-            href={href}
-            rel={external ? 'noopener noreferrer' : undefined}
-            target={external ? '_blank' : undefined}
-            aria-describedby={external ? NEW_TAB_NOTE_ID : undefined}
-          >
-            {label}
-          </a>
-        ))
-      }
+      <div class="site-footer__links">
+        {links.map(({ href, label }) => <a href={href}>{label}</a>)}
+      </div>
+      <div class="site-footer__links site-footer__links--legal">
+        {legalLinks.map(({ href, label }) => <a href={href}>{label}</a>)}
+      </div>
     </nav>
   </div>
   <span id={NEW_TAB_NOTE_ID} hidden>{newTabNote}</span>
@@ -61,6 +54,11 @@ const links = [
   }
 
   .site-footer__nav {
+    display: grid;
+    gap: var(--spacing-2);
+  }
+
+  .site-footer__links {
     display: flex;
     flex-wrap: wrap;
     gap: 0 var(--spacing-5);
@@ -73,7 +71,12 @@ const links = [
     font-size: var(--type-body-small);
     min-block-size: var(--control-height-md);
     min-inline-size: var(--control-height-md);
-    text-decoration: none;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .site-footer__links--legal a {
+    font-size: var(--font-size-sm);
   }
 
   .site-footer__nav a:hover {

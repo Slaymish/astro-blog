@@ -1,4 +1,5 @@
 ---
+import { feedMetadataEntries } from '../../content/metadata';
 import Base from '../../layouts/Base.astro';
 import FeedList from '../../components/FeedList.astro';
 import IconText from '../../components/IconText.astro';
@@ -18,7 +19,8 @@ const { tag, entries } = Astro.props;
 const copy = await getFeedIndexCopy();
 ---
 
-<Base title={`${copy.navigationLabel}: ${tag}`} description={copy.seo.description}
+<Base pageType="CollectionPage" topics={[tag]}
+  collections={[{ id: 'entries', name: tag, entries: feedMetadataEntries(entries) }]} title={`${copy.navigationLabel}: ${tag}`} description={copy.seo.description}
   breadcrumbs={[
     { name: copy.navigationLabel, path: '/work' },
     { name: tag, path: `/tags/${tagSlug(tag)}` },

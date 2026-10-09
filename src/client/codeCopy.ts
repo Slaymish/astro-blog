@@ -10,24 +10,33 @@ const BUTTON_CLASS = 'code-copy-btn';
 const CONFIRM_MS = 2000;
 
 export function initCodeCopy(): void {
+  if (!navigator.clipboard?.writeText) return;
+
   document.querySelectorAll<HTMLPreElement>(CODE_BLOCK_SELECTOR).forEach((pre) => {
     if (pre.querySelector('.' + BUTTON_CLASS)) return;
 
     const button = document.createElement('button');
-    button.className = BUTTON_CLASS;
+    button.className = `btn btn--secondary btn--sm btn--surface ${BUTTON_CLASS}`;
     button.type = 'button';
     button.setAttribute('aria-label', 'Copy code');
     button.textContent = 'Copy';
 
-    button.addEventListener('click', () => {
+    let confirmation: ReturnType<typeof setTimeout>;
+    button.addEventListener('click', async () => {
       const code = pre.querySelector('code');
-      const text = code ? code.textContent : pre.textContent;
-      navigator.clipboard.writeText(text || '').then(() => {
+      const text = code?.textContent ?? [...pre.childNodes]
+        .filter((node) => node !== button).map((node) => node.textContent).join('');
+      clearTimeout(confirmation);
+      try {
+        await navigator.clipboard.writeText(text || '');
         button.textContent = 'Copied!';
-        setTimeout(() => {
+        confirmation = setTimeout(() => {
           button.textContent = 'Copy';
         }, CONFIRM_MS);
-      });
+      } catch {
+        // Keep the code selectable and allow another attempt after a denial.
+        button.textContent = 'Copy';
+      }
     });
 
     pre.appendChild(button);

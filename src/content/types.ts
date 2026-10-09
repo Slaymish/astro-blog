@@ -114,6 +114,7 @@ export interface Post {
 
 export interface Report {
   _id: string;
+  updatedAt?: string;
   title: string;
   slug: string;
   publishedAt: string;
@@ -127,6 +128,7 @@ export interface Report {
 
 export interface WorkStory {
   _id: string;
+  updatedAt?: string;
   title: string;
   descriptor: string;
   slug: string;
@@ -282,6 +284,16 @@ export interface NotFoundPage {
   suggestions: CtaLink[];
 }
 
+export interface ContactFormCopy {
+  lead: string;
+  emailLabel: string;
+  button: string;
+  sending: string;
+  success: string;
+  error: string;
+  limited: string;
+}
+
 export interface SiteSettings {
   header: {
     readingLabel: string;
@@ -311,6 +323,7 @@ export interface SiteSettings {
     professionalHeading: string;
     contactLabel: string;
     bookingLabel: string;
+    form?: ContactFormCopy;
   };
   workCtaLabel: string;
   entryLabels: {

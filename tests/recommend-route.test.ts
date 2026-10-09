@@ -23,14 +23,12 @@ test('POST /api/recommend rejects an oversized body before parsing', async () =>
   assert.equal(response.status, 413);
 });
 
-test('POST /api/recommend accepts a title and does not cache the reply', async () => {
+test('POST /api/recommend reports unavailable when storage and delivery cannot run', async () => {
   const response = await post(JSON.stringify({ title: 'The Myth of Sisyphus' }));
-  assert.equal(response.status, 200);
+  assert.equal(response.status, 503);
   assert.equal(response.headers.get('cache-control'), 'no-store');
   const body = await response.json();
-  assert.equal(body.ok, true);
-  // Outside Netlify there is no blob store, so the route reports the write it skipped.
-  assert.equal(body.stored, false);
+  assert.equal(body.error, 'unavailable');
 });
 
 function postForm(title: string): Promise<Response> {
@@ -47,7 +45,7 @@ test('a form-encoded post redirects instead of answering JSON, so the form works
   const response = await postForm('The Myth of Sisyphus');
 
   assert.equal(response.status, 303);
-  assert.equal(response.headers.get('location'), '/reading/sent?state=ok');
+  assert.equal(response.headers.get('location'), '/reading/sent?state=error');
   assert.equal(response.headers.get('cache-control'), 'no-store');
 });
 
@@ -61,4 +59,16 @@ test('a form-encoded post is not answered with a JSON body', async () => {
 
   assert.equal(await response.text(), '');
   assert.equal(response.headers.get('content-type'), null);
+});
+
+test('recommendation bounds native form bodies too', async () => {
+  assert.equal((await postForm('x'.repeat(3000))).headers.get('location'), '/reading/sent?state=error');
+});
+
+test('recommendation rejects null payloads and cross-origin JSON', async () => {
+  assert.equal((await post('null')).status, 400);
+  const response = await POST({ request: new Request('https://hamishburke.dev/api/recommend', {
+    method: 'POST', headers: { origin: 'https://elsewhere.example' }, body: JSON.stringify({ title: 'A Book' }),
+  }) });
+  assert.equal(response.status, 403);
 });

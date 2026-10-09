@@ -7,6 +7,7 @@ import SanityImage from '../../components/SanityImage.astro';
 import { sanitySrcSet } from '../../content/images';
 import { markdownToHtml, markdownToPlainText, splitAtComponent } from '../../content/markdown';
 import { getPosts, getSiteSettings } from '../../content/queries';
+import { renderedContentMetadata } from '../../content/metadata';
 import { readingTime } from '../../content/readingTime';
 import { getRelated } from '../../content/related';
 import { formatFullDate } from '../../content/writing';
@@ -24,6 +25,7 @@ interface Props {
 const { post } = Astro.props;
 
 const html = markdownToHtml(post.markdownBody);
+const structuredBody = renderedContentMetadata(html);
 const split = splitAtComponent(html, 'gpu-calculator');
 const { minutes } = readingTime(markdownToPlainText(post.markdownBody));
 const related = await getRelated({ type: 'post', slug: post.slug, tags: post.tags, related: post.related });
@@ -35,7 +37,9 @@ const ogImage = post.coverImage ? sanitySrcSet(post.coverImage, [1200]).src : un
   title={post.title}
   description={post.excerpt}
   image={ogImage}
-  article={{ kind: 'post', publishedAt: post.publishedAt, updatedAt: post.updatedAt, tags: post.tags }}
+  imageAlt={post.coverImage?.alt}
+  relatedLinks={related.map((entry) => entry.href)}
+  article={{ kind: 'post', publishedAt: post.publishedAt, updatedAt: post.updatedAt, tags: post.tags, text: structuredBody.text, wordCount: readingTime(structuredBody.text).words, minutes, citations: structuredBody.citations }}
   breadcrumbs={[
     { name: 'Writing', path: '/work' },
     { name: post.title, path: `/posts/${post.slug}` },

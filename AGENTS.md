@@ -61,8 +61,8 @@ Config files: `astro.config.ts`, `sanity.config.ts` (in `studio/`), `netlify.tom
 at build time from Sanity. `build: { format: 'file' }` and
 `trailingSlash: 'never'`. Request-time inputs do not exist on a prerendered page.
 The only server routes are the ones exporting `prerender = false`:
-`api/collect.ts`, `api/recommend.ts`, `api/cal-webhook.ts`, `reading/sent.astro`
-and `stats.astro`.
+`api/collect.ts`, `api/recommend.ts`, `api/contact.ts`, `api/cal-webhook.ts`,
+`reading/sent.astro`, `contact/sent.astro` and `stats.astro`.
 
 Content negotiation is the one request-time behaviour above the build:
 `netlify/edge-functions/markdown.ts` serves the `.md` twin that

@@ -1,0 +1,20 @@
+{
+  "mutations": [
+    {
+      "patch": {
+        "id": "siteSettings",
+        "set": {
+          "contactBand.form": {
+            "lead": "Leave your email and I’ll get in touch.",
+            "emailLabel": "Your email",
+            "button": "Send my email",
+            "sending": "Sending…",
+            "success": "Thanks. I’ll get in touch.",
+            "error": "That didn’t send. Please try again.",
+            "limited": "Please wait a while before trying again."
+          }
+        }
+      }
+    }
+  ]
+}

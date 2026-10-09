@@ -22,8 +22,8 @@ catch people out:
   URL goes through it. Keep the two settings and that helper in step.
 
 The only routes that run on request are the ones that opt out with
-`export const prerender = false`: `api/collect.ts`, `api/recommend.ts`,
-`api/cal-webhook.ts`, `reading/sent.astro` and the private `stats.astro`.
+`export const prerender = false`: `api/collect.ts`, `api/recommend.ts`, `api/contact.ts`,
+`api/cal-webhook.ts`, `reading/sent.astro`, `contact/sent.astro` and the private `stats.astro`.
 
 One request-time behaviour sits above the build rather than inside it.
 `netlify/edge-functions/markdown.ts` reads the `Accept` header and serves a
@@ -89,6 +89,11 @@ per-instance value sets a custom property on a class, as `PageHeader.astro` does
 with its three measures. `tests/build-output.test.ts` fails on any `style`
 attribute in the build, and a hook warns at edit time.
 
+**Theme classes own the native colour scheme.** The pre-paint resolver accepts
+only saved `light` and `dark` values; anything else keeps following the system.
+The bundled toggle reads `--color-bg-canvas` for browser chrome rather than
+maintaining another palette, and makes no inline style writes.
+
 **One inline script, hashed.** `src/client/themeBoot.ts` is the only inline
 script, and `Base.astro` hashes that exact constant into `script-src` with
 `Astro.csp.insertScriptHash`. Astro does not hash the content of an
@@ -128,8 +133,15 @@ link by `kind === 'source'`, never by its label.
 rendered by `Icon.astro`. The logo is the only other SVG.
 
 **One JSON-LD graph per page.** `src/site/seo.ts` builds it; no page adds its
-own. It always contains a `Person` and a `WebSite`, then either an article node
-or a `WebPage`, then a `BreadcrumbList` when the page passes crumbs.
+own. It always contains a `Person`, a `WebSite` and a page node with stable URL
+identifiers. Detail pages add a separate content entity connected to its page;
+collections describe their visible entries in order. Topics share identifiers
+with tag pages. Routes supply rendered text, citations, actual images and PDF
+resources from published content; metadata must not invent credentials, ratings
+or extracted PDF text. The author's image is an optimised portrait, not an app
+icon. `serializeJsonLd` escapes markup delimiters before embedding the graph.
+Breadcrumbs connect to the page when supplied. Public content entities declare
+free access; the generic page node makes no access claim about private routes.
 
 **Locale is `en-NZ` everywhere.** Date formatting, `og:locale` (`en_NZ`),
 JSON-LD `inLanguage`, `<html lang>`, and the RSS `<language>`.
@@ -172,6 +184,21 @@ If the header grows, change that token with it.
   a form-encoded body with a 303 to `/reading/sent`, and a JSON body with JSON.
   Astro's `security.checkOrigin` rejects a form post from another origin, which
   is what stops a third-party page submitting it.
+- **Email notifications use Resend at request time.** `src/server/email.ts`
+  reads `RESEND_API_KEY` and `NOTIFICATION_FROM` through the secrets helper and
+  sends plain-text notifications to `CONTACT_EMAIL`. Recommendations are stored
+  before sending; a delivery failure keeps the blob and returns an error to the
+  visitor. Retrying can create another recommendation. Neither endpoint claims
+  success when Netlify Blobs is unavailable, including local development.
+- **The contact band has an optional email callback form.** Its copy is
+  `siteSettings.contactBand.form` in Sanity. Without that object the band keeps
+  its existing links. `ContactForm.astro` posts to `/api/contact`, with browser
+  enhancement from `src/client/contactForm.ts` through the shell. The contact
+  page renders the same optional form directly, without repeating the band. Native form
+  posts redirect to `/contact/sent`; JSON posts return JSON. The visitor's email
+  is sent as the notification's reply address and is not stored in Blobs.
+  Both submission endpoints bound request bodies, reject foreign Origin headers,
+  and use separate hourly rate counters. No extra blob store is needed.
 - **`/stats` authenticates by cookie, not by query string.** A one-time
   `?token=` is compared in constant time and exchanged for an HttpOnly, Secure,
   SameSite=Strict cookie via a 303, so the secret lands in one URL rather than in
@@ -234,4 +261,4 @@ already sits in them: `sessions`, `session-insights`, `rate-limits` and
   block the hashed theme script.
 - `src/server/timingSafe.ts` is the only string comparison used for a secret.
 - Never commit secrets. `INSIGHTS_TOKEN`, `CAL_WEBHOOK_SECRET` and
-  `RATE_LIMIT_SALT` are set in Netlify and read through `src/server/secrets.ts`.
+  `RATE_LIMIT_SALT`, `RESEND_API_KEY` and `NOTIFICATION_FROM` are set in Netlify and read through `src/server/secrets.ts`.

@@ -6,6 +6,7 @@ import PdfViewer from '../../components/PdfViewer.astro';
 import RelatedList from '../../components/RelatedList.astro';
 import { portableTextToHtml } from '../../content/portableText';
 import { getReports, getSiteSettings } from '../../content/queries';
+import { renderedContentMetadata } from '../../content/metadata';
 import { getRelated } from '../../content/related';
 import { formatFullDate } from '../../content/writing';
 import type { Report } from '../../content/types';
@@ -24,6 +25,7 @@ const { report } = Astro.props;
 const { entryLabels } = await getSiteSettings();
 const megabytes = (report.pdfBytes / 1_000_000).toFixed(1);
 const body = portableTextToHtml(report.body);
+const structuredBody = renderedContentMetadata(body);
 const related = await getRelated({
   type: 'report',
   slug: report.slug,
@@ -35,7 +37,8 @@ const related = await getRelated({
 <Base
   title={report.title}
   description={report.description}
-  article={{ kind: 'report', publishedAt: report.publishedAt, tags: report.tags }}
+  article={{ kind: 'report', publishedAt: report.publishedAt, updatedAt: report.updatedAt, tags: report.tags, text: structuredBody.text, citations: structuredBody.citations, pdf: { url: report.pdfUrl, bytes: report.pdfBytes } }}
+  relatedLinks={related.map((entry) => entry.href)}
   breadcrumbs={[
     { name: 'Writing', path: '/work' },
     { name: report.title, path: `/reports/${report.slug}` },
