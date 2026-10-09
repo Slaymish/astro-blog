@@ -22,7 +22,7 @@
     "@astrojs/netlify": "^8.2.5",
     "@netlify/blobs": "^10.7.13",
     "@portabletext/to-html": "^6.0.0",
-    "@sanity/client": "^8.5.0",
+    "@sanity/client": "^8.9.0",
     "@sanity/image-url": "^2.1.1",
     "astro": "^7.3.1",
     "pdfjs-dist": "^6.3.289",
