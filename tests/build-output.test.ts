@@ -43,6 +43,14 @@ function publicPath(file: string): string {
 
 const pages = built ? htmlFiles(dist).map((file) => ({ file, path: publicPath(file), html: readFileSync(file, 'utf8') })) : [];
 
+test('the animated homepage name remains a heading in its markdown twin', { skip }, () => {
+  const home = pages.find((page) => page.path === '/')!;
+  const name = parse(home.html).querySelector('h1 .sr-only')?.textContent ?? '';
+  assert(name.trim(), 'homepage name must have an accessible text equivalent');
+  const markdown = readFileSync(join(dist, 'index.md'), 'utf8');
+  assert(markdown.startsWith(`# ${name.trim()}\n`), 'markdown must retain the homepage heading');
+});
+
 /** Redirect sources declared in netlify.toml, which internal links may target. */
 function redirectSources(): string[] {
   const toml = readFileSync(join(root, 'netlify.toml'), 'utf8');

@@ -53,7 +53,8 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 
 <Base fluid pageType="CollectionPage" collections={[{ id: 'featured', name: copy.seo.title, entries: featuredMetadata }]} title={copy.seo.title} description={copy.seo.description}>
   <section class="opening" aria-labelledby="intro-heading" data-hero-reveal data-reveal="pending">
-    <h1 id="intro-heading" aria-label={copy.heading}>
+    <h1 id="intro-heading">
+      <span class="sr-only">{copy.heading}</span>
       <span aria-hidden="true">{copy.heading.split(/(\s+)/).map((word) =>
         /\s/.test(word) ? word : (
           <span class="name-word">{Array.from(word).map((letter) => (
