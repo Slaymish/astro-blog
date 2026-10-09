@@ -19,7 +19,7 @@ export function initHeroReveal(): void {
     }
   };
 
-  if (window.scrollY > 0 || location.hash) {
+  if (window.scrollY > 0 || location.hash || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     hero.dataset.reveal = 'revealed';
     return;
   }

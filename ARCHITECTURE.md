@@ -78,7 +78,12 @@ remain between the same stories, and prose has its own line-length limits.
 The homepage opening fills the first small viewport below the sticky header,
 with vertically centred content. Its minimum height allows short screens and
 enlarged text to grow naturally rather than clipping the introduction.
-With JavaScript enabled, the opening starts with just the name centred. The
+With JavaScript enabled, the opening starts with the HB mark centred.
+`src/client/nameMorph.ts` separates and straightens its two pieces before
+reshaping them into the initials. The other letters follow individually authored
+pen routes from `src/site/nameMotion.ts`, then hand over to regular Geist HTML
+type after 2.65 seconds. `src/site/namePaths.ts` contains outlines extracted from
+the bundled font. Input or resizing completes the motion immediately. The
 first click, key press, tap or scroll reveals the introduction once;
 `src/client/heroReveal.ts` animates the name between its two positions without
 intercepting scrolling. Small screens keep the stacked layout. Reduced motion
@@ -149,8 +154,9 @@ name is written in a component. Routes stay in code; only labels move.
 label. A work story link carries a `kind`; the work card finds the source code
 link by `kind === 'source'`, never by its label.
 
-**One icon registry.** Every glyph is a path list in `src/components/icons.ts`
-rendered by `Icon.astro`. The logo is the only other SVG.
+**One icon registry.** Every icon is a path list in `src/components/icons.ts`
+rendered by `Icon.astro`. The logo and its temporary homepage name morph are
+the only other SVGs.
 
 **One JSON-LD graph per page.** `src/site/seo.ts` builds it; no page adds its
 own. It always contains a `Person`, a `WebSite` and a page node with stable URL

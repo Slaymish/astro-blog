@@ -7,6 +7,7 @@ import IconText from '../components/IconText.astro';
 import IntroductionText from '../components/IntroductionText.astro';
 import VideoCover from '../components/VideoCover.astro';
 import WorkCover from '../components/WorkCover.astro';
+import { LOGO_PATHS } from '../site/logo';
 import { getHomePage, getSiteSettings, getWorkStories } from '../content/queries';
 import { artifactHref } from '../content/work';
 import { PAUSE_LABEL } from '../client/videoTeaser';
@@ -53,9 +54,12 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 
 <Base fluid pageType="CollectionPage" collections={[{ id: 'featured', name: copy.seo.title, entries: featuredMetadata }]} title={copy.seo.title} description={copy.seo.description}>
   <section class="opening" aria-labelledby="intro-heading" data-hero-reveal data-reveal="pending">
-    <h1 id="intro-heading">
+    <h1 id="intro-heading" data-name-morph data-morph="pending">
+      <svg class="name-morph" aria-hidden="true" fill="currentColor" viewBox="0 0 453.54 453.54">
+        {LOGO_PATHS.map((d) => <path d={d} />)}
+      </svg>
       <span class="sr-only">{copy.heading}</span>
-      <span aria-hidden="true">{copy.heading.split(/(\s+)/).map((word) =>
+      <span class="name-type" aria-hidden="true">{copy.heading.split(/(\s+)/).map((word) =>
         /\s/.test(word) ? word : (
           <span class="name-word">{Array.from(word).map((letter) => (
             <span class="name-letter"><span class="name-glyph">{letter}</span></span>
@@ -151,9 +155,11 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 
 <script>
   import { initHeroReveal } from '../client/heroReveal';
+  import { initNameMorph } from '../client/nameMorph';
   import { initVideoTeaser } from '../client/videoTeaser';
 
   initHeroReveal();
+  initNameMorph();
   document.querySelectorAll<HTMLElement>('.feature').forEach((root) => {
     initVideoTeaser(root);
   });
@@ -182,10 +188,32 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
   }
 
   h1 {
+    position: relative;
+    font-weight: var(--font-weight-normal);
     font-size: clamp(3.5rem, 8vw, 9rem);
     letter-spacing: -0.045em;
     line-height: 1.04;
     margin: 0;
+  }
+
+  .name-morph {
+    display: none;
+    position: absolute;
+    pointer-events: none;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-scripting='enabled']) h1[data-morph='pending'] .name-type {
+      visibility: hidden;
+    }
+
+    :global(html[data-scripting='enabled']) h1[data-morph='pending'] .name-morph {
+      display: block;
+    }
   }
 
   /* The existing hashed boot script enables this before first paint. Without
