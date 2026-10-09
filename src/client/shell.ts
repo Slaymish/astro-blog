@@ -16,10 +16,12 @@ import { initRecommendForm } from './recommendForm';
 import { initNavigation } from './navigation';
 import { initTheme } from './theme';
 import { initFeedFilter } from './feedFilter';
+import { initWheelScroll } from './wheelScroll';
 
 export function initShell(): void {
   initTheme();
   initNavigation();
+  initWheelScroll();
   // Before the tracker: this is what mints the visitor nonce the beacon reads.
   initBookingRef();
   initAnalytics();

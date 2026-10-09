@@ -199,6 +199,12 @@ If the header grows, change that token with it.
 - **The page is an ordinary scrolling document.** A WebGL page-fold effect once
   owned the scroll container and forced capture-phase listeners; it was removed
   on 2026-08-18. Bind scroll handlers to `window`.
+  `src/client/wheelScroll.ts`, initialised through the shell, eases coarse
+  vertical wheel steps over 140ms using the native window scroll position.
+  Small or fractional pixel deltas and horizontal gestures remain native;
+  device detection is a conservative heuristic. Touch, keyboard, modified
+  wheel events, nested scroll regions and reduced motion bypass smoothing.
+  Other input or an external scroll-position change cancels pending motion.
 - **`src/content/images.ts` derives its image builder from the asset URL**, not
   from the Sanity client, because the client imports `astro:env/server` and the
   test runner cannot resolve that. A Sanity asset URL carries its project and
