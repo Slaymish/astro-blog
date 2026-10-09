@@ -68,6 +68,14 @@ a prerendered page negotiates a format it cannot decide for itself.
   `FeedList.astro` groups by UTC year, retaining WorkCard and writing rows.
 - Site constants and canonical helpers: `src/site/config.ts`
 
+## Page widths
+
+The default shell remains 70rem. Visual pages can opt into `Base`’s `fluid`
+shell, capped at 110rem with responsive side gutters; its header and footer
+share that width. The homepage uses one case study per row. Below 64rem the
+cover and description stack; above it they share a 2:1 row. Writing and reading
+remain between the same stories, and prose has its own line-length limits.
+
 ## Invariants
 
 **Colour is used whole.** Every colour is a semantic role from

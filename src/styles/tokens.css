@@ -85,6 +85,8 @@
   --easing-expressive: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --content-max-width: 70rem;
+  --visual-content-max-width: 110rem;
+  --visual-page-gutter: clamp(1.25rem, 3vw, 4rem);
   --reading-width: 68ch;
   --page-gutter: clamp(1.25rem, 4vw, 3rem);
   --section-space: clamp(3rem, 7vw, 6rem);
