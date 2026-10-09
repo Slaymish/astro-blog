@@ -18,65 +18,55 @@ const bandHeading = heading ?? contactBand.defaultHeading;
 
 <aside class="contact-band" aria-labelledby="contact-band-heading">
   <div>
-    <p>{contactBand.label}</p>
     <h2 id="contact-band-heading">{bandHeading}</h2>
   </div>
   <div class="contact-band__actions">
-    {contactBand.form && <ContactForm copy={contactBand.form} />}
-    {
-      booking ? (
-        <Button href={BOOKING_URL} external>
-          {contactBand.bookingLabel}
-        </Button>
-      ) : (
-        <Button href="/contact" variant="ghost">{contactBand.contactLabel}</Button>
-      )
-    }
-    <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+    {contactBand.form && <ContactForm copy={contactBand.form} inline />}
+    <div class="contact-band__alternatives">
+      {
+        booking ? (
+          <Button href={BOOKING_URL} external variant="ghost">
+            {contactBand.bookingLabel}
+          </Button>
+        ) : (
+          <Button href="/contact" variant="ghost">{contactBand.contactLabel}</Button>
+        )
+      }
+      <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+    </div>
   </div>
 </aside>
 
 <style>
   .contact-band {
-    align-items: end;
-    border-top: 1px solid var(--color-stroke-subtle);
     display: grid;
     gap: var(--spacing-8);
     margin-block: clamp(4rem, 10vw, 9rem) 0;
     padding-block: var(--band-inset);
-  }
-
-  .contact-band p {
-    color: var(--color-action);
-    font-size: var(--type-label);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: 0.1em;
-    margin: 0 0 var(--spacing-4);
-    text-transform: uppercase;
+    max-width: 48rem;
   }
 
   .contact-band h2 {
-    font-size: clamp(2.4rem, 7vw, 6rem);
+    font-size: clamp(2rem, 4vw, 3.5rem);
     letter-spacing: var(--tracking-heading);
     margin: 0;
-    max-width: 13ch;
+    max-width: 22ch;
   }
 
   .contact-band__actions {
-    align-items: start;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-3);
+    display: grid;
+    gap: var(--spacing-6);
   }
 
-  .contact-band__actions > a:last-child {
+  .contact-band__alternatives {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3) var(--spacing-8);
+  }
+
+  .contact-band__alternatives > a:last-child {
     color: var(--color-text-secondary);
     font-size: var(--type-body-small);
-  }
-
-  @media (min-width: 48rem) {
-    .contact-band {
-      grid-template-columns: minmax(0, 2fr) minmax(14rem, 1fr);
-    }
   }
 </style>

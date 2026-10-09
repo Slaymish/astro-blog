@@ -47,25 +47,25 @@ test('year groups preserve chronological mixing, use UTC years and allow an empt
   assert.deepEqual(groupFeedByYear([]), []);
 });
 
-test('type and tag filters intersect and can return zero results', () => {
+test('views show all entries or just the selected type', () => {
   const feed = mergeFeed([story('untagged', '2026-01-01', [])], [writing('post', 'ai', '2025-01-01')]);
-  const filter = (type: 'all' | 'work' | 'writing', tag: string | null) => feed.filter((entry) => matchesFeedFilter(entry.type, entry.tags.map((tag) => tag.toLowerCase()), { type, tag }));
-  assert.equal(filter('all', null).length, 2);
-  assert.equal(filter('writing', 'ai').length, 1);
-  assert.equal(filter('work', 'ai').length, 0);
-  assert.equal(filter('work', null).length, 1);
+  const filter = (view: 'all' | 'work' | 'writing') => feed.filter((entry) => matchesFeedFilter(entry.type, view));
+  assert.equal(filter('all').length, 2);
+  assert.deepEqual(filter('writing').map((entry) => entry.href), ['/posts/ai']);
+  assert.deepEqual(filter('work').map((entry) => entry.href), ['/work/untagged']);
 });
 
-test('URL filters restore known topics including literal all, reject unknown state and support the writing alias', () => {
-  assert.deepEqual(readFeedFilter(new URL('https://example.com/work?type=writing&tag=ai'), ['ai']), { type: 'writing', tag: 'ai' });
-  assert.deepEqual(readFeedFilter(new URL('https://example.com/work?type=other&tag=missing'), ['ai']), { type: 'all', tag: null });
-  assert.deepEqual(readFeedFilter(new URL('https://example.com/writing?tag=all'), ['all'], 'writing'), { type: 'writing', tag: 'all' });
-  assert.deepEqual(readFeedFilter(new URL('https://example.com/writing?type=all'), [], 'writing'), { type: 'all', tag: null });
+test('URL views ignore old topic filters, reject unknown types and support the writing alias', () => {
+  assert.equal(readFeedFilter(new URL('https://example.com/work?type=writing&tag=ai')), 'writing');
+  assert.equal(readFeedFilter(new URL('https://example.com/work?type=other&tag=missing')), 'all');
+  assert.equal(readFeedFilter(new URL('https://example.com/writing?tag=all'), 'writing'), 'writing');
+  assert.equal(readFeedFilter(new URL('https://example.com/writing?type=all'), 'writing'), 'all');
 });
 
-test('URL updates preserve unrelated query parameters and fragments, and remove default filters', () => {
+test('URL updates preserve unrelated parameters and fragments while removing topic and default filters', () => {
   const url = new URL('https://example.com/work?utm_source=friend&type=work&tag=ai#year-2026');
-  assert.equal(feedFilterUrl(url, { type: 'writing', tag: 'self-hosted' }), '/work?utm_source=friend&type=writing&tag=self-hosted#year-2026');
-  assert.equal(feedFilterUrl(url, { type: 'all', tag: null }), '/work?utm_source=friend#year-2026');
+  assert.equal(feedFilterUrl(url, 'writing'), '/work?utm_source=friend&type=writing#year-2026');
+  assert.equal(feedFilterUrl(url, 'all'), '/work?utm_source=friend#year-2026');
   assert.equal(url.searchParams.get('type'), 'work');
+  assert.equal(url.searchParams.get('tag'), 'ai');
 });

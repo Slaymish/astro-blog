@@ -11,10 +11,11 @@ an HTML file at build time from Sanity via `getStaticPaths`. Three consequences
 catch people out:
 
 - **Request-time inputs do not exist on a prerendered page.** Query parameters,
-  headers and cookies have to be resolved in the browser. The tag filter on
-  `/work` combines type and topic filters and mirrors its state into the URL
-  as `?type=work|writing&tag=<slug>`. All is the default. History navigation
-  restores both filters; empty year sections disappear.
+  headers and cookies have to be resolved in the browser. The All / Work / Writing controls on
+  `/work` mirror the selected view into the URL as `?type=work|writing`.
+  All is the default. History navigation restores the view; empty year
+  sections disappear. Legacy tag query parameters are discarded. Topics
+  appear as plain labels beneath entries, rather than index filters.
 - **Publishing in Sanity needs a Netlify build hook** to reach the site.
 - `build: { format: 'file' }` and `trailingSlash: 'never'`, so URLs emit as
   `/work.html` and canonicals omit the trailing slash. `publicPathFromAstro`
@@ -64,7 +65,7 @@ a prerendered page negotiates a format it cannot decide for itself.
   `src/content/feed.ts`. Entries sort by their original publication date,
   newest first, and each project appears once. Topic identity uses tagSlug.
   Missing work-story tags inherit the unique topics of linked artifacts;
-  an explicit empty array opts out. Single-entry topics are offered too.
+  an explicit empty array opts out. Single-entry topics are retained too.
   `FeedList.astro` groups by UTC year, retaining WorkCard and writing rows.
 - Site constants and canonical helpers: `src/site/config.ts`
 

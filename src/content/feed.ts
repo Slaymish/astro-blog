@@ -54,7 +54,7 @@ export function groupFeedByYear(entries: FeedEntry[]): { year: string; entries: 
   return [...groups].map(([year, entries]) => ({ year, entries }));
 }
 
-/** Offer even single-entry topics, deduplicating by the shared URL slug. */
+/** Collect topics for tag pages and crawl endpoints, including single-entry topics. */
 export function feedTags(entries: FeedEntry[]): string[] {
   return uniqueTags(entries.flatMap((entry) => entry.tags));
 }

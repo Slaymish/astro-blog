@@ -2,14 +2,16 @@
 import { tagSlug } from '../content/writing';
 import { getSiteSettings } from '../content/queries';
 import type { WritingEntry } from '../content/types';
+import EntryTags from './EntryTags.astro';
 
 interface Props {
   entries: WritingEntry[];
   typeLabel?: string;
   headingLevel?: 'h2' | 'h3';
+  showTags?: boolean;
 }
 
-const { entries, typeLabel, headingLevel = 'h2' } = Astro.props;
+const { entries, typeLabel, headingLevel = 'h2', showTags = false } = Astro.props;
 const Title = headingLevel;
 const { entryLabels } = await getSiteSettings();
 ---
@@ -27,6 +29,7 @@ const { entryLabels } = await getSiteSettings();
           <div class="writing-list__body">
             <Title class="writing-list__title">{entry.title}</Title>
             {entry.excerpt && <span class="writing-list__excerpt">{entry.excerpt}</span>}
+            {showTags && <EntryTags tags={entry.tags} />}
           </div>
         </a>
       </li>

@@ -46,7 +46,6 @@ const related = await getRelated({
 >
   <article class="report">
     <ArticleHeader
-      eyebrow={entryLabels.reportLabel}
       title={report.title}
       lede={report.description}
       meta={[formatFullDate(report.publishedAt), `${megabytes} ${entryLabels.pdfSizeSuffix}`]}

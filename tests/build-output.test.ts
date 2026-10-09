@@ -90,8 +90,14 @@ test('the combined index preserves distinct cards, chronological order and uniqu
     .every((entry) => entry.querySelector('.writing-list')));
   const headings = document.querySelectorAll('[data-feed-year] h2').map((heading) => heading.getAttribute('id'));
   assert.equal(new Set(headings).size, headings.length);
-  assert(document.querySelector('label[for="feed-view"]'));
-  assert(document.querySelector('[data-feed-status][role="status"]'));
+  const views = document.querySelectorAll('button[data-feed-view]');
+  assert.deepEqual(views.map((view) => view.getAttribute('data-feed-view')), ['all', 'work', 'writing']);
+  assert.equal(views[0]?.getAttribute('aria-pressed'), 'true');
+  assert(document.querySelector('[data-feed-controls][role="group"][aria-label]'));
+  assert(!document.querySelector('[data-feed-tag], [data-feed-status], [data-feed-reset], select'));
+  assert(entries.some((entry) => entry.querySelector('.work-card__content .entry-tags')));
+  assert(entries.some((entry) => entry.querySelector('.writing-list__body .entry-tags')));
+  assert(!document.querySelector('.entry-tags a, .entry-tags button'));
 });
 
 test('writing fallback is excluded from indexing and sitemap while retaining its markdown twin', { skip }, () => {

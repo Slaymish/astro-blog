@@ -3,7 +3,6 @@ import IconText from './IconText.astro';
 import { tagSlug } from '../content/writing';
 
 interface Props {
-  eyebrow: string;
   title: string;
   lede?: string;
   /** Rendered joined by " · ". */
@@ -13,14 +12,13 @@ interface Props {
   backLabel: string;
 }
 
-const { eyebrow, title, lede, meta = [], tags = [], backHref, backLabel } = Astro.props;
+const { title, lede, meta = [], tags = [], backHref, backLabel } = Astro.props;
 ---
 
 <header class="article-header">
   <a class="article-header__back" href={backHref}>
     <IconText icon="arrow-left" position="start">{backLabel}</IconText>
   </a>
-  <p class="article-header__eyebrow">{eyebrow}</p>
   <h1>{title}</h1>
   {lede && <p class="article-header__lede">{lede}</p>}
   {meta.length > 0 && <p class="article-header__meta">{meta.join(' · ')}</p>}
@@ -55,16 +53,6 @@ const { eyebrow, title, lede, meta = [], tags = [], backHref, backLabel } = Astr
 
   .article-header__back:hover {
     color: var(--color-action);
-  }
-
-  .article-header__eyebrow {
-    color: var(--color-action);
-    font-family: var(--font-mono);
-    font-size: var(--type-label);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: 0.1em;
-    margin: 0 0 var(--spacing-4);
-    text-transform: uppercase;
   }
 
   .article-header h1 {

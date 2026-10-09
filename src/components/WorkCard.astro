@@ -4,6 +4,7 @@ import Button from './Button.astro';
 import IconText from './IconText.astro';
 import IntroductionText from './IntroductionText.astro';
 import WorkCover from './WorkCover.astro';
+import EntryTags from './EntryTags.astro';
 import { getSiteSettings } from '../content/queries';
 import type { WorkStory } from '../content/types';
 
@@ -11,9 +12,10 @@ interface Props {
   story: WorkStory;
   variant?: 'featured' | 'row';
   reverse?: boolean;
+  tags?: string[];
 }
 
-const { story, variant = 'featured', reverse = false } = Astro.props;
+const { story, variant = 'featured', reverse = false, tags = [] } = Astro.props;
 
 const { workCtaLabel, entryLabels } = await getSiteSettings();
 const repo = story.links.find((link) => link.kind === 'source');
@@ -38,6 +40,7 @@ const repoId = `work-card-${story.slug}-source`;
     <div class="work-card__content">
       <h3><a href={href} id={titleId}>{story.title}</a></h3>
       <p class="work-card__summary"><IntroductionText text={story.introduction} link={story.introductionLink} /></p>
+      <EntryTags tags={tags} />
       {
         repo && (
           <a
