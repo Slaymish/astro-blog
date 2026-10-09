@@ -99,16 +99,16 @@ const largeCopy = portableTextToHtml(copy.largeCopy);
 
   .about__label {
     color: var(--color-text-secondary);
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: var(--type-label);
-    letter-spacing: 0.06em;
+    letter-spacing: var(--letter-spacing-wide);
     text-transform: uppercase;
   }
 
   p,
   .about__opening :global(p) {
     color: var(--color-text-secondary);
-    font-size: 1.125rem;
+    font-size: var(--type-body);
     line-height: 1.7;
     max-width: 65ch;
   }
@@ -127,7 +127,7 @@ const largeCopy = portableTextToHtml(copy.largeCopy);
   }
 
   h2 {
-    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-size: var(--type-heading-3);
     letter-spacing: var(--tracking-heading);
     line-height: 1.25;
   }

@@ -103,6 +103,15 @@ reveals immediately, and without JavaScript the complete introduction is shown.
 
 ## Invariants
 
+**Typography uses six shared sizes.** `src/styles/tokens.css` owns small text,
+body text, introductions, card titles, section headings and page headings.
+Components and routes use these variables rather than local font sizes or
+responsive size overrides. `--type-display`, `--type-body-small` and
+`--font-size-sm` are aliases, not additional sizes. The homepage name has one
+separate identity size, `--type-name`. Ordinary metadata and tags use the body
+font; monospace is reserved for code and technical numerical output. Heading
+levels remain semantic even when adjacent levels share a visual size.
+
 **Colour is used whole.** Every colour is a semantic role from
 `src/styles/themes.css`, and the roles resolve to primitives in
 `src/styles/tokens.css`. No opacity modifiers, no scale gradations, no literal

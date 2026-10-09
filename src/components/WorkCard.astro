@@ -108,7 +108,7 @@ const repoId = `work-card-${story.slug}-source`;
   }
 
   h3 {
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-size: var(--type-heading-3);
     letter-spacing: var(--tracking-heading);
     margin: 0 0 var(--spacing-4);
   }
@@ -124,7 +124,7 @@ const repoId = `work-card-${story.slug}-source`;
 
   .work-card__summary {
     color: var(--color-text-primary);
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    font-size: var(--type-lead);
     line-height: 1.4;
     margin: 0;
     max-width: 32rem;
@@ -146,10 +146,6 @@ const repoId = `work-card-${story.slug}-source`;
     .work-card--row .work-card__link {
       grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1.25fr);
       padding-block: clamp(2rem, 4vw, 3.5rem);
-    }
-
-    .work-card--row h3 {
-      font-size: clamp(2.1rem, 4vw, 3.8rem);
     }
 
     .work-card--reverse .work-card__visual {

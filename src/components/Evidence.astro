@@ -30,16 +30,16 @@ const { item } = Astro.props;
 
   .evidence__label {
     color: var(--color-action);
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: var(--type-label);
     font-weight: var(--font-weight-bold);
-    letter-spacing: 0.1em;
+    letter-spacing: var(--letter-spacing-wide);
     margin: 0 0 var(--spacing-3);
     text-transform: uppercase;
   }
 
   .evidence__heading {
-    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-size: var(--type-heading-3);
     letter-spacing: var(--tracking-heading);
     margin: 0 0 var(--spacing-6);
     max-width: 28ch;

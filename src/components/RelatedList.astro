@@ -53,7 +53,7 @@ const displayYear = (iso: string): string => (iso ? year.format(new Date(iso)) :
   .related h2 {
     font-size: var(--type-label);
     font-weight: var(--font-weight-bold);
-    letter-spacing: 0.1em;
+    letter-spacing: var(--letter-spacing-wide);
     margin: 0 0 var(--spacing-6);
     text-transform: uppercase;
   }
@@ -79,14 +79,14 @@ const displayYear = (iso: string): string => (iso ? year.format(new Date(iso)) :
 
   .related__label {
     color: var(--color-text-secondary);
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: var(--type-label);
-    letter-spacing: 0.06em;
+    letter-spacing: var(--letter-spacing-wide);
     text-transform: uppercase;
   }
 
   .related__title {
-    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    font-size: var(--type-lead);
     letter-spacing: var(--tracking-heading);
     line-height: 1.3;
   }

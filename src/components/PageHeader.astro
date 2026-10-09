@@ -12,13 +12,11 @@ interface Props {
   intro?: string;
   /** How wide the headline and intro run. */
   measure?: 'narrow' | 'regular' | 'wide';
-  /** `large` is the slightly bigger setting /about and /cv use. */
-  introScale?: 'regular' | 'large';
   /** Sets the intro flush against the headline, as /cv does. */
   introFlush?: boolean;
 }
 
-const { headline, intro, measure = 'wide', introScale = 'regular', introFlush = false } =
+const { headline, intro, measure = 'wide', introFlush = false } =
   Astro.props;
 
 const headlineLines = typeof headline === 'string' ? [headline] : headline;
@@ -28,7 +26,7 @@ const headlineLines = typeof headline === 'string' ? [headline] : headline;
   <h1 class="page-header__headline">
     {headlineLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}
   </h1>
-  {intro && <p class:list={['page-header__intro', introScale === 'large' && 'is-large']}>{intro}</p>}<slot />
+  {intro && <p class="page-header__intro">{intro}</p>}<slot />
 </header>
 
 <style>
@@ -63,14 +61,10 @@ const headlineLines = typeof headline === 'string' ? [headline] : headline;
 
   .page-header__intro {
     color: var(--color-text-secondary);
-    font-size: clamp(1.1rem, 2vw, 1.45rem);
-    line-height: 1.45;
+    font-size: var(--type-lead);
+    line-height: 1.5;
     margin: var(--intro-space) 0 0;
     max-width: var(--intro-measure);
   }
 
-  .page-header__intro.is-large {
-    font-size: clamp(1.15rem, 2.2vw, 1.5rem);
-    line-height: 1.5;
-  }
 </style>

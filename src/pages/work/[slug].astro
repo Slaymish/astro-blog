@@ -127,7 +127,7 @@ const coverImage =
 
   .case-study__summary {
     color: var(--color-text-secondary);
-    font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+    font-size: var(--type-lead);
     line-height: 1.4;
     margin: var(--spacing-8) 0 0;
     max-width: 34rem;
@@ -153,14 +153,14 @@ const coverImage =
   }
 
   .case-narrative {
-    font-size: 1.125rem;
+    font-size: var(--type-body);
     line-height: 1.75;
     margin: var(--spacing-16) auto;
     max-width: 66ch;
   }
 
   .case-narrative :global(h2) {
-    font-size: clamp(1.65rem, 3vw, 2.1rem);
+    font-size: var(--type-heading-3);
     letter-spacing: var(--tracking-heading);
     line-height: 1.2;
     margin: var(--spacing-12) 0 var(--spacing-4);
@@ -184,7 +184,7 @@ const coverImage =
   .case-artifacts h2 {
     font-size: var(--type-label);
     font-weight: var(--font-weight-bold);
-    letter-spacing: 0.1em;
+    letter-spacing: var(--letter-spacing-wide);
     margin: 0 0 var(--spacing-5);
     text-transform: uppercase;
   }
@@ -198,7 +198,7 @@ const coverImage =
   }
 
   .case-artifacts a {
-    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    font-size: var(--type-lead);
     letter-spacing: var(--tracking-heading);
     text-decoration: none;
   }

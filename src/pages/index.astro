@@ -181,7 +181,7 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 
   .opening .opening__intro {
     color: var(--color-text-secondary);
-    font-size: clamp(1.125rem, 1.6vw, 1.3rem);
+    font-size: var(--type-lead);
     line-height: 1.5;
     margin: 0 auto var(--spacing-2);
     max-width: 36ch;
@@ -190,8 +190,8 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
   h1 {
     position: relative;
     font-weight: var(--font-weight-normal);
-    font-size: clamp(3.5rem, 8vw, 9rem);
-    letter-spacing: -0.045em;
+    font-size: var(--type-name);
+    letter-spacing: var(--tracking-display);
     line-height: 1.04;
     margin: 0;
   }
@@ -299,15 +299,15 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 
   .label {
     color: var(--color-text-secondary);
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
     font-size: var(--type-label);
-    letter-spacing: 0.06em;
+    letter-spacing: var(--letter-spacing-wide);
     margin: 0 0 var(--spacing-2);
     text-transform: uppercase;
   }
 
   h2 {
-    font-size: clamp(1.5rem, 2.6vw, 1.9rem);
+    font-size: var(--type-heading-3);
     letter-spacing: var(--tracking-heading);
     line-height: 1.2;
     margin: 0;
@@ -326,7 +326,7 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
     --icon-gap: var(--spacing-2);
     color: var(--color-action);
     display: inline-block;
-    font-size: 0.95rem;
+    font-size: var(--type-label);
     font-weight: var(--font-weight-medium);
     padding-block: var(--spacing-2);
     text-decoration: none;
@@ -450,8 +450,5 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
       margin-inline: 0;
     }
 
-    .feature h2 {
-      font-size: clamp(1.9rem, 2.5vw, 2.75rem);
-    }
   }
 </style>

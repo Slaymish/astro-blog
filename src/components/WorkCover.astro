@@ -101,16 +101,16 @@ const SIZES = sizes ?? (compact
 
   .work-cover__label {
     color: var(--color-text-secondary);
-    font-family: var(--font-mono);
-    font-size: clamp(0.75rem, 1.7cqi, 0.8rem);
-    letter-spacing: 0.09em;
+    font-family: var(--font-body);
+    font-size: var(--type-label);
+    letter-spacing: var(--letter-spacing-wide);
     margin: 0;
     text-transform: uppercase;
   }
 
   .work-cover__title {
     color: var(--color-text-primary);
-    font-size: clamp(1.1rem, 3.4cqi, 1.6rem);
+    font-size: var(--type-lead);
     font-weight: var(--font-weight-semibold);
     letter-spacing: var(--tracking-heading);
     line-height: 1.2;
@@ -134,7 +134,7 @@ const SIZES = sizes ?? (compact
 
   .work-cover__fact dt {
     color: var(--color-text-secondary);
-    font-size: clamp(0.75rem, 1.7cqi, 0.85rem);
+    font-size: var(--type-label);
   }
 
   .work-cover__fact dd {
@@ -147,18 +147,18 @@ const SIZES = sizes ?? (compact
 
   .work-cover__fact strong {
     color: var(--color-text-primary);
-    font-size: clamp(0.8rem, 2cqi, 1rem);
+    font-size: var(--type-body);
     font-weight: var(--font-weight-semibold);
   }
 
   .work-cover__fact span {
     color: var(--color-text-secondary);
-    font-size: clamp(0.75rem, 1.5cqi, 0.78rem);
+    font-size: var(--type-label);
   }
 
   .work-cover--figure figcaption {
     color: var(--color-text-secondary);
-    font-size: clamp(0.75rem, 1.7cqi, 0.85rem);
+    font-size: var(--type-label);
     line-height: 1.5;
     margin: 0;
   }

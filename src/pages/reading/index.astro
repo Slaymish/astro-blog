@@ -194,7 +194,7 @@ const grouped = groups
   }
 
   .reading__quote p {
-    font-size: 1.5rem;
+    font-size: var(--type-lead);
     letter-spacing: var(--tracking-heading);
     line-height: 1.3;
     margin: 0;
@@ -257,7 +257,7 @@ const grouped = groups
   }
 
   .reading__book h3 {
-    font-size: 1.375rem;
+    font-size: var(--type-lead);
     font-weight: var(--font-weight-semibold);
     letter-spacing: var(--tracking-heading);
     line-height: 1.2;
@@ -281,7 +281,7 @@ const grouped = groups
   }
 
   .reading__note {
-    font-size: 1rem;
+    font-size: var(--type-body);
     line-height: 1.65;
     grid-column: 1 / -1;
     margin: 0;
@@ -313,12 +313,12 @@ const grouped = groups
   }
 
   .reading__group--reading .reading__book p {
-    font-size: 1rem;
+    font-size: var(--type-body);
   }
 
   .reading__group--reading .reading__note {
     grid-column: 2;
-    font-size: 1.125rem;
+    font-size: var(--type-body);
     line-height: 1.6;
   }
 
@@ -429,10 +429,6 @@ const grouped = groups
       padding-block: var(--spacing-12);
     }
 
-    .reading__quote p {
-      font-size: 1.25rem;
-    }
-
     .reading__group {
       padding-block: var(--spacing-10);
     }
@@ -451,13 +447,8 @@ const grouped = groups
       grid-row: auto;
     }
 
-    .reading__group--reading .reading__book h3 {
-      font-size: 1.5rem;
-    }
-
     .reading__group--reading .reading__note {
       grid-column: 1 / -1;
-      font-size: 1rem;
     }
   }
 

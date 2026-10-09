@@ -153,7 +153,7 @@ details[open] > .btn--icon {
 
 /* --- Sizes --- */
 
-.btn--sm { font-size: 0.875rem; min-block-size: var(--control-height-sm); padding-inline: var(--spacing-4); }
+.btn--sm { font-size: var(--type-label); min-block-size: var(--control-height-sm); padding-inline: var(--spacing-4); }
 .btn--lg { font-size: var(--type-body); min-block-size: var(--control-height-lg); padding-inline: var(--spacing-6); }
 .btn--icon.btn--sm { inline-size: var(--control-height-sm); padding: 0; }
 .btn--icon.btn--lg { inline-size: var(--control-height-lg); padding: 0; }
@@ -230,7 +230,7 @@ details[open] > .btn--icon {
   display: inline-flex;
   font: inherit;
   font-family: var(--font-body);
-  font-size: 0.8125rem;
+  font-size: var(--type-label);
   font-weight: var(--font-weight-medium);
   gap: var(--spacing-2);
   line-height: 1;
