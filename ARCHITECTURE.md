@@ -75,6 +75,9 @@ shell, capped at 110rem with responsive side gutters; its header and footer
 share that width. The homepage uses one case study per row. Below 64rem the
 cover and description stack; above it they share a 2:1 row. Writing and reading
 remain between the same stories, and prose has its own line-length limits.
+The homepage opening fills the first small viewport below the sticky header,
+with vertically centred content. Its minimum height allows short screens and
+enlarged text to grow naturally rather than clipping the introduction.
 
 ## Invariants
 

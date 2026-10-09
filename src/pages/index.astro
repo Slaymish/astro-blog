@@ -151,8 +151,11 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 <style>
   /* Visual rows use the shell; prose retains its own readable measure. */
   .opening {
+    align-content: center;
     display: grid;
     gap: var(--spacing-6);
+    /* Mobile header is 4.25rem tall, plus its border. */
+    min-height: calc(100svh - 4.25rem - 1px);
     padding-block: var(--hero-top-space) clamp(3rem, 7vw, 6rem);
     text-align: center;
   }
@@ -166,7 +169,7 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
   }
 
   h1 {
-    font-size: var(--type-display);
+    font-size: clamp(3.5rem, 8vw, 9rem);
     letter-spacing: -0.045em;
     line-height: 1.04;
     margin: 0;
@@ -304,6 +307,10 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
   }
 
   @media (min-width: 48rem) {
+    .opening {
+      min-height: calc(100svh - var(--site-header-height));
+    }
+
     .notes {
       align-items: start;
       gap: var(--spacing-10);
