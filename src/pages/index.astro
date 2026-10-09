@@ -52,7 +52,7 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 ---
 
 <Base fluid pageType="CollectionPage" collections={[{ id: 'featured', name: copy.seo.title, entries: featuredMetadata }]} title={copy.seo.title} description={copy.seo.description}>
-  <section class="opening" aria-labelledby="intro-heading">
+  <section class="opening" aria-labelledby="intro-heading" data-hero-reveal data-reveal="pending">
     <h1 id="intro-heading" aria-label={copy.heading}>
       <span aria-hidden="true">{copy.heading.split(/(\s+)/).map((word) =>
         /\s/.test(word) ? word : (
@@ -149,8 +149,10 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 </Base>
 
 <script>
+  import { initHeroReveal } from '../client/heroReveal';
   import { initVideoTeaser } from '../client/videoTeaser';
 
+  initHeroReveal();
   document.querySelectorAll<HTMLElement>('.feature').forEach((root) => {
     initVideoTeaser(root);
   });
@@ -159,6 +161,8 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 <style>
   /* Visual rows use the shell; prose retains its own readable measure. */
   .opening {
+    position: relative;
+    overflow-anchor: none;
     align-content: center;
     display: grid;
     gap: var(--spacing-6);
@@ -181,6 +185,37 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
     letter-spacing: -0.045em;
     line-height: 1.04;
     margin: 0;
+  }
+
+  /* The existing hashed boot script enables this before first paint. Without
+     JavaScript the normal, complete introduction remains visible. */
+  :global(html[data-scripting='enabled']) .opening[data-reveal='pending'] h1 {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
+  :global(html[data-scripting='enabled']) .opening[data-reveal='pending'] .opening__body {
+    position: absolute;
+    visibility: hidden;
+    clip-path: inset(0 100% 0 0);
+    transform: translateY(0.5rem);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .opening[data-reveal='revealed'] .opening__body {
+      animation: intro-reveal 600ms 160ms var(--easing-expressive) both;
+    }
+  }
+
+  @keyframes intro-reveal {
+    from {
+      clip-path: inset(0 100% 0 0);
+      transform: translateY(0.5rem);
+    }
+    to {
+      clip-path: inset(0);
+      transform: translateY(0);
+    }
   }
 
   .name-word {
@@ -213,12 +248,12 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
 
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
     .name-letter:hover .name-glyph {
-      transform: translateY(-0.12em) scale(1.18);
+      transform: translateY(-0.06em) scale(1.08);
     }
 
     .name-letter:has(+ .name-letter:hover) .name-glyph,
     .name-letter:hover + .name-letter .name-glyph {
-      transform: translateY(-0.05em) scale(1.07);
+      transform: translateY(-0.025em) scale(1.03);
     }
   }
 

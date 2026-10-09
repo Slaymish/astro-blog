@@ -78,6 +78,11 @@ remain between the same stories, and prose has its own line-length limits.
 The homepage opening fills the first small viewport below the sticky header,
 with vertically centred content. Its minimum height allows short screens and
 enlarged text to grow naturally rather than clipping the introduction.
+With JavaScript enabled, the opening starts with just the name centred. The
+first click, key press, tap or scroll reveals the introduction once;
+`src/client/heroReveal.ts` animates the name between its two positions without
+intercepting scrolling. Small screens keep the stacked layout. Reduced motion
+reveals immediately, and without JavaScript the complete introduction is shown.
 
 ## Invariants
 
@@ -111,6 +116,10 @@ script, and `Base.astro` hashes that exact constant into `script-src` with
 `is:inline set:html` script by itself, so that call is load-bearing; `Base.astro`
 throws if `security.csp` is ever turned off. Everything else is a bundled module,
 covered by `'self'`.
+The same boot script marks scripting as enabled before first paint, so the
+homepage can hide its introduction initially without a flash or a second inline
+script. Its reveal uses class/data selectors and the Web Animations API, never
+an inline style attribute.
 
 **No syntax highlighter.** Shiki emits inline styles, so
 `markdown: { syntaxHighlight: false }` is set and code blocks render as plain
