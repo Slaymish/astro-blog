@@ -91,6 +91,8 @@ export async function initNameMorph(): Promise<void> {
     })));
     svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
     svg.replaceChildren();
+    // Match the initial square logo dimensions before using heading coordinates.
+    svg.classList.add('name-morph--mapped');
     const clamp = (t: number): number => Math.max(0, Math.min(1, t));
     const out = (t: number): number => 1 - Math.pow(1 - clamp(t), 3);
     const centroid = (points: Point[]): Point => ({
