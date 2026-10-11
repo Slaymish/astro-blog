@@ -1,9 +1,11 @@
 ---
 ---
 <section class="contribution-preview" data-report-preview>
-  <h3>Review your usage report</h3>
-  <p>Generate a report using the <a href="https://github.com/Slaymish/codex-usage-benchmark/tree/main/skills/codex-usage-report">open-source Codex skill</a>, then select the JSON file here. Your file stays in this browser; it is not uploaded.</p>
-  <label for="codex-report-file">Choose a Codex usage report (.json)</label>
+  <h3>1. Generate your report</h3>
+  <p>Use the <a href="https://github.com/Slaymish/codex-usage-benchmark/tree/main/skills/codex-usage-report">Codex usage skill</a> to create a private JSON report on your computer.</p>
+  <h3>2. Check your report</h3>
+  <p>Select the file below to see what it contains. It stays on your device.</p>
+  <label for="codex-report-file">Select your JSON report</label>
   <input id="codex-report-file" type="file" accept=".json,application/json" data-report-file />
   <p data-report-status role="status" aria-live="polite">No file selected.</p>
   <div data-report-results hidden>
@@ -13,8 +15,10 @@
       <div><dt>Total input tokens</dt><dd data-report-input></dd></div>
       <div><dt>Total output tokens</dt><dd data-report-output></dd></div>
     </dl>
-    <p>This is a local preview only. These figures do not establish your subscription quota or coding hours. Even aggregate usage patterns may be identifying.</p>
-    <details><summary>Review the complete JSON</summary><pre data-report-json></pre></details>
+    <p>Token counts are not subscription limits or coding hours. Aggregates may still identify you.</p>
+    <details><summary>See exactly what would be shared</summary><pre data-report-json></pre></details>
+    <h3>3. Share, if you want to</h3>
+    <p>Submissions aren't open yet. You can keep this report and come back later. GitHub attribution will be optional.</p>
   </div>
 </section>
 <script>
