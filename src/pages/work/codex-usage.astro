@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import CodexUsageCalculator from '../../components/CodexUsageCalculator.astro';
+import CodexReportPreview from '../../components/CodexReportPreview.astro';
 ---
 <Base title="Codex usage optimiser" description="Estimate the cheapest Codex subscription combination for continuous coding, in New Zealand dollars." breadcrumbs={[{ name: 'Work', path: '/work' }, { name: 'Codex usage optimiser', path: '/work/codex-usage' }]}>
   <main class="codex-page">
@@ -12,8 +13,9 @@ import CodexUsageCalculator from '../../components/CodexUsageCalculator.astro';
     <CodexUsageCalculator />
     <section class="codex-page__contribute">
       <h2>Contribute your usage</h2>
-      <p>The community collection is being developed. The planned flow is a Codex skill that exports a reviewable, anonymised JSON report, followed by a voluntary upload. No transcript content will be requested.</p>
-      <p><a href="https://github.com/Slaymish/astro-blog">View the project on GitHub</a></p>
+      <p>Export aggregate usage using the open-source Codex skill, then inspect the report locally before sharing anything. Community submissions and optional GitHub attribution are not available yet.</p>
+      <CodexReportPreview />
+      <p><a href="https://github.com/Slaymish/codex-usage-benchmark">View the benchmark repository on GitHub</a></p>
     </section>
   </main>
 </Base>
