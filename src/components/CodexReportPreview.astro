@@ -41,7 +41,7 @@
     if (!exactKeys(value, rootKeys) || value.schemaVersion !== 1 ||
       typeof value.collectorVersion !== 'string' || !/^\d+\.\d+\.\d+$/.test(value.collectorVersion) ||
       value.dataType !== 'aggregate_token_usage' || value.privacy !== 'monthly-model-aggregates' ||
-      !exactKeys(value.summary, summaryKeys) || !summaryKeys.every(key => integer(value.summary[key])) ||
+      !exactKeys(value.summary, summaryKeys) || !summaryKeys.every(key => integer((value.summary as Record<string, unknown>)[key])) ||
       !Array.isArray(value.buckets) || value.buckets.length < 1 || value.buckets.length > 240)
       throw new Error('Not a supported v1 aggregate usage report.');
     // Runtime validation above establishes the numeric summary shape.
