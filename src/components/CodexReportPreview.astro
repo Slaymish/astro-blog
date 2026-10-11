@@ -44,6 +44,7 @@
       !exactKeys(value.summary, summaryKeys) || !summaryKeys.every(key => integer(value.summary[key])) ||
       !Array.isArray(value.buckets) || value.buckets.length < 1 || value.buckets.length > 240)
       throw new Error('Not a supported v1 aggregate usage report.');
+    // Runtime validation above establishes the numeric summary shape.
     const summary = value.summary as Record<string, number>;
     let sessions = 0, input = 0, output = 0;
     const seen = new Set<string>();
@@ -52,16 +53,24 @@
         !/^\d{4}-(0[1-9]|1[0-2])$/.test(bucket.month) ||
         typeof bucket.model !== 'string' || !/^[A-Za-z0-9._-]{1,80}$/.test(bucket.model) ||
         !bucketKeys.slice(2).every(key => integer(bucket[key])) ||
-        bucket.sessions === 0 || bucket.cached_input_tokens > bucket.input_tokens ||
-        bucket.reasoning_output_tokens > bucket.output_tokens ||
-        (bucket.total_tokens > 0 && bucket.total_tokens < bucket.input_tokens + bucket.output_tokens))
+        !integer(bucket.sessions) || bucket.sessions === 0 ||
+        !integer(bucket.cached_input_tokens) || !integer(bucket.input_tokens) ||
+        !integer(bucket.reasoning_output_tokens) || !integer(bucket.output_tokens) ||
+        !integer(bucket.total_tokens))
         throw new Error('The report contains invalid aggregate values.');
+      // Narrow the validated unknown JSON values before arithmetic.
+      const numericBucket = bucket as Record<string, string | number>;
+      const n = (key: string): number => numericBucket[key] as number;
+      if (n('cached_input_tokens') > n('input_tokens') ||
+        n('reasoning_output_tokens') > n('output_tokens') ||
+        (n('total_tokens') > 0 && n('total_tokens') < n('input_tokens') + n('output_tokens')))
+        throw new Error('The report contains inconsistent token totals.');
       const key = bucket.month + ':' + bucket.model;
       if (seen.has(key)) throw new Error('Duplicate month/model bucket.');
       seen.add(key);
-      sessions += bucket.sessions;
-      input += bucket.input_tokens;
-      output += bucket.output_tokens;
+      sessions += n('sessions');
+      input += n('input_tokens');
+      output += n('output_tokens');
     }
     if (sessions !== summary.usableSessions || summary.filesInspected < sessions ||
       summary.skippedFiles > summary.filesInspected) throw new Error('Report summary does not match its buckets.');
