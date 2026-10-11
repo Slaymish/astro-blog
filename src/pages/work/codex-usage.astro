@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import CodexUsageCalculator from '../../components/CodexUsageCalculator.astro';
+---
+<Base title="Codex usage optimiser" description="Estimate the cheapest Codex subscription combination for continuous coding, in New Zealand dollars." breadcrumbs={[{ name: 'Work', path: '/work' }, { name: 'Codex usage optimiser', path: '/work/codex-usage' }]}>
+  <main class="codex-page">
+    <a href="/work">← Work</a>
+    <header>
+      <h1>Codex usage optimiser</h1>
+      <p>How much would it cost to keep Codex coding? Explore subscription combinations and extra credits in New Zealand dollars.</p>
+    </header>
+    <CodexUsageCalculator />
+    <section class="codex-page__contribute">
+      <h2>Contribute your usage</h2>
+      <p>The community collection is being developed. The planned flow is a Codex skill that exports a reviewable, anonymised JSON report, followed by a voluntary upload. No transcript content will be requested.</p>
+      <p><a href="https://github.com/Slaymish/astro-blog">View the project on GitHub</a></p>
+    </section>
+  </main>
+</Base>
+<style>
+  .codex-page { padding-block: var(--hero-top-space) var(--section-space); }
+  .codex-page > a { color: var(--color-action); }
+  .codex-page header { max-width: 42rem; margin-top: var(--spacing-8); }
+  .codex-page h1 { font-size: var(--type-display); letter-spacing: var(--tracking-display); line-height: 1.05; }
+  .codex-page header p { color: var(--color-text-secondary); font-size: var(--type-lead); }
+  .codex-page__contribute { max-width: 46rem; margin-block: var(--spacing-12); }
+  .codex-page__contribute p { color: var(--color-text-secondary); }
+</style>
