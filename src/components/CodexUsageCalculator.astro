@@ -1,0 +1,44 @@
+---
+import { ASSUMPTIONS, optimise, describeStrategy } from '../client/codexUsage';
+const initial = optimise(6);
+const money = new Intl.NumberFormat('en-NZ', { style: 'currency', currency: 'NZD', minimumFractionDigits: 2 });
+---
+<section class="codex not-prose" data-codex-usage>
+  <div class="codex__input">
+    <label for="codex-hours">How long do you want Codex coding each day?</label>
+    <p class="codex__hours"><output data-result="hours">6.00</output> hours</p>
+    <input id="codex-hours" class="range" type="range" min="0.25" max="12" step="0.25" value="6" data-hours />
+    <div class="codex__scale"><span>15 minutes</span><span>12 hours</span></div>
+    <p class="codex__hint">About <span data-result="sessions">10.3</span> feature sessions a day, at 35 minutes each.</p>
+  </div>
+  <div class="codex__answer" aria-live="polite" aria-atomic="true">
+    <p class="codex__eyebrow">Lowest estimated monthly cost</p>
+    <h2 data-result="strategy">{describeStrategy(initial)}</h2>
+    <p class="codex__price" data-result="monthly">{money.format(initial.monthlyNzd)}</p>
+    <dl>
+      <div><dt>Subscriptions</dt><dd data-result="subscriptions">{money.format(initial.monthlyNzd - initial.creditsNzd)}</dd></div>
+      <div><dt>Extra credits</dt><dd data-result="credits">{money.format(initial.creditsNzd)}</dd></div>
+    </dl>
+  </div>
+  <p class="codex__disclaimer">Experimental estimate, not an OpenAI usage guarantee. Based on assumed daily and weekly capacities, not a measured community dataset. Subscription combinations may require separate accounts, and credit prices vary by workload.</p>
+  <p class="codex__meta">Community sample: {ASSUMPTIONS.sampleCount} sessions · Last updated: awaiting first contribution</p>
+</section>
+<script>
+  import { initCodexUsage } from '../client/codexUsage';
+  document.querySelectorAll<HTMLElement>('[data-codex-usage]').forEach(initCodexUsage);
+</script>
+<style>
+  .codex { max-width: 46rem; margin-block: var(--spacing-10); }
+  .codex__input, .codex__answer { background: var(--color-bg-raised); border: 1px solid var(--color-stroke-subtle); border-radius: var(--radius-lg); padding: var(--spacing-5); margin-bottom: var(--spacing-4); }
+  .codex__input label { color: var(--color-text-secondary); display: block; font-size: var(--type-body-small); }
+  .codex__hours, .codex__price { font-size: var(--type-heading-2); font-weight: var(--font-weight-bold); letter-spacing: var(--tracking-heading); margin: var(--spacing-3) 0; }
+  .codex input[type='range'] { width: 100%; }
+  .codex__scale { display: flex; justify-content: space-between; font-size: var(--type-label); color: var(--color-text-secondary); }
+  .codex__hint, .codex__disclaimer, .codex__meta { color: var(--color-text-secondary); font-size: var(--type-body-small); }
+  .codex__eyebrow { font-size: var(--type-label); text-transform: uppercase; letter-spacing: var(--letter-spacing-wide); color: var(--color-text-secondary); margin: 0; }
+  .codex__answer h2 { font-size: var(--type-heading-3); margin: var(--spacing-3) 0; }
+  .codex__answer dl { border-top: 1px solid var(--color-stroke-subtle); padding-top: var(--spacing-4); margin: var(--spacing-5) 0 0; }
+  .codex__answer dl div { display: flex; justify-content: space-between; gap: var(--spacing-3); margin-top: var(--spacing-2); }
+  .codex__answer dt { color: var(--color-text-secondary); }
+  .codex__answer dd { margin: 0; font-variant-numeric: tabular-nums; }
+</style>
