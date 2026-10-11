@@ -12,6 +12,9 @@ const json = (status: number, body: object) => new Response(JSON.stringify(body)
 });
 
 export async function POST({ request }: { request: Request }): Promise<Response> {
+  // Fail closed until authenticated GitHub identity, consent and withdrawal are implemented.
+  // Existing validation/storage code is retained for the forthcoming verified submission flow.
+  if (process.env.CODEX_CONTRIBUTIONS_ENABLED !== 'true') return json(503, { error: 'contributions_not_open' });
   if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) return json(415, { error: 'json_required' });
   const length = Number(request.headers.get('content-length'));
   if (Number.isFinite(length) && length > MAX_BYTES) return json(413, { error: 'too_large' });
