@@ -85,3 +85,35 @@ Delivered PRs: https://github.com/Slaymish/astro-blog/pull/45 and https://github
 GitHub reported existing default-branch dependency alerts during push. An API read confirmed open alerts, including packages used in build tooling. Their declared dependency scope alone does not establish request-time exploitability. Existing dependency PRs and alert remediation require separate triage before launch; this contributor PR changes no lockfile or package versions.
 
 Revision 2026-10-12: marked implementation, review and draft PR delivery complete and recorded cloud check evidence. Real configured OAuth/storage launch tests and production content publication remain separate release work.
+
+## Follow-up configuration, 12 October 2026
+
+Hamish requested the remaining configuration and release prerequisites. The
+OAuth App is registered at github.com/settings/applications/3925547 with exact
+production and PR 45 callbacks, no wildcard matching and no device flow. Its
+public client ID is saved in Netlify, and CODEX_CONTRIBUTIONS_ENABLED is
+explicitly false. Sanity codexUsagePage was published using the existing write
+credential, verified to match the seed, and triggered the existing build hook.
+
+The browser tool requires human entry of new authentication credentials. The
+client secret currently appears only in Production; Deploy Previews is Empty,
+and CODEX_AUTH_SECRET is absent on a fresh dashboard reload. The user has been
+handed the prepared fields and owner-only local signing-key files. These values
+must be verified before real OAuth tests can proceed. Do not treat a reply saying
+saved as proof when the service still shows missing configuration. No secret is
+committed or printed.
+
+Dependency triage is complete in docs/codex-dependency-triage.md: 80 pnpm
+advisories across the site and Studio workspace, including known patched Astro
+framework dependencies and unpatched build/dev tooling. Remediation is not
+claimed. Production ingestion remains disabled.
+
+Publishing the actual copy exposed the link suite's assumption that all links
+resolve to static files. It now recognises source-backed, non-prerendered GET
+endpoints for links, while continuing to require static files for media. The
+build and all 251 tests pass with the real published copy; Astro/knip checks pass.
+
+Remaining: verify saved credential contexts, configure the public preview origin
+and preview-only test gate, rebuild the preview after settings and CDN purge,
+then test real login, authenticated synthetic ingestion/replacement/withdrawal.
+Keep production false and do not merge draft PR 45 as part of this setup.

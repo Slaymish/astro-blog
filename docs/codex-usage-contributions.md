@@ -42,7 +42,7 @@ No production Sanity write was made. Without the singleton, the page uses existi
 
 Register a GitHub OAuth App with homepage https://hamishburke.dev and exact callback https://hamishburke.dev/api/codex/github/callback. Request no privileged scopes. Configure CODEX_GITHUB_CLIENT_ID, CODEX_GITHUB_CLIENT_SECRET and a cryptographically random CODEX_AUTH_SECRET of at least 32 characters in Netlify's server/function environment. RATE_LIMIT_SALT must also exist. Never use PUBLIC_ variables, commit credentials, or put secrets in URLs. Rotating the auth secret invalidates existing login cookies; account keys remain stable.
 
-For a separate deploy-preview OAuth test, use a separate OAuth App with the exact preview callback, CODEX_GITHUB_ORIGIN equal to DEPLOY_PRIME_URL and CONTEXT=deploy-preview. The configured origin must be an exact HTTPS origin and the request must match it. Netlify sets DEPLOY_ID for store isolation. A production OAuth App callback will not work against an arbitrary preview. GitHub/App secrets and production content publication are operator configuration steps, not automated by this PR.
+For deploy-preview OAuth tests, register the exact preview callback, set CODEX_GITHUB_ORIGIN equal to DEPLOY_PRIME_URL and use CONTEXT=deploy-preview. GitHub now permits multiple exact redirect URIs on one OAuth App, so the registered Codex usage benchmark app covers both production and PR 45 without wildcards. The configured origin must be an exact HTTPS origin and the request must match it. Netlify sets DEPLOY_ID for store isolation. A production OAuth App callback will not work against an arbitrary preview. GitHub/App secrets and production content publication are operator configuration steps, not automated by this PR.
 
 Before any launch, run pnpm test, pnpm build, pnpm test again, pnpm check and pnpm studio:build on the installed supported runtime. CI uses Node 22/pnpm 10. Locally pnpm 11 needs verify-deps-before-run=false when reusing an isolated worktree's linked existing dependencies; no lockfile or dependency changes are made. Run the companion Python suite with Python 3.10 or newer.
 
@@ -56,3 +56,22 @@ GitHub reports open alerts on the existing default-branch dependency graph.
 Triage their actual build/runtime reachability and the existing dependency PRs
 before launching submissions. This feature changes no package or lockfile and
 does not claim those baseline alerts are remediated.
+
+## Configuration progress, 12 October 2026
+
+The Codex usage benchmark OAuth App is registered under Slaymish:
+https://github.com/settings/applications/3925547. Its exact redirects are the
+production callback and PR 45's callback, with wildcards and device flow off.
+The public client ID is saved in Netlify. CODEX_CONTRIBUTIONS_ENABLED has been
+explicitly set to false. Existing production RATE_LIMIT_SALT is preserved.
+
+The reviewed codexUsagePage seed has been published to Sanity production and
+verified via a fresh read. Publication triggered the existing Sanity build hook;
+main remains the previously merged guarded ingestion code. A new preview build
+is needed to consume the published copy after CDN purge.
+
+Credential values are never recorded in this repository or chat. New signing
+keys were generated in owner-only local files outside the repository. The user
+has been handed the credential-entry step under the browser tool's rules. Actual
+saved contexts must be verified before claiming configuration or real OAuth
+verification complete. Production ingestion remains disabled throughout.
