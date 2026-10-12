@@ -1,9 +1,10 @@
+import { codexDeployment } from '../../src/server/codexDeployment';
 import type { Config } from '@netlify/functions';
 import { codexStore } from '../../src/server/codexStore';
 import { expireContributions } from '../../src/server/codexContributions';
 export default async function (): Promise<Response> {
   // Scheduled production maintenance only. No report or identity in logs.
-  if (process.env.CONTEXT !== 'production') return new Response(null, { status: 204 });
+  if (codexDeployment().mode !== 'production') return new Response(null, { status: 204 });
   try {
     const accounts = codexStore('accounts'), auth = codexStore('auth'), limits = codexStore('limits');
     if (!accounts || !auth || !limits) return new Response(null, { status: 503 });

@@ -1,3 +1,4 @@
+import { previewOriginMatches, codexDeployment } from './codexDeployment';
 import { timingSafeEqual } from './timingSafe';
 import { codexStore, writeSucceeded, type CodexStore } from './codexStore';
 const encoder = new TextEncoder();
@@ -10,7 +11,9 @@ export function githubAuthConfig() {
   const clientSecret = process.env.CODEX_GITHUB_CLIENT_SECRET;
   const signingSecret = process.env.CODEX_AUTH_SECRET;
   const origin = process.env.CODEX_GITHUB_ORIGIN || 'https://hamishburke.dev';
-  const preview = process.env.CONTEXT === 'deploy-preview' && origin === process.env.DEPLOY_PRIME_URL;
+  const deployment = codexDeployment();
+  const preview = previewOriginMatches(origin, deployment);
+  if (deployment.mode === 'deploy-preview' && !preview) return null;
   if (!clientId || !clientSecret || !signingSecret || signingSecret.length < 32 ||
       (origin !== 'https://hamishburke.dev' && !preview) || !/^https:\/\/[^/]+$/.test(origin)) return null;
   return { clientId, clientSecret, signingSecret, origin };

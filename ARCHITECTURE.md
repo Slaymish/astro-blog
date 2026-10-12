@@ -341,8 +341,9 @@ and are never stored. Signed session cookies name revocable one-hour server
 sessions. Writes require the exact configured Origin and a session CSRF token.
 
 New stores codex-auth-v2, codex-accounts-v2 and codex-limits-v2 use strong reads
-and conditional writes. Non-production Netlify deploys suffix stores with
-DEPLOY_ID. Legacy unauthenticated codex-usage-reports data is never treated as
+and conditional writes. Non-production Netlify deploys suffix stores with the deploy ID from
+@netlify/functions getContext(). Build-only environment metadata is not used in
+request handlers; unknown deployments cannot fall back to a production store. Legacy unauthenticated codex-usage-reports data is never treated as
 verified. A private, purpose-specific stable hash of the numeric GitHub ID
 names one complete report snapshot per account, independent of session-secret
 rotation. Mutations compare the revision returned by /me. Changed aggregates

@@ -22,7 +22,7 @@ Reports are capped at 256,000 streamed bytes, with exact aggregate-only field al
 
 ## Storage, moderation and retention
 
-Strong-consistency stores codex-auth-v2, codex-accounts-v2 and codex-limits-v2 are separate from legacy codex-usage-reports. Deploy previews suffix all three names with DEPLOY_ID. Preview data cannot mix with production data. Existing unauthenticated legacy reports are not migrated, publicly listed or treated as verified. Their retention or removal requires a separate operator decision.
+Strong-consistency stores codex-auth-v2, codex-accounts-v2 and codex-limits-v2 are separate from legacy codex-usage-reports. Deploy previews suffix all three names with the deploy ID from Netlify’s request-time context. Preview data cannot mix with production data. Existing unauthenticated legacy reports are not migrated, publicly listed or treated as verified. Their retention or removal requires a separate operator decision.
 
 All account writes compare the current ETag, an opaque storage revision. New creates are conditional on absence. Updates and withdrawals compare the revision from GET /api/codex/github/me. Conflicts return 409 changed_reload instead of overwriting newer data. Every successful conditional write must return both modified=true and an ETag. Storage failures return 503 without claiming success.
 
@@ -42,7 +42,7 @@ No production Sanity write was made. Without the singleton, the page uses existi
 
 Register a GitHub OAuth App with homepage https://hamishburke.dev and exact callback https://hamishburke.dev/api/codex/github/callback. Request no privileged scopes. Configure CODEX_GITHUB_CLIENT_ID, CODEX_GITHUB_CLIENT_SECRET and a cryptographically random CODEX_AUTH_SECRET of at least 32 characters in Netlify's server/function environment. RATE_LIMIT_SALT must also exist. Never use PUBLIC_ variables, commit credentials, or put secrets in URLs. Rotating the auth secret invalidates existing login cookies; account keys remain stable.
 
-For deploy-preview OAuth tests, register the exact preview callback, set CODEX_GITHUB_ORIGIN equal to DEPLOY_PRIME_URL and use CONTEXT=deploy-preview. GitHub now permits multiple exact redirect URIs on one OAuth App, so the registered Codex usage benchmark app covers both production and PR 45 without wildcards. The configured origin must be an exact HTTPS origin and the request must match it. Netlify sets DEPLOY_ID for store isolation. A production OAuth App callback will not work against an arbitrary preview. GitHub/App secrets and production content publication are operator configuration steps, not automated by this PR.
+For deploy-preview OAuth tests, register the exact preview callback, set CODEX_GITHUB_ORIGIN equal to DEPLOY_PRIME_URL and use CONTEXT=deploy-preview. GitHub now permits multiple exact redirect URIs on one OAuth App, so the registered Codex usage benchmark app covers both production and PR 45 without wildcards. The configured origin must be an exact HTTPS origin and the request must match it. Netlify runtime getContext() supplies the deploy context and ID for store isolation. Build-only CONTEXT, DEPLOY_ID and DEPLOY_PRIME_URL are not relied on in deployed request handlers. A production OAuth App callback will not work against an arbitrary preview. GitHub/App secrets and production content publication are operator configuration steps, not automated by this PR.
 
 Before any launch, run pnpm test, pnpm build, pnpm test again, pnpm check and pnpm studio:build on the installed supported runtime. CI uses Node 22/pnpm 10. Locally pnpm 11 needs verify-deps-before-run=false when reusing an isolated worktree's linked existing dependencies; no lockfile or dependency changes are made. Run the companion Python suite with Python 3.10 or newer.
 
@@ -75,3 +75,20 @@ keys were generated in owner-only local files outside the repository. The user
 has been handed the credential-entry step under the browser tool's rules. Actual
 saved contexts must be verified before claiming configuration or real OAuth
 verification complete. Production ingestion remains disabled throughout.
+
+## Runtime deployment metadata
+
+Live configuration revealed that CONTEXT, DEPLOY_ID and DEPLOY_PRIME_URL are
+build variables and are absent from ordinary function runtime environments.
+src/server/codexDeployment.ts now uses the installed @netlify/functions
+getContext() API. Preview origins must be an exact deploy-preview hostname for
+the runtime site name, and must still match the explicitly configured origin.
+Unknown deployments cannot silently select a production store. Scheduled
+retention uses the same runtime metadata; CLI review needs an explicit
+CONTEXT=production outside a deployed request.
+
+This fix is covered by three regression tests and 254 passing site tests with
+published Sanity copy. All required secret contexts are saved: separate signing
+keys for Production and Deploy Previews, the GitHub secret in both, and a separate
+preview rate salt with the existing production salt preserved. Only the preview
+submission flag is true for disposable tests; Production remains false.

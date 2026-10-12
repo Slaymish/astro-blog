@@ -1,3 +1,4 @@
+import { codexStoreName } from './codexDeployment';
 import { getStore } from '@netlify/blobs';
 
 /** Strong reads and conditional writes are required for auth and account updates. */
@@ -9,10 +10,9 @@ export interface CodexStore {
 }
 export function codexStore(name: 'auth' | 'accounts' | 'limits'): CodexStore | null {
   // Deploy previews must never read or mutate the site's production contributions.
-  const context = process.env.CONTEXT;
-  if (context && context !== 'production' && context !== 'dev' && !process.env.DEPLOY_ID) return null;
-  const suffix = context && context !== 'production' ? `-${process.env.DEPLOY_ID || 'local'}` : '';
-  try { return getStore({ name: `codex-${name}-v2${suffix}`, consistency: 'strong' }); }
+  const storeName = codexStoreName(name);
+  if (!storeName) return null;
+  try { return getStore({ name: storeName, consistency: 'strong' }); }
   catch { return null; }
 }
 export function writeSucceeded(result: { modified: boolean; etag?: string }): boolean {

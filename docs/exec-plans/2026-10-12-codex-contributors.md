@@ -117,3 +117,13 @@ Remaining: verify saved credential contexts, configure the public preview origin
 and preview-only test gate, rebuild the preview after settings and CDN purge,
 then test real login, authenticated synthetic ingestion/replacement/withdrawal.
 Keep production false and do not merge draft PR 45 as part of this setup.
+
+Follow-up, 13 October 2026: all secret values and contexts are now verified in
+Netlify. Clipboard-based, one-field hand-offs resolved the confusing initial
+instructions. The preview origin and preview-only test gate are saved. A fresh
+Netlify preview deploy completed, but sign-in remained unavailable because the
+original helper depended on build-only environment variables at runtime.
+The official Netlify function context API now supplies trusted deployment
+metadata for OAuth, store isolation and retention. Unknown context fails closed
+for storage. All 254 tests, build and Astro/knip checks pass. A new preview build
+and real OAuth/storage checks remain next; Production stays false.
