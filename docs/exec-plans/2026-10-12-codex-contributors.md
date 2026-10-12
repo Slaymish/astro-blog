@@ -12,7 +12,7 @@ Visitors can inspect a local aggregate usage report, sign in with GitHub, explic
 - [x] (2026-10-12) Implement signed PKCE state, atomic replay claims, server sessions, CSRF validation, account replacement, deletion and thresholded profiles.
 - [x] (2026-10-12) Move the Codex page and contribution copy to a validated Sanity singleton; prepare reviewable seed copy.
 - [x] (2026-10-12) Run 251 site tests, production build, Astro/knip checks, Studio build and 13 Python tests; all pass. Browser fixture checks pass at 320, 375 and 1280 pixels with mocked OAuth/API.
-- [ ] Review final diffs and publish draft PRs for both repositories.
+- [x] (2026-10-12) Review final diffs; update draft astro-blog PR 45 and create draft benchmark PR 3. GitHub CI and Netlify preview checks passed on code commit 80ec0f2.
 - [ ] Separate launch work: publish approved Sanity copy, configure OAuth and Netlify secrets, exercise deployed login/storage/withdrawal, then explicitly approve production launch.
 
 ## Surprises & Discoveries
@@ -79,3 +79,9 @@ Validation evidence, 2026-10-12:
       320/375/1280px no horizontal overflow, no page errors.
 
 The temporary browser fixture route was removed. Studio reports its existing local/runtime auto-update version warning (6.12.0 versus 6.18.0); no dependency was changed. Existing open copy migration PR 33 uses the older repository layout and is not merged here; dependency PRs 30 and 35 remain separate. No production settings, secrets or Sanity documents were changed.
+
+Delivered PRs: https://github.com/Slaymish/astro-blog/pull/45 and https://github.com/Slaymish/codex-usage-benchmark/pull/3. Main is untouched. GitHub Actions test/build/check/Studio validation and Netlify deploy/header/redirect checks passed for 80ec0f2. The GitHub CI annotation is only an upcoming runner image change notice.
+
+GitHub reported existing default-branch dependency alerts during push. An API read confirmed open alerts, including packages used in build tooling. Their declared dependency scope alone does not establish request-time exploitability. Existing dependency PRs and alert remediation require separate triage before launch; this contributor PR changes no lockfile or package versions.
+
+Revision 2026-10-12: marked implementation, review and draft PR delivery complete and recorded cloud check evidence. Real configured OAuth/storage launch tests and production content publication remain separate release work.

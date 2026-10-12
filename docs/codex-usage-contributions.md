@@ -49,3 +49,10 @@ Before any launch, run pnpm test, pnpm build, pnpm test again, pnpm check and pn
 Then, on an isolated configured preview, test real GitHub login/cancel/failure, the cookie on the sibling ingestion path, callback replay, cross-origin writes, report validation, conditional-write conflicts, two-account ownership, separate profile consent, review of the current fingerprint, privacy suppression, replacement and withdrawal. Confirm actual storage ETags and strong reads, the scheduled retention job, deployed CSP/avatar loading and session revocation. Keep CODEX_CONTRIBUTIONS_ENABLED unset or false in production throughout. Only a separate launch decision after these checks should enable production submissions.
 
 Automated route tests and mocked browser checks demonstrate the application logic. They are not evidence of real GitHub or Netlify end-to-end functionality. The calculator still uses illustrative subscription prices and capacities; token reports do not measure five-hour quotas, weekly resets or active coding duration.
+
+## Existing dependency alerts
+
+GitHub reports open alerts on the existing default-branch dependency graph.
+Triage their actual build/runtime reachability and the existing dependency PRs
+before launching submissions. This feature changes no package or lockfile and
+does not claim those baseline alerts are remediated.
