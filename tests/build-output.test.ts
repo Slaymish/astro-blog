@@ -306,7 +306,7 @@ test('profiles, book authors and report encodings use their distinct schema type
 
 test('the machine-readable directory names every project, article and report and links their resources', { skip }, () => {
   const directory = readFileSync(join(dist, 'llms.txt'), 'utf8');
-  for (const page of pages.filter((page) => /^\/(work|posts|reports)\//.test(page.path))) {
+  for (const page of pages.filter((page) => /^\/(work|posts|reports)\//.test(page.path) && !parse(page.html).querySelector('meta[name="robots"]')?.getAttribute('content')?.includes('noindex'))) {
     assert(directory.includes(`${SITE_URL}${page.path}`), `${page.path} absent from llms.txt`);
   }
   assert(directory.includes('Accept: text/markdown'));

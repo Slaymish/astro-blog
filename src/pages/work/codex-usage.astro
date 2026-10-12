@@ -2,29 +2,30 @@
 import Base from '../../layouts/Base.astro';
 import CodexUsageCalculator from '../../components/CodexUsageCalculator.astro';
 import CodexReportPreview from '../../components/CodexReportPreview.astro';
+import { getCodexUsagePage, getWorkIndexPage, getSiteSettings } from '../../content/queries';
+const [copy, work, settings] = await Promise.all([getCodexUsagePage(), getWorkIndexPage(), getSiteSettings()]);
+const title = copy?.page.title ?? work.seo.title;
+const description = copy?.page.description ?? work.seo.description;
 ---
-<Base title="Codex usage optimiser" description="Estimate the cheapest Codex subscription combination for continuous coding, in New Zealand dollars." breadcrumbs={[{ name: 'Work', path: '/work' }, { name: 'Codex usage optimiser', path: '/work/codex-usage' }]}>
+<Base title={title} description={description} robots={copy ? undefined : 'noindex, follow'}>
   <main class="codex-page">
-    <a href="/work">← Work</a>
-    <header>
-      <h1>Codex usage optimiser</h1>
-      <p>How much would it cost to keep Codex coding? Explore subscription combinations and extra credits in New Zealand dollars.</p>
-    </header>
-    <CodexUsageCalculator />
-    <section class="codex-page__contribute">
-      <h2>Help improve the estimates</h2>
-      <p>Generate a usage report, check what it contains, then decide whether to share it. Nothing leaves your device here.</p>
-      <CodexReportPreview />
-      <div class="codex-page__people">
-        <h3>People behind the project</h3>
-        <a class="codex-page__person" href="https://github.com/Slaymish" rel="noopener noreferrer">
-          <img src="https://github.com/Slaymish.png?size=96" width="48" height="48" alt="Slaymish's GitHub profile picture" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
-          <span><strong>Slaymish</strong><small>Project maintainer</small></span>
-        </a>
-        <p>Contributor profiles will appear here only when people explicitly opt in. No usage reports have been published yet.</p>
-      </div>
-      <p><a href="https://github.com/Slaymish/codex-usage-benchmark">Source code and methodology on GitHub</a></p>
-    </section>
+    <a href="/work">{copy?.page.back ?? settings.workCtaLabel}</a>
+    {!copy && <header><h1>{work.hero.headlineLines.join(' ')}</h1><p>{work.hero.intro}</p></header>}
+    {copy && <>
+      <header><h1>{copy.page.title}</h1><p>{copy.page.intro}</p></header>
+      <CodexUsageCalculator copy={copy.calculator} />
+      <section class="codex-page__contribute">
+        <h2>{copy.page.contributeHeading}</h2>
+        <p>{copy.page.contributeIntro}</p>
+        <CodexReportPreview copy={copy} />
+        <div class="codex-page__people" data-contributors>
+          <h3>{copy.page.peopleHeading}</h3>
+          <p data-contributors-empty>{copy.page.peopleEmpty}</p>
+          <ul class="codex-page__profiles" data-contributors-list></ul>
+        </div>
+        <p><a href="https://github.com/Slaymish/codex-usage-benchmark">{copy.page.source}</a></p>
+      </section>
+    </>}
   </main>
 </Base>
 <style>
@@ -36,9 +37,7 @@ import CodexReportPreview from '../../components/CodexReportPreview.astro';
   .codex-page__contribute { max-width: 46rem; margin-block: var(--spacing-12); }
   .codex-page__contribute p { color: var(--color-text-secondary); }
   .codex-page__people { margin-block: var(--spacing-10); }
-  .codex-page__person { display: inline-flex; align-items: center; gap: var(--spacing-3); color: inherit; text-decoration: none; }
-  .codex-page__person img { border-radius: 50%; }
-  .codex-page__person span { display: grid; }
-  .codex-page__person small { color: var(--color-text-secondary); }
-  .codex-page__people > p { font-size: var(--type-body-small); }
+  .codex-page__profiles { display: flex; flex-wrap: wrap; gap: var(--spacing-4); list-style: none; padding: 0; }
+  .codex-page__profiles :global(a) { display: inline-flex; align-items: center; gap: var(--spacing-3); overflow-wrap: anywhere; }
+  .codex-page__profiles :global(img) { border-radius: 50%; }
 </style>

@@ -39,23 +39,24 @@ export function optimise(hoursPerDay: number): Strategy {
         }
   return best!;
 }
-export function describeStrategy(strategy: Strategy): string {
+export function describeStrategy(strategy: Strategy, creditsLabel = '', planLabels = ASSUMPTIONS.plans.map(plan => plan.name)): string {
   const subscriptions = strategy.subscriptions
-    .map((n, i) => n ? `${n} × ${ASSUMPTIONS.plans[i].name}` : '')
+    .map((n, i) => n ? `${n} × ${planLabels[i]}` : '')
     .filter(Boolean).join(' + ');
-  return subscriptions + (strategy.creditsNzd > 0.005 ? ' + credits' : '');
+  return subscriptions + (strategy.creditsNzd > 0.005 ? ' + ' + creditsLabel : '');
 }
 export function initCodexUsage(root: HTMLElement): void {
   const range = root.querySelector<HTMLInputElement>('[data-hours]');
   if (!range) return;
   const currency = new Intl.NumberFormat('en-NZ', { style: 'currency', currency: 'NZD', minimumFractionDigits: 2 });
+  const planLabels = JSON.parse(root.dataset.planLabels || '[]') as string[];
   const update = () => {
     const hours = Number(range.value);
     const outcome = optimise(hours);
     const fields: Record<string, string> = {
       hours: hours.toFixed(2),
       sessions: (hours * 60 / 35).toFixed(1),
-      strategy: describeStrategy(outcome),
+      strategy: describeStrategy(outcome, root.dataset.creditsLabel, planLabels),
       monthly: currency.format(outcome.monthlyNzd),
       subscriptions: currency.format(outcome.monthlyNzd - outcome.creditsNzd),
       credits: currency.format(outcome.creditsNzd),

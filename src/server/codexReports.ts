@@ -1,5 +1,5 @@
 /** Strict v1 report validation. No user-supplied attribution is accepted. */
-export interface UsageBucket {
+interface UsageBucket {
   month: string; model: string; sessions: number; input_tokens: number;
   cached_input_tokens: number; output_tokens: number;
   reasoning_output_tokens: number; total_tokens: number;
@@ -22,29 +22,29 @@ function uint(value: unknown): value is number {
 }
 export function validateUsageReport(value: unknown): UsageReport | null {
   if (!exact(value, rootKeys) || value.schemaVersion !== 1 ||
-    typeof value.collectorVersion !== 'string' || !/^\d+\.\d+\.\d+$/.test(value.collectorVersion) ||
+    typeof value.collectorVersion !== 'string' || (!/^\d+\.\d+\.\d+$/.test(value.collectorVersion) || value.collectorVersion.trim() !== value.collectorVersion) ||
     value.dataType !== 'aggregate_token_usage' || value.privacy !== 'monthly-model-aggregates' ||
     !exact(value.summary, summaryKeys) || !summaryKeys.every(k => uint((value.summary as Record<string, unknown>)[k])) ||
     !Array.isArray(value.buckets) || value.buckets.length < 1 || value.buckets.length > 240) return null;
   const summary = value.summary as unknown as UsageReport['summary'];
-  let sessions = 0;
+  let sessions = 0, input = 0, output = 0;
   const seen = new Set<string>();
   for (const item of value.buckets) {
     if (!exact(item, bucketKeys) || typeof item.month !== 'string' ||
-      !/^\d{4}-(0[1-9]|1[0-2])$/.test(item.month) ||
-      typeof item.model !== 'string' || !/^[A-Za-z0-9._-]{1,80}$/.test(item.model) ||
+      (!/^\d{4}-(0[1-9]|1[0-2])$/.test(item.month) || item.month.startsWith('0000') || item.month.trim() !== item.month) ||
+      typeof item.model !== 'string' || (!/^[A-Za-z0-9._-]{1,80}$/.test(item.model) || item.model.trim() !== item.model) ||
       !bucketKeys.slice(2).every(k => uint(item[k]))) return null;
     const row = item as unknown as UsageBucket;
     const key = row.month + ':' + row.model;
     if (seen.has(key) || row.sessions < 1 || row.cached_input_tokens > row.input_tokens ||
       row.reasoning_output_tokens > row.output_tokens ||
-      (row.total_tokens > 0 && row.total_tokens < row.input_tokens + row.output_tokens)) return null;
+      (!Number.isSafeInteger(row.input_tokens + row.output_tokens) || (row.total_tokens > 0 && row.total_tokens < row.input_tokens + row.output_tokens))) return null;
     seen.add(key);
-    sessions += row.sessions;
-    if (!Number.isSafeInteger(sessions)) return null;
+    sessions += row.sessions; input += row.input_tokens; output += row.output_tokens;
+    if (!Number.isSafeInteger(sessions) || !Number.isSafeInteger(input) || !Number.isSafeInteger(output)) return null;
   }
   if (sessions !== summary.usableSessions || summary.filesInspected < sessions ||
-    summary.skippedFiles > summary.filesInspected ||
+    summary.skippedFiles > summary.filesInspected - sessions ||
     summary.snapshotsFound < summary.usableSessions) return null;
   return value as unknown as UsageReport;
 }

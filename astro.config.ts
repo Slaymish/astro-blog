@@ -111,7 +111,7 @@ export default defineConfig({
         "base-uri 'self'",
         "object-src 'none'",
         "form-action 'self'",
-        "img-src 'self' data: https://cdn.sanity.io",
+        "img-src 'self' data: https://cdn.sanity.io https://avatars.githubusercontent.com",
         "font-src 'self'",
         "connect-src 'self' https://cloud.umami.is https://gateway.umami.is https://cdn.sanity.io",
         "worker-src 'self' blob:",
