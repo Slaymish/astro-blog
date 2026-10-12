@@ -316,3 +316,51 @@ already sits in them: `sessions`, `session-insights`, `rate-limits` and
 - `src/server/timingSafe.ts` is the only string comparison used for a secret.
 - Never commit secrets. `INSIGHTS_TOKEN`, `CAL_WEBHOOK_SECRET` and
   `RATE_LIMIT_SALT`, `RESEND_API_KEY` and `NOTIFICATION_FROM` are set in Netlify and read through `src/server/secrets.ts`.
+
+## Verified Codex contributions
+
+The static /work/codex-usage tool reads the optional codexUsagePage Sanity
+singleton. Shared required copy keys cover every visitor sentence, label and
+browser status. Missing copy renders existing Work copy with noindex and no
+tool; incomplete published copy fails the build. Sitemap and llms.txt include
+the tool when copy exists. RSS remains a feed of published projects and writing.
+
+Request-time routes under /api/codex/github handle OAuth start/callback,
+account status and sign-out. /api/codex-contribute accepts authenticated
+POST/PATCH/DELETE. /api/codex/contributors serves only eligible public profiles.
+src/server/codexAuth.ts owns signed cookies, server sessions, stable account
+keys and CSRF checks; codexOAuth.ts owns PKCE and one-time callback handling;
+codexContributions.ts owns validation, conditional account writes, moderation,
+retention and public privacy suppression. codexStore.ts resolves strong stores.
+
+The session cookie is host-only, HttpOnly, Secure, SameSite=Lax and Path=/api/,
+which includes the sibling ingestion route. Signed state contains a PKCE
+verifier and expires after ten minutes. An atomic server claim consumes it
+before GitHub exchange. Tokens are used only to verify the numeric account ID
+and are never stored. Signed session cookies name revocable one-hour server
+sessions. Writes require the exact configured Origin and a session CSRF token.
+
+New stores codex-auth-v2, codex-accounts-v2 and codex-limits-v2 use strong reads
+and conditional writes. Non-production Netlify deploys suffix stores with the deploy ID from
+@netlify/functions getContext(). Build-only environment metadata is not used in
+request handlers; unknown deployments cannot fall back to a production store. Legacy unauthenticated codex-usage-reports data is never treated as
+verified. A private, purpose-specific stable hash of the numeric GitHub ID
+names one complete report snapshot per account, independent of session-secret
+rotation. Mutations compare the revision returned by /me. Changed aggregates
+reset moderation; identical resubmissions do not add samples or extend retention.
+
+Withdrawal conditionally replaces all personal fields with an empty marker.
+The stable key remains service-linkable, preventing old creates from restoring
+deleted data. Opt-out and withdrawal stay available when ingestion is paused.
+Reports expire after 90 days; codex-retention clears expired personal fields
+hourly, while public reads immediately suppress expired records. It also removes
+expired immutable auth/limit entries. Moderation requires a privately reviewed
+fingerprint and revision, with no public approval endpoint.
+
+Public profiles require acceptance, explicit opt-in and at least five eligible
+accounts. No small counts or usage data are exposed. Only validated GitHub
+profile and avatar URLs are emitted, with no-store responses. The CSP allows
+only avatars.githubusercontent.com in addition to existing image hosts.
+Ingestion is disabled unless CODEX_CONTRIBUTIONS_ENABLED is explicitly true.
+OAuth configuration, Sanity publication and real deployed release checks are
+separate operator steps documented in docs/codex-usage-contributions.md.

@@ -1,3 +1,4 @@
+import { validateCodexCopy, type CodexUsageCopy } from './codexUsage';
 import { fetchSanity } from './sanity';
 import { validatePosts, validateReports, validateSiteSettings, validateWorkStories } from './validate';
 import type {
@@ -168,3 +169,10 @@ export const getBooks = () =>
 function assertValid(type: string, errors: string[]): void {
   if (errors.length > 0) throw new Error(`Invalid ${type} collection: ${errors.join('; ')}`);
 }
+
+/** No hardcoded prototype fallback: missing copy keeps the contribution tool unpublished. */
+export const getCodexUsagePage = () => once('codexUsagePage', async () => {
+  const copy = await fetchSanity<CodexUsageCopy | null>('*[_id == "codexUsagePage"][0]{page, calculator, contribution, messages}');
+  if (copy && !validateCodexCopy(copy)) throw new Error('Incomplete Codex page copy');
+  return copy;
+});

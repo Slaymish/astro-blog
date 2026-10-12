@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getPosts, getReports, getWorkStories } from '../content/queries';
+import { getPosts, getReports, getWorkStories, getCodexUsagePage } from '../content/queries';
 import { feedTags, getFeed, workTags } from '../content/feed';
 import { tagSlug } from '../content/writing';
 import { SITE_DESCRIPTION, SITE_NAME, absoluteUrl } from '../site/config';
@@ -10,8 +10,8 @@ const label = (text: string): string => line(text).replace(/([\\[\]])/g, '\\$1')
 const link = (name: string, url: string): string => `[${label(name)}](${absoluteUrl(url)})`;
 
 export const GET: APIRoute = async () => {
-  const [stories, posts, reports, feed] = await Promise.all([
-    getWorkStories(), getPosts(), getReports(), getFeed(),
+  const [stories, posts, reports, feed, codex] = await Promise.all([
+    getWorkStories(), getPosts(), getReports(), getFeed(), getCodexUsagePage(),
   ]);
   const sections = [
     `# ${SITE_NAME}\n\n> ${SITE_DESCRIPTION}`,
@@ -40,6 +40,7 @@ This catalogue is generated from the same published content as the HTML pages. T
       `  - Published: ${report.publishedAt}. ${link('PDF', report.pdfUrl)}`,
       ...(report.tags.length ? [`  - Topics: ${report.tags.map((tag) => link(tag, `/tags/${tagSlug(tag)}`)).join(', ')}.`] : []),
     ].join('\n')).join('\n')}`,
+    ...(codex ? [`## Tools\n- ${link(codex.page.title, '/work/codex-usage')}: ${line(codex.page.description)}`] : []),
     `## Topics\n${feedTags(feed).map((tag) => `- ${link(tag, `/tags/${tagSlug(tag)}`)}`).join('\n')}`,
     `## Formats and discovery
 - ${link('RSS', '/rss.xml')}: projects, articles and reports.

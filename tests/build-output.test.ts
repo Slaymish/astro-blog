@@ -66,6 +66,16 @@ function resolves(path: string, sources: string[]): boolean {
   return candidates.some((candidate) => existsSync(join(dist, candidate)));
 }
 
+/** Dynamic GET routes deliberately have no static HTML file. Check the actual source contract. */
+function serverGetRoute(path: string): boolean {
+  const clean = path.split('#')[0]!.split('?')[0]!;
+  if (!clean.startsWith('/api/')) return false;
+  const file = join(root, 'src/pages', `${clean}.ts`);
+  if (!existsSync(file)) return false;
+  const source = readFileSync(file, 'utf8');
+  return /^export const prerender = false;/m.test(source) && /^export (?:const|async function) GET\b/m.test(source);
+}
+
 test('every page has a canonical matching its route or its declared index alias', { skip }, () => {
   for (const page of pages) {
     const href = parse(page.html).querySelector('link[rel="canonical"]')?.getAttribute('href');
@@ -137,20 +147,18 @@ test('every Open Graph image is absolute and actually resolves', { skip }, () =>
   }
 });
 
-test('every internal link and image resolves to a built file or a redirect rule', { skip }, () => {
+test('internal links resolve to static or server GET routes, and media resolve to files', { skip }, () => {
   const sources = redirectSources();
   for (const page of pages) {
     const document = parse(page.html);
-    const targets = [
-      ...document.querySelectorAll('a[href]').map((node) => node.getAttribute('href')!),
-      ...document.querySelectorAll('img[src]').map((node) => node.getAttribute('src')!),
-      ...document.querySelectorAll('video[poster]').map((node) => node.getAttribute('poster')!),
-      ...document.querySelectorAll('source[src]').map((node) => node.getAttribute('src')!),
-    ].filter((target) => target.startsWith('/'));
-
-    for (const target of targets) {
-      assert(resolves(target, sources), `${page.path} links to ${target}, which is not in the build`);
-    }
+    const links = document.querySelectorAll('a[href]').map(node => node.getAttribute('href')!).filter(target => target.startsWith('/'));
+    for (const target of links) assert(resolves(target, sources) || serverGetRoute(target), `${page.path} links to missing route ${target}`);
+    const media = [
+      ...document.querySelectorAll('img[src]').map(node => node.getAttribute('src')!),
+      ...document.querySelectorAll('video[poster]').map(node => node.getAttribute('poster')!),
+      ...document.querySelectorAll('source[src]').map(node => node.getAttribute('src')!),
+    ].filter(target => target.startsWith('/'));
+    for (const target of media) assert(resolves(target, sources), `${page.path} references missing media ${target}`);
   }
 });
 
@@ -306,7 +314,7 @@ test('profiles, book authors and report encodings use their distinct schema type
 
 test('the machine-readable directory names every project, article and report and links their resources', { skip }, () => {
   const directory = readFileSync(join(dist, 'llms.txt'), 'utf8');
-  for (const page of pages.filter((page) => /^\/(work|posts|reports)\//.test(page.path))) {
+  for (const page of pages.filter((page) => /^\/(work|posts|reports)\//.test(page.path) && !parse(page.html).querySelector('meta[name="robots"]')?.getAttribute('content')?.includes('noindex'))) {
     assert(directory.includes(`${SITE_URL}${page.path}`), `${page.path} absent from llms.txt`);
   }
   assert(directory.includes('Accept: text/markdown'));

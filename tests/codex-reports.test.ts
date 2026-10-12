@@ -32,3 +32,9 @@ test('stable fingerprint ignores summary metadata', async () => {
   assert.ok(other);
   assert.equal(await reportFingerprint(report), await reportFingerprint(other));
 });
+
+test('matches the companion Python validator on shared contract fixtures', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const cases = JSON.parse(await readFile(new URL('./fixtures/report-validation.json', import.meta.url), 'utf8')) as { name: string; valid: boolean; report: unknown }[];
+  for (const item of cases) assert.equal(validateUsageReport(item.report) !== null, item.valid, item.name);
+});
