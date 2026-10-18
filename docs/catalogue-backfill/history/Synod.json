@@ -1,0 +1,91 @@
+{
+  "repo": "Synod",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2026-05-14T05:08:50Z",
+  "pushedAt": "2026-05-16T13:07:49Z",
+  "firstCommit": {
+    "sha": "a3d38966ec7dfbf51fe586ee920bdaaf9e0e0737",
+    "date": "2026-05-14T05:12:59Z",
+    "message": "Test connection, drag-and-drop import, folder autocomplete, stability + Obsidian guideline fixes",
+    "url": "https://github.com/Slaymish/Synod/commit/a3d38966ec7dfbf51fe586ee920bdaaf9e0e0737"
+  },
+  "releases": [
+    {
+      "tag": "0.2.0",
+      "date": "2026-05-16T13:08:22Z",
+      "url": "https://github.com/Slaymish/Synod/releases/tag/0.2.0",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.2.0/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.2.0/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.2.0/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.1.2",
+      "date": "2026-05-14T22:56:43Z",
+      "url": "https://github.com/Slaymish/Synod/releases/tag/0.1.2",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.2/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.2/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.2/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.1.1",
+      "date": "2026-05-14T05:54:44Z",
+      "url": "https://github.com/Slaymish/Synod/releases/tag/0.1.1",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.1/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.1/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.1/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.1.0",
+      "date": "2026-05-14T05:18:12Z",
+      "url": "https://github.com/Slaymish/Synod/releases/tag/0.1.0",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.0/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.0/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.0/styles.css"
+        }
+      ]
+    }
+  ]
+}

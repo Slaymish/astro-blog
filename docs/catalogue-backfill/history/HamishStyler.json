@@ -1,0 +1,14 @@
+{
+  "repo": "HamishStyler",
+  "private": true,
+  "branch": "main",
+  "createdAt": "2025-11-05T08:11:12Z",
+  "pushedAt": "2025-11-05T08:11:14Z",
+  "firstCommit": {
+    "sha": "f13b9a2b0539d5d0fb3b55bd9d9e59fc2a16b8ec",
+    "date": "2025-11-04T05:28:56Z",
+    "message": "Add Hamish style classifier and decoding components",
+    "url": "https://github.com/Slaymish/HamishStyler/commit/f13b9a2b0539d5d0fb3b55bd9d9e59fc2a16b8ec"
+  },
+  "releases": []
+}

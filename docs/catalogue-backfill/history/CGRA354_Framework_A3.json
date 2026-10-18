@@ -1,0 +1,14 @@
+{
+  "repo": "CGRA354_Framework_A3",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2024-05-12T03:14:11Z",
+  "pushedAt": "2024-05-16T08:28:07Z",
+  "firstCommit": {
+    "sha": "ffe18e46308396d5abe1a90f7672d56f19348ee8",
+    "date": "2024-05-12T03:14:00Z",
+    "message": "chore: Add glm library and dependencies",
+    "url": "https://github.com/Slaymish/CGRA354_Framework_A3/commit/ffe18e46308396d5abe1a90f7672d56f19348ee8"
+  },
+  "releases": []
+}

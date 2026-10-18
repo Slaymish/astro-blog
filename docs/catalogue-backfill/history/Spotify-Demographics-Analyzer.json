@@ -1,0 +1,14 @@
+{
+  "repo": "Spotify-Demographics-Analyzer",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2024-03-23T13:30:49Z",
+  "pushedAt": "2024-03-23T13:52:39Z",
+  "firstCommit": {
+    "sha": "46966803e2b77257e3eee6f11f1eec48daaf2297",
+    "date": "2024-03-23T13:30:41Z",
+    "message": "Initial Commit",
+    "url": "https://github.com/Slaymish/Spotify-Demographics-Analyzer/commit/46966803e2b77257e3eee6f11f1eec48daaf2297"
+  },
+  "releases": []
+}

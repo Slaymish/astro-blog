@@ -1,0 +1,14 @@
+{
+  "repo": "Musicical-Genre-Classifier",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2024-09-16T00:45:01Z",
+  "pushedAt": "2024-10-01T22:31:20Z",
+  "firstCommit": {
+    "sha": "b0e0d670d42273b8d8c773a437cdca16888a4501",
+    "date": "2024-09-16T00:44:48Z",
+    "message": "inital commit",
+    "url": "https://github.com/Slaymish/Musicical-Genre-Classifier/commit/b0e0d670d42273b8d8c773a437cdca16888a4501"
+  },
+  "releases": []
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "metlink-departures-display",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2026-01-16T10:20:55Z",
+  "pushedAt": "2026-01-16T10:26:17Z",
+  "firstCommit": {
+    "sha": "2b07ac0a1e0f597585ffec6e43db01b3045db91e",
+    "date": "2026-01-16T10:20:43Z",
+    "message": "Add initial implementation of HomeBusTimes CLI and server",
+    "url": "https://github.com/Slaymish/metlink-departures-display/commit/2b07ac0a1e0f597585ffec6e43db01b3045db91e"
+  },
+  "releases": []
+}

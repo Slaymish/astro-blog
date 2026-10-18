@@ -1,0 +1,82 @@
+[
+  {
+    "_id": "workStory-brontehf",
+    "_rev": "ufXqsgklGgab7shZzVNPSN",
+    "order": 2,
+    "slug": {
+      "_type": "slug",
+      "current": "brontehf"
+    },
+    "title": "BrontëHF"
+  },
+  {
+    "_id": "workStory-gpu-share",
+    "_rev": "ufXqsgklGgab7shZzVNPSN",
+    "order": 3,
+    "slug": {
+      "_type": "slug",
+      "current": "gpu-share"
+    },
+    "title": "GPUShare"
+  },
+  {
+    "_id": "workStory-health-agent",
+    "_rev": "ufXqsgklGgab7shZzVNPSN",
+    "order": 5,
+    "slug": {
+      "_type": "slug",
+      "current": "health-agent"
+    },
+    "title": "HealthAgent"
+  },
+  {
+    "_id": "workStory-home-lab",
+    "_rev": "ufXqsgklGgab7shZzVNPSN",
+    "order": 6,
+    "slug": {
+      "_type": "slug",
+      "current": "home-lab"
+    },
+    "title": "Home Lab"
+  },
+  {
+    "_id": "workStory-sprint-coach",
+    "_rev": "ufXqsgklGgab7shZzVNPSN",
+    "order": 1,
+    "slug": {
+      "_type": "slug",
+      "current": "sprint-coach"
+    },
+    "title": "Sprint Coach"
+  },
+  {
+    "_id": "workStory-the-city",
+    "_rev": "ufXqsgklGgab7shZzVNPSN",
+    "order": 0,
+    "slug": {
+      "_type": "slug",
+      "current": "the-city"
+    },
+    "title": "The City"
+  },
+  {
+    "_id": "workStory-wildfire",
+    "_rev": "ufXqsgklGgab7shZzVNPSN",
+    "order": 7,
+    "slug": {
+      "_type": "slug",
+      "current": "wildfire-pyspark"
+    },
+    "title": "Wildfire PySpark"
+  },
+  {
+    "_id": "workStory-you-inc",
+    "_rev": "ufXqsgklGgab7shZzVNPSN",
+    "order": 4,
+    "slug": {
+      "_type": "slug",
+      "current": "you-inc"
+    },
+    "title": "You Inc"
+  }
+]

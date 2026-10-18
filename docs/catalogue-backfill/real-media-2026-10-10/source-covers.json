@@ -1,0 +1,162 @@
+[
+  {
+    "repo": "EchoStatsFinder",
+    "path": "real-media-2026-10-10/EchoStatsFinder-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/EchoStatsFinder: functions/base/vrmlplayersearcher.py (lines 36 to 55)",
+    "sourceFile": "functions/base/vrmlplayersearcher.py",
+    "lineStart": 36,
+    "lineEnd": 55,
+    "alt": "Original source code from functions/base/vrmlplayersearcher.py in Echo Stats Finder."
+  },
+  {
+    "repo": "Watzon",
+    "path": "real-media-2026-10-10/Watzon-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/Watzon: app/src/main/java/vrml/api/Bot.java (lines 103 to 123)",
+    "sourceFile": "app/src/main/java/vrml/api/Bot.java",
+    "lineStart": 103,
+    "lineEnd": 123,
+    "alt": "Original source code from app/src/main/java/vrml/api/Bot.java in Watzon."
+  },
+  {
+    "repo": "WellingtonTrainNetwork",
+    "path": "real-media-2026-10-10/WellingtonTrainNetwork-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/WellingtonTrainNetwork: src/main/java/AStar.java (lines 15 to 37)",
+    "sourceFile": "src/main/java/AStar.java",
+    "lineStart": 15,
+    "lineEnd": 37,
+    "alt": "Original source code from src/main/java/AStar.java in Wellington Transport Network."
+  },
+  {
+    "repo": "blender-addon",
+    "path": "real-media-2026-10-10/blender-addon-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/blender-addon: addon/Addon/floor_importer.py (lines 28 to 51)",
+    "sourceFile": "addon/Addon/floor_importer.py",
+    "lineStart": 28,
+    "lineEnd": 51,
+    "alt": "Original source code from addon/Addon/floor_importer.py in Floor-plan Importer."
+  },
+  {
+    "repo": "PianoVisualiser",
+    "path": "real-media-2026-10-10/PianoVisualiser-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/PianoVisualiser: piano.cpp (lines 5 to 29)",
+    "sourceFile": "piano.cpp",
+    "lineStart": 5,
+    "lineEnd": 29,
+    "alt": "Original source code from piano.cpp in Piano Waveform Visualiser."
+  },
+  {
+    "repo": "GrooveBox",
+    "path": "real-media-2026-10-10/GrooveBox-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/GrooveBox: host/engine/groovebox/sequencer.py (lines 99 to 129)",
+    "sourceFile": "host/engine/groovebox/sequencer.py",
+    "lineStart": 99,
+    "lineEnd": 129,
+    "alt": "Original source code from host/engine/groovebox/sequencer.py in GrooveBox."
+  },
+  {
+    "repo": "PinterestBoardEmbedding",
+    "path": "real-media-2026-10-10/PinterestBoardEmbedding-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/PinterestBoardEmbedding: cluster_images.py (lines 100 to 122)",
+    "sourceFile": "cluster_images.py",
+    "lineStart": 100,
+    "lineEnd": 122,
+    "alt": "Original source code from cluster_images.py in Pinterest Aesthetic Analysis."
+  },
+  {
+    "repo": "Spotify-Demographics-Analyzer",
+    "path": "real-media-2026-10-10/Spotify-Demographics-Analyzer-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/Spotify-Demographics-Analyzer: analysis.py (lines 1 to 26)",
+    "sourceFile": "analysis.py",
+    "lineStart": 1,
+    "lineEnd": 26,
+    "alt": "Original source code from analysis.py in Spotify Playlist Demographics."
+  },
+  {
+    "repo": "akahu-sheets-sync",
+    "path": "real-media-2026-10-10/akahu-sheets-sync-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/akahu-sheets-sync: src/bank_sync/reconciliation.py (lines 22 to 44)",
+    "sourceFile": "src/bank_sync/reconciliation.py",
+    "lineStart": 22,
+    "lineEnd": 44,
+    "alt": "Original source code from src/bank_sync/reconciliation.py in Bank-to-Sheets Sync."
+  },
+  {
+    "repo": "metlink-departures-display",
+    "path": "real-media-2026-10-10/metlink-departures-display-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/metlink-departures-display: bus_sign_server.py (lines 39 to 65)",
+    "sourceFile": "bus_sign_server.py",
+    "lineStart": 39,
+    "lineEnd": 65,
+    "alt": "Original source code from bus_sign_server.py in Metlink Departures Display."
+  },
+  {
+    "repo": "PowerCalculator",
+    "path": "real-media-2026-10-10/PowerCalculator-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/PowerCalculator: src/calc.ts (lines 22 to 39)",
+    "sourceFile": "src/calc.ts",
+    "lineStart": 22,
+    "lineEnd": 39,
+    "alt": "Original source code from src/calc.ts in Flat Power Calculator."
+  },
+  {
+    "repo": "Sentient",
+    "path": "real-media-2026-10-10/Sentient-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/Sentient: Environment2D.py (lines 62 to 89)",
+    "sourceFile": "Environment2D.py",
+    "lineStart": 62,
+    "lineEnd": 89,
+    "alt": "Original source code from Environment2D.py in Sentient Environment Explorer."
+  },
+  {
+    "repo": "personal-language-corpus",
+    "path": "real-media-2026-10-10/personal-language-corpus-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/personal-language-corpus: language_corpus/quantitative.py (lines 34 to 58)",
+    "sourceFile": "language_corpus/quantitative.py",
+    "lineStart": 34,
+    "lineEnd": 58,
+    "alt": "Original source code from language_corpus/quantitative.py in Personal Language Corpus."
+  },
+  {
+    "repo": "DadsBirthday",
+    "path": "real-media-2026-10-10/DadsBirthday-source-cover.png",
+    "kind": "original project source excerpt",
+    "source": "Slaymish/DadsBirthday: app.js (lines 151 to 169)",
+    "sourceFile": "app.js",
+    "lineStart": 151,
+    "lineEnd": 169,
+    "alt": "Original source code from app.js in Birthday Gallery."
+  },
+  {
+    "repo": "conversational-timing-lab",
+    "path": "real-media-2026-10-10/conversational-timing-lab-source-cover.png",
+    "kind": "original research record excerpt",
+    "source": "Slaymish/conversational-timing-lab: results/e1_ami_3meetings.txt (lines 1 to 21)",
+    "sourceFile": "results/e1_ami_3meetings.txt",
+    "lineStart": 1,
+    "lineEnd": 21,
+    "alt": "Original research record from results/e1_ami_3meetings.txt in Conversational Timing Lab."
+  },
+  {
+    "repo": "commit-reviewer",
+    "path": "real-media-2026-10-10/commit-reviewer-source-cover.png",
+    "kind": "original research record excerpt",
+    "source": "Slaymish/commit-reviewer: experiments/FINDINGS.md (lines 1 to 32)",
+    "sourceFile": "experiments/FINDINGS.md",
+    "lineStart": 1,
+    "lineEnd": 32,
+    "alt": "Original research record from experiments/FINDINGS.md in Typed Diff Questions."
+  }
+]

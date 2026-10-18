@@ -1,0 +1,14 @@
+{
+  "repo": "PianoVisualiser",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2025-07-10T12:59:03Z",
+  "pushedAt": "2025-07-10T13:18:27Z",
+  "firstCommit": {
+    "sha": "ea5282468f451f013bbae7cbb24dfef074165294",
+    "date": "2025-07-10T12:58:29Z",
+    "message": "first commit. MVP and readme",
+    "url": "https://github.com/Slaymish/PianoVisualiser/commit/ea5282468f451f013bbae7cbb24dfef074165294"
+  },
+  "releases": []
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "PowerCalculator",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2026-04-21T06:38:14Z",
+  "pushedAt": "2026-04-21T21:23:53Z",
+  "firstCommit": {
+    "sha": "22b7a57e6fce227e119f634bac360ae223ddd177",
+    "date": "2026-04-21T06:31:02Z",
+    "message": "inital",
+    "url": "https://github.com/Slaymish/PowerCalculator/commit/22b7a57e6fce227e119f634bac360ae223ddd177"
+  },
+  "releases": []
+}

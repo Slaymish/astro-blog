@@ -1,0 +1,14 @@
+{
+  "repo": "BusRouter",
+  "private": true,
+  "branch": "master",
+  "createdAt": "2025-04-05T06:44:40Z",
+  "pushedAt": "2025-04-14T02:53:05Z",
+  "firstCommit": {
+    "sha": "1979dbc555d05bed3693cd28c9b459ef6e296494",
+    "date": "2025-04-05T06:31:13Z",
+    "message": "init commit",
+    "url": "https://github.com/Slaymish/BusRouter/commit/1979dbc555d05bed3693cd28c9b459ef6e296494"
+  },
+  "releases": []
+}

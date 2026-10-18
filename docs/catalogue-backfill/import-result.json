@@ -1,0 +1,485 @@
+{
+  "importedAt": "2026-10-09T22:34:05.560Z",
+  "stories": [
+    {
+      "_id": "catalogue-backfill-3d-spanning-trees",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/01220c02f9a0294cbeacd2fcde699a4be0b95637-2690x1080.png"
+          }
+        }
+      },
+      "slug": "3d-spanning-trees",
+      "title": "3D Spanning Trees"
+    },
+    {
+      "_id": "catalogue-backfill-alphero-voice-skill",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/871783af3f8a7446259f98a3cc0ff5e9d29fec87-1280x720.png"
+          }
+        }
+      },
+      "slug": "alphero-voice-skill",
+      "title": "Alphero Voice Skill"
+    },
+    {
+      "_id": "catalogue-backfill-ando-sim",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/8f320a61376dd0fa2203bdbcebab88be1ae25db4-2300x772.jpg"
+          }
+        }
+      },
+      "slug": "ando-sim",
+      "title": "AndoSim"
+    },
+    {
+      "_id": "catalogue-backfill-articulate-ai",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/ffe2d5eedbb5e45784a8b4d7467dd345bb837cf6-1672x941.png"
+          }
+        }
+      },
+      "slug": "articulate-ai",
+      "title": "ArticulateAI"
+    },
+    {
+      "_id": "catalogue-backfill-bank-to-sheets-sync",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/8cb55608a5373803c48fec2c15342bfebba74db4-1280x720.png"
+          }
+        }
+      },
+      "slug": "bank-to-sheets-sync",
+      "title": "Bank-to-Sheets Sync"
+    },
+    {
+      "_id": "catalogue-backfill-bedroom-layout-designer",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/245692c901c28fbfad3458a09a79a27e0a23f2fa-1440x900.png"
+          }
+        }
+      },
+      "slug": "bedroom-layout-designer",
+      "title": "Bedroom Layout Designer"
+    },
+    {
+      "_id": "catalogue-backfill-birthday-gallery",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/65a8f0d705e86fb91a5f514fac01adbd15c62a77-1280x720.png"
+          }
+        }
+      },
+      "slug": "birthday-gallery",
+      "title": "Birthday Gallery"
+    },
+    {
+      "_id": "catalogue-backfill-boids-simulation",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/f32884c56cbf53042b07d24b609c6cd541d02196-3104x1974.png"
+          }
+        }
+      },
+      "slug": "boids-simulation",
+      "title": "Boids Simulation"
+    },
+    {
+      "_id": "catalogue-backfill-conversational-timing-lab",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/4f82f39df25327446d034375a127605df99be842-1280x720.png"
+          }
+        }
+      },
+      "slug": "conversational-timing-lab",
+      "title": "Conversational Timing Lab"
+    },
+    {
+      "_id": "catalogue-backfill-cookie-cat",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/e26d20322ff1bfad6328f953241d5b38d55fe85a-1280x720.png"
+          }
+        }
+      },
+      "slug": "cookie-cat",
+      "title": "Cookie Cat"
+    },
+    {
+      "_id": "catalogue-backfill-cowrie-honeypot-analysis",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/eb9fa1553969d9d252366ac9d329be76607ff513-4170x2969.png"
+          }
+        }
+      },
+      "slug": "cowrie-honeypot-analysis",
+      "title": "Cowrie Honeypot Analysis"
+    },
+    {
+      "_id": "catalogue-backfill-drop-eta",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/860fe96fee3b6bba023d5405b8e0f0e89defc70d-1440x900.png"
+          }
+        }
+      },
+      "slug": "drop-eta",
+      "title": "DropETA"
+    },
+    {
+      "_id": "catalogue-backfill-echo-stats-finder",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/90874cf049ff7fe60e496be388f4f18bdf04df44-1280x720.png"
+          }
+        }
+      },
+      "slug": "echo-stats-finder",
+      "title": "Echo Stats Finder"
+    },
+    {
+      "_id": "catalogue-backfill-finlay-lani-wedding",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/e9a808261b0df1458079b8f4bcd5b43e440a138e-1280x720.png"
+          }
+        }
+      },
+      "slug": "finlay-lani-wedding",
+      "title": "Finlay and Lani's wedding website"
+    },
+    {
+      "_id": "catalogue-backfill-flat-power-calculator",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/eeaee894f45bda76e79a7faf5556158ff7a0c482-1280x720.png"
+          }
+        }
+      },
+      "slug": "flat-power-calculator",
+      "title": "Flat Power Calculator"
+    },
+    {
+      "_id": "catalogue-backfill-floor-plan-importer",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/e8f7c813916c3e23649d279e06415fd5255b9293-1280x720.png"
+          }
+        }
+      },
+      "slug": "floor-plan-importer",
+      "title": "Floor-plan Importer"
+    },
+    {
+      "_id": "catalogue-backfill-geometry-shader-study",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/1126991bcf3cc1475a328c55df00f77b510a06f0-1774x1036.png"
+          }
+        }
+      },
+      "slug": "geometry-shader-study",
+      "title": "Geometry and Shader Study"
+    },
+    {
+      "_id": "catalogue-backfill-grid-diffusion-ad",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/ff23455da7c086b719431afaca10625eb391f5a9-1200x1200.png"
+          }
+        }
+      },
+      "slug": "grid-diffusion-ad",
+      "title": "Grid Diffusion AD"
+    },
+    {
+      "_id": "catalogue-backfill-groovebox",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/101374789679dd9c3cccae245917995c8ecd06d8-1280x720.png"
+          }
+        }
+      },
+      "slug": "groovebox",
+      "title": "GrooveBox"
+    },
+    {
+      "_id": "catalogue-backfill-hamish-styler",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/bd5a4f75ec56031efd084cf653abda7fa9db4b54-1280x720.png"
+          }
+        }
+      },
+      "slug": "hamish-styler",
+      "title": "HamishStyler"
+    },
+    {
+      "_id": "catalogue-backfill-l-system-generator",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/18412f795f5cbbbfce27666c083b15d5bca1e180-2370x1480.png"
+          }
+        }
+      },
+      "slug": "l-system-generator",
+      "title": "L-system Generator"
+    },
+    {
+      "_id": "catalogue-backfill-lumen",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/5d970df85d2efbb3d567ebbf37564b7ce5652bad-1672x941.png"
+          }
+        }
+      },
+      "slug": "lumen",
+      "title": "Lumen"
+    },
+    {
+      "_id": "catalogue-backfill-malware-classifier-backdoors",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/196389c02901e15dae0795fe693901b7f0e6f432-1000x600.png"
+          }
+        }
+      },
+      "slug": "malware-classifier-backdoors",
+      "title": "Malware Classifier Backdoors"
+    },
+    {
+      "_id": "catalogue-backfill-metlink-departures-display",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/8efb8cb1ebc2876cf181b3c5daa582fa113d7ad6-1280x720.png"
+          }
+        }
+      },
+      "slug": "metlink-departures-display",
+      "title": "Metlink Departures Display"
+    },
+    {
+      "_id": "catalogue-backfill-music-genre-classification",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/2b3905449b2a21539c3aef825377ab8fd584c92d-1200x800.png"
+          }
+        }
+      },
+      "slug": "music-genre-classification",
+      "title": "Music Genre Classification"
+    },
+    {
+      "_id": "catalogue-backfill-otto",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/122539123eccbe89bc4a0ecd010bb33d86492f99-880x880.png"
+          }
+        }
+      },
+      "slug": "otto",
+      "title": "Otto"
+    },
+    {
+      "_id": "catalogue-backfill-parametric-bookshelf",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/35dd946e89472ec262177e3aa162aaf144be5e2c-1216x1184.png"
+          }
+        }
+      },
+      "slug": "parametric-bookshelf",
+      "title": "Parametric Bookshelf"
+    },
+    {
+      "_id": "catalogue-backfill-path-tracing-study",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/0e3e1954f12cfa12a8d6387721465e068b516a99-800x600.png"
+          }
+        }
+      },
+      "slug": "path-tracing-study",
+      "title": "Path Tracing Study"
+    },
+    {
+      "_id": "catalogue-backfill-personal-language-corpus",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/466a5221c0d7d3c1a756ee5189d1c02332df295a-1280x720.png"
+          }
+        }
+      },
+      "slug": "personal-language-corpus",
+      "title": "Personal Language Corpus"
+    },
+    {
+      "_id": "catalogue-backfill-piano-improvisation-helper",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/08fb16353a107a005c206b7351c07821ed3668d9-1440x900.png"
+          }
+        }
+      },
+      "slug": "piano-improvisation-helper",
+      "title": "Piano Improvisation Helper"
+    },
+    {
+      "_id": "catalogue-backfill-piano-waveform-visualiser",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/201a7adbf79b6090de547388e90d100f18c4e57e-1280x720.png"
+          }
+        }
+      },
+      "slug": "piano-waveform-visualiser",
+      "title": "Piano Waveform Visualiser"
+    },
+    {
+      "_id": "catalogue-backfill-pinterest-aesthetic-analysis",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/943d6647fdec2c047fbf9c5d7852bd21df5218ff-1280x720.png"
+          }
+        }
+      },
+      "slug": "pinterest-aesthetic-analysis",
+      "title": "Pinterest Aesthetic Analysis"
+    },
+    {
+      "_id": "catalogue-backfill-sentient-environment-explorer",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/b82155af4c5950a534655d4928065f3a380fa822-1280x720.png"
+          }
+        }
+      },
+      "slug": "sentient-environment-explorer",
+      "title": "Sentient Environment Explorer"
+    },
+    {
+      "_id": "catalogue-backfill-spotify-playlist-demographics",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/aab3834614aa94568f3aa93bfaa1af68c13bb005-1280x720.png"
+          }
+        }
+      },
+      "slug": "spotify-playlist-demographics",
+      "title": "Spotify Playlist Demographics"
+    },
+    {
+      "_id": "catalogue-backfill-synod",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/3154bc79682225c8f49905a0508ff2bd77e23c82-1672x941.png"
+          }
+        }
+      },
+      "slug": "synod",
+      "title": "Synod"
+    },
+    {
+      "_id": "catalogue-backfill-transit-sync",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/4d2bbf44b02e3b1956e97218ba8de210b42706d9-1024x1024.png"
+          }
+        }
+      },
+      "slug": "transit-sync",
+      "title": "TransitSync"
+    },
+    {
+      "_id": "catalogue-backfill-typed-diff-questions",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/5cea4ad372b21ba8a4c19285cfe405b39aa4c53c-1280x720.png"
+          }
+        }
+      },
+      "slug": "typed-diff-questions",
+      "title": "Typed Diff Questions"
+    },
+    {
+      "_id": "catalogue-backfill-wake-on-join-minecraft",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/8925a3c516f24ed6c546bd48825e7b367474d07a-1280x720.png"
+          }
+        }
+      },
+      "slug": "wake-on-join-minecraft",
+      "title": "Wake-on-Join Minecraft"
+    },
+    {
+      "_id": "catalogue-backfill-watzon",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/baba7c88380672ffe8318109a3dd42a3487906da-1280x720.png"
+          }
+        }
+      },
+      "slug": "watzon",
+      "title": "Watzon"
+    },
+    {
+      "_id": "catalogue-backfill-wellington-transport-network",
+      "cover": {
+        "image": {
+          "asset": {
+            "url": "https://cdn.sanity.io/images/qnuj1c4o/production/db098dd297ae0a2055efd8a93883f9657837817b-1280x720.png"
+          }
+        }
+      },
+      "slug": "wellington-transport-network",
+      "title": "Wellington Transport Network"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+import {chromium} from '/Users/hamishburke/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+const root=new URL('.',import.meta.url).pathname;
+const b=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const p=await b.newPage({viewport:{width:2560,height:1440}});p.on('pageerror',e=>console.log('Page error:',e.message));
+await p.goto('http://127.0.0.1:4373/PlatformerGame/HTML/Assignment-1-godot.html');
+await p.waitForTimeout(15000);
+await p.keyboard.press('Enter');
+await p.waitForTimeout(2000);
+await p.screenshot({path:root+'platformer-cover.png'});
+console.log(await p.locator('body').innerText());
+await p.setViewportSize({width:1600,height:1000});
+await p.goto('http://127.0.0.1:4373/YayMinecraftServer/infra/site/index.html');
+await p.screenshot({path:root+'minecraft-cover.png'});
+console.log('Minecraft page:',(await p.locator('body').innerText()).slice(0,300));
+await b.close();

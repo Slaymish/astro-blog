@@ -1,0 +1,14 @@
+{
+  "repo": "commit-reviewer",
+  "private": true,
+  "branch": "main",
+  "createdAt": "2026-09-21T20:36:55Z",
+  "pushedAt": "2026-09-21T20:37:51Z",
+  "firstCommit": {
+    "sha": "4b4578e59497f15866ef802d7a0e5b3ea7347a81",
+    "date": "2026-09-21T11:02:52Z",
+    "message": "Scaffold repo: docs, experiment harness, toolchain",
+    "url": "https://github.com/Slaymish/commit-reviewer/commit/4b4578e59497f15866ef802d7a0e5b3ea7347a81"
+  },
+  "releases": []
+}

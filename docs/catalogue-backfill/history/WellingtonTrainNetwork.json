@@ -1,0 +1,14 @@
+{
+  "repo": "WellingtonTrainNetwork",
+  "private": true,
+  "branch": "master",
+  "createdAt": "2023-04-16T02:35:59Z",
+  "pushedAt": "2023-04-28T01:34:25Z",
+  "firstCommit": {
+    "sha": "9db6fc13bcb22bb1730f8a124d5eb825f5ea9c12",
+    "date": "2023-04-16T02:30:49Z",
+    "message": "init",
+    "url": "https://github.com/Slaymish/WellingtonTrainNetwork/commit/9db6fc13bcb22bb1730f8a124d5eb825f5ea9c12"
+  },
+  "releases": []
+}

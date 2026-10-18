@@ -1,0 +1,1107 @@
+[
+  {
+    "repo": "EchoStatsFinder",
+    "title": "Echo Stats Finder",
+    "slug": "echo-stats-finder",
+    "descriptor": "Echo VR player statistics",
+    "summary": "Built the networking behind a desktop tool for looking up Echo VR players and the league statistics of people in a public match.",
+    "introduction": "I worked on Echo Stats Finder with Silveridge, connecting a Python desktop app to Echo VR and VR Master League so players could look up the people they were playing with.",
+    "role": "Project setup, networking, testing and structure. Silveridge built the GUI and navigation.",
+    "paragraphs": [
+      "Working on this meant joining two different views of the same player, as the headset knew who was in the current match while VR Master League held their team and league information, and the app let you search either starting point, with the player name providing the connection between a live match and a separate set of league records.",
+      "I handled the requests and player lookups, and Silveridge put those results into a PyQt interface with separate views for league searches and public matches, including more detailed team information.",
+      "We packaged Windows releases in November 2021, with connection instructions for both PC and standalone headset users, so the tool could be used outside the development environment."
+    ],
+    "result": "The project reached downloadable Windows releases, with player and public-match searching implemented. Ignite integration and automatic searching remained separate follow-up work.",
+    "tags": [
+      "Games",
+      "Python",
+      "Community tools"
+    ],
+    "diagram": [
+      "Headset match",
+      "Player lookup",
+      "League statistics"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2021-11-10",
+    "timeframe": "November 2021"
+  },
+  {
+    "repo": "Watzon",
+    "title": "Watzon",
+    "slug": "watzon",
+    "descriptor": "Echo VR Discord bot",
+    "summary": "Built a Java Discord bot for the OCE Echo VR community, with league lookups, team rankings and server commands.",
+    "introduction": "Watzon brought Echo VR league information into Discord, where the OCE community could ask for team details and rankings without opening another site.",
+    "role": "Independent development. Java, JDA and the VR Master League API.",
+    "paragraphs": [
+      "I made Watzon around the Echo VR community, and the interesting part was getting the league's teams, players and matches into a form that made sense inside a Discord conversation, with the command response carrying enough of the team context to be useful inside the server itself.",
+      "The bot used JDA for Discord interactions and separate Java objects for league data, with commands that assembled team information and rankings into embeds, and server handling for things like captain roles.",
+      "There were earlier packaged versions in WatzonOld, though I treat those as part of the same project, as they follow the same community and the same API integration."
+    ],
+    "result": "A domain-specific Discord bot with implemented league commands and team displays. The preserved source also includes the earlier packaged versions of the project.",
+    "tags": [
+      "Games",
+      "Java",
+      "Community tools"
+    ],
+    "diagram": [
+      "Discord command",
+      "VRML API",
+      "Team information"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2022-06-29",
+    "timeframe": "June to July 2022"
+  },
+  {
+    "repo": "ArticulateAI",
+    "title": "ArticulateAI",
+    "slug": "articulate-ai",
+    "descriptor": "Recorded voice assistant",
+    "summary": "Built a recording workflow that transcribed speech with Whisper, generated a GPT response and spoke short replies through ElevenLabs.",
+    "introduction": "ArticulateAI was one of my early voice experiments, recording a chosen amount of audio and passing it through transcription, a prompted response and optional speech output.",
+    "role": "Independent development. Python, OpenAI and ElevenLabs APIs.",
+    "paragraphs": [
+      "I was working with voice interfaces in 2023, and this version started with a recording length and a choice of prompt, so the same audio path could be used for a question, lecture notes or a recipe, with the selected prompt changing what happened to the transcript after the recording had finished.",
+      "The program recorded from the microphone, sent the audio to Whisper and saved the transcript with a timestamp, then asked GPT for a response using the selected instructions.",
+      "Short responses could go on to ElevenLabs for speech, though the implemented loop capped that at fewer than 100 characters, which kept this version close to a recording tool with spoken replies."
+    ],
+    "result": "An implemented audio-to-response workflow, including saved transcripts and short spoken replies. It used separate API calls, with the user choosing each recording window.",
+    "tags": [
+      "AI",
+      "Voice",
+      "Python"
+    ],
+    "diagram": [
+      "Record",
+      "Transcribe",
+      "Reply"
+    ],
+    "coverAlt": "Original ArticulateAI command menu, with twelve options for processing a spoken transcript.",
+    "kind": "independent",
+    "date": "2023-05-17",
+    "timeframe": "May 2023"
+  },
+  {
+    "repo": "LSystemGenerator",
+    "title": "L-system Generator",
+    "slug": "l-system-generator",
+    "descriptor": "Procedural geometry tool",
+    "summary": "Built a JavaFX tool for generating L-system structures, saving their rules and exporting the resulting geometry to Blender.",
+    "introduction": "I made a small L-system editor that turns rewriting rules into branching structures, with an OBJ export so the result can move from JavaFX into Blender.",
+    "role": "Independent development. JavaFX, turtle geometry and OBJ export.",
+    "paragraphs": [
+      "Playing with L-systems meant starting with a short string and watching what repeated rewriting would produce, and I put that process into a JavaFX app with controls for the rules, iteration count and angle, with the generated string kept separate from the turtle that turned its instructions into geometry.",
+      "The geometry came from a turtle interpreting the generated string, with edges recorded as it moved through the structure and an exporter turning that result into an OBJ file.",
+      "I added save and load for the systems themselves, so a useful set of rules could be kept alongside the exported geometry and brought back for another iteration."
+    ],
+    "result": "A procedural editor with saved systems and Blender-compatible exports. The preserved examples show the generated structure and the geometry taken into Blender.",
+    "tags": [
+      "Graphics",
+      "Java",
+      "Blender"
+    ],
+    "diagram": [
+      "Rules",
+      "Turtle geometry",
+      "OBJ export"
+    ],
+    "coverAlt": "Original JavaFX screenshot showing the L-system controls beside a dense green branching structure.",
+    "kind": "independent",
+    "date": "2023-05-20",
+    "timeframe": "May 2023"
+  },
+  {
+    "repo": "3dSpanningTrees",
+    "title": "3D Spanning Trees",
+    "slug": "3d-spanning-trees",
+    "descriptor": "Mesh graph transformation",
+    "summary": "Built a minimum-spanning-tree tool for OBJ geometry, with a Blender add-on and a packaged Java application.",
+    "introduction": "This takes the vertices and edges of an OBJ file and finds their minimum spanning tree, turning a connected mesh graph into a much sparser structure.",
+    "role": "Independent development. Java graph algorithms and a Blender add-on.",
+    "paragraphs": [
+      "I was looking at meshes as graphs, and removing the faces left a useful starting point for finding the smallest collection of edges that still connected all the vertices, with the edge weights determining which connections were kept as the graph became a tree.",
+      "The Java implementation used Kruskal's algorithm and a union-find structure to select those edges, then wrote the result back to OBJ so it could be opened in Blender.",
+      "I also made a Blender add-on and packaged the Java tool with launch scripts, which gave the same transformation a place inside a modelling workflow as well as a standalone application."
+    ],
+    "result": "A released geometry utility with OBJ input and output. The example shows the original edge grid alongside two sparse structures produced from it.",
+    "tags": [
+      "Graphics",
+      "Java",
+      "Blender"
+    ],
+    "diagram": [
+      "OBJ graph",
+      "Kruskal",
+      "Tree geometry"
+    ],
+    "coverAlt": "Original project render showing a regular mesh edge grid beside two minimum spanning tree structures.",
+    "kind": "independent",
+    "date": "2023-06-10",
+    "timeframe": "June 2023"
+  },
+  {
+    "repo": "BlenderBookShelf",
+    "title": "Parametric Bookshelf",
+    "slug": "parametric-bookshelf",
+    "descriptor": "Blender geometry nodes asset",
+    "summary": "Made a parametric bookshelf asset in Blender, with geometry-node controls and a reusable blend file.",
+    "introduction": "A small Blender asset for generating a bookshelf through geometry nodes, keeping the construction in the node graph so the shape can be adjusted without rebuilding it by hand.",
+    "role": "Independent modelling and geometry-node work in Blender.",
+    "paragraphs": [
+      "I made this as a reusable Blender asset, with the bookshelf's construction held in a geometry-node graph so changing the inputs could change the object that appeared in the scene, with the reusable file keeping the construction and its controls together when the asset moved between scenes.",
+      "The project is the blend file itself, and the repository includes the node setup and instructions for adding it to an asset library, which made it easy to bring into another scene.",
+      "It stayed a small modelling tool, though that is also the useful scale for it, as the work sits in how the object is constructed and how much of that construction remains adjustable."
+    ],
+    "result": "A reusable parametric blend asset, preserved with its geometry-node setup. The cover is the original node-graph image from the project README.",
+    "tags": [
+      "Graphics",
+      "Blender",
+      "Procedural design"
+    ],
+    "diagram": [
+      "Parameters",
+      "Geometry nodes",
+      "Bookshelf"
+    ],
+    "coverAlt": "Original Blender screenshot of the bookshelf geometry-node graph, with connected construction and transformation nodes.",
+    "kind": "independent",
+    "date": "2023-08-30",
+    "timeframe": "August 2023"
+  },
+  {
+    "repo": "PlatformerGame",
+    "title": "Cookie Cat",
+    "slug": "cookie-cat",
+    "descriptor": "Procedural Godot platformer",
+    "summary": "Made an endless Godot platformer with generated platforms, enemies, collectibles and shops for extra lives and jump upgrades.",
+    "introduction": "Cookie Cat was a university game project, with a player jumping through a generated level while collecting cookies and buying upgrades between encounters.",
+    "role": "University coursework. Game logic and integration in Godot, using third-party art assets.",
+    "paragraphs": [
+      "This was an early Godot project for me, and the level kept generating as the player moved, so the main problem was making the next platform reachable while leaving enough variation for the game to keep moving, with enemies and collectibles placed in the same generated space that the player needed to cross.",
+      "Cookies, frogs and their projectiles shared the generated space, and the player could spend collected currency on extra lives or jump upgrades when a shop appeared.",
+      "Godot's scene and signal model took some getting used to, as objects needed to stay separate enough to reuse while still passing things like collisions, purchases and player state between them."
+    ],
+    "result": "A playable coursework platformer with a recorded walkthrough. The generated level, enemy encounters and upgrade shops are part of the preserved game implementation.",
+    "tags": [
+      "Games",
+      "Godot",
+      "Procedural design"
+    ],
+    "diagram": [
+      "Generated platforms",
+      "Cookies and frogs",
+      "Upgrade shop"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2023-07-14",
+    "timeframe": "July to August 2023"
+  },
+  {
+    "repo": "WeddingWebsite",
+    "title": "Finlay and Lani's wedding website",
+    "slug": "finlay-lani-wedding",
+    "descriptor": "Wedding information and RSVP website",
+    "summary": "Built a wedding website with a Vue interface, RSVP validation, Firebase content and an organiser view of responses.",
+    "introduction": "I built Finlay and Lani a wedding website that brought the event information and RSVP process together, with a separate view for managing the responses.",
+    "role": "Website development. Vue, Firebase and the RSVP workflow.",
+    "paragraphs": [
+      "The website needed to carry the wedding information and give guests a straightforward way to respond, and I built the Vue version around those two jobs with a separate organiser view, with the guest form and the attending view working on the same response data in Firebase.",
+      "Firebase held the content and response data, while the RSVP page handled form validation and the attending view brought the submissions back into the site for administration.",
+      "The repository preserves the earlier setup and the later Vue implementation, though the entry covers the resulting website and response workflow as one piece of work."
+    ],
+    "result": "A wedding information site with implemented RSVP handling and organiser administration. The preserved project spans the initial 2023 setup and subsequent work in 2024.",
+    "tags": [
+      "Web development",
+      "Vue",
+      "Firebase"
+    ],
+    "diagram": [
+      "Wedding information",
+      "Guest RSVP",
+      "Organiser view"
+    ],
+    "coverAlt": null,
+    "kind": "professional",
+    "date": "2023-10-09",
+    "timeframe": "October 2023 to October 2024"
+  },
+  {
+    "repo": "DadsBirthday",
+    "title": "Birthday Gallery",
+    "slug": "birthday-gallery",
+    "descriptor": "Interactive Three.js gallery",
+    "summary": "Made an interactive birthday gallery with a custom 3D space, photographs, captions and camera movement between artworks.",
+    "introduction": "I made a birthday gallery for my dad, arranging photographs inside a small 3D space that you can move through in the browser.",
+    "role": "Independent design and development. Three.js, gallery models and photograph placement.",
+    "paragraphs": [
+      "I made this around family photographs, and the gallery gave them a place in a small modelled space, with a card and captions that could be seen as the camera moved between the artworks, with the photograph positions and camera destinations held together so each move arrived at the next work.",
+      "Three.js handled the scene and loaded the gallery models, while the application positioned the photographs and gave the viewer previous and next controls for moving through them.",
+      "I kept the navigation tied to the works themselves, as the point was to move from one photograph to the next without needing to learn how to steer around the room."
+    ],
+    "result": "A browser-based 3D birthday gallery with custom models and guided camera movement. The public cover illustrates the gallery structure without exposing the family photographs.",
+    "tags": [
+      "Graphics",
+      "Web development",
+      "Three.js"
+    ],
+    "diagram": [
+      "Gallery model",
+      "Photographs",
+      "Guided camera"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2024-05-04",
+    "timeframe": "May 2024"
+  },
+  {
+    "repo": "BusRouter",
+    "title": "TransitSync",
+    "slug": "transit-sync",
+    "descriptor": "Calendar-linked Wellington transit planner",
+    "summary": "Built a prototype that connects calendar events with Wellington transit routing, with a separate open-source route-planning package.",
+    "introduction": "TransitSync connected Google Calendar locations with Metlink route planning, keeping the travel problem close to the events that made the journey necessary.",
+    "role": "Independent prototype development. Python, Flask, Google Calendar and Metlink routing.",
+    "paragraphs": [
+      "I worked on a planner for Wellington journeys that started from calendar events, as an event already had the destination and the time I needed to be there, which gave the routing a useful place to begin, with geocoding and nearby-stop lookup connecting the written address to the transit network behind the journey.",
+      "The app retrieved events and used a per-user routing service to connect their locations with transit plans, while the separate Python package handled geocoding, nearby stops and departure information.",
+      "The preserved version includes calendar integration and routing work, though the proposed multi-user rollout, scheduled syncing and realtime recalculation should be treated as development plans beyond that prototype."
+    ],
+    "result": "A calendar-linked routing prototype and a public Wellington transit package. The implementation is preserved separately from the proposed hosted product and its rollout plans.",
+    "tags": [
+      "Python",
+      "Transport",
+      "APIs"
+    ],
+    "diagram": [
+      "Calendar event",
+      "Metlink route",
+      "Travel plan"
+    ],
+    "coverAlt": "Original TransitSync project mark, combining a calendar and a bus above the project name.",
+    "kind": "independent",
+    "date": "2025-04-05",
+    "timeframe": "April 2025"
+  },
+  {
+    "repo": "AndoSim",
+    "title": "AndoSim",
+    "slug": "ando-sim",
+    "descriptor": "Blender cloth and shell simulation",
+    "summary": "Built a Blender simulation add-on with a C++ core, based on the cubic-barrier method for cloth and shell contact.",
+    "introduction": "AndoSim brought a published contact-simulation method into Blender, with a C++ solver, Python bindings and controls for cloth and shell experiments.",
+    "role": "Independent implementation and Blender integration. Based on published research and the PPF contact solver.",
+    "paragraphs": [
+      "I worked from the cubic-barrier paper towards a Blender add-on, and that meant joining the numerical solver with the scene data, controls and feedback needed to inspect a simulation as it ran, with the Python layer passing scene information into the native core and bringing simulation state back out.",
+      "The core used C++ with Eigen and pybind11, while the Blender layer exposed things like pin constraints, contact settings and debug overlays, with scripted scenes for exploring the solver's behaviour.",
+      "There are numerical derivative tests and packaged releases alongside the demonstrations, though the recorded testing separates those checks from the broader integration and end-to-end validation still needed."
+    ],
+    "result": "A released Blender add-on and simulation codebase, with a native solver, bindings and test scenes. The underlying method and optional PPF backend are credited to their authors.",
+    "tags": [
+      "Graphics",
+      "Blender",
+      "C++",
+      "Simulation"
+    ],
+    "diagram": [
+      "Blender scene",
+      "Contact solver",
+      "Viewport playback"
+    ],
+    "coverAlt": "Teaser collage included in the AndoSim repository, showing several cloth and shell simulation scenes.",
+    "kind": "independent",
+    "date": "2025-10-19",
+    "timeframe": "October 2025"
+  },
+  {
+    "repo": "BedroomLayoutDesigner",
+    "title": "Bedroom Layout Designer",
+    "slug": "bedroom-layout-designer",
+    "descriptor": "Browser-based room planning",
+    "summary": "Built a room planner with furniture editing, measurements, undo, local saving and printable PDF exports.",
+    "introduction": "Bedroom Layout Designer is a browser tool for trying room arrangements with actual dimensions, keeping furniture, openings and measurements in the same editable plan.",
+    "role": "Independent product design and development. React, TypeScript and local workspace storage.",
+    "paragraphs": [
+      "I made a room planner around the parts that need to agree before a layout is useful, as the room dimensions, furniture and door openings all have to share the same scale, with the plan keeping those measurements in shared workspace state as each object was moved or resized.",
+      "The workspace supports multiple rooms and measurement units, with placement, rotation and resizing for furniture and openings, and undo and redo across edits so an arrangement can be tried without losing the previous one.",
+      "Plans save locally and can be exported as workspace files or PDFs, and I added tests around selection and state handling as those interactions determine whether the drawing stays predictable."
+    ],
+    "result": "A browser-based planning app with local persistence, offline support and PDF output. The preserved work runs from December 2025 through the interaction updates in February 2026.",
+    "tags": [
+      "Web development",
+      "TypeScript",
+      "Product design"
+    ],
+    "diagram": [
+      "Room dimensions",
+      "Layout editing",
+      "Printable plan"
+    ],
+    "coverAlt": "Screenshot of Bedroom Layout Designer showing the room-planning interface and editable plan.",
+    "kind": "independent",
+    "date": "2025-12-02",
+    "timeframe": "December 2025"
+  },
+  {
+    "repo": "PianoImprovisationHelper",
+    "title": "Piano Improvisation Helper",
+    "slug": "piano-improvisation-helper",
+    "descriptor": "Browser audio key detection",
+    "summary": "Built a piano practice tool that searches for songs and estimates their key from available audio previews in the browser.",
+    "introduction": "This small app looks up a song, analyses an available preview and shows the likely key with alternate guesses, giving a starting point for playing along.",
+    "role": "Independent development. React, TypeScript, Web Audio and pitch-class analysis.",
+    "paragraphs": [
+      "I made this around the moment of wanting to play along with a song, and the first version starts with a title and artist search before looking for an audio preview it can analyse, with the preview providing the audio material and the manual search keeping the initial interaction straightforward.",
+      "The detector decodes the preview in the browser and builds a pitch-class histogram across audio frames, then compares that distribution with major and minor key profiles to rank the possible keys.",
+      "The UI keeps alternate guesses visible and lets the analysis run for longer, though microphone-based song recognition is still a placeholder in this version and the implemented path starts with manual search."
+    ],
+    "result": "A working search and preview-analysis interface with in-browser key detection and service tests. Results are estimates from the available clip, with alternate candidates shown.",
+    "tags": [
+      "Music",
+      "TypeScript",
+      "Audio"
+    ],
+    "diagram": [
+      "Song preview",
+      "Pitch classes",
+      "Key candidates"
+    ],
+    "coverAlt": "Screenshot of Piano Improvisation Helper with its song search and preview-analysis interface.",
+    "kind": "independent",
+    "date": "2025-12-12",
+    "timeframe": "December 2025"
+  },
+  {
+    "repo": "Synod",
+    "title": "Synod",
+    "slug": "synod",
+    "descriptor": "Obsidian journal analysis plugin",
+    "summary": "Built an Obsidian plugin that reads journal entries through separate value agents and compiles their unresolved tensions into a bulletin.",
+    "introduction": "Synod reads a period of journal entries through separate agents for the values found in them, then brings their disagreements back into the vault as a bulletin.",
+    "role": "Independent plugin design and development. TypeScript, Obsidian and configurable language-model backends.",
+    "paragraphs": [
+      "I built Synod around a journal being read from several positions at once, with each agent holding one value and the compiler looking at where their readings pulled in different directions, with each reading kept separate until the compiler had the different reports available to compare against each other.",
+      "The plugin imports entries from folders or supported journal exports, extracts candidate values and lets those values guide the analysis, with the resulting bulletin written back into the vault.",
+      "Ollama is the default backend, though the settings also support compatible remote endpoints, so where the journal text goes depends on the connection the user chooses for the plugin."
+    ],
+    "result": "A released Obsidian plugin with importers, value discovery and a bulletin pipeline. It offers competing readings of journal entries without presenting them as clinical advice.",
+    "tags": [
+      "AI",
+      "Obsidian",
+      "TypeScript"
+    ],
+    "diagram": [
+      "Journal entries",
+      "Value agents",
+      "Bulletin"
+    ],
+    "coverAlt": "Synod’s actual Obsidian status panel, showing the journal import, value discovery and bulletin controls in an empty demonstration vault.",
+    "kind": "independent",
+    "date": "2026-05-14",
+    "timeframe": "May 2026"
+  },
+  {
+    "repo": "Lumen",
+    "title": "Lumen",
+    "slug": "lumen",
+    "descriptor": "Local Obsidian research plugin",
+    "summary": "Built a local research system for Obsidian, with related-note surfacing, retrieval, report generation and checks against source blocks.",
+    "introduction": "Lumen connects an Obsidian vault to a local research backend, surfacing related notes and assembling reports whose citations are checked against the vault.",
+    "role": "Independent plugin and backend development. TypeScript, Python and local model inference.",
+    "paragraphs": [
+      "I worked on Lumen as a way of finding material already sitting in a vault, and the same retrieval system could surface related notes during ordinary writing or feed a longer research request, with the original note blocks kept available as sources when related material was assembled into a report.",
+      "The Obsidian plugin talked to a Python orchestrator, with separate packages for ingestion, retrieval, inference and memory, while a local model produced the research output and streamed progress back to the interface.",
+      "Citation handling checked references against actual note blocks, and the project included evaluation and release tooling, though a valid source reference still needs to be read alongside the claim it is attached to."
+    ],
+    "result": "A released local research plugin and backend, with note surfacing, report generation and source-block checks. GitHub preserves the plugin packages and evaluation code.",
+    "tags": [
+      "AI",
+      "Obsidian",
+      "Python"
+    ],
+    "diagram": [
+      "Vault notes",
+      "Local retrieval",
+      "Research report"
+    ],
+    "coverAlt": "Lumen’s actual research form in Obsidian, showing question input, sub-questions, vault and web sources, and memory controls.",
+    "kind": "independent",
+    "date": "2026-05-16",
+    "timeframe": "May 2026"
+  },
+  {
+    "repo": "Otto",
+    "title": "Otto",
+    "slug": "otto",
+    "descriptor": "Native Mac voice assistant",
+    "summary": "Developed a native Swift version of a Mac voice assistant, with hotkeys, capability retrieval, session logs and local retrospective learning.",
+    "introduction": "Otto is a voice and text assistant for the Mac. I developed it from the voice-os project, moving the app into Swift and adding capability and session-learning work.",
+    "role": "Development of a fork of per-simmons/voice-os. Swift migration, interface and learning integration.",
+    "paragraphs": [
+      "I started from voice-os and worked towards a native Mac app, with the voice connection, action handling and interface held in Swift instead of relying on the earlier Python process, with the native engine holding the connection and action state that the interface needed to show.",
+      "The app kept a capability index and session logs, and retrospective processing could add useful phrasings or proposed capabilities from a completed session, with a local Ollama option for that learning step.",
+      "Hotkeys, onboarding and settings made it usable as a menu-bar application, and the June releases packaged the Swift app alongside tests for the capability and session components."
+    ],
+    "result": "Packaged Mac releases with a native Swift implementation and session-based capability work. The entry credits the upstream project and distinguishes my changes from its starting point.",
+    "tags": [
+      "AI",
+      "Voice",
+      "Swift",
+      "macOS"
+    ],
+    "diagram": [
+      "Voice request",
+      "Capability retrieval",
+      "Mac action"
+    ],
+    "coverAlt": "Otto’s native capability journal rendered with the original shipped app and music commands, in an offline demonstration.",
+    "kind": "independent",
+    "date": "2026-06-20",
+    "timeframe": "June 2026"
+  },
+  {
+    "repo": "grid-diffusion-ad",
+    "title": "Grid Diffusion AD",
+    "slug": "grid-diffusion-ad",
+    "descriptor": "Diffusion-based fault detection study",
+    "summary": "Investigated diffusion models for fault detection in power-system signals, with normal-only training and explicit false-alarm evaluation.",
+    "introduction": "I studied whether diffusion models trained on normal magnetic-field signals could identify electrical faults, separating reconstruction quality from the detection behaviour needed in a monitoring system.",
+    "role": "Academic research. Model implementation, experiments, evaluation and report.",
+    "paragraphs": [
+      "The data was repetitive and multi-channel, and I worked on learning its normal structure with diffusion models before using reconstruction and denoising scores to look for fault-related departures, with each score needing to be tested against the normal variation that the model had already seen.",
+      "The pipeline included quantisation, categorical denoising and several scoring variants, with experiments comparing model settings and threshold calibration using normal data, as fault labels should not silently become part of the calibration process.",
+      "The report found that good reconstruction did not consistently produce useful detection, and the evaluated operating points still had high false-alarm rates, which made the deployment assumptions part of the result."
+    ],
+    "result": "A completed implementation and evaluation study with recorded experiments and a report. The findings limit the detector claims, particularly under normal-only threshold calibration.",
+    "tags": [
+      "AI",
+      "Machine learning",
+      "Research",
+      "Time series"
+    ],
+    "diagram": [
+      "Normal signals",
+      "Diffusion model",
+      "Fault scoring"
+    ],
+    "coverAlt": "Original experiment plot comparing four channels of signal data with their reconstructed waveforms.",
+    "kind": "research",
+    "date": "2025-11-12",
+    "timeframe": "November 2025 to February 2026"
+  },
+  {
+    "repo": "conversational-timing-lab",
+    "title": "Conversational Timing Lab",
+    "slug": "conversational-timing-lab",
+    "descriptor": "Speech turn-taking experiments",
+    "summary": "Built a speech-timing dataset and baseline evaluation to study turn completion and response onset in real conversations.",
+    "introduction": "I investigated when a speaker has actually finished, keeping turn completion separate from the timing of the next response and testing pause-based assumptions against recorded conversations.",
+    "role": "Independent research. Dataset adapters, causal labels, baseline evaluation and audio-model pipeline.",
+    "paragraphs": [
+      "I started with the difference between somebody finishing a thought and somebody pausing inside it, as both can leave the same silence while asking very different things of a voice assistant, with the next speaker supplying the label while the observed silence remained an input available at the time.",
+      "The dataset labels came from who spoke next, with observations limited to what was available at that moment, and the baseline evaluation used conversation-level splits to keep meetings from leaking across training and validation.",
+      "The recorded baseline run covered 100,004 boundaries from 171 AMI meetings, though the small audio-model run was only an end-to-end pipeline check and did not establish a useful trained predictor."
+    ],
+    "result": "A reproducible baseline investigation and audio-training pipeline. Pause duration offered limited separation on the recorded meeting data, with the corpus and interruption-budget caveats retained.",
+    "tags": [
+      "Voice",
+      "Machine learning",
+      "Research"
+    ],
+    "diagram": [
+      "Observed pause",
+      "Turn completion",
+      "Response onset"
+    ],
+    "coverAlt": null,
+    "kind": "research",
+    "date": "2026-09-04",
+    "timeframe": "September 2026"
+  },
+  {
+    "repo": "commit-reviewer",
+    "title": "Typed Diff Questions",
+    "slug": "typed-diff-questions",
+    "descriptor": "Code-review model experiments",
+    "summary": "Built an experiment harness comparing models on narrow questions about code diffs, with calibration and class-balanced evaluation.",
+    "introduction": "I tested whether small, typed questions about a changed hunk gave a useful basis for code review, comparing model agreement while keeping the eventual reviewer separate from the experiment.",
+    "role": "Independent research. Corpus sampling, model scoring, calibration and evaluation.",
+    "paragraphs": [
+      "I worked on the question bank before building the reviewer, as a model answering a narrow question about a diff gives something that can be compared across runs without treating the whole review as one judgement, with each question producing a score that could be calibrated and compared with a simple baseline.",
+      "The harness sampled code hunks and compared Jev and Haiku with an Opus reference, with repeated scores, class-balanced measures and an always-negative baseline to expose how much the label distribution could inflate apparent agreement.",
+      "The findings changed between repositories, and the reference was still another model, so the experiment measured agreement under those conditions without establishing that a developer would accept the findings as real bugs."
+    ],
+    "result": "Three recorded scoring runs and a reusable experiment harness. Human bug labels and the proposed reviewer interface remain outside the conclusions established by this work.",
+    "tags": [
+      "AI",
+      "Developer tools",
+      "Research"
+    ],
+    "diagram": [
+      "Changed hunk",
+      "Typed questions",
+      "Calibrated scores"
+    ],
+    "coverAlt": null,
+    "kind": "research",
+    "date": "2026-09-21",
+    "timeframe": "September 2026"
+  },
+  {
+    "repo": "MalwareResearchPaper",
+    "title": "Malware Classifier Backdoors",
+    "slug": "malware-classifier-backdoors",
+    "descriptor": "Academic classifier robustness study",
+    "summary": "Investigated backdoor attacks on malware classifiers, preserving the manuscript, experiment comparisons and robustness plots.",
+    "introduction": "This academic study examined how poisoned training data affected malware classifiers, comparing attack success with the clean detection behaviour that still had to be preserved.",
+    "role": "Academic research and report. Using and extending an existing backdoor-study implementation.",
+    "paragraphs": [
+      "I worked on malware classification under poisoned training data, where the important comparison involved both whether a trigger changed the prediction and what happened to ordinary detection at the same time, with the clean metric kept beside the attack metric so a change in one could not hide the other.",
+      "The manuscript brought together experiments across model choices and poisoning conditions, with plots separating clean performance from attack behaviour and supporting material for the feature and backdoor comparisons.",
+      "The preserved work includes an external implementation fork alongside the report, though the numerical claims belong to those recorded experiments and should be read with the dataset and attack assumptions they used."
+    ],
+    "result": "An academic manuscript with experiment figures and classifier comparisons. The entry describes the study without claiming a first-of-its-kind result or general immunity to backdoors.",
+    "tags": [
+      "Security",
+      "Machine learning",
+      "Research"
+    ],
+    "diagram": [
+      "Poisoned training",
+      "Classifier models",
+      "Attack and clean metrics"
+    ],
+    "coverAlt": "Original study plot comparing attack success rates across models and poisoning ratios.",
+    "kind": "research",
+    "date": "2025-02-17",
+    "timeframe": "February 2025"
+  },
+  {
+    "repo": "CYBRAnalysis",
+    "title": "Cowrie Honeypot Analysis",
+    "slug": "cowrie-honeypot-analysis",
+    "descriptor": "Security log investigation",
+    "summary": "Analysed Cowrie honeypot events and produced charts, query tools and reports on authentication, commands and attacker activity.",
+    "introduction": "I used Cowrie honeypot logs to examine the activity behind repeated login attempts, bringing event summaries and campaign-level observations into a pair of reports.",
+    "role": "Academic security analysis. Python analysis, visualisation and report preparation.",
+    "paragraphs": [
+      "The starting point was a large collection of honeypot events, and I worked from those records towards views of authentication, session activity and the commands people attempted after gaining access, with the session records providing a way to connect separate events before interpreting their wider pattern.",
+      "The analysis code produced summaries and charts for timing, ports, credentials and command use, with separate query tools for looking more closely at the activity behind an aggregate count.",
+      "The saved report describes 480,998 events, and the repository preserves both an executive overview and a campaign deep dive, though those figures belong to that captured dataset and not an ongoing monitoring service."
+    ],
+    "result": "A completed log-analysis workflow with charts and written reports. The public entry uses aggregate timing output rather than individual attacker addresses or credentials.",
+    "tags": [
+      "Security",
+      "Python",
+      "Research"
+    ],
+    "diagram": [
+      "Honeypot events",
+      "Session analysis",
+      "Campaign report"
+    ],
+    "coverAlt": "Original aggregate charts showing honeypot activity by hour of day and day of week.",
+    "kind": "research",
+    "date": "2025-10-04",
+    "timeframe": "October 2025"
+  },
+  {
+    "repo": "Musicical-Genre-Classifier",
+    "title": "Music Genre Classification",
+    "slug": "music-genre-classification",
+    "descriptor": "Academic music-data study",
+    "summary": "Built a music classification workflow with exploratory plots, preprocessing, model training and saved predictions.",
+    "introduction": "I worked with track-level music data to compare genres through their features, building the preprocessing and training workflow alongside plots of the dataset.",
+    "role": "University machine-learning coursework. Data preparation, training and exploratory analysis.",
+    "paragraphs": [
+      "The dataset described ten genres with 5,000 training examples each, and I started by looking at how the available track features were distributed before turning them into inputs for classification, with the exploratory figures kept alongside the preparation code so the transformations could be checked against the data.",
+      "The code separates exploratory analysis, preprocessing and training, with plots for features such as energy and danceability and saved validation data and predictions alongside the model workflow.",
+      "That separation made it possible to look back at the data transformations and the model output together, though a feature correlation plot describes the dataset and should not be read as a classification result."
+    ],
+    "result": "A preserved academic classification workflow with exploratory figures and prediction output. The cover shows feature relationships in the dataset rather than an accuracy claim.",
+    "tags": [
+      "Music",
+      "Machine learning",
+      "Research"
+    ],
+    "diagram": [
+      "Track features",
+      "Preprocessing",
+      "Genre classification"
+    ],
+    "coverAlt": "Original correlation heatmap of the music dataset features, including energy, loudness and danceability.",
+    "kind": "research",
+    "date": "2024-09-16",
+    "timeframe": "September 2024"
+  },
+  {
+    "repo": "WellingtonTrainNetwork",
+    "title": "Wellington Transport Network",
+    "slug": "wellington-transport-network",
+    "descriptor": "JavaFX graph analysis coursework",
+    "summary": "Implemented route search, connected-component analysis and critical-stop detection for a Wellington transport network.",
+    "introduction": "This university project treated Wellington public transport as a graph, using the same network to find routes and inspect the stops that held parts of it together.",
+    "role": "University coursework. Graph and algorithm implementation within a supplied JavaFX framework.",
+    "paragraphs": [
+      "I worked from the stops and connections of the Wellington network, and the map gave the graph algorithms something recognisable to operate on, including walking connections within a chosen distance, with the walking edges changing the route graph while the critical-stop analysis used the relevant transport connections.",
+      "A* searched for routes between stops, while connected-component and articulation-point work examined a different property of the same graph, identifying separated parts and stops whose removal would break connectivity.",
+      "The project included tests and a JavaFX map interface, though the route and structural analyses answer different questions, which is why the results need their own views of the network."
+    ],
+    "result": "A coursework implementation of route and network-structure algorithms, with a map interface and tests. The supplied application framework is distinguished from my algorithm work.",
+    "tags": [
+      "Java",
+      "Transport",
+      "Algorithms"
+    ],
+    "diagram": [
+      "Transport graph",
+      "A* search",
+      "Critical stops"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2023-04-16",
+    "timeframe": "April 2023"
+  },
+  {
+    "repo": "CGRA251_Framework_A4",
+    "title": "Path Tracing Study",
+    "slug": "path-tracing-study",
+    "descriptor": "C++ rendering coursework",
+    "summary": "Implemented coursework path-tracing features and a grid-based sampling variant, preserving the source and example renders.",
+    "introduction": "I worked on a C++ path tracer as part of university graphics coursework, exploring how sampling and scene materials showed up in the rendered image.",
+    "role": "University coursework. Rendering implementation within a supplied C++ framework.",
+    "paragraphs": [
+      "The renderer made light transport visible a sample at a time, and I worked through the assignment's scene and tracing code while using the rendered images to inspect what the implementation was doing, with the material and light code determining how each traced path contributed to the eventual pixel value.",
+      "I completed the listed coursework stages and added a sampling approach that stepped through an image grid, which gave another way to organise the samples alongside the existing random method.",
+      "The preserved render uses a small enclosed scene with coloured walls and curved objects, where indirect lighting and material differences can be seen without needing a complicated model to explain them."
+    ],
+    "result": "A completed rendering assignment with source and sample images. The additional grid sampling method is recorded separately from the supplied graphics framework.",
+    "tags": [
+      "Graphics",
+      "C++",
+      "Rendering"
+    ],
+    "diagram": [
+      "Scene geometry",
+      "Path samples",
+      "Rendered light"
+    ],
+    "coverAlt": "Original path-traced scene with coloured walls and several spheres, showing noisy indirect illumination.",
+    "kind": "research",
+    "date": "2024-05-19",
+    "timeframe": "May 2024"
+  },
+  {
+    "repo": "CGRA354_Framework_A3",
+    "title": "Boids Simulation",
+    "slug": "boids-simulation",
+    "descriptor": "Interactive flocking coursework",
+    "summary": "Implemented a boids simulation with force-based movement, obstacles and interactive graphics controls.",
+    "introduction": "This graphics assignment explored flocking through individual movement rules, with boids moving through a shared space and responding to neighbours and obstacles.",
+    "role": "University coursework. Boid behaviour and scene work within a supplied graphics framework.",
+    "paragraphs": [
+      "I worked on the force calculation and update steps for the boids, and the movement came from those individual rules being applied across the group as the scene advanced, with obstacles held in the same scene so their effect could be included in those movement updates.",
+      "The project held boids, obstacles and scene handling in separate components, with controls for the simulation and several example models so the resulting motion could be inspected from the graphics interface.",
+      "The saved images show a large flock inside a bounded volume with obstacles, which is also where the local behaviour becomes easier to see as patterns across the whole group."
+    ],
+    "result": "An interactive coursework simulation with preserved source and example screenshots. The cover shows the original scene and its controls.",
+    "tags": [
+      "Graphics",
+      "C++",
+      "Simulation"
+    ],
+    "diagram": [
+      "Local forces",
+      "Neighbour response",
+      "Flock movement"
+    ],
+    "coverAlt": "Original boids simulation screenshot showing a green flock in a bounded space, red obstacles and a control panel.",
+    "kind": "research",
+    "date": "2024-05-12",
+    "timeframe": "May 2024"
+  },
+  {
+    "repo": "CGRA350-Assignment-1",
+    "title": "Geometry and Shader Study",
+    "slug": "geometry-shader-study",
+    "descriptor": "Real-time graphics coursework",
+    "summary": "Worked on generated geometry, lighting and texture techniques in an OpenGL graphics assignment.",
+    "introduction": "I explored how generated geometry and shader inputs meet in a real-time renderer, building the coursework shapes and working through lighting and texture techniques.",
+    "role": "University coursework. Geometry and shader implementation within a supplied OpenGL framework.",
+    "paragraphs": [
+      "I started with the shape construction, including latitude-longitude and cube-derived spheres and a torus, where the generated vertices had to line up with the normals and texture coordinates used by the renderer, with the same mesh data feeding the lighting and mapping techniques explored in the later parts of the assignment.",
+      "The shader work covered reflection models, texture and normal mapping and shadow mapping, with the assignment notes and saved screenshots keeping the different techniques alongside the source that implemented them.",
+      "It was a useful place to see an error in one layer appear in another, as the mesh and shader share enough assumptions that a lighting problem can begin in the geometry."
+    ],
+    "result": "A preserved real-time graphics study with geometry code, shader work and screenshots. The example cover is one of the original texture-mapping outputs.",
+    "tags": [
+      "Graphics",
+      "C++",
+      "Rendering"
+    ],
+    "diagram": [
+      "Generated mesh",
+      "Shader inputs",
+      "Lit geometry"
+    ],
+    "coverAlt": "Original renderer screenshot of a red and black checker-textured cube against a plain background.",
+    "kind": "research",
+    "date": "2024-07-09",
+    "timeframe": "July 2024"
+  },
+  {
+    "repo": "blender-addon",
+    "title": "Floor-plan Importer",
+    "slug": "floor-plan-importer",
+    "descriptor": "Architectural Blender add-on",
+    "summary": "Built a Blender importer that turns structured floor-plan data into scene geometry.",
+    "introduction": "This Blender add-on reads floor-plan data and creates the corresponding geometry, keeping the import step close to the modelling tools used to work on the result.",
+    "role": "Blender add-on development. Python import and geometry construction in the OpenArchSpecs context.",
+    "paragraphs": [
+      "I worked on bringing structured floor-plan data into Blender, where the useful part of an import is having something that can be edited in the scene after the file has been read, with the structured input supplying the plan information and the add-on doing the scene construction from it.",
+      "The Python add-on separates the importer, interface and utility code, with a sample plan and documentation describing the file-import workflow and the generated architectural representation.",
+      "The repository links into OpenArchSpecs for distribution, so the entry keeps that project context attached to the importer instead of presenting the file format or surrounding work as something invented here."
+    ],
+    "result": "An implemented floor-plan import add-on with sample data and usage documentation. The cover is an explanatory plan-to-geometry diagram, not a captured Blender viewport.",
+    "tags": [
+      "Graphics",
+      "Blender",
+      "Python"
+    ],
+    "diagram": [
+      "Floor-plan data",
+      "Geometry construction",
+      "Blender scene"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2024-05-29",
+    "timeframe": "May 2024"
+  },
+  {
+    "repo": "PianoVisualiser",
+    "title": "Piano Waveform Visualiser",
+    "slug": "piano-waveform-visualiser",
+    "descriptor": "Interactive audio synthesis study",
+    "summary": "Made an SDL2 piano keyboard that combines selected tones and displays their waveform and frequency information.",
+    "introduction": "I made a small C++ piano visualiser where selecting keys changes both the sound being synthesised and the waveform shown beside the keyboard.",
+    "role": "Independent development. C++17, SDL2 and audio synthesis.",
+    "paragraphs": [
+      "I was playing with the relationship between piano frequencies and the shape of their combined signal, and the on-screen keyboard gave the same set of notes a sound and a visible waveform, with the waveform drawn from the combined signal while each selected key still had its own frequency.",
+      "SDL2 handled the interface and audio, with key selection and a scale control changing the display as the tones were combined, and hover information showing the individual key frequencies.",
+      "The aggregate frequency values are part of this visualisation's calculations, though a combination of notes still contains its separate components and should not be reduced to one physical pitch."
+    ],
+    "result": "An interactive keyboard and synthesis experiment with a waveform display. The preserved program supports selected keys and display-scale controls, with MIDI and file input left as future work.",
+    "tags": [
+      "Music",
+      "C++",
+      "Audio"
+    ],
+    "diagram": [
+      "Selected keys",
+      "Summed tones",
+      "Waveform display"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2025-07-10",
+    "timeframe": "July 2025"
+  },
+  {
+    "repo": "GrooveBox",
+    "title": "GrooveBox",
+    "slug": "groovebox",
+    "descriptor": "Keyboard-controlled beat sequencer",
+    "summary": "Built a desktop groovebox with sample playback, editable patterns and a Python sequencer backed by audio-engine experiments.",
+    "introduction": "GrooveBox is a small beat-sketching tool, using the computer keyboard to play samples and record patterns that can be changed while the sequencer runs.",
+    "role": "Independent development. Python, Pygame and C++ audio-engine work.",
+    "paragraphs": [
+      "I built the sequencer around playing a pad and keeping that action in a pattern, so the keyboard could serve as the input while a running loop kept the timing visible, with sample playback and pattern state kept separate enough for the same sequencer to use different audio backends.",
+      "The code includes quantised recording and pattern switching, with track-length changes, rotation and Euclidean-fill functions sitting alongside the playback state and audio backends.",
+      "The repository also has scene and persistence functions beyond the older README checklist, though the proposed physical controller stayed a separate direction from the desktop instrument implemented here."
+    ],
+    "result": "A desktop sequencing prototype with sample audio, pattern editing and playback code. The cover diagrams the implemented loop without pretending to be a hardware product photograph.",
+    "tags": [
+      "Music",
+      "Python",
+      "Audio"
+    ],
+    "diagram": [
+      "Pad input",
+      "Pattern sequencer",
+      "Sample playback"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2025-11-23",
+    "timeframe": "November 2025"
+  },
+  {
+    "repo": "PinterestBoardEmbedding",
+    "title": "Pinterest Aesthetic Analysis",
+    "slug": "pinterest-aesthetic-analysis",
+    "descriptor": "Image embedding and clustering tool",
+    "summary": "Built a pipeline for clustering Pinterest images with CLIP embeddings and comparing visual themes between saved runs.",
+    "introduction": "I used image embeddings to look at the themes inside a Pinterest board, grouping similar images and keeping snapshots that could be compared over time.",
+    "role": "Independent development. Python, CLIP embeddings and clustering.",
+    "paragraphs": [
+      "I worked with a board as a collection of images, and the embedding step let the clustering operate on visual similarity while keeping the original images and metadata available for checking the groups, with the stored assignments making it possible to return from an abstract cluster to the images inside it.",
+      "The pipeline joined collection, embedding, clustering and comparison, with saved assignments and category refinements so a cluster could be inspected instead of accepting the generated label as an explanation by itself.",
+      "The checked-in August 2025 summary describes 171 images across three clusters, though that was a snapshot of one collection and not evidence that the same themes would remain stable on a different board."
+    ],
+    "result": "An implemented image-analysis pipeline with saved cluster assignments and a dated comparison summary. The cover illustrates the grouping process without reproducing the collected photographs.",
+    "tags": [
+      "AI",
+      "Python",
+      "Computer vision"
+    ],
+    "diagram": [
+      "Board images",
+      "CLIP embeddings",
+      "Visual clusters"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2025-08-06",
+    "timeframe": "August 2025"
+  },
+  {
+    "repo": "Spotify-Demographics-Analyzer",
+    "title": "Spotify Playlist Demographics",
+    "slug": "spotify-playlist-demographics",
+    "descriptor": "Playlist metadata exploration",
+    "summary": "Built a playlist analysis tool that combines artist lookup, biographical text extraction and demographic visualisation.",
+    "introduction": "This experiment started with a Spotify playlist and followed its artists into biographical sources, using extracted metadata to build a view of the collection.",
+    "role": "Independent development. Python, Spotify, Wikipedia and language-model extraction.",
+    "paragraphs": [
+      "I worked from the artists in a playlist, with Spotify providing the names and Wikipedia providing biographical text that could be turned into structured fields for the analysis, with the cached artist records making the extraction step reusable when another playlist contained the same names.",
+      "The pipeline cached extracted information and used GPT to format uncached biographies, then passed those records into plotting code so the playlist could be examined as a group of artists.",
+      "The extraction stage makes this exploratory, as biographies can be incomplete and a model can misread them, so the charts need to stay attached to the sources and missing information behind each field."
+    ],
+    "result": "A preserved retrieval, extraction and plotting workflow. Its demographic fields are source-derived estimates, with no claim that every artist was described completely or correctly.",
+    "tags": [
+      "Music",
+      "Python",
+      "APIs"
+    ],
+    "diagram": [
+      "Playlist artists",
+      "Biography extraction",
+      "Aggregate view"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2024-03-23",
+    "timeframe": "March 2024"
+  },
+  {
+    "repo": "akahu-sheets-sync",
+    "title": "Bank-to-Sheets Sync",
+    "slug": "bank-to-sheets-sync",
+    "descriptor": "Personal banking data pipeline",
+    "summary": "Built an Akahu-to-Google-Sheets sync with transaction categorisation, deduplication and balance reconciliation.",
+    "introduction": "I made a small banking pipeline that keeps settled transactions in Google Sheets, leaving the budget calculations in the sheet and handling the recurring sync in Python.",
+    "role": "Independent development. Python, Akahu and Google Sheets.",
+    "paragraphs": [
+      "I worked on getting the transaction data into a sheet reliably, as the formulas already had somewhere to live and the recurring job was to keep their underlying ledger up to date, with the saved sync state keeping track of the previous run before another batch of transactions arrived.",
+      "The sync used stable transaction IDs and stored its progress between runs, with configurable category rules and transfer detection applied before batched writes to the sheet.",
+      "Reconciliation compared the available balance information with the recorded data, while settled transactions avoided some of the mutability that makes pending entries awkward to keep in a repeatable ledger."
+    ],
+    "result": "An implemented personal banking sync with focused tests for state, categorisation and reconciliation. It is a precursor to the later finance projects, with sample data used for public illustration.",
+    "tags": [
+      "Python",
+      "Finance",
+      "Automation"
+    ],
+    "diagram": [
+      "Settled transactions",
+      "Categorise and reconcile",
+      "Google Sheets"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2025-11-15",
+    "timeframe": "November 2025"
+  },
+  {
+    "repo": "metlink-departures-display",
+    "title": "Metlink Departures Display",
+    "slug": "metlink-departures-display",
+    "descriptor": "Glanceable home bus sign",
+    "summary": "Made a web and command-line display for upcoming Wellington bus departures, with a small service setup for home use.",
+    "introduction": "A small departures sign for Wellington buses, built to put the next arrivals somewhere glanceable instead of repeating the same stop lookup.",
+    "role": "Independent development. Python, Metlink departures and a home service.",
+    "paragraphs": [
+      "I made this around a bus stop and its next departures, keeping the display small enough to be useful at home while the same lookup could also be read from the command line, with the server and terminal versions sharing the departure information that gave the sign its useful content.",
+      "The Python code includes the departure retrieval and a web sign server, with an example systemd service for keeping that display available without starting it by hand each time.",
+      "The configured stop and API connection determine the actual arrivals, so the illustration uses the display's structure without presenting made-up minutes as a live service reading."
+    ],
+    "result": "A compact web and CLI departure display with documented setup. The cover explains the sign format, with no live arrival data implied.",
+    "tags": [
+      "Python",
+      "Transport",
+      "Automation"
+    ],
+    "diagram": [
+      "Configured stop",
+      "Metlink departures",
+      "Home display"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2026-01-16",
+    "timeframe": "January 2026"
+  },
+  {
+    "repo": "PowerCalculator",
+    "title": "Flat Power Calculator",
+    "slug": "flat-power-calculator",
+    "descriptor": "Household electricity split tool",
+    "summary": "Built a small web tool for calculating and communicating the flat electricity-bill split, with a Home Assistant integration module.",
+    "introduction": "I made a small calculator for the flat power bill, keeping the calculation and the message about what each person owes close to the same inputs.",
+    "role": "Independent development. TypeScript calculation, formatting and Home Assistant integration.",
+    "paragraphs": [
+      "The project started with the monthly power bill for the flat, and I kept the calculation separate from its formatting so the amount shown in the interface could also be used when communicating the split, with the browser interface taking the figures while the calculation module kept the sharing rule in one place.",
+      "The TypeScript modules separate the split calculation, display formatting and Home Assistant access, with a browser interface for entering the relevant figures and working through the result.",
+      "It stayed a small household tool, though that scale made the rule easier to inspect, as there was one bill and a particular sharing arrangement behind the numbers."
+    ],
+    "result": "An implemented household calculation tool with a clear separation between inputs, split logic and output formatting. The cover shows the workflow using no personal bill amounts.",
+    "tags": [
+      "TypeScript",
+      "Finance",
+      "Automation"
+    ],
+    "diagram": [
+      "Power bill",
+      "Household split",
+      "Amounts to share"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2026-04-21",
+    "timeframe": "April 2026"
+  },
+  {
+    "repo": "YayMinecraftServer",
+    "title": "Wake-on-Join Minecraft",
+    "slug": "wake-on-join-minecraft",
+    "descriptor": "On-demand AWS game server",
+    "summary": "Built an AWS Minecraft setup that sleeps when idle and wakes when somebody tries to join, with infrastructure templates and a runbook.",
+    "introduction": "I put together a Minecraft server for friends that can sleep while nobody is playing, with the join attempt acting as the signal to bring it back.",
+    "role": "Independent infrastructure development. Paper, AWS templates and server operations tooling.",
+    "paragraphs": [
+      "The server was for a small group, and keeping a machine running all the time was a different problem from making it available when somebody actually wanted to play, with the infrastructure keeping the wake mechanism available while the machine that ran the game could sleep.",
+      "The project separated the wake path from the game instance, with infrastructure templates, a control script and operating notes describing how the server starts and how idle periods are handled.",
+      "The join-triggered approach kept the familiar Minecraft connection as the entry point, though waking an instance still has a startup period before the game server becomes ready."
+    ],
+    "result": "An on-demand Paper server architecture with deployment templates and a runbook. The entry describes the wake and idle behaviour without claiming instant startup or a measured cost saving.",
+    "tags": [
+      "Cloud infrastructure",
+      "Games",
+      "Automation"
+    ],
+    "diagram": [
+      "Join attempt",
+      "Wake instance",
+      "Paper server"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2026-07-26",
+    "timeframe": "July 2026"
+  },
+  {
+    "repo": "Sentient",
+    "title": "Sentient Environment Explorer",
+    "slug": "sentient-environment-explorer",
+    "descriptor": "Reinforcement-learning simulation",
+    "summary": "Built a grid-world learning experiment with food, hazards, a neural agent and a live interface for observing its behaviour.",
+    "introduction": "Sentient was an experiment in an agent learning its way through a changing 2D environment, with food and hazards giving its movement a consequence.",
+    "role": "Independent experiment development. Python, deep Q-learning and simulation UI.",
+    "paragraphs": [
+      "I built a small world where movement mattered to the agent's survival, with food, harmful objects and a hunger mechanism giving it more to do than simply cross an empty grid, with the environment changing as the agent moved and the reward values shaping which actions the learner would revisit.",
+      "The code separates the environment, neural learner and orchestrator, with a GUI for pausing the simulation, changing its speed and observing the behaviour while learning continues.",
+      "The repository includes saved checkpoints from training runs, though those show that the learning workflow ran and do not by themselves establish a general improvement in exploration or decision making."
+    ],
+    "result": "A visual reinforcement-learning prototype with a running environment, controls and saved model checkpoints. The public cover is a schematic world, not a frame from a recorded run.",
+    "tags": [
+      "Machine learning",
+      "Python",
+      "Simulation"
+    ],
+    "diagram": [
+      "Environment",
+      "Agent action",
+      "Reward and replay"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2025-03-10",
+    "timeframe": "March 2025"
+  },
+  {
+    "repo": "dropeta",
+    "title": "DropETA",
+    "slug": "drop-eta",
+    "descriptor": "Delivery-route planning prototype",
+    "summary": "Built a delivery planner with address lookup, stop ordering, ETA calculations and previews of where a new stop fits.",
+    "introduction": "DropETA is a prototype for arranging a changing list of deliveries, using route durations to work through stop order and the arrival times that follow from it.",
+    "role": "Independent prototype development. TypeScript, routing services and browser UI.",
+    "paragraphs": [
+      "I worked on the point where a new delivery changes an existing route, as adding an address is easy but the useful part is seeing what it does to the stops that were already planned, with the duration matrix giving the ordering logic travel estimates to compare as the list of destinations changed.",
+      "The implementation has duration-matrix and route services, with stop-order evaluation, recalculated arrivals and an insertion preview that tests where another stop can fit in the current plan.",
+      "The interface ties those operations to a map and a stop list, though live position access and the configured routing services are still conditions for the corresponding ETA behaviour."
+    ],
+    "result": "An implemented route-planning prototype with browser UI and stop-insertion logic. The captured interface shows the initial state, without implying a completed commercial rollout.",
+    "tags": [
+      "TypeScript",
+      "Transport",
+      "Product design"
+    ],
+    "diagram": [
+      "Delivery stops",
+      "Order and insert",
+      "Arrival estimates"
+    ],
+    "coverAlt": "Screenshot of the DropETA delivery-planning interface with the map hidden and the initial stop-list state.",
+    "kind": "independent",
+    "date": "2026-03-20",
+    "timeframe": "March 2026"
+  },
+  {
+    "repo": "personal-language-corpus",
+    "title": "Personal Language Corpus",
+    "slug": "personal-language-corpus",
+    "descriptor": "Local language-analysis workflow",
+    "summary": "Built a local workflow for importing language samples with provenance and comparing quantitative features with source-linked observations.",
+    "introduction": "This workflow brings transcripts and exports into one small corpus, keeping passage IDs and source information attached to the analysis so a pattern can be checked against the words behind it.",
+    "role": "Independent development. Python importers, provenance and analysis workflow.",
+    "paragraphs": [
+      "I worked on the structure of the corpus before its interpretation, as a useful observation about language needs a way back to the passage and the source that produced it, with those identifiers kept through the import so later features and observations could still point to the same text.",
+      "The importers handle supported transcripts and exports, with stable passage IDs and role information carried into quantitative features, baseline comparisons and the qualitative workflow.",
+      "The repository includes sample inputs and workflow tests, which make it possible to try the pipeline without bringing a private conversation history into the demonstration."
+    ],
+    "result": "A local, testable corpus workflow with provenance and sample data. It keeps the underlying passages inspectable while separating numerical features from qualitative interpretations.",
+    "tags": [
+      "Python",
+      "Writing tools",
+      "Research"
+    ],
+    "diagram": [
+      "Source passages",
+      "Features and baselines",
+      "Linked observations"
+    ],
+    "coverAlt": null,
+    "kind": "independent",
+    "date": "2026-10-02",
+    "timeframe": "October 2026"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "repo": "DadsBirthday",
+  "private": true,
+  "branch": "main",
+  "createdAt": "2024-05-04T06:35:33Z",
+  "pushedAt": "2024-05-04T15:28:01Z",
+  "firstCommit": {
+    "sha": "ebf1270c02ce6645fee04b13922f713489f61fb7",
+    "date": "2024-05-04T06:35:28Z",
+    "message": "chore: Add initial project files and dependencies",
+    "url": "https://github.com/Slaymish/DadsBirthday/commit/ebf1270c02ce6645fee04b13922f713489f61fb7"
+  },
+  "releases": []
+}

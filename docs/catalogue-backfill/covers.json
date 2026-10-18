@@ -1,0 +1,377 @@
+[
+  {
+    "repo": "EchoStatsFinder",
+    "path": "media/EchoStatsFinder.png",
+    "editable": "media/EchoStatsFinder.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Echo Stats Finder, showing Headset match, Player lookup, League statistics."
+  },
+  {
+    "repo": "Watzon",
+    "path": "media/Watzon.png",
+    "editable": "media/Watzon.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Watzon, showing Discord command, VRML API, Team information."
+  },
+  {
+    "repo": "ArticulateAI",
+    "file": "articulate-cover.png",
+    "kind": "original command menu capture",
+    "source": "Slaymish/ArticulateAI run.py, executed to its first prompt with audio/API imports disabled.",
+    "alt": "Original ArticulateAI command menu, with twelve options for processing a spoken transcript.",
+    "path": "real-media-2026-10-10/articulate-cover.png",
+    "width": 1600,
+    "height": 1000,
+    "capturedAt": "2026-10-09T23:58:54.620Z"
+  },
+  {
+    "repo": "LSystemGenerator",
+    "path": "media/LSystemGenerator.png",
+    "source": "https://github.com/Slaymish/LSystemGenerator/assets/21288505/b64e5cae-96dc-4f1d-8349-a6f91cb40059",
+    "kind": "original README example",
+    "width": 2370,
+    "height": 1480,
+    "alt": "Original JavaFX screenshot showing the L-system controls beside a dense green branching structure."
+  },
+  {
+    "repo": "3dSpanningTrees",
+    "path": "media/3dSpanningTrees.png",
+    "source": "https://github.com/Slaymish/3dSpanningTrees/assets/21288505/3c9e87c3-d31d-4b37-8b8e-fd2ac10693fb",
+    "kind": "original README example",
+    "width": 2690,
+    "height": 1080,
+    "alt": "Original project render showing a regular mesh edge grid beside two minimum spanning tree structures."
+  },
+  {
+    "repo": "BlenderBookShelf",
+    "path": "media/BlenderBookShelf.png",
+    "source": "https://github.com/Slaymish/BlenderBookShelf/assets/21288505/6ca4b8c4-1f14-4815-9217-c554413ac80d",
+    "kind": "original README example",
+    "width": 1216,
+    "height": 1184,
+    "alt": "Original Blender screenshot of the bookshelf geometry-node graph, with connected construction and transformation nodes."
+  },
+  {
+    "repo": "PlatformerGame",
+    "path": "media/PlatformerGame.png",
+    "editable": "media/PlatformerGame.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Cookie Cat, showing Generated platforms, Cookies and frogs, Upgrade shop."
+  },
+  {
+    "repo": "WeddingWebsite",
+    "path": "media/WeddingWebsite.png",
+    "editable": "media/WeddingWebsite.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Finlay and Lani's wedding website, showing Wedding information, Guest RSVP, Organiser view."
+  },
+  {
+    "repo": "DadsBirthday",
+    "path": "media/DadsBirthday.png",
+    "editable": "media/DadsBirthday.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Birthday Gallery, showing Gallery model, Photographs, Guided camera."
+  },
+  {
+    "repo": "BusRouter",
+    "path": "media/BusRouter.png",
+    "source": "https://github.com/Slaymish/BusRouter/blob/master/logo_name.PNG",
+    "kind": "original project asset",
+    "width": 1024,
+    "height": 1024,
+    "alt": "Original TransitSync project mark, combining a calendar and a bus above the project name."
+  },
+  {
+    "repo": "AndoSim",
+    "path": "media/AndoSim.jpg",
+    "source": "https://github.com/Slaymish/AndoSim/blob/main/docs/example_images/teaser-image.jpg",
+    "kind": "original project asset",
+    "width": 2300,
+    "height": 772,
+    "alt": "Teaser collage included in the AndoSim repository, showing several cloth and shell simulation scenes."
+  },
+  {
+    "repo": "BedroomLayoutDesigner",
+    "path": "media/BedroomLayoutDesigner.png",
+    "source": "https://bedroomlayout.app",
+    "kind": "live application screenshot",
+    "capturedAt": "2026-10-09T22:26:35.447Z",
+    "body": "Bedroom Layout Planner\n\nUse exact room dimensions, place furniture with confidence, and export a printable PDF.\n\nExport PDF\nPreferences\nFurniture\nLast autosave: 11:26:34\nRoom 1\n\n360cm x 320cm\n\n0 objects · 0 openings\n\nShare\nRename\nDelete\n360cm\n320cm\nEdit\n\nSelect an object to edit, or enable ruler mode to create/edit measurements.\n\nMade by Hamish\n•\nOpen source on GitHub\n•\nBuy me a coffee",
+    "width": 1440,
+    "height": 900,
+    "alt": "Screenshot of Bedroom Layout Designer showing the room-planning interface and editable plan."
+  },
+  {
+    "repo": "PianoImprovisationHelper",
+    "path": "media/PianoImprovisationHelper.png",
+    "source": "https://pianoimprovisationhelper.netlify.app/",
+    "kind": "live application screenshot",
+    "capturedAt": "2026-10-09T22:11:20.485Z",
+    "body": "Piano Improvisation Helper\n\nFind a song → auto-detect key → get improv hints\n\nFind a song\n\nSearch by title and artist (MusicBrainz)\n\nListen for song\nMic recognition isn’t plugged in yet — search works best for now.\nSearch",
+    "width": 1440,
+    "height": 900,
+    "alt": "Screenshot of Piano Improvisation Helper with its song search and preview-analysis interface."
+  },
+  {
+    "repo": "Synod",
+    "file": "synod-real-cover.png",
+    "kind": "actual Obsidian plugin screenshot",
+    "source": "Original src/ui/status-view.ts and styles.css, built from the repository and captured in Obsidian 1.13.7. Empty temporary vault, no personal notes or model runs.",
+    "alt": "Synod’s actual Obsidian status panel, showing the journal import, value discovery and bulletin controls in an empty demonstration vault.",
+    "path": "real-media-2026-10-10/synod-real-cover.png",
+    "width": 1600,
+    "height": 1200,
+    "capturedAt": "2026-10-10T00:04:20.378Z"
+  },
+  {
+    "repo": "Lumen",
+    "file": "lumen-real-cover.png",
+    "kind": "actual Obsidian plugin screenshot",
+    "source": "Original obsidian-plugin/src/research/index.ts and styles.css, built from the repository and captured in Obsidian 1.13.7. Empty temporary vault, no personal notes or model runs.",
+    "alt": "Lumen’s actual research form in Obsidian, showing question input, sub-questions, vault and web sources, and memory controls.",
+    "path": "real-media-2026-10-10/lumen-real-cover.png",
+    "width": 1600,
+    "height": 1200,
+    "capturedAt": "2026-10-10T00:04:20.443Z"
+  },
+  {
+    "repo": "Otto",
+    "file": "otto-cover.png",
+    "kind": "original native interface render",
+    "source": "Unmodified JournalView in Otto/Otto/JournalWindow.swift, rendered offline using shipped memory/capabilities.json. No microphone, model, commands or learning run.",
+    "alt": "Otto’s native capability journal rendered with the original shipped app and music commands, in an offline demonstration.",
+    "path": "real-media-2026-10-10/otto-cover.png",
+    "width": 1600,
+    "height": 1050,
+    "capturedAt": "2026-10-09T23:58:54.620Z"
+  },
+  {
+    "repo": "grid-diffusion-ad",
+    "path": "media/grid-diffusion-ad.png",
+    "source": "https://github.com/Slaymish/grid-diffusion-ad/blob/main/server_runs/ablation_embed_dim_512bins_20260112_170614/ablation_embed_dim_512bins_1_token_embed_dim-32_20260112_170619/reconstruction_fidelity_examples.png",
+    "kind": "original project asset",
+    "width": 1200,
+    "height": 1200,
+    "alt": "Original experiment plot comparing four channels of signal data with their reconstructed waveforms."
+  },
+  {
+    "repo": "conversational-timing-lab",
+    "path": "media/conversational-timing-lab.png",
+    "editable": "media/conversational-timing-lab.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Conversational Timing Lab, showing Observed pause, Turn completion, Response onset."
+  },
+  {
+    "repo": "commit-reviewer",
+    "path": "media/commit-reviewer.png",
+    "editable": "media/commit-reviewer.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Typed Diff Questions, showing Changed hunk, Typed questions, Calibrated scores."
+  },
+  {
+    "repo": "MalwareResearchPaper",
+    "path": "media/MalwareResearchPaper.png",
+    "source": "https://github.com/Slaymish/MalwareResearchPaper/blob/main/clean_tuned_ASR_comparison.png",
+    "kind": "original project asset",
+    "width": 1000,
+    "height": 600,
+    "alt": "Original study plot comparing attack success rates across models and poisoning ratios."
+  },
+  {
+    "repo": "CYBRAnalysis",
+    "path": "media/CYBRAnalysis.png",
+    "source": "https://github.com/Slaymish/CYBRAnalysis/blob/main/cowrie-log-analysis/notebooks/visualizations/temporal_patterns.png",
+    "kind": "original project asset",
+    "width": 4170,
+    "height": 2969,
+    "alt": "Original aggregate charts showing honeypot activity by hour of day and day of week."
+  },
+  {
+    "repo": "Musicical-Genre-Classifier",
+    "path": "media/Musicical-Genre-Classifier.png",
+    "source": "https://github.com/Slaymish/Musicical-Genre-Classifier/blob/main/images/heatmap.png",
+    "kind": "original project asset",
+    "width": 1200,
+    "height": 800,
+    "alt": "Original correlation heatmap of the music dataset features, including energy, loudness and danceability."
+  },
+  {
+    "repo": "WellingtonTrainNetwork",
+    "path": "media/WellingtonTrainNetwork.png",
+    "editable": "media/WellingtonTrainNetwork.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Wellington Transport Network, showing Transport graph, A* search, Critical stops."
+  },
+  {
+    "repo": "CGRA251_Framework_A4",
+    "path": "media/CGRA251_Framework_A4.png",
+    "source": "https://github.com/Slaymish/CGRA251_Framework_A4/blob/main/work/res/samples/challenge_1.png",
+    "kind": "original project asset",
+    "width": 800,
+    "height": 600,
+    "alt": "Original path-traced scene with coloured walls and several spheres, showing noisy indirect illumination."
+  },
+  {
+    "repo": "CGRA354_Framework_A3",
+    "path": "media/CGRA354_Framework_A3.png",
+    "source": "https://github.com/Slaymish/CGRA354_Framework_A3/blob/main/images/challenge.png",
+    "kind": "original project asset",
+    "width": 3104,
+    "height": 1974,
+    "alt": "Original boids simulation screenshot showing a green flock in a bounded space, red obstacles and a control panel."
+  },
+  {
+    "repo": "CGRA350-Assignment-1",
+    "path": "media/CGRA350-Assignment-1.png",
+    "source": "https://github.com/Slaymish/CGRA350-Assignment-1/blob/main/work/res/results/screenshot_1722679703546.png",
+    "kind": "original project asset",
+    "width": 1774,
+    "height": 1036,
+    "alt": "Original renderer screenshot of a red and black checker-textured cube against a plain background."
+  },
+  {
+    "repo": "blender-addon",
+    "path": "media/blender-addon.png",
+    "editable": "media/blender-addon.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Floor-plan Importer, showing Floor-plan data, Geometry construction, Blender scene."
+  },
+  {
+    "repo": "PianoVisualiser",
+    "path": "media/PianoVisualiser.png",
+    "editable": "media/PianoVisualiser.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Piano Waveform Visualiser, showing Selected keys, Summed tones, Waveform display."
+  },
+  {
+    "repo": "GrooveBox",
+    "path": "media/GrooveBox.png",
+    "editable": "media/GrooveBox.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for GrooveBox, showing Pad input, Pattern sequencer, Sample playback."
+  },
+  {
+    "repo": "PinterestBoardEmbedding",
+    "path": "media/PinterestBoardEmbedding.png",
+    "editable": "media/PinterestBoardEmbedding.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Pinterest Aesthetic Analysis, showing Board images, CLIP embeddings, Visual clusters."
+  },
+  {
+    "repo": "Spotify-Demographics-Analyzer",
+    "path": "media/Spotify-Demographics-Analyzer.png",
+    "editable": "media/Spotify-Demographics-Analyzer.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Spotify Playlist Demographics, showing Playlist artists, Biography extraction, Aggregate view."
+  },
+  {
+    "repo": "akahu-sheets-sync",
+    "path": "media/akahu-sheets-sync.png",
+    "editable": "media/akahu-sheets-sync.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Bank-to-Sheets Sync, showing Settled transactions, Categorise and reconcile, Google Sheets."
+  },
+  {
+    "repo": "metlink-departures-display",
+    "path": "media/metlink-departures-display.png",
+    "editable": "media/metlink-departures-display.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Metlink Departures Display, showing Configured stop, Metlink departures, Home display."
+  },
+  {
+    "repo": "PowerCalculator",
+    "path": "media/PowerCalculator.png",
+    "editable": "media/PowerCalculator.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Flat Power Calculator, showing Power bill, Household split, Amounts to share."
+  },
+  {
+    "repo": "YayMinecraftServer",
+    "path": "media/YayMinecraftServer.png",
+    "editable": "media/YayMinecraftServer.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Wake-on-Join Minecraft, showing Join attempt, Wake instance, Paper server."
+  },
+  {
+    "repo": "Sentient",
+    "path": "media/Sentient.png",
+    "editable": "media/Sentient.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Sentient Environment Explorer, showing Environment, Agent action, Reward and replay."
+  },
+  {
+    "repo": "dropeta",
+    "path": "media/dropeta.png",
+    "source": "https://dropeta.vercel.app",
+    "kind": "live application screenshot",
+    "capturedAt": "2026-10-09T22:26:38.364Z",
+    "body": "DropETA\nGPS off\n+\n−\nShow map\n\nTurn on location\n\nNeeded for live ETAs and route order.\n\nEnable\nReady to roll.\n\nAdd your first drop and DropETA works out the fastest order, then keeps every customer's ETA honest.\n\nAdd your first drop",
+    "width": 1440,
+    "height": 900,
+    "alt": "Screenshot of the DropETA delivery-planning interface with the map hidden and the initial stop-list state."
+  },
+  {
+    "repo": "personal-language-corpus",
+    "path": "media/personal-language-corpus.png",
+    "editable": "media/personal-language-corpus.svg",
+    "source": "Authored from the project implementation; labels in editorial.json",
+    "kind": "source-based explanatory diagram",
+    "width": 1280,
+    "height": 720,
+    "alt": "Explanatory diagram for Personal Language Corpus, showing Source passages, Features and baselines, Linked observations."
+  }
+]

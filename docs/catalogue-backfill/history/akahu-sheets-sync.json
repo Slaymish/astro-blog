@@ -1,0 +1,14 @@
+{
+  "repo": "akahu-sheets-sync",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2025-11-15T00:45:34Z",
+  "pushedAt": "2025-11-17T05:21:27Z",
+  "firstCommit": {
+    "sha": "91d2561d74d45738549b6fdba40df49c2e05f55e",
+    "date": "2025-11-15T00:45:34Z",
+    "message": "Initial commit",
+    "url": "https://github.com/Slaymish/akahu-sheets-sync/commit/91d2561d74d45738549b6fdba40df49c2e05f55e"
+  },
+  "releases": []
+}

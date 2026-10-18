@@ -1,0 +1,14 @@
+{
+  "repo": "Watzon",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2022-07-23T05:15:29Z",
+  "pushedAt": "2022-07-24T05:52:41Z",
+  "firstCommit": {
+    "sha": "0e74022d9ff5fe1025d847cd204927e597c6e025",
+    "date": "2022-07-23T05:26:14Z",
+    "message": "Initial Upload",
+    "url": "https://github.com/Slaymish/Watzon/commit/0e74022d9ff5fe1025d847cd204927e597c6e025"
+  },
+  "releases": []
+}

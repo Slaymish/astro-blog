@@ -1,0 +1,14 @@
+{
+  "repo": "conversational-timing-lab",
+  "private": false,
+  "branch": "master",
+  "createdAt": "2026-09-04T04:54:07Z",
+  "pushedAt": "2026-09-04T05:40:24Z",
+  "firstCommit": {
+    "sha": "56e367e5f17de2bd8d95978f665c9b30cdaf8e9f",
+    "date": "2026-09-04T04:55:58Z",
+    "message": "Add timing dataset",
+    "url": "https://github.com/Slaymish/conversational-timing-lab/commit/56e367e5f17de2bd8d95978f665c9b30cdaf8e9f"
+  },
+  "releases": []
+}

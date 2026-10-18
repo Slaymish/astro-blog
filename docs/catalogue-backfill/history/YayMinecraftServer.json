@@ -1,0 +1,14 @@
+{
+  "repo": "YayMinecraftServer",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2026-07-26T00:07:49Z",
+  "pushedAt": "2026-07-27T04:52:02Z",
+  "firstCommit": {
+    "sha": "6307b6e61a02cda8baee7f512d316c06503f6df4",
+    "date": "2026-07-26T01:37:46Z",
+    "message": "Add on-demand Paper Minecraft server on AWS Auckland",
+    "url": "https://github.com/Slaymish/YayMinecraftServer/commit/6307b6e61a02cda8baee7f512d316c06503f6df4"
+  },
+  "releases": []
+}

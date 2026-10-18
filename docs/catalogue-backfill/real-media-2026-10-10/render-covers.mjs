@@ -1,0 +1,11 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {chromium} from '/Users/hamishburke/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+const root=path.dirname(new URL(import.meta.url).pathname);
+const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
+const page=await browser.newPage({viewport:{width:1600,height:1000},deviceScaleFactor:1});
+const escape=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const output=await fs.readFile(path.join(root,'articulate-menu.txt'),'utf8');
+await page.setContent(`<style>body{margin:0;background:#e9e6e0;display:grid;place-items:center;height:100vh}article{width:1420px;border-radius:14px;overflow:hidden;box-shadow:0 15px 50px #0002;background:#191c20;color:#e1e5e9}header{padding:18px 25px;background:#282c32;font:15px system-ui;display:flex;justify-content:space-between;color:#bfc7d1}pre{font:19px/1.55 ui-monospace,SFMono-Regular,monospace;white-space:pre-wrap;margin:30px 38px}footer{font:14px system-ui;padding:18px 38px;color:#abb5c1;border-top:1px solid #363b43}</style><article><header><span>ArticulateAI · run.py</span><span>Original command menu</span></header><pre>${escape(output)}</pre><footer>Captured from the original Python source · microphone and API calls not run</footer></article>`);
+await page.screenshot({path:path.join(root,'articulate-cover.png')});
+await browser.close();

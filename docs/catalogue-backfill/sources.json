@@ -1,0 +1,1229 @@
+[
+  {
+    "repo": "EchoStatsFinder",
+    "slug": "echo-stats-finder",
+    "privateSource": false,
+    "date": "2021-11-10",
+    "timeframe": "November 2021",
+    "dateBasis": "first preserved release",
+    "milestone": {
+      "tag": "v1.0.0",
+      "date": "2021-11-10T06:33:18Z",
+      "url": "https://github.com/Slaymish/EchoStatsFinder/releases/tag/v1.0.0",
+      "assets": [
+        {
+          "name": "setup.exe",
+          "url": "https://github.com/Slaymish/EchoStatsFinder/releases/download/v1.0.0/setup.exe"
+        }
+      ]
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "b90fe2bdec8fecc3c499e1cbaa44d9b09abe148d",
+      "date": "2021-11-01T00:48:07Z",
+      "message": "Add files via upload",
+      "url": "https://github.com/Slaymish/EchoStatsFinder/commit/b90fe2bdec8fecc3c499e1cbaa44d9b09abe148d"
+    },
+    "cover": {
+      "repo": "EchoStatsFinder",
+      "path": "media/EchoStatsFinder.png",
+      "editable": "media/EchoStatsFinder.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Echo Stats Finder, showing Headset match, Player lookup, League statistics."
+    }
+  },
+  {
+    "repo": "Watzon",
+    "slug": "watzon",
+    "privateSource": false,
+    "date": "2022-06-29",
+    "timeframe": "June to July 2022",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "date": "2022-06-29T14:28:08Z",
+      "message": "Initial commit",
+      "sha": "96a63a37c0472b3d7ab060ccab1c675592c31b4e",
+      "url": "https://github.com/Slaymish/WatzonOld/commit/96a63a37c0472b3d7ab060ccab1c675592c31b4e"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "0e74022d9ff5fe1025d847cd204927e597c6e025",
+      "date": "2022-07-23T05:26:14Z",
+      "message": "Initial Upload",
+      "url": "https://github.com/Slaymish/Watzon/commit/0e74022d9ff5fe1025d847cd204927e597c6e025"
+    },
+    "cover": {
+      "repo": "Watzon",
+      "path": "media/Watzon.png",
+      "editable": "media/Watzon.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Watzon, showing Discord command, VRML API, Team information."
+    }
+  },
+  {
+    "repo": "ArticulateAI",
+    "slug": "articulate-ai",
+    "privateSource": false,
+    "date": "2023-05-17",
+    "timeframe": "May 2023",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "8eab06303cdb9c11cee1658dc7c78d3e7b512eea",
+      "date": "2023-05-17T00:53:33Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/ArticulateAI/commit/8eab06303cdb9c11cee1658dc7c78d3e7b512eea"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "8eab06303cdb9c11cee1658dc7c78d3e7b512eea",
+      "date": "2023-05-17T00:53:33Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/ArticulateAI/commit/8eab06303cdb9c11cee1658dc7c78d3e7b512eea"
+    },
+    "cover": {
+      "repo": "ArticulateAI",
+      "file": "articulate-cover.png",
+      "kind": "original command menu capture",
+      "source": "Slaymish/ArticulateAI run.py, executed to its first prompt with audio/API imports disabled.",
+      "alt": "Original ArticulateAI command menu, with twelve options for processing a spoken transcript.",
+      "path": "real-media-2026-10-10/articulate-cover.png",
+      "width": 1600,
+      "height": 1000,
+      "capturedAt": "2026-10-09T23:58:54.620Z"
+    }
+  },
+  {
+    "repo": "LSystemGenerator",
+    "slug": "l-system-generator",
+    "privateSource": false,
+    "date": "2023-05-20",
+    "timeframe": "May 2023",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "5e9a598cafb06b891b7112cebfd179b739272cad",
+      "date": "2023-05-20T06:50:42Z",
+      "message": "First commit",
+      "url": "https://github.com/Slaymish/LSystemGenerator/commit/5e9a598cafb06b891b7112cebfd179b739272cad"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "5e9a598cafb06b891b7112cebfd179b739272cad",
+      "date": "2023-05-20T06:50:42Z",
+      "message": "First commit",
+      "url": "https://github.com/Slaymish/LSystemGenerator/commit/5e9a598cafb06b891b7112cebfd179b739272cad"
+    },
+    "cover": {
+      "repo": "LSystemGenerator",
+      "path": "media/LSystemGenerator.png",
+      "source": "https://github.com/Slaymish/LSystemGenerator/assets/21288505/b64e5cae-96dc-4f1d-8349-a6f91cb40059",
+      "kind": "original README example",
+      "width": 2370,
+      "height": 1480,
+      "alt": "Original JavaFX screenshot showing the L-system controls beside a dense green branching structure."
+    }
+  },
+  {
+    "repo": "3dSpanningTrees",
+    "slug": "3d-spanning-trees",
+    "privateSource": false,
+    "date": "2023-06-10",
+    "timeframe": "June 2023",
+    "dateBasis": "first preserved release",
+    "milestone": {
+      "tag": "v0.1.0",
+      "date": "2023-06-10T05:50:16Z",
+      "url": "https://github.com/Slaymish/3dSpanningTrees/releases/tag/v0.1.0",
+      "assets": [
+        {
+          "name": "MSTAdddon.py",
+          "url": "https://github.com/Slaymish/3dSpanningTrees/releases/download/v0.1.0/MSTAdddon.py"
+        }
+      ]
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "f18645aa47aa1ff1784ab8f493bdfc5585916c77",
+      "date": "2023-06-09T04:12:20Z",
+      "message": "first commit",
+      "url": "https://github.com/Slaymish/3dSpanningTrees/commit/f18645aa47aa1ff1784ab8f493bdfc5585916c77"
+    },
+    "cover": {
+      "repo": "3dSpanningTrees",
+      "path": "media/3dSpanningTrees.png",
+      "source": "https://github.com/Slaymish/3dSpanningTrees/assets/21288505/3c9e87c3-d31d-4b37-8b8e-fd2ac10693fb",
+      "kind": "original README example",
+      "width": 2690,
+      "height": 1080,
+      "alt": "Original project render showing a regular mesh edge grid beside two minimum spanning tree structures."
+    }
+  },
+  {
+    "repo": "BlenderBookShelf",
+    "slug": "parametric-bookshelf",
+    "privateSource": false,
+    "date": "2023-08-30",
+    "timeframe": "August 2023",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "b901565241e8a8d7f0626f1afe7b346c30b97a82",
+      "date": "2023-08-30T03:55:32Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/BlenderBookShelf/commit/b901565241e8a8d7f0626f1afe7b346c30b97a82"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "b901565241e8a8d7f0626f1afe7b346c30b97a82",
+      "date": "2023-08-30T03:55:32Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/BlenderBookShelf/commit/b901565241e8a8d7f0626f1afe7b346c30b97a82"
+    },
+    "cover": {
+      "repo": "BlenderBookShelf",
+      "path": "media/BlenderBookShelf.png",
+      "source": "https://github.com/Slaymish/BlenderBookShelf/assets/21288505/6ca4b8c4-1f14-4815-9217-c554413ac80d",
+      "kind": "original README example",
+      "width": 1216,
+      "height": 1184,
+      "alt": "Original Blender screenshot of the bookshelf geometry-node graph, with connected construction and transformation nodes."
+    }
+  },
+  {
+    "repo": "PlatformerGame",
+    "slug": "cookie-cat",
+    "privateSource": true,
+    "date": "2023-07-14",
+    "timeframe": "July to August 2023",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "18484592629337adaeb10675aa24641cd6ca0b2b",
+      "date": "2023-07-14T12:40:32Z",
+      "message": "added more keymaps",
+      "url": "https://github.com/Slaymish/PlatformerGame/commit/18484592629337adaeb10675aa24641cd6ca0b2b"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "18484592629337adaeb10675aa24641cd6ca0b2b",
+      "date": "2023-07-14T12:40:32Z",
+      "message": "added more keymaps",
+      "url": "https://github.com/Slaymish/PlatformerGame/commit/18484592629337adaeb10675aa24641cd6ca0b2b"
+    },
+    "cover": {
+      "repo": "PlatformerGame",
+      "path": "media/PlatformerGame.png",
+      "editable": "media/PlatformerGame.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Cookie Cat, showing Generated platforms, Cookies and frogs, Upgrade shop."
+    }
+  },
+  {
+    "repo": "WeddingWebsite",
+    "slug": "finlay-lani-wedding",
+    "privateSource": false,
+    "date": "2023-10-09",
+    "timeframe": "October 2023 to October 2024",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "a37f4acf170970c76a21236c42048a726c2c3264",
+      "date": "2023-10-09T04:13:33Z",
+      "message": "Initial react setup",
+      "url": "https://github.com/Slaymish/WeddingWebsite/commit/a37f4acf170970c76a21236c42048a726c2c3264"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "a37f4acf170970c76a21236c42048a726c2c3264",
+      "date": "2023-10-09T04:13:33Z",
+      "message": "Initial react setup",
+      "url": "https://github.com/Slaymish/WeddingWebsite/commit/a37f4acf170970c76a21236c42048a726c2c3264"
+    },
+    "cover": {
+      "repo": "WeddingWebsite",
+      "path": "media/WeddingWebsite.png",
+      "editable": "media/WeddingWebsite.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Finlay and Lani's wedding website, showing Wedding information, Guest RSVP, Organiser view."
+    }
+  },
+  {
+    "repo": "DadsBirthday",
+    "slug": "birthday-gallery",
+    "privateSource": true,
+    "date": "2024-05-04",
+    "timeframe": "May 2024",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "ebf1270c02ce6645fee04b13922f713489f61fb7",
+      "date": "2024-05-04T06:35:28Z",
+      "message": "chore: Add initial project files and dependencies",
+      "url": "https://github.com/Slaymish/DadsBirthday/commit/ebf1270c02ce6645fee04b13922f713489f61fb7"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "ebf1270c02ce6645fee04b13922f713489f61fb7",
+      "date": "2024-05-04T06:35:28Z",
+      "message": "chore: Add initial project files and dependencies",
+      "url": "https://github.com/Slaymish/DadsBirthday/commit/ebf1270c02ce6645fee04b13922f713489f61fb7"
+    },
+    "cover": {
+      "repo": "DadsBirthday",
+      "path": "media/DadsBirthday.png",
+      "editable": "media/DadsBirthday.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Birthday Gallery, showing Gallery model, Photographs, Guided camera."
+    }
+  },
+  {
+    "repo": "BusRouter",
+    "slug": "transit-sync",
+    "privateSource": true,
+    "date": "2025-04-05",
+    "timeframe": "April 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "1979dbc555d05bed3693cd28c9b459ef6e296494",
+      "date": "2025-04-05T06:31:13Z",
+      "message": "init commit",
+      "url": "https://github.com/Slaymish/BusRouter/commit/1979dbc555d05bed3693cd28c9b459ef6e296494"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "1979dbc555d05bed3693cd28c9b459ef6e296494",
+      "date": "2025-04-05T06:31:13Z",
+      "message": "init commit",
+      "url": "https://github.com/Slaymish/BusRouter/commit/1979dbc555d05bed3693cd28c9b459ef6e296494"
+    },
+    "cover": {
+      "repo": "BusRouter",
+      "path": "media/BusRouter.png",
+      "source": "https://github.com/Slaymish/BusRouter/blob/master/logo_name.PNG",
+      "kind": "original project asset",
+      "width": 1024,
+      "height": 1024,
+      "alt": "Original TransitSync project mark, combining a calendar and a bus above the project name."
+    }
+  },
+  {
+    "repo": "AndoSim",
+    "slug": "ando-sim",
+    "privateSource": false,
+    "date": "2025-10-19",
+    "timeframe": "October 2025",
+    "dateBasis": "first preserved release",
+    "milestone": {
+      "tag": "v1.0.0",
+      "date": "2025-10-19T06:37:51Z",
+      "url": "https://github.com/Slaymish/AndoSim/releases/tag/v1.0.0",
+      "assets": [
+        {
+          "name": "ando_barrier_v1.0.0_linux_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.0/ando_barrier_v1.0.0_linux_x64.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.0_macos_universal.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.0/ando_barrier_v1.0.0_macos_universal.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.0_windows_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.0/ando_barrier_v1.0.0_windows_x64.zip"
+        }
+      ]
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "2968d92a8bd22b549b9da554a38a0c2940468703",
+      "date": "2025-10-16T10:38:14Z",
+      "message": "Add spec for agent",
+      "url": "https://github.com/Slaymish/AndoSim/commit/2968d92a8bd22b549b9da554a38a0c2940468703"
+    },
+    "cover": {
+      "repo": "AndoSim",
+      "path": "media/AndoSim.jpg",
+      "source": "https://github.com/Slaymish/AndoSim/blob/main/docs/example_images/teaser-image.jpg",
+      "kind": "original project asset",
+      "width": 2300,
+      "height": 772,
+      "alt": "Teaser collage included in the AndoSim repository, showing several cloth and shell simulation scenes."
+    }
+  },
+  {
+    "repo": "BedroomLayoutDesigner",
+    "slug": "bedroom-layout-designer",
+    "privateSource": false,
+    "date": "2025-12-02",
+    "timeframe": "December 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "c1cee17feb53f23c01db92bdc8ce9288d72c8849",
+      "date": "2025-12-02T04:07:43Z",
+      "message": "feat: initialize layout designer project with React and Vite",
+      "url": "https://github.com/Slaymish/BedroomLayoutDesigner/commit/c1cee17feb53f23c01db92bdc8ce9288d72c8849"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "c1cee17feb53f23c01db92bdc8ce9288d72c8849",
+      "date": "2025-12-02T04:07:43Z",
+      "message": "feat: initialize layout designer project with React and Vite",
+      "url": "https://github.com/Slaymish/BedroomLayoutDesigner/commit/c1cee17feb53f23c01db92bdc8ce9288d72c8849"
+    },
+    "cover": {
+      "repo": "BedroomLayoutDesigner",
+      "path": "media/BedroomLayoutDesigner.png",
+      "source": "https://bedroomlayout.app",
+      "kind": "live application screenshot",
+      "capturedAt": "2026-10-09T22:26:35.447Z",
+      "body": "Bedroom Layout Planner\n\nUse exact room dimensions, place furniture with confidence, and export a printable PDF.\n\nExport PDF\nPreferences\nFurniture\nLast autosave: 11:26:34\nRoom 1\n\n360cm x 320cm\n\n0 objects · 0 openings\n\nShare\nRename\nDelete\n360cm\n320cm\nEdit\n\nSelect an object to edit, or enable ruler mode to create/edit measurements.\n\nMade by Hamish\n•\nOpen source on GitHub\n•\nBuy me a coffee",
+      "width": 1440,
+      "height": 900,
+      "alt": "Screenshot of Bedroom Layout Designer showing the room-planning interface and editable plan."
+    }
+  },
+  {
+    "repo": "PianoImprovisationHelper",
+    "slug": "piano-improvisation-helper",
+    "privateSource": false,
+    "date": "2025-12-12",
+    "timeframe": "December 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "74939527fbee2fed6735975394bf29b39f3256e5",
+      "date": "2025-12-12T07:44:34Z",
+      "message": "feat: add React application setup with Vite and TypeScript",
+      "url": "https://github.com/Slaymish/PianoImprovisationHelper/commit/74939527fbee2fed6735975394bf29b39f3256e5"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "74939527fbee2fed6735975394bf29b39f3256e5",
+      "date": "2025-12-12T07:44:34Z",
+      "message": "feat: add React application setup with Vite and TypeScript",
+      "url": "https://github.com/Slaymish/PianoImprovisationHelper/commit/74939527fbee2fed6735975394bf29b39f3256e5"
+    },
+    "cover": {
+      "repo": "PianoImprovisationHelper",
+      "path": "media/PianoImprovisationHelper.png",
+      "source": "https://pianoimprovisationhelper.netlify.app/",
+      "kind": "live application screenshot",
+      "capturedAt": "2026-10-09T22:11:20.485Z",
+      "body": "Piano Improvisation Helper\n\nFind a song → auto-detect key → get improv hints\n\nFind a song\n\nSearch by title and artist (MusicBrainz)\n\nListen for song\nMic recognition isn’t plugged in yet — search works best for now.\nSearch",
+      "width": 1440,
+      "height": 900,
+      "alt": "Screenshot of Piano Improvisation Helper with its song search and preview-analysis interface."
+    }
+  },
+  {
+    "repo": "Synod",
+    "slug": "synod",
+    "privateSource": false,
+    "date": "2026-05-14",
+    "timeframe": "May 2026",
+    "dateBasis": "first preserved release",
+    "milestone": {
+      "tag": "0.1.0",
+      "date": "2026-05-14T05:18:12Z",
+      "url": "https://github.com/Slaymish/Synod/releases/tag/0.1.0",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.0/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.0/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Synod/releases/download/0.1.0/styles.css"
+        }
+      ]
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "a3d38966ec7dfbf51fe586ee920bdaaf9e0e0737",
+      "date": "2026-05-14T05:12:59Z",
+      "message": "Test connection, drag-and-drop import, folder autocomplete, stability + Obsidian guideline fixes",
+      "url": "https://github.com/Slaymish/Synod/commit/a3d38966ec7dfbf51fe586ee920bdaaf9e0e0737"
+    },
+    "cover": {
+      "repo": "Synod",
+      "file": "synod-real-cover.png",
+      "kind": "actual Obsidian plugin screenshot",
+      "source": "Original src/ui/status-view.ts and styles.css, built from the repository and captured in Obsidian 1.13.7. Empty temporary vault, no personal notes or model runs.",
+      "alt": "Synod’s actual Obsidian status panel, showing the journal import, value discovery and bulletin controls in an empty demonstration vault.",
+      "path": "real-media-2026-10-10/synod-real-cover.png",
+      "width": 1600,
+      "height": 1200,
+      "capturedAt": "2026-10-10T00:04:20.378Z"
+    }
+  },
+  {
+    "repo": "Lumen",
+    "slug": "lumen",
+    "privateSource": false,
+    "date": "2026-05-16",
+    "timeframe": "May 2026",
+    "dateBasis": "first preserved release",
+    "milestone": {
+      "tag": "0.4.0",
+      "date": "2026-05-16T13:37:37Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.4.0",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.4.0/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.4.0/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.4.0/styles.css"
+        }
+      ]
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "ec1e9127328d712a533096bb4e50d24293b9bace",
+      "date": "2026-05-16T04:39:48Z",
+      "message": "init boilerplate",
+      "url": "https://github.com/Slaymish/Lumen/commit/ec1e9127328d712a533096bb4e50d24293b9bace"
+    },
+    "cover": {
+      "repo": "Lumen",
+      "file": "lumen-real-cover.png",
+      "kind": "actual Obsidian plugin screenshot",
+      "source": "Original obsidian-plugin/src/research/index.ts and styles.css, built from the repository and captured in Obsidian 1.13.7. Empty temporary vault, no personal notes or model runs.",
+      "alt": "Lumen’s actual research form in Obsidian, showing question input, sub-questions, vault and web sources, and memory controls.",
+      "path": "real-media-2026-10-10/lumen-real-cover.png",
+      "width": 1600,
+      "height": 1200,
+      "capturedAt": "2026-10-10T00:04:20.443Z"
+    }
+  },
+  {
+    "repo": "Otto",
+    "slug": "otto",
+    "privateSource": false,
+    "date": "2026-06-20",
+    "timeframe": "June 2026",
+    "dateBasis": "first preserved release",
+    "milestone": {
+      "tag": "v0.0.2",
+      "date": "2026-06-20T02:49:50Z",
+      "url": "https://github.com/Slaymish/Otto/releases/tag/v0.0.2",
+      "assets": [
+        {
+          "name": "Otto-v0.0.2.zip",
+          "url": "https://github.com/Slaymish/Otto/releases/download/v0.0.2/Otto-v0.0.2.zip"
+        }
+      ]
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "263ec7f7f1081e345878742e22e0d82e1532eeb9",
+      "date": "2026-06-20T01:39:41Z",
+      "message": "Merge pull request #1 from Slaymish/feature/hardening-improvements",
+      "url": "https://github.com/Slaymish/Otto/commit/263ec7f7f1081e345878742e22e0d82e1532eeb9"
+    },
+    "cover": {
+      "repo": "Otto",
+      "file": "otto-cover.png",
+      "kind": "original native interface render",
+      "source": "Unmodified JournalView in Otto/Otto/JournalWindow.swift, rendered offline using shipped memory/capabilities.json. No microphone, model, commands or learning run.",
+      "alt": "Otto’s native capability journal rendered with the original shipped app and music commands, in an offline demonstration.",
+      "path": "real-media-2026-10-10/otto-cover.png",
+      "width": 1600,
+      "height": 1050,
+      "capturedAt": "2026-10-09T23:58:54.620Z"
+    }
+  },
+  {
+    "repo": "grid-diffusion-ad",
+    "slug": "grid-diffusion-ad",
+    "privateSource": true,
+    "date": "2025-11-12",
+    "timeframe": "November 2025 to February 2026",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "e82614c6a4d7ca9b90f767b90edda08f21b863a8",
+      "date": "2025-11-12T00:21:17Z",
+      "message": "setup repo",
+      "url": "https://github.com/Slaymish/grid-diffusion-ad/commit/e82614c6a4d7ca9b90f767b90edda08f21b863a8"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "e82614c6a4d7ca9b90f767b90edda08f21b863a8",
+      "date": "2025-11-12T00:21:17Z",
+      "message": "setup repo",
+      "url": "https://github.com/Slaymish/grid-diffusion-ad/commit/e82614c6a4d7ca9b90f767b90edda08f21b863a8"
+    },
+    "cover": {
+      "repo": "grid-diffusion-ad",
+      "path": "media/grid-diffusion-ad.png",
+      "source": "https://github.com/Slaymish/grid-diffusion-ad/blob/main/server_runs/ablation_embed_dim_512bins_20260112_170614/ablation_embed_dim_512bins_1_token_embed_dim-32_20260112_170619/reconstruction_fidelity_examples.png",
+      "kind": "original project asset",
+      "width": 1200,
+      "height": 1200,
+      "alt": "Original experiment plot comparing four channels of signal data with their reconstructed waveforms."
+    }
+  },
+  {
+    "repo": "conversational-timing-lab",
+    "slug": "conversational-timing-lab",
+    "privateSource": false,
+    "date": "2026-09-04",
+    "timeframe": "September 2026",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "56e367e5f17de2bd8d95978f665c9b30cdaf8e9f",
+      "date": "2026-09-04T04:55:58Z",
+      "message": "Add timing dataset",
+      "url": "https://github.com/Slaymish/conversational-timing-lab/commit/56e367e5f17de2bd8d95978f665c9b30cdaf8e9f"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "56e367e5f17de2bd8d95978f665c9b30cdaf8e9f",
+      "date": "2026-09-04T04:55:58Z",
+      "message": "Add timing dataset",
+      "url": "https://github.com/Slaymish/conversational-timing-lab/commit/56e367e5f17de2bd8d95978f665c9b30cdaf8e9f"
+    },
+    "cover": {
+      "repo": "conversational-timing-lab",
+      "path": "media/conversational-timing-lab.png",
+      "editable": "media/conversational-timing-lab.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Conversational Timing Lab, showing Observed pause, Turn completion, Response onset."
+    }
+  },
+  {
+    "repo": "commit-reviewer",
+    "slug": "typed-diff-questions",
+    "privateSource": true,
+    "date": "2026-09-21",
+    "timeframe": "September 2026",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "4b4578e59497f15866ef802d7a0e5b3ea7347a81",
+      "date": "2026-09-21T11:02:52Z",
+      "message": "Scaffold repo: docs, experiment harness, toolchain",
+      "url": "https://github.com/Slaymish/commit-reviewer/commit/4b4578e59497f15866ef802d7a0e5b3ea7347a81"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "4b4578e59497f15866ef802d7a0e5b3ea7347a81",
+      "date": "2026-09-21T11:02:52Z",
+      "message": "Scaffold repo: docs, experiment harness, toolchain",
+      "url": "https://github.com/Slaymish/commit-reviewer/commit/4b4578e59497f15866ef802d7a0e5b3ea7347a81"
+    },
+    "cover": {
+      "repo": "commit-reviewer",
+      "path": "media/commit-reviewer.png",
+      "editable": "media/commit-reviewer.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Typed Diff Questions, showing Changed hunk, Typed questions, Calibrated scores."
+    }
+  },
+  {
+    "repo": "MalwareResearchPaper",
+    "slug": "malware-classifier-backdoors",
+    "privateSource": true,
+    "date": "2025-02-17",
+    "timeframe": "February 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "d527b499bbf8220d9974fb74869a86d4cbcf6a91",
+      "date": "2025-02-17T10:19:58Z",
+      "message": "plantuml working",
+      "url": "https://github.com/Slaymish/MalwareResearchPaper/commit/d527b499bbf8220d9974fb74869a86d4cbcf6a91"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "d527b499bbf8220d9974fb74869a86d4cbcf6a91",
+      "date": "2025-02-17T10:19:58Z",
+      "message": "plantuml working",
+      "url": "https://github.com/Slaymish/MalwareResearchPaper/commit/d527b499bbf8220d9974fb74869a86d4cbcf6a91"
+    },
+    "cover": {
+      "repo": "MalwareResearchPaper",
+      "path": "media/MalwareResearchPaper.png",
+      "source": "https://github.com/Slaymish/MalwareResearchPaper/blob/main/clean_tuned_ASR_comparison.png",
+      "kind": "original project asset",
+      "width": 1000,
+      "height": 600,
+      "alt": "Original study plot comparing attack success rates across models and poisoning ratios."
+    }
+  },
+  {
+    "repo": "CYBRAnalysis",
+    "slug": "cowrie-honeypot-analysis",
+    "privateSource": true,
+    "date": "2025-10-04",
+    "timeframe": "October 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "81f8d63a31d210aa0251b11398ca5e8bf52bf704",
+      "date": "2025-10-04T00:25:20Z",
+      "message": "Refactor code structure for improved readability and maintainability",
+      "url": "https://github.com/Slaymish/CYBRAnalysis/commit/81f8d63a31d210aa0251b11398ca5e8bf52bf704"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "81f8d63a31d210aa0251b11398ca5e8bf52bf704",
+      "date": "2025-10-04T00:25:20Z",
+      "message": "Refactor code structure for improved readability and maintainability",
+      "url": "https://github.com/Slaymish/CYBRAnalysis/commit/81f8d63a31d210aa0251b11398ca5e8bf52bf704"
+    },
+    "cover": {
+      "repo": "CYBRAnalysis",
+      "path": "media/CYBRAnalysis.png",
+      "source": "https://github.com/Slaymish/CYBRAnalysis/blob/main/cowrie-log-analysis/notebooks/visualizations/temporal_patterns.png",
+      "kind": "original project asset",
+      "width": 4170,
+      "height": 2969,
+      "alt": "Original aggregate charts showing honeypot activity by hour of day and day of week."
+    }
+  },
+  {
+    "repo": "Musicical-Genre-Classifier",
+    "slug": "music-genre-classification",
+    "privateSource": false,
+    "date": "2024-09-16",
+    "timeframe": "September 2024",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "b0e0d670d42273b8d8c773a437cdca16888a4501",
+      "date": "2024-09-16T00:44:48Z",
+      "message": "inital commit",
+      "url": "https://github.com/Slaymish/Musicical-Genre-Classifier/commit/b0e0d670d42273b8d8c773a437cdca16888a4501"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "b0e0d670d42273b8d8c773a437cdca16888a4501",
+      "date": "2024-09-16T00:44:48Z",
+      "message": "inital commit",
+      "url": "https://github.com/Slaymish/Musicical-Genre-Classifier/commit/b0e0d670d42273b8d8c773a437cdca16888a4501"
+    },
+    "cover": {
+      "repo": "Musicical-Genre-Classifier",
+      "path": "media/Musicical-Genre-Classifier.png",
+      "source": "https://github.com/Slaymish/Musicical-Genre-Classifier/blob/main/images/heatmap.png",
+      "kind": "original project asset",
+      "width": 1200,
+      "height": 800,
+      "alt": "Original correlation heatmap of the music dataset features, including energy, loudness and danceability."
+    }
+  },
+  {
+    "repo": "WellingtonTrainNetwork",
+    "slug": "wellington-transport-network",
+    "privateSource": true,
+    "date": "2023-04-16",
+    "timeframe": "April 2023",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "9db6fc13bcb22bb1730f8a124d5eb825f5ea9c12",
+      "date": "2023-04-16T02:30:49Z",
+      "message": "init",
+      "url": "https://github.com/Slaymish/WellingtonTrainNetwork/commit/9db6fc13bcb22bb1730f8a124d5eb825f5ea9c12"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "9db6fc13bcb22bb1730f8a124d5eb825f5ea9c12",
+      "date": "2023-04-16T02:30:49Z",
+      "message": "init",
+      "url": "https://github.com/Slaymish/WellingtonTrainNetwork/commit/9db6fc13bcb22bb1730f8a124d5eb825f5ea9c12"
+    },
+    "cover": {
+      "repo": "WellingtonTrainNetwork",
+      "path": "media/WellingtonTrainNetwork.png",
+      "editable": "media/WellingtonTrainNetwork.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Wellington Transport Network, showing Transport graph, A* search, Critical stops."
+    }
+  },
+  {
+    "repo": "CGRA251_Framework_A4",
+    "slug": "path-tracing-study",
+    "privateSource": true,
+    "date": "2024-05-19",
+    "timeframe": "May 2024",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "f55725ef798f1d084fc38cbc3ebf0040bd4e91c2",
+      "date": "2024-05-19T03:30:12Z",
+      "message": "initial commit",
+      "url": "https://github.com/Slaymish/CGRA251_Framework_A4/commit/f55725ef798f1d084fc38cbc3ebf0040bd4e91c2"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "f55725ef798f1d084fc38cbc3ebf0040bd4e91c2",
+      "date": "2024-05-19T03:30:12Z",
+      "message": "initial commit",
+      "url": "https://github.com/Slaymish/CGRA251_Framework_A4/commit/f55725ef798f1d084fc38cbc3ebf0040bd4e91c2"
+    },
+    "cover": {
+      "repo": "CGRA251_Framework_A4",
+      "path": "media/CGRA251_Framework_A4.png",
+      "source": "https://github.com/Slaymish/CGRA251_Framework_A4/blob/main/work/res/samples/challenge_1.png",
+      "kind": "original project asset",
+      "width": 800,
+      "height": 600,
+      "alt": "Original path-traced scene with coloured walls and several spheres, showing noisy indirect illumination."
+    }
+  },
+  {
+    "repo": "CGRA354_Framework_A3",
+    "slug": "boids-simulation",
+    "privateSource": false,
+    "date": "2024-05-12",
+    "timeframe": "May 2024",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "ffe18e46308396d5abe1a90f7672d56f19348ee8",
+      "date": "2024-05-12T03:14:00Z",
+      "message": "chore: Add glm library and dependencies",
+      "url": "https://github.com/Slaymish/CGRA354_Framework_A3/commit/ffe18e46308396d5abe1a90f7672d56f19348ee8"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "ffe18e46308396d5abe1a90f7672d56f19348ee8",
+      "date": "2024-05-12T03:14:00Z",
+      "message": "chore: Add glm library and dependencies",
+      "url": "https://github.com/Slaymish/CGRA354_Framework_A3/commit/ffe18e46308396d5abe1a90f7672d56f19348ee8"
+    },
+    "cover": {
+      "repo": "CGRA354_Framework_A3",
+      "path": "media/CGRA354_Framework_A3.png",
+      "source": "https://github.com/Slaymish/CGRA354_Framework_A3/blob/main/images/challenge.png",
+      "kind": "original project asset",
+      "width": 3104,
+      "height": 1974,
+      "alt": "Original boids simulation screenshot showing a green flock in a bounded space, red obstacles and a control panel."
+    }
+  },
+  {
+    "repo": "CGRA350-Assignment-1",
+    "slug": "geometry-shader-study",
+    "privateSource": false,
+    "date": "2024-07-09",
+    "timeframe": "July 2024",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "534d456b104492ac8dc1e1b8308756516d12f088",
+      "date": "2024-07-09T23:42:58Z",
+      "message": "Iniital committt",
+      "url": "https://github.com/Slaymish/CGRA350-Assignment-1/commit/534d456b104492ac8dc1e1b8308756516d12f088"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "534d456b104492ac8dc1e1b8308756516d12f088",
+      "date": "2024-07-09T23:42:58Z",
+      "message": "Iniital committt",
+      "url": "https://github.com/Slaymish/CGRA350-Assignment-1/commit/534d456b104492ac8dc1e1b8308756516d12f088"
+    },
+    "cover": {
+      "repo": "CGRA350-Assignment-1",
+      "path": "media/CGRA350-Assignment-1.png",
+      "source": "https://github.com/Slaymish/CGRA350-Assignment-1/blob/main/work/res/results/screenshot_1722679703546.png",
+      "kind": "original project asset",
+      "width": 1774,
+      "height": 1036,
+      "alt": "Original renderer screenshot of a red and black checker-textured cube against a plain background."
+    }
+  },
+  {
+    "repo": "blender-addon",
+    "slug": "floor-plan-importer",
+    "privateSource": false,
+    "date": "2024-05-29",
+    "timeframe": "May 2024",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "81a81ed5adfe46e3530bd850a3c9e03aded2c463",
+      "date": "2024-05-29T13:12:04Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/blender-addon/commit/81a81ed5adfe46e3530bd850a3c9e03aded2c463"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "81a81ed5adfe46e3530bd850a3c9e03aded2c463",
+      "date": "2024-05-29T13:12:04Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/blender-addon/commit/81a81ed5adfe46e3530bd850a3c9e03aded2c463"
+    },
+    "cover": {
+      "repo": "blender-addon",
+      "path": "media/blender-addon.png",
+      "editable": "media/blender-addon.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Floor-plan Importer, showing Floor-plan data, Geometry construction, Blender scene."
+    }
+  },
+  {
+    "repo": "PianoVisualiser",
+    "slug": "piano-waveform-visualiser",
+    "privateSource": false,
+    "date": "2025-07-10",
+    "timeframe": "July 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "ea5282468f451f013bbae7cbb24dfef074165294",
+      "date": "2025-07-10T12:58:29Z",
+      "message": "first commit. MVP and readme",
+      "url": "https://github.com/Slaymish/PianoVisualiser/commit/ea5282468f451f013bbae7cbb24dfef074165294"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "ea5282468f451f013bbae7cbb24dfef074165294",
+      "date": "2025-07-10T12:58:29Z",
+      "message": "first commit. MVP and readme",
+      "url": "https://github.com/Slaymish/PianoVisualiser/commit/ea5282468f451f013bbae7cbb24dfef074165294"
+    },
+    "cover": {
+      "repo": "PianoVisualiser",
+      "path": "media/PianoVisualiser.png",
+      "editable": "media/PianoVisualiser.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Piano Waveform Visualiser, showing Selected keys, Summed tones, Waveform display."
+    }
+  },
+  {
+    "repo": "GrooveBox",
+    "slug": "groovebox",
+    "privateSource": false,
+    "date": "2025-11-23",
+    "timeframe": "November 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "d1abed5009b43eb84cc501d9c924e61bf396d7c3",
+      "date": "2025-11-23T00:11:13Z",
+      "message": "Add initial implementation of GrooveBox with audio engine, sequencer, and UI",
+      "url": "https://github.com/Slaymish/GrooveBox/commit/d1abed5009b43eb84cc501d9c924e61bf396d7c3"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "d1abed5009b43eb84cc501d9c924e61bf396d7c3",
+      "date": "2025-11-23T00:11:13Z",
+      "message": "Add initial implementation of GrooveBox with audio engine, sequencer, and UI",
+      "url": "https://github.com/Slaymish/GrooveBox/commit/d1abed5009b43eb84cc501d9c924e61bf396d7c3"
+    },
+    "cover": {
+      "repo": "GrooveBox",
+      "path": "media/GrooveBox.png",
+      "editable": "media/GrooveBox.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for GrooveBox, showing Pad input, Pattern sequencer, Sample playback."
+    }
+  },
+  {
+    "repo": "PinterestBoardEmbedding",
+    "slug": "pinterest-aesthetic-analysis",
+    "privateSource": false,
+    "date": "2025-08-06",
+    "timeframe": "August 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "f0bd83e2a84ca99da3d31a7536467d8458f40403",
+      "date": "2025-08-06T04:54:45Z",
+      "message": "Add Pinterest image scraper and metadata management",
+      "url": "https://github.com/Slaymish/PinterestBoardEmbedding/commit/f0bd83e2a84ca99da3d31a7536467d8458f40403"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "f0bd83e2a84ca99da3d31a7536467d8458f40403",
+      "date": "2025-08-06T04:54:45Z",
+      "message": "Add Pinterest image scraper and metadata management",
+      "url": "https://github.com/Slaymish/PinterestBoardEmbedding/commit/f0bd83e2a84ca99da3d31a7536467d8458f40403"
+    },
+    "cover": {
+      "repo": "PinterestBoardEmbedding",
+      "path": "media/PinterestBoardEmbedding.png",
+      "editable": "media/PinterestBoardEmbedding.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Pinterest Aesthetic Analysis, showing Board images, CLIP embeddings, Visual clusters."
+    }
+  },
+  {
+    "repo": "Spotify-Demographics-Analyzer",
+    "slug": "spotify-playlist-demographics",
+    "privateSource": false,
+    "date": "2024-03-23",
+    "timeframe": "March 2024",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "46966803e2b77257e3eee6f11f1eec48daaf2297",
+      "date": "2024-03-23T13:30:41Z",
+      "message": "Initial Commit",
+      "url": "https://github.com/Slaymish/Spotify-Demographics-Analyzer/commit/46966803e2b77257e3eee6f11f1eec48daaf2297"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "46966803e2b77257e3eee6f11f1eec48daaf2297",
+      "date": "2024-03-23T13:30:41Z",
+      "message": "Initial Commit",
+      "url": "https://github.com/Slaymish/Spotify-Demographics-Analyzer/commit/46966803e2b77257e3eee6f11f1eec48daaf2297"
+    },
+    "cover": {
+      "repo": "Spotify-Demographics-Analyzer",
+      "path": "media/Spotify-Demographics-Analyzer.png",
+      "editable": "media/Spotify-Demographics-Analyzer.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Spotify Playlist Demographics, showing Playlist artists, Biography extraction, Aggregate view."
+    }
+  },
+  {
+    "repo": "akahu-sheets-sync",
+    "slug": "bank-to-sheets-sync",
+    "privateSource": false,
+    "date": "2025-11-15",
+    "timeframe": "November 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "91d2561d74d45738549b6fdba40df49c2e05f55e",
+      "date": "2025-11-15T00:45:34Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/akahu-sheets-sync/commit/91d2561d74d45738549b6fdba40df49c2e05f55e"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "91d2561d74d45738549b6fdba40df49c2e05f55e",
+      "date": "2025-11-15T00:45:34Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/akahu-sheets-sync/commit/91d2561d74d45738549b6fdba40df49c2e05f55e"
+    },
+    "cover": {
+      "repo": "akahu-sheets-sync",
+      "path": "media/akahu-sheets-sync.png",
+      "editable": "media/akahu-sheets-sync.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Bank-to-Sheets Sync, showing Settled transactions, Categorise and reconcile, Google Sheets."
+    }
+  },
+  {
+    "repo": "metlink-departures-display",
+    "slug": "metlink-departures-display",
+    "privateSource": false,
+    "date": "2026-01-16",
+    "timeframe": "January 2026",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "2b07ac0a1e0f597585ffec6e43db01b3045db91e",
+      "date": "2026-01-16T10:20:43Z",
+      "message": "Add initial implementation of HomeBusTimes CLI and server",
+      "url": "https://github.com/Slaymish/metlink-departures-display/commit/2b07ac0a1e0f597585ffec6e43db01b3045db91e"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "2b07ac0a1e0f597585ffec6e43db01b3045db91e",
+      "date": "2026-01-16T10:20:43Z",
+      "message": "Add initial implementation of HomeBusTimes CLI and server",
+      "url": "https://github.com/Slaymish/metlink-departures-display/commit/2b07ac0a1e0f597585ffec6e43db01b3045db91e"
+    },
+    "cover": {
+      "repo": "metlink-departures-display",
+      "path": "media/metlink-departures-display.png",
+      "editable": "media/metlink-departures-display.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Metlink Departures Display, showing Configured stop, Metlink departures, Home display."
+    }
+  },
+  {
+    "repo": "PowerCalculator",
+    "slug": "flat-power-calculator",
+    "privateSource": false,
+    "date": "2026-04-21",
+    "timeframe": "April 2026",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "22b7a57e6fce227e119f634bac360ae223ddd177",
+      "date": "2026-04-21T06:31:02Z",
+      "message": "inital",
+      "url": "https://github.com/Slaymish/PowerCalculator/commit/22b7a57e6fce227e119f634bac360ae223ddd177"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "22b7a57e6fce227e119f634bac360ae223ddd177",
+      "date": "2026-04-21T06:31:02Z",
+      "message": "inital",
+      "url": "https://github.com/Slaymish/PowerCalculator/commit/22b7a57e6fce227e119f634bac360ae223ddd177"
+    },
+    "cover": {
+      "repo": "PowerCalculator",
+      "path": "media/PowerCalculator.png",
+      "editable": "media/PowerCalculator.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Flat Power Calculator, showing Power bill, Household split, Amounts to share."
+    }
+  },
+  {
+    "repo": "YayMinecraftServer",
+    "slug": "wake-on-join-minecraft",
+    "privateSource": false,
+    "date": "2026-07-26",
+    "timeframe": "July 2026",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "6307b6e61a02cda8baee7f512d316c06503f6df4",
+      "date": "2026-07-26T01:37:46Z",
+      "message": "Add on-demand Paper Minecraft server on AWS Auckland",
+      "url": "https://github.com/Slaymish/YayMinecraftServer/commit/6307b6e61a02cda8baee7f512d316c06503f6df4"
+    },
+    "milestonePrivate": false,
+    "originalCommit": {
+      "sha": "6307b6e61a02cda8baee7f512d316c06503f6df4",
+      "date": "2026-07-26T01:37:46Z",
+      "message": "Add on-demand Paper Minecraft server on AWS Auckland",
+      "url": "https://github.com/Slaymish/YayMinecraftServer/commit/6307b6e61a02cda8baee7f512d316c06503f6df4"
+    },
+    "cover": {
+      "repo": "YayMinecraftServer",
+      "path": "media/YayMinecraftServer.png",
+      "editable": "media/YayMinecraftServer.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Wake-on-Join Minecraft, showing Join attempt, Wake instance, Paper server."
+    }
+  },
+  {
+    "repo": "Sentient",
+    "slug": "sentient-environment-explorer",
+    "privateSource": true,
+    "date": "2025-03-10",
+    "timeframe": "March 2025",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "e81d4cdb05d3f92dda3fa3d67e372322b45cc4b0",
+      "date": "2025-03-10T06:05:10Z",
+      "message": "Add new modules for feedback, memory, action management, and sensor services",
+      "url": "https://github.com/Slaymish/Sentient/commit/e81d4cdb05d3f92dda3fa3d67e372322b45cc4b0"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "e81d4cdb05d3f92dda3fa3d67e372322b45cc4b0",
+      "date": "2025-03-10T06:05:10Z",
+      "message": "Add new modules for feedback, memory, action management, and sensor services",
+      "url": "https://github.com/Slaymish/Sentient/commit/e81d4cdb05d3f92dda3fa3d67e372322b45cc4b0"
+    },
+    "cover": {
+      "repo": "Sentient",
+      "path": "media/Sentient.png",
+      "editable": "media/Sentient.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Sentient Environment Explorer, showing Environment, Agent action, Reward and replay."
+    }
+  },
+  {
+    "repo": "dropeta",
+    "slug": "drop-eta",
+    "privateSource": true,
+    "date": "2026-03-20",
+    "timeframe": "March 2026",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "bbec413877a31ff92766041c82b928d98c611814",
+      "date": "2026-03-20T10:27:31Z",
+      "message": "fix: animate Done chevron with rotation instead of swap",
+      "url": "https://github.com/Slaymish/dropeta/commit/bbec413877a31ff92766041c82b928d98c611814"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "bbec413877a31ff92766041c82b928d98c611814",
+      "date": "2026-03-20T10:27:31Z",
+      "message": "fix: animate Done chevron with rotation instead of swap",
+      "url": "https://github.com/Slaymish/dropeta/commit/bbec413877a31ff92766041c82b928d98c611814"
+    },
+    "cover": {
+      "repo": "dropeta",
+      "path": "media/dropeta.png",
+      "source": "https://dropeta.vercel.app",
+      "kind": "live application screenshot",
+      "capturedAt": "2026-10-09T22:26:38.364Z",
+      "body": "DropETA\nGPS off\n+\n−\nShow map\n\nTurn on location\n\nNeeded for live ETAs and route order.\n\nEnable\nReady to roll.\n\nAdd your first drop and DropETA works out the fastest order, then keeps every customer's ETA honest.\n\nAdd your first drop",
+      "width": 1440,
+      "height": 900,
+      "alt": "Screenshot of the DropETA delivery-planning interface with the map hidden and the initial stop-list state."
+    }
+  },
+  {
+    "repo": "personal-language-corpus",
+    "slug": "personal-language-corpus",
+    "privateSource": true,
+    "date": "2026-10-02",
+    "timeframe": "October 2026",
+    "dateBasis": "first preserved commit",
+    "milestone": {
+      "sha": "ebaaae1979e97b60b3ced9eb0695384ae147e0af",
+      "date": "2026-10-02T10:16:39Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/personal-language-corpus/commit/ebaaae1979e97b60b3ced9eb0695384ae147e0af"
+    },
+    "milestonePrivate": true,
+    "originalCommit": {
+      "sha": "ebaaae1979e97b60b3ced9eb0695384ae147e0af",
+      "date": "2026-10-02T10:16:39Z",
+      "message": "Initial commit",
+      "url": "https://github.com/Slaymish/personal-language-corpus/commit/ebaaae1979e97b60b3ced9eb0695384ae147e0af"
+    },
+    "cover": {
+      "repo": "personal-language-corpus",
+      "path": "media/personal-language-corpus.png",
+      "editable": "media/personal-language-corpus.svg",
+      "source": "Authored from the project implementation; labels in editorial.json",
+      "kind": "source-based explanatory diagram",
+      "width": 1280,
+      "height": 720,
+      "alt": "Explanatory diagram for Personal Language Corpus, showing Source passages, Features and baselines, Linked observations."
+    }
+  }
+]

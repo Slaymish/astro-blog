@@ -1,0 +1,205 @@
+{
+  "repo": "Lumen",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2026-05-16T13:09:24Z",
+  "pushedAt": "2026-05-24T11:19:30Z",
+  "firstCommit": {
+    "sha": "ec1e9127328d712a533096bb4e50d24293b9bace",
+    "date": "2026-05-16T04:39:48Z",
+    "message": "init boilerplate",
+    "url": "https://github.com/Slaymish/Lumen/commit/ec1e9127328d712a533096bb4e50d24293b9bace"
+  },
+  "releases": [
+    {
+      "tag": "0.7.7",
+      "date": "2026-05-24T11:19:52Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.7.7",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.7/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.7/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.7/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.7.6",
+      "date": "2026-05-24T09:49:13Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.7.6",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.6/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.6/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.6/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.7.4",
+      "date": "2026-05-23T14:08:49Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.7.4",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.4/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.4/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.4/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.7.3",
+      "date": "2026-05-23T14:01:33Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.7.3",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.3/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.3/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.3/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.7.2",
+      "date": "2026-05-23T13:56:04Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.7.2",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.2/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.2/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.2/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.7.1",
+      "date": "2026-05-23T13:38:15Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.7.1",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.1/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.1/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.1/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.7.0",
+      "date": "2026-05-23T12:43:03Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.7.0",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.0/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.0/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.7.0/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.6.0",
+      "date": "2026-05-23T08:04:40Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.6.0",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.6.0/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.6.0/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.6.0/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.5.0",
+      "date": "2026-05-16T14:06:44Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.5.0",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.5.0/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.5.0/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.5.0/styles.css"
+        }
+      ]
+    },
+    {
+      "tag": "0.4.0",
+      "date": "2026-05-16T13:37:37Z",
+      "url": "https://github.com/Slaymish/Lumen/releases/tag/0.4.0",
+      "assets": [
+        {
+          "name": "main.js",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.4.0/main.js"
+        },
+        {
+          "name": "manifest.json",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.4.0/manifest.json"
+        },
+        {
+          "name": "styles.css",
+          "url": "https://github.com/Slaymish/Lumen/releases/download/0.4.0/styles.css"
+        }
+      ]
+    }
+  ]
+}

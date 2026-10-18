@@ -1,0 +1,162 @@
+{
+  "EchoStatsFinder": {
+    "assetId": "image-90874cf049ff7fe60e496be388f4f18bdf04df44-1280x720-png",
+    "sha256": "a0151363936cd00fc1cb34b01e4a73f8e4bc6c6786f34b6b951c3e8a1cc97e53"
+  },
+  "Watzon": {
+    "assetId": "image-baba7c88380672ffe8318109a3dd42a3487906da-1280x720-png",
+    "sha256": "5c6fa1f7aafb6a69fbc770016dd9c9c5dcda1b1f8df777e96fb425b798000f3a"
+  },
+  "ArticulateAI": {
+    "assetId": "image-9e3bdfecff2b2c2c958917824aad775e98a5b9c4-1600x1000-png",
+    "sha256": "dbbe9739436f7bfe6efe98354de90f61ab9dc7d7e6b831ec557c9e38de3e90df"
+  },
+  "LSystemGenerator": {
+    "assetId": "image-18412f795f5cbbbfce27666c083b15d5bca1e180-2370x1480-png",
+    "sha256": "fa609282d44508cb977e96fb44f2ed41fbc7cbae3eae12de0702b640f854b6ea"
+  },
+  "3dSpanningTrees": {
+    "assetId": "image-01220c02f9a0294cbeacd2fcde699a4be0b95637-2690x1080-png",
+    "sha256": "634da5c890d84467662f8cc171dd6cace94310dc4ba0d5a93878f4eb135a2b4c"
+  },
+  "BlenderBookShelf": {
+    "assetId": "image-35dd946e89472ec262177e3aa162aaf144be5e2c-1216x1184-png",
+    "sha256": "d89a91f53a8aef874098528e7c1250d3337b2f1cc64a42aae3cc995011c52f33"
+  },
+  "PlatformerGame": {
+    "assetId": "image-e26d20322ff1bfad6328f953241d5b38d55fe85a-1280x720-png",
+    "sha256": "b55e9c5f1339920225544f133525705997b070e002d7e1f1d4d16a626a903f1c"
+  },
+  "WeddingWebsite": {
+    "assetId": "image-e9a808261b0df1458079b8f4bcd5b43e440a138e-1280x720-png",
+    "sha256": "eb0526229a627d9578ff632a839d9f4ccab1a606b00cfc71f537f34cfe5e2b08"
+  },
+  "DadsBirthday": {
+    "assetId": "image-65a8f0d705e86fb91a5f514fac01adbd15c62a77-1280x720-png",
+    "sha256": "5e78703a99f4077973f1edfe7484b0ef02a16bc26812b69b740a23e688897812"
+  },
+  "BusRouter": {
+    "assetId": "image-4d2bbf44b02e3b1956e97218ba8de210b42706d9-1024x1024-png",
+    "sha256": "b72dabdd3b7985173b8d9b5d0fe3ea6fe0cee9ca8668bce9f0d1502f1ef4610f"
+  },
+  "AndoSim": {
+    "assetId": "image-8f320a61376dd0fa2203bdbcebab88be1ae25db4-2300x772-jpg",
+    "sha256": "7294b1415d1c7fd309963e2c18a28b0192a6da9c23a4b0756b4b3f7517f48069"
+  },
+  "BedroomLayoutDesigner": {
+    "assetId": "image-245692c901c28fbfad3458a09a79a27e0a23f2fa-1440x900-png",
+    "sha256": "7a4368df81d22cc000964b16f03f97ed1f357d93d0ce1d165856ee94966ff670"
+  },
+  "PianoImprovisationHelper": {
+    "assetId": "image-08fb16353a107a005c206b7351c07821ed3668d9-1440x900-png",
+    "sha256": "5c5aac6f4256ecd12b698ad3d9ec8bbd2a9c01b72981da91dbc7b85266b763a7"
+  },
+  "Synod": {
+    "assetId": "image-95497bfb0cedb0f8f3201e034f9865b3114b3e15-1600x1200-png",
+    "sha256": "e2b04b45e0cc10ae3c096c7e32b983dd277fa44a64e2c2c480f9fa2aa7a63766"
+  },
+  "Lumen": {
+    "assetId": "image-94a5e0191782616c6a3cc0ff81e1f7262fc6acd2-1600x1200-png",
+    "sha256": "89a13ece817382d94fe75198ac217565c66c5ac8a6bfe7d8f75fa37dff6fb122"
+  },
+  "Otto": {
+    "assetId": "image-1478878897d6150b7baa7984d2956a4338e6f422-1600x1050-png",
+    "sha256": "1ae65d82cccb912192aef3ae082a0f3ed471e86c9f6985144b9ebe3cf42d8263"
+  },
+  "grid-diffusion-ad": {
+    "assetId": "image-ff23455da7c086b719431afaca10625eb391f5a9-1200x1200-png",
+    "sha256": "41672c7c0fe80596e75bceb8f98ef0c9813b87be317c67dad04d6dae9d4b2aaa"
+  },
+  "conversational-timing-lab": {
+    "assetId": "image-4f82f39df25327446d034375a127605df99be842-1280x720-png",
+    "sha256": "e1235781edb5fa6b1b53bc98d352fabcc24fc4aa032ec84488963f1c16397701"
+  },
+  "commit-reviewer": {
+    "assetId": "image-5cea4ad372b21ba8a4c19285cfe405b39aa4c53c-1280x720-png",
+    "sha256": "a24e0e21a3b0aee53634d4b4bc5bca66261547e4d85b3073a7dfc26b7b625dbc"
+  },
+  "MalwareResearchPaper": {
+    "assetId": "image-196389c02901e15dae0795fe693901b7f0e6f432-1000x600-png",
+    "sha256": "7fccdc4918d6c4898e519b6d9aa7599e1dfc586ba21046feb1ec7124f1b5fec8"
+  },
+  "CYBRAnalysis": {
+    "assetId": "image-eb9fa1553969d9d252366ac9d329be76607ff513-4170x2969-png",
+    "sha256": "7e5dab16ff9924fb527bceb8f352d7651689fa1b60aed791a4cacfdb88aaf33a"
+  },
+  "Musicical-Genre-Classifier": {
+    "assetId": "image-2b3905449b2a21539c3aef825377ab8fd584c92d-1200x800-png",
+    "sha256": "8014a0fb2587236226fb21b3b834922b0d4fd293df4945a80f70876e9942f29e"
+  },
+  "WellingtonTrainNetwork": {
+    "assetId": "image-db098dd297ae0a2055efd8a93883f9657837817b-1280x720-png",
+    "sha256": "49ef77b01d72c73ea732f71bd510d32fcac23686dd89f5cf6a01c314ce613568"
+  },
+  "CGRA251_Framework_A4": {
+    "assetId": "image-0e3e1954f12cfa12a8d6387721465e068b516a99-800x600-png",
+    "sha256": "649a2046046020ce4f11439ae2f0c9e2f031b36410147324eea338d376f40dca"
+  },
+  "CGRA354_Framework_A3": {
+    "assetId": "image-f32884c56cbf53042b07d24b609c6cd541d02196-3104x1974-png",
+    "sha256": "51de7548139657e9e3a8711ddd203450dc56f8cc1e6a64cbf109d57a2b018583"
+  },
+  "CGRA350-Assignment-1": {
+    "assetId": "image-1126991bcf3cc1475a328c55df00f77b510a06f0-1774x1036-png",
+    "sha256": "8a694cde32c17c2209d66383969168a1e26de75c0c409256e5090225a03002cc"
+  },
+  "blender-addon": {
+    "assetId": "image-e8f7c813916c3e23649d279e06415fd5255b9293-1280x720-png",
+    "sha256": "8634ad87cea3bb750ac50aa6f53ce4753a65b3758f93bedab28e79178c531d64"
+  },
+  "PianoVisualiser": {
+    "assetId": "image-201a7adbf79b6090de547388e90d100f18c4e57e-1280x720-png",
+    "sha256": "2d3947217f78a1957fce4fc9f3b232b3d23730ffb2818048648b66b873c0eb5e"
+  },
+  "GrooveBox": {
+    "assetId": "image-101374789679dd9c3cccae245917995c8ecd06d8-1280x720-png",
+    "sha256": "d2eac8cc9d4daf83ced4594156eda650177c34ff936db55d764b8170f457083f"
+  },
+  "PinterestBoardEmbedding": {
+    "assetId": "image-943d6647fdec2c047fbf9c5d7852bd21df5218ff-1280x720-png",
+    "sha256": "29eaef6e313c56a2c46a57a3c18bcd9d4cee20b0e92af9a1a163863c081ceeff"
+  },
+  "Spotify-Demographics-Analyzer": {
+    "assetId": "image-aab3834614aa94568f3aa93bfaa1af68c13bb005-1280x720-png",
+    "sha256": "ae81be6989b1e6ee217c7b24e2570c6cb4f97ad81ab85740572c371f49fd8474"
+  },
+  "akahu-sheets-sync": {
+    "assetId": "image-8cb55608a5373803c48fec2c15342bfebba74db4-1280x720-png",
+    "sha256": "92d5651fb38e9483c3e3227223e862d38f72aa42b1d060500fd04a6eaf03529a"
+  },
+  "metlink-departures-display": {
+    "assetId": "image-8efb8cb1ebc2876cf181b3c5daa582fa113d7ad6-1280x720-png",
+    "sha256": "00a8087b7fead025b0fd795ceffa7ef275f138afc808a6082d534b98043240e5"
+  },
+  "PowerCalculator": {
+    "assetId": "image-eeaee894f45bda76e79a7faf5556158ff7a0c482-1280x720-png",
+    "sha256": "7702d3cd4613d839c1a2c51bf06d95359908cdd0ba07d6d44561cd0414ff9028"
+  },
+  "YayMinecraftServer": {
+    "assetId": "image-8925a3c516f24ed6c546bd48825e7b367474d07a-1280x720-png",
+    "sha256": "4fed03c54a1f52f946388640c30b2db919c1040468ba8d509d1a4c6a0ea3c965"
+  },
+  "Sentient": {
+    "assetId": "image-b82155af4c5950a534655d4928065f3a380fa822-1280x720-png",
+    "sha256": "d9ecafae70ea1637a76a6142cd3c16881db9f042fe18a2c17507ad7e1a457635"
+  },
+  "dropeta": {
+    "assetId": "image-860fe96fee3b6bba023d5405b8e0f0e89defc70d-1440x900-png",
+    "sha256": "e57e76ab2ec67c21b119aa8b7c86a1da3a9902757e33abc28504743fbad44fb1"
+  },
+  "HamishStyler": {
+    "assetId": "image-bd5a4f75ec56031efd084cf653abda7fa9db4b54-1280x720-png",
+    "sha256": "895eb1399b646f2c0ea1a9aed710c60a90fb4f197a2db1b044d5515d2960caa3"
+  },
+  "alphero-voice": {
+    "assetId": "image-871783af3f8a7446259f98a3cc0ff5e9d29fec87-1280x720-png",
+    "sha256": "b1ae743727adbd6d2d47bdeca991b295f2fdd11c3f12a353e4e40305c20591c7"
+  },
+  "personal-language-corpus": {
+    "assetId": "image-466a5221c0d7d3c1a756ee5189d1c02332df295a-1280x720-png",
+    "sha256": "7415d3f5546e7bd85dfef6fccb11e7b28dbb9e8fed9b9c318190af655524c130"
+  }
+}

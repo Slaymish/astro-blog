@@ -1,0 +1,158 @@
+$ astro check && astro build && tsx scripts/build-markdown.ts
+11:36:15 [@astrojs/netlify] Enabling sessions with Netlify Blobs
+11:36:15 [vite] Re-optimizing dependencies because vite config has changed
+11:36:15 [types] Generated 110ms
+11:36:15 [check] Getting diagnostics for Astro files in /Users/hamishburke/Developer/astro-blog...
+Result (162 files): 
+- 0 errors
+- 0 warnings
+- 0 hints
+
+11:36:23 [@astrojs/netlify] Enabling sessions with Netlify Blobs
+11:36:24 [types] Generated 22ms
+11:36:24 [build] output: "static"
+11:36:24 [build] mode: "server"
+11:36:24 [build] directory: /Users/hamishburke/Developer/astro-blog/dist/
+11:36:24 [build] adapter: @astrojs/netlify
+11:36:24 [build] Collecting build info...
+11:36:24 [build] ✓ Completed in 90ms.
+11:36:24 [build] Building server entrypoints...
+11:36:24 [assets] Copying fonts (6 files)...
+11:36:24 [WARN] [vite] [33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/content/queries.ts is dynamically imported by src/content/feed.ts, src/content/related.ts, src/content/writing.ts but also statically imported by src/components/ContactBand.astro, src/components/EntryList.astro, src/components/Footer.astro, src/components/Header.astro, src/components/PdfViewer.astro, ..., dynamic import will not move module into another chunk.
+
+11:36:24 [vite] ✓ built in 376ms
+11:36:24 [WARN] [vite] [33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/content/queries.ts is dynamically imported by src/content/feed.ts, src/content/writing.ts but also statically imported by src/components/Footer.astro, src/components/Header.astro, src/pages/contact/sent.astro, src/pages/reading/sent.astro, dynamic import will not move module into another chunk.
+
+11:36:24 [vite] ✓ built in 145ms
+11:36:24 [vite] ✓ built in 159ms
+
+ prerendering static routes 
+11:36:26   ├─ /404.html (+871ms) 
+11:36:27   ├─ /about.html (+390ms) 
+11:36:27   ├─ /contact.html (+392ms) 
+11:36:28   ├─ /cv.html (+384ms) 
+11:36:28   ├─ /llms.txt (+4ms) 
+11:36:28   ├─ /posts/splitting-the-stack-and-making-setup-actually-work.html (+31ms) 
+11:36:28   ├─ /posts/building-a-private-ai-server-for-friends.html (+14ms) 
+11:36:28   ├─ /posts/healthagent-apple-health-data-ingestion-and-insights.html (+7ms) 
+11:36:28   ├─ /privacy.html (+2ms) 
+11:36:28   ├─ /reading.html (+418ms) 
+11:36:29   ├─ /reports/home-lab-architectural-study.html (+3ms) 
+11:36:29   ├─ /reports/wildfire-analysis-with-pyspark.html (+3ms) 
+11:36:29   ├─ /robots.txt (+2ms) 
+11:36:29   ├─ /rss.xml (+494ms) 
+11:36:29   ├─ /sitemap.xml (+3ms) 
+11:36:29   ├─ /tags/ai.html (+6ms) 
+11:36:29   ├─ /tags/algorithms.html (+2ms) 
+11:36:29   ├─ /tags/apis.html (+2ms) 
+11:36:29   ├─ /tags/architecture.html (+3ms) 
+11:36:29   ├─ /tags/audio.html (+3ms) 
+11:36:29   ├─ /tags/automation.html (+3ms) 
+11:36:29   ├─ /tags/blender.html (+3ms) 
+11:36:29   ├─ /tags/c.html (+3ms) 
+11:36:29   ├─ /tags/cloud-infrastructure.html (+2ms) 
+11:36:29   ├─ /tags/community-tools.html (+2ms) 
+11:36:29   ├─ /tags/computer-vision.html (+2ms) 
+11:36:29   ├─ /tags/data-pipelines.html (+2ms) 
+11:36:29   ├─ /tags/developer-tools.html (+2ms) 
+11:36:29   ├─ /tags/economics.html (+2ms) 
+11:36:29   ├─ /tags/finance.html (+2ms) 
+11:36:29   ├─ /tags/firebase.html (+1ms) 
+11:36:29   ├─ /tags/front-end-development.html (+2ms) 
+11:36:29   ├─ /tags/games.html (+3ms) 
+11:36:29   ├─ /tags/godot.html (+2ms) 
+11:36:29   ├─ /tags/graphics.html (+3ms) 
+11:36:29   ├─ /tags/java.html (+3ms) 
+11:36:29   ├─ /tags/machine-learning.html (+2ms) 
+11:36:29   ├─ /tags/macos.html (+2ms) 
+11:36:29   ├─ /tags/music.html (+3ms) 
+11:36:29   ├─ /tags/obsidian.html (+2ms) 
+11:36:29   ├─ /tags/procedural-design.html (+2ms) 
+11:36:29   ├─ /tags/product-design.html (+2ms) 
+11:36:29   ├─ /tags/python.html (+4ms) 
+11:36:29   ├─ /tags/rendering.html (+2ms) 
+11:36:29   ├─ /tags/research.html (+2ms) 
+11:36:29   ├─ /tags/security.html (+1ms) 
+11:36:29   ├─ /tags/self-hosted.html (+2ms) 
+11:36:29   ├─ /tags/simulation.html (+2ms) 
+11:36:29   ├─ /tags/swift.html (+1ms) 
+11:36:29   ├─ /tags/three-js.html (+1ms) 
+11:36:29   ├─ /tags/time-series.html (+1ms) 
+11:36:29   ├─ /tags/transport.html (+2ms) 
+11:36:29   ├─ /tags/typescript.html (+2ms) 
+11:36:29   ├─ /tags/ux-design.html (+3ms) 
+11:36:29   ├─ /tags/voice.html (+4ms) 
+11:36:29   ├─ /tags/vue.html (+4ms) 
+11:36:29   ├─ /tags/web-development.html (+5ms) 
+11:36:29   ├─ /tags/writing-tools.html (+3ms) 
+11:36:29   ├─ /terms.html (+3ms) 
+11:36:29   ├─ /work/the-city.html (+15ms) 
+11:36:29   ├─ /work/sprint-coach.html (+5ms) 
+11:36:29   ├─ /work/brontehf.html (+3ms) 
+11:36:29   ├─ /work/gpu-share.html (+3ms) 
+11:36:29   ├─ /work/you-inc.html (+2ms) 
+11:36:29   ├─ /work/health-agent.html (+2ms) 
+11:36:29   ├─ /work/home-lab.html (+1ms) 
+11:36:29   ├─ /work/wildfire-pyspark.html (+1ms) 
+11:36:29   ├─ /work/echo-stats-finder.html (+1ms) 
+11:36:29   ├─ /work/watzon.html (+2ms) 
+11:36:29   ├─ /work/articulate-ai.html (+2ms) 
+11:36:29   ├─ /work/l-system-generator.html (+1ms) 
+11:36:29   ├─ /work/3d-spanning-trees.html (+1ms) 
+11:36:29   ├─ /work/parametric-bookshelf.html (+2ms) 
+11:36:29   ├─ /work/cookie-cat.html (+3ms) 
+11:36:29   ├─ /work/finlay-lani-wedding.html (+2ms) 
+11:36:29   ├─ /work/birthday-gallery.html (+2ms) 
+11:36:29   ├─ /work/transit-sync.html (+2ms) 
+11:36:29   ├─ /work/ando-sim.html (+2ms) 
+11:36:29   ├─ /work/bedroom-layout-designer.html (+2ms) 
+11:36:29   ├─ /work/piano-improvisation-helper.html (+2ms) 
+11:36:29   ├─ /work/synod.html (+2ms) 
+11:36:29   ├─ /work/lumen.html (+2ms) 
+11:36:29   ├─ /work/otto.html (+1ms) 
+11:36:29   ├─ /work/grid-diffusion-ad.html (+1ms) 
+11:36:29   ├─ /work/conversational-timing-lab.html (+1ms) 
+11:36:29   ├─ /work/typed-diff-questions.html (+1ms) 
+11:36:29   ├─ /work/malware-classifier-backdoors.html (+1ms) 
+11:36:29   ├─ /work/cowrie-honeypot-analysis.html (+1ms) 
+11:36:29   ├─ /work/music-genre-classification.html (+2ms) 
+11:36:29   ├─ /work/wellington-transport-network.html (+2ms) 
+11:36:29   ├─ /work/path-tracing-study.html (+2ms) 
+11:36:29   ├─ /work/boids-simulation.html (+2ms) 
+11:36:29   ├─ /work/geometry-shader-study.html (+4ms) 
+11:36:29   ├─ /work/floor-plan-importer.html (+2ms) 
+11:36:29   ├─ /work/piano-waveform-visualiser.html (+2ms) 
+11:36:29   ├─ /work/groovebox.html (+2ms) 
+11:36:29   ├─ /work/pinterest-aesthetic-analysis.html (+2ms) 
+11:36:29   ├─ /work/spotify-playlist-demographics.html (+2ms) 
+11:36:29   ├─ /work/bank-to-sheets-sync.html (+2ms) 
+11:36:29   ├─ /work/metlink-departures-display.html (+2ms) 
+11:36:29   ├─ /work/flat-power-calculator.html (+2ms) 
+11:36:29   ├─ /work/wake-on-join-minecraft.html (+1ms) 
+11:36:29   ├─ /work/sentient-environment-explorer.html (+1ms) 
+11:36:29   ├─ /work/drop-eta.html (+1ms) 
+11:36:29   ├─ /work/hamish-styler.html (+1ms) 
+11:36:29   ├─ /work/alphero-voice-skill.html (+1ms) 
+11:36:29   ├─ /work/personal-language-corpus.html (+1ms) 
+11:36:29   ├─ /work.html (+9ms) 
+11:36:29   ├─ /writing.html (+11ms) 
+11:36:29   ├─ /index.html (+48ms) 
+11:36:29 ✓ Completed in 5.19s.
+
+ generating optimized images 
+11:36:29   ▶ /_astro/headshot.Ctt5ZwgL_Z4y8j0.webp (reused cache entry) (+1ms) (1/6)
+11:36:29   ▶ /_astro/youinc-teaser-poster.Bhcb34_Z_Z27K36S.webp (reused cache entry) (+1ms) (2/6)
+11:36:29   ▶ /_astro/thecity-teaser-poster.DcIp4ZDm_Z2aUtXV.webp (reused cache entry) (+2ms) (3/6)
+11:36:29   ▶ /_astro/headshot.Ctt5ZwgL_ZamcxX.webp (reused cache entry) (+1ms) (4/6)
+11:36:29   ▶ /_astro/headshot.Ctt5ZwgL_ZmF5DT.webp (reused cache entry) (+1ms) (5/6)
+11:36:29   ▶ /_astro/headshot.Ctt5ZwgL_ZxSDMX.webp (reused cache entry) (+1ms) (6/6)
+11:36:29 ✓ Completed in 6ms.
+
+11:36:29 [build] Rearranging server assets...
+11:36:29 [build] ✓ Completed in 5.91s.
+11:36:29 [@astrojs/netlify] Emitted _redirects
+11:36:29 [@astrojs/netlify] Bundling function ../../../build/entry.mjs
+11:36:31 [@astrojs/netlify] Generated SSR Function
+11:36:31 [build] Server built in 7.45s
+11:36:31 [build] Complete!
+Wrote 106 markdown twins.

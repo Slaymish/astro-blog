@@ -1,0 +1,14 @@
+{
+  "repo": "Sentient",
+  "private": true,
+  "branch": "main",
+  "createdAt": "2025-03-10T02:41:18Z",
+  "pushedAt": "2025-03-10T10:37:55Z",
+  "firstCommit": {
+    "sha": "e81d4cdb05d3f92dda3fa3d67e372322b45cc4b0",
+    "date": "2025-03-10T06:05:10Z",
+    "message": "Add new modules for feedback, memory, action management, and sensor services",
+    "url": "https://github.com/Slaymish/Sentient/commit/e81d4cdb05d3f92dda3fa3d67e372322b45cc4b0"
+  },
+  "releases": []
+}

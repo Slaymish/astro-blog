@@ -1,0 +1,45 @@
+{
+  "changedAt": "2026-10-10T00:04:31.162Z",
+  "covers": [
+    {
+      "repo": "ArticulateAI",
+      "slug": "articulate-ai",
+      "id": "catalogue-backfill-articulate-ai",
+      "assetId": "image-9e3bdfecff2b2c2c958917824aad775e98a5b9c4-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/9e3bdfecff2b2c2c958917824aad775e98a5b9c4-1600x1000.png",
+      "alt": "Original ArticulateAI command menu, with twelve options for processing a spoken transcript.",
+      "sha256": "dbbe9739436f7bfe6efe98354de90f61ab9dc7d7e6b831ec557c9e38de3e90df"
+    },
+    {
+      "repo": "Otto",
+      "slug": "otto",
+      "id": "catalogue-backfill-otto",
+      "assetId": "image-1478878897d6150b7baa7984d2956a4338e6f422-1600x1050-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/1478878897d6150b7baa7984d2956a4338e6f422-1600x1050.png",
+      "alt": "Otto\u2019s native capability journal rendered with the original shipped app and music commands, in an offline demonstration.",
+      "sha256": "1ae65d82cccb912192aef3ae082a0f3ed471e86c9f6985144b9ebe3cf42d8263"
+    },
+    {
+      "repo": "Synod",
+      "slug": "synod",
+      "id": "catalogue-backfill-synod",
+      "assetId": "image-95497bfb0cedb0f8f3201e034f9865b3114b3e15-1600x1200-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/95497bfb0cedb0f8f3201e034f9865b3114b3e15-1600x1200.png",
+      "alt": "Synod\u2019s actual Obsidian status panel, showing the journal import, value discovery and bulletin controls in an empty demonstration vault.",
+      "sha256": "e2b04b45e0cc10ae3c096c7e32b983dd277fa44a64e2c2c480f9fa2aa7a63766"
+    },
+    {
+      "repo": "Lumen",
+      "slug": "lumen",
+      "id": "catalogue-backfill-lumen",
+      "assetId": "image-94a5e0191782616c6a3cc0ff81e1f7262fc6acd2-1600x1200-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/94a5e0191782616c6a3cc0ff81e1f7262fc6acd2-1600x1200.png",
+      "alt": "Lumen\u2019s actual research form in Obsidian, showing question input, sub-questions, vault and web sources, and memory controls.",
+      "sha256": "89a13ece817382d94fe75198ac217565c66c5ac8a6bfe7d8f75fa37dff6fb122"
+    }
+  ],
+  "workStories": 46,
+  "otherRevisionsPreserved": 42,
+  "deploy": "6ac982141511aa15b389ba9c",
+  "deployPublishedAt": "2026-10-10T00:09:37Z"
+}

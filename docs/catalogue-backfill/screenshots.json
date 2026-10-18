@@ -1,0 +1,26 @@
+[
+  {
+    "repo": "BedroomLayoutDesigner",
+    "path": "media/BedroomLayoutDesigner.png",
+    "source": "https://bedroomlayout.app",
+    "kind": "live application screenshot",
+    "capturedAt": "2026-10-09T22:26:35.447Z",
+    "body": "Bedroom Layout Planner\n\nUse exact room dimensions, place furniture with confidence, and export a printable PDF.\n\nExport PDF\nPreferences\nFurniture\nLast autosave: 11:26:34\nRoom 1\n\n360cm x 320cm\n\n0 objects · 0 openings\n\nShare\nRename\nDelete\n360cm\n320cm\nEdit\n\nSelect an object to edit, or enable ruler mode to create/edit measurements.\n\nMade by Hamish\n•\nOpen source on GitHub\n•\nBuy me a coffee"
+  },
+  {
+    "repo": "PianoImprovisationHelper",
+    "path": "media/PianoImprovisationHelper.png",
+    "source": "https://pianoimprovisationhelper.netlify.app/",
+    "kind": "live application screenshot",
+    "capturedAt": "2026-10-09T22:11:20.485Z",
+    "body": "Piano Improvisation Helper\n\nFind a song → auto-detect key → get improv hints\n\nFind a song\n\nSearch by title and artist (MusicBrainz)\n\nListen for song\nMic recognition isn’t plugged in yet — search works best for now.\nSearch"
+  },
+  {
+    "repo": "dropeta",
+    "path": "media/dropeta.png",
+    "source": "https://dropeta.vercel.app",
+    "kind": "live application screenshot",
+    "capturedAt": "2026-10-09T22:26:38.364Z",
+    "body": "DropETA\nGPS off\n+\n−\nShow map\n\nTurn on location\n\nNeeded for live ETAs and route order.\n\nEnable\nReady to roll.\n\nAdd your first drop and DropETA works out the fastest order, then keeps every customer's ETA honest.\n\nAdd your first drop"
+  }
+]

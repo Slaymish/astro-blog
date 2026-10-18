@@ -1,0 +1,129 @@
+{
+  "repo": "AndoSim",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2025-10-16T10:38:27Z",
+  "pushedAt": "2026-02-08T15:23:53Z",
+  "firstCommit": {
+    "sha": "2968d92a8bd22b549b9da554a38a0c2940468703",
+    "date": "2025-10-16T10:38:14Z",
+    "message": "Add spec for agent",
+    "url": "https://github.com/Slaymish/AndoSim/commit/2968d92a8bd22b549b9da554a38a0c2940468703"
+  },
+  "releases": [
+    {
+      "tag": "v1.1.1",
+      "date": "2025-10-25T02:22:34Z",
+      "url": "https://github.com/Slaymish/AndoSim/releases/tag/v1.1.1",
+      "assets": [
+        {
+          "name": "ando_barrier_v1.1.1_linux_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.1.1/ando_barrier_v1.1.1_linux_x64.zip"
+        },
+        {
+          "name": "ando_barrier_v1.1.1_macos_universal.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.1.1/ando_barrier_v1.1.1_macos_universal.zip"
+        },
+        {
+          "name": "ando_barrier_v1.1.1_windows_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.1.1/ando_barrier_v1.1.1_windows_x64.zip"
+        }
+      ]
+    },
+    {
+      "tag": "v1.1.0",
+      "date": "2025-10-25T02:15:16Z",
+      "url": "https://github.com/Slaymish/AndoSim/releases/tag/v1.1.0",
+      "assets": [
+        {
+          "name": "ando_barrier_v1.1.0_linux_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.1.0/ando_barrier_v1.1.0_linux_x64.zip"
+        },
+        {
+          "name": "ando_barrier_v1.1.0_macos_universal.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.1.0/ando_barrier_v1.1.0_macos_universal.zip"
+        },
+        {
+          "name": "ando_barrier_v1.1.0_windows_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.1.0/ando_barrier_v1.1.0_windows_x64.zip"
+        }
+      ]
+    },
+    {
+      "tag": "v1.0.3",
+      "date": "2025-10-23T02:21:24Z",
+      "url": "https://github.com/Slaymish/AndoSim/releases/tag/v1.0.3",
+      "assets": [
+        {
+          "name": "ando_barrier_v1.0.3_linux_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.3/ando_barrier_v1.0.3_linux_x64.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.3_macos_universal.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.3/ando_barrier_v1.0.3_macos_universal.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.3_windows_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.3/ando_barrier_v1.0.3_windows_x64.zip"
+        }
+      ]
+    },
+    {
+      "tag": "v1.0.2",
+      "date": "2025-10-21T07:54:55Z",
+      "url": "https://github.com/Slaymish/AndoSim/releases/tag/v1.0.2",
+      "assets": [
+        {
+          "name": "ando_barrier_v1.0.2_linux_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.2/ando_barrier_v1.0.2_linux_x64.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.2_macos_universal.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.2/ando_barrier_v1.0.2_macos_universal.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.2_windows_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.2/ando_barrier_v1.0.2_windows_x64.zip"
+        }
+      ]
+    },
+    {
+      "tag": "v1.0.1",
+      "date": "2025-10-21T07:25:31Z",
+      "url": "https://github.com/Slaymish/AndoSim/releases/tag/v1.0.1",
+      "assets": [
+        {
+          "name": "ando_barrier_v1.0.1_linux_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.1/ando_barrier_v1.0.1_linux_x64.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.1_macos_universal.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.1/ando_barrier_v1.0.1_macos_universal.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.1_windows_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.1/ando_barrier_v1.0.1_windows_x64.zip"
+        }
+      ]
+    },
+    {
+      "tag": "v1.0.0",
+      "date": "2025-10-19T06:37:51Z",
+      "url": "https://github.com/Slaymish/AndoSim/releases/tag/v1.0.0",
+      "assets": [
+        {
+          "name": "ando_barrier_v1.0.0_linux_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.0/ando_barrier_v1.0.0_linux_x64.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.0_macos_universal.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.0/ando_barrier_v1.0.0_macos_universal.zip"
+        },
+        {
+          "name": "ando_barrier_v1.0.0_windows_x64.zip",
+          "url": "https://github.com/Slaymish/AndoSim/releases/download/v1.0.0/ando_barrier_v1.0.0_windows_x64.zip"
+        }
+      ]
+    }
+  ]
+}

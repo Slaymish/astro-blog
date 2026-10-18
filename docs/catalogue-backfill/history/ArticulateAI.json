@@ -1,0 +1,14 @@
+{
+  "repo": "ArticulateAI",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2023-05-17T00:53:33Z",
+  "pushedAt": "2023-06-24T09:36:46Z",
+  "firstCommit": {
+    "sha": "8eab06303cdb9c11cee1658dc7c78d3e7b512eea",
+    "date": "2023-05-17T00:53:33Z",
+    "message": "Initial commit",
+    "url": "https://github.com/Slaymish/ArticulateAI/commit/8eab06303cdb9c11cee1658dc7c78d3e7b512eea"
+  },
+  "releases": []
+}

@@ -1,0 +1,14 @@
+{
+  "repo": "alphero-voice",
+  "private": true,
+  "branch": "main",
+  "createdAt": "2026-09-21T11:17:27Z",
+  "pushedAt": "2026-09-21T11:17:38Z",
+  "firstCommit": {
+    "sha": "c8af5a63281a988af515b1f4c29cb9ea58426a32",
+    "date": "2026-09-21T11:16:36Z",
+    "message": "Add alphero-voice skill",
+    "url": "https://github.com/Slaymish/alphero-voice/commit/c8af5a63281a988af515b1f4c29cb9ea58426a32"
+  },
+  "releases": []
+}

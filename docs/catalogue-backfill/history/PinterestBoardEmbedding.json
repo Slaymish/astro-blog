@@ -1,0 +1,14 @@
+{
+  "repo": "PinterestBoardEmbedding",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2025-08-06T04:54:53Z",
+  "pushedAt": "2025-08-06T05:21:54Z",
+  "firstCommit": {
+    "sha": "f0bd83e2a84ca99da3d31a7536467d8458f40403",
+    "date": "2025-08-06T04:54:45Z",
+    "message": "Add Pinterest image scraper and metadata management",
+    "url": "https://github.com/Slaymish/PinterestBoardEmbedding/commit/f0bd83e2a84ca99da3d31a7536467d8458f40403"
+  },
+  "releases": []
+}

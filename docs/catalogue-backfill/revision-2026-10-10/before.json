@@ -1,0 +1,318 @@
+[
+  {
+    "_createdAt": "2026-10-09T22:34:03Z",
+    "_id": "catalogue-backfill-alphero-voice-skill",
+    "_rev": "ufXqsgklGgab7shZzVPyFw",
+    "_type": "workStory",
+    "_updatedAt": "2026-10-09T22:34:03Z",
+    "artifacts": [],
+    "body": [
+      {
+        "_key": "paragraph-0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "paragraph-0-text",
+            "_type": "span",
+            "marks": [],
+            "text": "I worked from published Alphero Intelligence articles, and the useful part was keeping the style observations close to the references so the rewriting process had something more concrete than a few tone adjectives, with the reference articles giving the guide examples to return to when an instruction was too broad on its own."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "paragraph-1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "paragraph-1-text",
+            "_type": "span",
+            "marks": [],
+            "text": "The skill includes the procedure, a style guide and the reference corpus, with the same materials available when a draft is being written or revised for that editorial register."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "paragraph-2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "paragraph-2-text",
+            "_type": "span",
+            "marks": [],
+            "text": "It is an instruction and reference workflow, though that is a different mechanism from training a model, and the result still needs an editor to judge whether the piece belongs in the publication."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "archive-date",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "archive-date-text",
+            "_type": "span",
+            "marks": [],
+            "text": "The catalogue date follows the first preserved commit on 21 September 2026."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "alt": "Explanatory diagram for Alphero Voice Skill, showing Published articles, Style guide, Draft revision.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_ref": "image-871783af3f8a7446259f98a3cc0ff5e9d29fec87-1280x720-png",
+          "_type": "reference"
+        }
+      },
+      "kind": "image"
+    },
+    "date": "2026-09-21",
+    "descriptor": "Reusable editorial style workflow",
+    "evidence": [],
+    "introduction": "I put together a writing skill for the Alphero Intelligence register, keeping the article references and the style guide beside the procedure that uses them.",
+    "kind": "independent",
+    "links": [],
+    "order": 46,
+    "related": [],
+    "result": "A reusable editorial skill with source references and an explicit writing procedure. The public cover explains that process without reproducing the article corpus.",
+    "role": "Independent tooling. Corpus preparation, style-guide extraction and skill instructions.",
+    "slug": {
+      "_type": "slug",
+      "current": "alphero-voice-skill"
+    },
+    "summary": "Made a reusable writing skill from an Alphero Intelligence article corpus and an extracted editorial style guide.",
+    "tags": [
+      "AI",
+      "Writing tools",
+      "Developer tools"
+    ],
+    "timeframe": "September 2026",
+    "title": "Alphero Voice Skill"
+  },
+  {
+    "_createdAt": "2026-10-09T22:34:03Z",
+    "_id": "catalogue-backfill-hamish-styler",
+    "_rev": "ufXqsgklGgab7shZzVPyFw",
+    "_type": "workStory",
+    "_updatedAt": "2026-10-09T22:34:03Z",
+    "artifacts": [],
+    "body": [
+      {
+        "_key": "paragraph-0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "paragraph-0-text",
+            "_type": "span",
+            "marks": [],
+            "text": "I started with the problem of a piece sounding like its writer even when the topic changed, and the model work used contrasting examples to give the scoring something more specific than a general instruction to imitate a voice, with the training examples and preference records kept in forms that the next model pass could use."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "paragraph-1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "paragraph-1-text",
+            "_type": "span",
+            "marks": [],
+            "text": "The tools include style features, candidate reranking and constraints, with an interactive mode that logs preferences and scripts for using those labelled examples in another training pass."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "paragraph-2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "paragraph-2-text",
+            "_type": "span",
+            "marks": [],
+            "text": "The repository contains the classifier and training workflow, though the existence of a retraining loop is separate from showing that later suggestions actually improve on the earlier model."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "archive-date",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "archive-date-text",
+            "_type": "span",
+            "marks": [],
+            "text": "The catalogue date follows the first preserved commit on 4 November 2025."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "alt": "Explanatory diagram for HamishStyler, showing Style examples, Classifier and reranker, Preference feedback.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_ref": "image-bd5a4f75ec56031efd084cf653abda7fa9db4b54-1280x720-png",
+          "_type": "reference"
+        }
+      },
+      "kind": "image"
+    },
+    "date": "2025-11-04",
+    "descriptor": "Personal writing-style tooling",
+    "evidence": [],
+    "introduction": "I worked on a writing tool that could score style separately from the subject being written about, with preferences collected through an interactive workflow.",
+    "kind": "independent",
+    "links": [],
+    "order": 45,
+    "related": [],
+    "result": "An implemented personal style-scoring and feedback toolkit. The entry covers the available workflow without claiming a measured improvement from continued use.",
+    "role": "Independent development. Python style modelling, CLI and preference collection.",
+    "slug": {
+      "_type": "slug",
+      "current": "hamish-styler"
+    },
+    "summary": "Built writing-style scoring and preference tools, with a classifier, constrained suggestions, interaction logging and retraining scripts.",
+    "tags": [
+      "AI",
+      "Python",
+      "Writing tools"
+    ],
+    "timeframe": "November 2025",
+    "title": "HamishStyler"
+  },
+  {
+    "_createdAt": "2026-10-09T22:34:03Z",
+    "_id": "catalogue-backfill-otto",
+    "_rev": "ufXqsgklGgab7shZzVPyFw",
+    "_type": "workStory",
+    "_updatedAt": "2026-10-09T22:34:03Z",
+    "artifacts": [],
+    "body": [
+      {
+        "_key": "paragraph-0",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "paragraph-0-text",
+            "_type": "span",
+            "marks": [],
+            "text": "I started from voice-os and worked towards a native Mac app, with the voice connection, action handling and interface held in Swift instead of relying on the earlier Python process, with the native engine holding the connection and action state that the interface needed to show."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "paragraph-1",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "paragraph-1-text",
+            "_type": "span",
+            "marks": [],
+            "text": "The app kept a capability index and session logs, and retrospective processing could add useful phrasings or proposed capabilities from a completed session, with a local Ollama option for that learning step."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "paragraph-2",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "paragraph-2-text",
+            "_type": "span",
+            "marks": [],
+            "text": "Hotkeys, onboarding and settings made it usable as a menu-bar application, and the June releases packaged the Swift app alongside tests for the capability and session components."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      },
+      {
+        "_key": "archive-date",
+        "_type": "block",
+        "children": [
+          {
+            "_key": "archive-date-text",
+            "_type": "span",
+            "marks": [],
+            "text": "The catalogue date follows the first preserved release on 20 June 2026."
+          }
+        ],
+        "markDefs": [],
+        "style": "normal"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "alt": "Original Otto app icon, a luminous blue ring against a dark rounded square.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_ref": "image-122539123eccbe89bc4a0ecd010bb33d86492f99-880x880-png",
+          "_type": "reference"
+        }
+      },
+      "kind": "image"
+    },
+    "date": "2026-06-20",
+    "descriptor": "Native Mac voice assistant",
+    "evidence": [],
+    "introduction": "Otto is a voice and text assistant for the Mac. I developed it from the voice-os project, moving the app into Swift and adding capability and session-learning work.",
+    "kind": "independent",
+    "links": [
+      {
+        "_key": "source",
+        "external": true,
+        "href": "https://github.com/Slaymish/Otto",
+        "kind": "source",
+        "label": "Source code"
+      },
+      {
+        "_key": "upstream",
+        "external": true,
+        "href": "https://github.com/per-simmons/voice-os",
+        "kind": "other",
+        "label": "Original voice-os project"
+      }
+    ],
+    "order": 23,
+    "related": [],
+    "result": "Packaged Mac releases with a native Swift implementation and session-based capability work. The entry credits the upstream project and distinguishes my changes from its starting point.",
+    "role": "Development of a fork of per-simmons/voice-os. Swift migration, interface and learning integration.",
+    "slug": {
+      "_type": "slug",
+      "current": "otto"
+    },
+    "summary": "Developed a native Swift version of a Mac voice assistant, with hotkeys, capability retrieval, session logs and local retrospective learning.",
+    "tags": [
+      "AI",
+      "Voice",
+      "Swift",
+      "macOS"
+    ],
+    "timeframe": "June 2026",
+    "title": "Otto"
+  }
+]

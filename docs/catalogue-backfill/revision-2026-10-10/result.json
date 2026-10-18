@@ -1,0 +1,14 @@
+{
+  "changedAt": "2026-10-09T22:56:17.134Z",
+  "removed": [
+    "catalogue-backfill-alphero-voice-skill",
+    "catalogue-backfill-hamish-styler"
+  ],
+  "otto": {
+    "assetId": "image-7fe8da29c86bf139a7694b6d838955d91754d9fa-1672x941-png",
+    "url": "https://cdn.sanity.io/images/qnuj1c4o/production/7fe8da29c86bf139a7694b6d838955d91754d9fa-1672x941.png",
+    "alt": "Conceptual illustration of Otto, with a microphone, blue voice waveform, capability cards, desktop windows and a stack of session notes."
+  },
+  "workStories": 46,
+  "otherRevisionsPreserved": 45
+}

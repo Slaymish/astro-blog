@@ -1,0 +1,80 @@
+[
+  {
+    "repo": "AndoSim",
+    "path": "media/AndoSim.jpg",
+    "source": "https://github.com/Slaymish/AndoSim/blob/main/docs/example_images/teaser-image.jpg",
+    "kind": "original project asset"
+  },
+  {
+    "repo": "CGRA251_Framework_A4",
+    "path": "media/CGRA251_Framework_A4.png",
+    "source": "https://github.com/Slaymish/CGRA251_Framework_A4/blob/main/work/res/samples/challenge_1.png",
+    "kind": "original project asset"
+  },
+  {
+    "repo": "CGRA354_Framework_A3",
+    "path": "media/CGRA354_Framework_A3.png",
+    "source": "https://github.com/Slaymish/CGRA354_Framework_A3/blob/main/images/challenge.png",
+    "kind": "original project asset"
+  },
+  {
+    "repo": "CGRA350-Assignment-1",
+    "path": "media/CGRA350-Assignment-1.png",
+    "source": "https://github.com/Slaymish/CGRA350-Assignment-1/blob/main/work/res/results/screenshot_1722679703546.png",
+    "kind": "original project asset"
+  },
+  {
+    "repo": "Musicical-Genre-Classifier",
+    "path": "media/Musicical-Genre-Classifier.png",
+    "source": "https://github.com/Slaymish/Musicical-Genre-Classifier/blob/main/images/heatmap.png",
+    "kind": "original project asset"
+  },
+  {
+    "repo": "MalwareResearchPaper",
+    "path": "media/MalwareResearchPaper.png",
+    "source": "https://github.com/Slaymish/MalwareResearchPaper/blob/main/clean_tuned_ASR_comparison.png",
+    "kind": "original project asset"
+  },
+  {
+    "repo": "CYBRAnalysis",
+    "path": "media/CYBRAnalysis.png",
+    "source": "https://github.com/Slaymish/CYBRAnalysis/blob/main/cowrie-log-analysis/notebooks/visualizations/temporal_patterns.png",
+    "kind": "original project asset"
+  },
+  {
+    "repo": "BusRouter",
+    "path": "media/BusRouter.png",
+    "source": "https://github.com/Slaymish/BusRouter/blob/master/logo_name.PNG",
+    "kind": "original project asset"
+  },
+  {
+    "repo": "grid-diffusion-ad",
+    "path": "media/grid-diffusion-ad.png",
+    "source": "https://github.com/Slaymish/grid-diffusion-ad/blob/main/server_runs/ablation_embed_dim_512bins_20260112_170614/ablation_embed_dim_512bins_1_token_embed_dim-32_20260112_170619/reconstruction_fidelity_examples.png",
+    "kind": "original project asset"
+  },
+  {
+    "repo": "LSystemGenerator",
+    "path": "media/LSystemGenerator.png",
+    "source": "https://github.com/Slaymish/LSystemGenerator/assets/21288505/b64e5cae-96dc-4f1d-8349-a6f91cb40059",
+    "kind": "original README example"
+  },
+  {
+    "repo": "3dSpanningTrees",
+    "path": "media/3dSpanningTrees.png",
+    "source": "https://github.com/Slaymish/3dSpanningTrees/assets/21288505/3c9e87c3-d31d-4b37-8b8e-fd2ac10693fb",
+    "kind": "original README example"
+  },
+  {
+    "repo": "BlenderBookShelf",
+    "path": "media/BlenderBookShelf.png",
+    "source": "https://github.com/Slaymish/BlenderBookShelf/assets/21288505/6ca4b8c4-1f14-4815-9217-c554413ac80d",
+    "kind": "original README example"
+  },
+  {
+    "repo": "Otto",
+    "path": "media/Otto-cover.png",
+    "source": "Built-in imagegen; prompt in image-prompts.md",
+    "kind": "AI-generated conceptual illustration"
+  }
+]

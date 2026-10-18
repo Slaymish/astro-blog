@@ -1,0 +1,14 @@
+{
+  "repo": "PianoImprovisationHelper",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2025-12-12T07:51:20Z",
+  "pushedAt": "2025-12-12T08:33:43Z",
+  "firstCommit": {
+    "sha": "74939527fbee2fed6735975394bf29b39f3256e5",
+    "date": "2025-12-12T07:44:34Z",
+    "message": "feat: add React application setup with Vite and TypeScript",
+    "url": "https://github.com/Slaymish/PianoImprovisationHelper/commit/74939527fbee2fed6735975394bf29b39f3256e5"
+  },
+  "releases": []
+}

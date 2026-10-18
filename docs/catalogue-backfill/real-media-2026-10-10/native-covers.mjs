@@ -1,0 +1,9 @@
+import fs from 'node:fs/promises';import path from 'node:path';import sharp from 'sharp';
+const root=path.dirname(new URL(import.meta.url).pathname),reps=JSON.parse(await fs.readFile(path.join(root,'replacement-covers.json'),'utf8'));
+for(const [repo,rect,width] of [['Synod',{left:810,top:100,width:1220,height:1150},1120],['Lumen',{left:578,top:190,width:860,height:1260},710]]){
+ const raw=await sharp(path.join(root,repo.toLowerCase()+'-native.png')).extract(rect).resize({width}).png().toBuffer();const m=await sharp(raw).metadata();
+ const caption=Buffer.from(`<svg width="1400" height="70"><text x="0" y="27" font-family="Arial" font-size="22" fill="#333">${repo} · original Obsidian plugin interface</text><text x="0" y="56" font-family="Arial" font-size="15" fill="#666">Captured in an empty demonstration vault · no personal notes or model runs</text></svg>`);
+ const file=repo.toLowerCase()+'-real-cover.png';await sharp({create:{width:1600,height:1200,channels:3,background:'#e9e6e0'}}).composite([{input:raw,left:Math.round((1600-width)/2),top:35},{input:caption,left:100,top:1100}]).png().toFile(path.join(root,file));
+ const rep=reps.find(r=>r.repo===repo);Object.assign(rep,{path:'real-media-2026-10-10/'+file,file,kind:'actual Obsidian plugin screenshot',source:'Original '+(repo==='Synod'?'src/ui/status-view.ts':'obsidian-plugin/src/research/index.ts')+' and styles.css, built from the repository and captured in Obsidian 1.13.7. Empty temporary vault, no personal notes or model runs.',alt:repo==='Synod'?'Synod’s actual Obsidian status panel, showing the journal import, value discovery and bulletin controls in an empty demonstration vault.':'Lumen’s actual research form in Obsidian, showing question input, sub-questions, vault and web sources, and memory controls.',width:1600,height:1200,capturedAt:new Date().toISOString()});
+}
+await fs.writeFile(path.join(root,'replacement-covers.json'),JSON.stringify(reps,null,2));

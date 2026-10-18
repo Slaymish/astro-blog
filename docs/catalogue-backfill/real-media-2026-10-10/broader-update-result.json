@@ -1,0 +1,214 @@
+{
+  "changedAt": "2026-10-10T00:00:45.624Z",
+  "covers": [
+    {
+      "repo": "EchoStatsFinder",
+      "slug": "echo-stats-finder",
+      "id": "catalogue-backfill-echo-stats-finder",
+      "assetId": "image-5c33ee68108da0eb5b712f1259acc98ceb75a2a5-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/5c33ee68108da0eb5b712f1259acc98ceb75a2a5-1600x1000.png",
+      "alt": "Original source code from functions/base/vrmlplayersearcher.py in Echo Stats Finder.",
+      "sha256": "6d98633e409c8840adcdaea7e4617f5381f2e3a7997e4754ce7b814887086cf6"
+    },
+    {
+      "repo": "Watzon",
+      "slug": "watzon",
+      "id": "catalogue-backfill-watzon",
+      "assetId": "image-c5390374a6f4562b2182b58f74283acfa11eb9b2-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/c5390374a6f4562b2182b58f74283acfa11eb9b2-1600x1000.png",
+      "alt": "Original source code from app/src/main/java/vrml/api/Bot.java in Watzon.",
+      "sha256": "44197f9ade44026f8ccb5a9c6f33c678d6357b978fbc81e901080df3cdfce6d0"
+    },
+    {
+      "repo": "WellingtonTrainNetwork",
+      "slug": "wellington-transport-network",
+      "id": "catalogue-backfill-wellington-transport-network",
+      "assetId": "image-b19ac00f04caeb068e8b399b413848497e70b937-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/b19ac00f04caeb068e8b399b413848497e70b937-1600x1000.png",
+      "alt": "Original source code from src/main/java/AStar.java in Wellington Transport Network.",
+      "sha256": "6e6ffdb7382fca1b4cb4a2885b2d2423e0aaf40ec20fc4911c95dac50c82e966"
+    },
+    {
+      "repo": "blender-addon",
+      "slug": "floor-plan-importer",
+      "id": "catalogue-backfill-floor-plan-importer",
+      "assetId": "image-061848f42f524b8037518769fb39107c33ca3d2f-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/061848f42f524b8037518769fb39107c33ca3d2f-1600x1000.png",
+      "alt": "Original source code from addon/Addon/floor_importer.py in Floor-plan Importer.",
+      "sha256": "f84b57864352fb75e2931b895a6e5445ee7680a74f909b41ff3dee4e683b982f"
+    },
+    {
+      "repo": "PianoVisualiser",
+      "slug": "piano-waveform-visualiser",
+      "id": "catalogue-backfill-piano-waveform-visualiser",
+      "assetId": "image-c263f9976b27394546cbb732415f8ad43573df69-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/c263f9976b27394546cbb732415f8ad43573df69-1600x1000.png",
+      "alt": "Original source code from piano.cpp in Piano Waveform Visualiser.",
+      "sha256": "5febcb8f2f6edeab9bc8b2f8e6fe67f9f1acf0cf452633483f64918540349315"
+    },
+    {
+      "repo": "GrooveBox",
+      "slug": "groovebox",
+      "id": "catalogue-backfill-groovebox",
+      "assetId": "image-07d18f540cffaf9af01121ae4d556f74db1c7371-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/07d18f540cffaf9af01121ae4d556f74db1c7371-1600x1000.png",
+      "alt": "Original source code from host/engine/groovebox/sequencer.py in GrooveBox.",
+      "sha256": "ca4b9458b2118ea70d3557c0d83816c75b9b5d9978599e8af0d00369aaeb09a5"
+    },
+    {
+      "repo": "PinterestBoardEmbedding",
+      "slug": "pinterest-aesthetic-analysis",
+      "id": "catalogue-backfill-pinterest-aesthetic-analysis",
+      "assetId": "image-e10263356980bf298874522cec85c6a56db03037-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/e10263356980bf298874522cec85c6a56db03037-1600x1000.png",
+      "alt": "Original source code from cluster_images.py in Pinterest Aesthetic Analysis.",
+      "sha256": "14d4fe8bb292bf0a2c625d84f697093fd8dd7abcd75062cf44a1856f38cb7dde"
+    },
+    {
+      "repo": "Spotify-Demographics-Analyzer",
+      "slug": "spotify-playlist-demographics",
+      "id": "catalogue-backfill-spotify-playlist-demographics",
+      "assetId": "image-a9c4651511a82d84800f4c46ab0d1485cf5c2c13-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/a9c4651511a82d84800f4c46ab0d1485cf5c2c13-1600x1000.png",
+      "alt": "Original source code from analysis.py in Spotify Playlist Demographics.",
+      "sha256": "83efe89ba70da7471265a71f4181c5c66a8e02e1a9b3996f37ff0ae80a099858"
+    },
+    {
+      "repo": "akahu-sheets-sync",
+      "slug": "bank-to-sheets-sync",
+      "id": "catalogue-backfill-bank-to-sheets-sync",
+      "assetId": "image-d7f9cb8afd8ef72cb239f02fdba92feeda22a9dd-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/d7f9cb8afd8ef72cb239f02fdba92feeda22a9dd-1600x1000.png",
+      "alt": "Original source code from src/bank_sync/reconciliation.py in Bank-to-Sheets Sync.",
+      "sha256": "5f7928cfb8df9973bb49db83736aed23f2ff0d95574c6bdadaa710d8c556582b"
+    },
+    {
+      "repo": "metlink-departures-display",
+      "slug": "metlink-departures-display",
+      "id": "catalogue-backfill-metlink-departures-display",
+      "assetId": "image-8513c4aeb31d2127c6dcffe35f5282b1392a651e-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/8513c4aeb31d2127c6dcffe35f5282b1392a651e-1600x1000.png",
+      "alt": "Original source code from bus_sign_server.py in Metlink Departures Display.",
+      "sha256": "2a330af128453e9162323272e3214a1226af0b37facb8520c3134350aefbe76d"
+    },
+    {
+      "repo": "PowerCalculator",
+      "slug": "flat-power-calculator",
+      "id": "catalogue-backfill-flat-power-calculator",
+      "assetId": "image-c3a5dc619999bf5a06f004e90c01b4c79d3ddde2-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/c3a5dc619999bf5a06f004e90c01b4c79d3ddde2-1600x1000.png",
+      "alt": "Original source code from src/calc.ts in Flat Power Calculator.",
+      "sha256": "0563ba59909ab9ca6332fec3fc206cd7cec863b9f5dd58a26f30cada7ab32176"
+    },
+    {
+      "repo": "Sentient",
+      "slug": "sentient-environment-explorer",
+      "id": "catalogue-backfill-sentient-environment-explorer",
+      "assetId": "image-ce8ea2421dc634cfc4e5c608ab926e81532630a5-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/ce8ea2421dc634cfc4e5c608ab926e81532630a5-1600x1000.png",
+      "alt": "Original source code from Environment2D.py in Sentient Environment Explorer.",
+      "sha256": "d34ca70aea4d20f4e43a637853fb0dc486b44d92b3588334eb3643fdcd6e94d4"
+    },
+    {
+      "repo": "personal-language-corpus",
+      "slug": "personal-language-corpus",
+      "id": "catalogue-backfill-personal-language-corpus",
+      "assetId": "image-8b1205f153dc506eb6866e98cbec0b9447ed4e18-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/8b1205f153dc506eb6866e98cbec0b9447ed4e18-1600x1000.png",
+      "alt": "Original source code from language_corpus/quantitative.py in Personal Language Corpus.",
+      "sha256": "9dac0a576a249b95a3fec83d76f2783883f445d5c66bf2d1959a966d8a9bc1b7"
+    },
+    {
+      "repo": "DadsBirthday",
+      "slug": "birthday-gallery",
+      "id": "catalogue-backfill-birthday-gallery",
+      "assetId": "image-418d370371e3eaae7bce400a5dfc66fcc1e10d01-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/418d370371e3eaae7bce400a5dfc66fcc1e10d01-1600x1000.png",
+      "alt": "Original source code from app.js in Birthday Gallery.",
+      "sha256": "76d3fb31925e6145c0956d144075922ad90d8982a97a16a44802bf8adfe31ce4"
+    },
+    {
+      "repo": "conversational-timing-lab",
+      "slug": "conversational-timing-lab",
+      "id": "catalogue-backfill-conversational-timing-lab",
+      "assetId": "image-cade6546dd8f6817324cd710ff9b3f17cd676cfe-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/cade6546dd8f6817324cd710ff9b3f17cd676cfe-1600x1000.png",
+      "alt": "Original research record from results/e1_ami_3meetings.txt in Conversational Timing Lab.",
+      "sha256": "a7149d27e2181d0308d05a477f0b74c13c0932f8f9d99bf3b73bbcf3e86108fe"
+    },
+    {
+      "repo": "commit-reviewer",
+      "slug": "typed-diff-questions",
+      "id": "catalogue-backfill-typed-diff-questions",
+      "assetId": "image-c098894d420196db1cdd18ee36612dd6da2fd092-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/c098894d420196db1cdd18ee36612dd6da2fd092-1600x1000.png",
+      "alt": "Original research record from experiments/FINDINGS.md in Typed Diff Questions.",
+      "sha256": "0aec0d8ccec786e109fea5e54c5920df8fa06fc9d7756334b7c73a13e70fd199"
+    },
+    {
+      "repo": "ArticulateAI",
+      "slug": "articulate-ai",
+      "id": "catalogue-backfill-articulate-ai",
+      "assetId": "image-9e3bdfecff2b2c2c958917824aad775e98a5b9c4-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/9e3bdfecff2b2c2c958917824aad775e98a5b9c4-1600x1000.png",
+      "alt": "Original ArticulateAI command menu, with twelve options for processing a spoken transcript.",
+      "sha256": "dbbe9739436f7bfe6efe98354de90f61ab9dc7d7e6b831ec557c9e38de3e90df"
+    },
+    {
+      "repo": "Otto",
+      "slug": "otto",
+      "id": "catalogue-backfill-otto",
+      "assetId": "image-1478878897d6150b7baa7984d2956a4338e6f422-1600x1050-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/1478878897d6150b7baa7984d2956a4338e6f422-1600x1050.png",
+      "alt": "Otto’s native capability journal rendered with the original shipped app and music commands, in an offline demonstration.",
+      "sha256": "1ae65d82cccb912192aef3ae082a0f3ed471e86c9f6985144b9ebe3cf42d8263"
+    },
+    {
+      "repo": "Synod",
+      "slug": "synod",
+      "id": "catalogue-backfill-synod",
+      "assetId": "image-075169bcb0a7f1cdd9715711f86f502ec0838ab2-1600x1200-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/075169bcb0a7f1cdd9715711f86f502ec0838ab2-1600x1200.png",
+      "alt": "Synod’s original plugin status view rendered offline, showing its journal import, value discovery and bulletin controls.",
+      "sha256": "456ccd2ee8be8cd22116e9a7afd5f8faafe86ea5aa5611adeeeb4ecc6d362f37"
+    },
+    {
+      "repo": "Lumen",
+      "slug": "lumen",
+      "id": "catalogue-backfill-lumen",
+      "assetId": "image-6d72ba5a2eca6e5833c4071754ece1846be5de4e-1600x1200-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/6d72ba5a2eca6e5833c4071754ece1846be5de4e-1600x1200.png",
+      "alt": "Lumen’s original research form rendered offline, showing question input, sub-questions, vault and web sources, and memory controls.",
+      "sha256": "2aa993e3d93fc38e77e107477478d7522ce8f1b456f1e1b6fea205f649a5f8a4"
+    },
+    {
+      "repo": "PlatformerGame",
+      "slug": "cookie-cat",
+      "id": "catalogue-backfill-cookie-cat",
+      "assetId": "image-38c8a296f300daa6aa4be61b8f65141fb2be6624-2560x1440-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/38c8a296f300daa6aa4be61b8f65141fb2be6624-2560x1440.png",
+      "alt": "Screenshot of the preserved Cookie Cat platformer web export, showing the original game graphics.",
+      "sha256": "6b5c31f0d6ba20dfafb7a3370350343e1820e8ab820db849894db9d986ad5315"
+    },
+    {
+      "repo": "YayMinecraftServer",
+      "slug": "wake-on-join-minecraft",
+      "id": "catalogue-backfill-wake-on-join-minecraft",
+      "assetId": "image-e0340d49163c853a6b40ad8f8e1b3c8425f85ec8-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/e0340d49163c853a6b40ad8f8e1b3c8425f85ec8-1600x1000.png",
+      "alt": "Original Minecraft server landing page, showing the server address, whitelist access form and connection guidance.",
+      "sha256": "023c9c938fce14bf7824747b91b83885e2469d4178037be560a13a7510b5f45e"
+    },
+    {
+      "repo": "WeddingWebsite",
+      "slug": "finlay-lani-wedding",
+      "id": "catalogue-backfill-finlay-lani-wedding",
+      "assetId": "image-f4fea17665d962e9457c15fc6b8494bafbc775e4-1600x1000-png",
+      "url": "https://cdn.sanity.io/images/qnuj1c4o/production/f4fea17665d962e9457c15fc6b8494bafbc775e4-1600x1000.png",
+      "alt": "Original floral header artwork from the wedding website.",
+      "sha256": "47797320baf85c7c1a9ae14372ff5ecfff9fcddb1f9be980679ecefd582e7b72"
+    }
+  ],
+  "workStories": 46,
+  "otherRevisionsPreserved": 23
+}

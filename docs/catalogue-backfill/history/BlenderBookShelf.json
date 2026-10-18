@@ -1,0 +1,14 @@
+{
+  "repo": "BlenderBookShelf",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2023-08-30T03:55:31Z",
+  "pushedAt": "2023-08-30T04:35:04Z",
+  "firstCommit": {
+    "sha": "b901565241e8a8d7f0626f1afe7b346c30b97a82",
+    "date": "2023-08-30T03:55:32Z",
+    "message": "Initial commit",
+    "url": "https://github.com/Slaymish/BlenderBookShelf/commit/b901565241e8a8d7f0626f1afe7b346c30b97a82"
+  },
+  "releases": []
+}

@@ -1,0 +1,30 @@
+{
+  "ArticulateAI": {
+    "commit": "deaa97a998c31dd6caccee50f98398a133bafc6e",
+    "files": {
+      "run.py": "0c790ced62b746ef8469865958f71e755060b8665805abf70c3b77cdd83f7db4"
+    }
+  },
+  "Otto": {
+    "commit": "39fe2524d2610d83b686a445696618d809201277",
+    "files": {
+      "Otto/Otto/JournalWindow.swift": "29bd960e3839ffb28c72b1ad778a7c476aa84337de515c48bc99b94d69ca3c39",
+      "Otto/Otto/OttoBridge.swift": "a8851c5b95c57b0b3c5b565f11c5182fb8eafefc35250e0101b3e1acc8d28d18",
+      "memory/capabilities.json": "661133cf9ca44b54605c2dbfe955f831ffaf7413600a3fd2ffb1794dd4d5bf30"
+    }
+  },
+  "Synod": {
+    "commit": "faba03138b5d793f5f72afa453203cb96b3418c0",
+    "files": {
+      "src/ui/status-view.ts": "9dfbf25883b09b40fe222e9c6359117b51afb59fd21b23792b8a4cf5f8e73b58",
+      "styles.css": "e43bac7a3dcedc981f19b212f7a306e4580c1a52e65292702c57a09e799e8d3f"
+    }
+  },
+  "Lumen": {
+    "commit": "2f735bdb627629a6481e07a101602fe071410394",
+    "files": {
+      "obsidian-plugin/src/research/index.ts": "396966e5e82af8feaa4b9f9d874864dffc0c457cff67ad44e46b4e32fc074d7b",
+      "obsidian-plugin/styles.css": "e2f0dce88a2b16d4c5a0a56c648277e0faab36825d2bd6ac50022c2d5b3db407"
+    }
+  }
+}

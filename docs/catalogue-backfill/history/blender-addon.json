@@ -1,0 +1,14 @@
+{
+  "repo": "blender-addon",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2024-05-29T13:15:08Z",
+  "pushedAt": "2024-05-30T09:51:29Z",
+  "firstCommit": {
+    "sha": "81a81ed5adfe46e3530bd850a3c9e03aded2c463",
+    "date": "2024-05-29T13:12:04Z",
+    "message": "Initial commit",
+    "url": "https://github.com/Slaymish/blender-addon/commit/81a81ed5adfe46e3530bd850a3c9e03aded2c463"
+  },
+  "releases": []
+}

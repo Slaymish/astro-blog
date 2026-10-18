@@ -1,0 +1,14 @@
+{
+  "repo": "WeddingWebsite",
+  "private": false,
+  "branch": "VueWedding",
+  "createdAt": "2023-10-09T06:39:45Z",
+  "pushedAt": "2024-10-01T22:37:55Z",
+  "firstCommit": {
+    "sha": "a37f4acf170970c76a21236c42048a726c2c3264",
+    "date": "2023-10-09T04:13:33Z",
+    "message": "Initial react setup",
+    "url": "https://github.com/Slaymish/WeddingWebsite/commit/a37f4acf170970c76a21236c42048a726c2c3264"
+  },
+  "releases": []
+}

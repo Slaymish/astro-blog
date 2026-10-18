@@ -1,0 +1,14 @@
+{
+  "repo": "GrooveBox",
+  "private": false,
+  "branch": "main",
+  "createdAt": "2025-11-23T00:11:17Z",
+  "pushedAt": "2025-11-23T12:01:05Z",
+  "firstCommit": {
+    "sha": "d1abed5009b43eb84cc501d9c924e61bf396d7c3",
+    "date": "2025-11-23T00:11:13Z",
+    "message": "Add initial implementation of GrooveBox with audio engine, sequencer, and UI",
+    "url": "https://github.com/Slaymish/GrooveBox/commit/d1abed5009b43eb84cc501d9c924e61bf396d7c3"
+  },
+  "releases": []
+}

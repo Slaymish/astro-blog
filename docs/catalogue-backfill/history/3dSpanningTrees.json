@@ -1,0 +1,26 @@
+{
+  "repo": "3dSpanningTrees",
+  "private": false,
+  "branch": "master",
+  "createdAt": "2023-06-09T04:14:22Z",
+  "pushedAt": "2023-06-10T07:08:03Z",
+  "firstCommit": {
+    "sha": "f18645aa47aa1ff1784ab8f493bdfc5585916c77",
+    "date": "2023-06-09T04:12:20Z",
+    "message": "first commit",
+    "url": "https://github.com/Slaymish/3dSpanningTrees/commit/f18645aa47aa1ff1784ab8f493bdfc5585916c77"
+  },
+  "releases": [
+    {
+      "tag": "v0.1.0",
+      "date": "2023-06-10T05:50:16Z",
+      "url": "https://github.com/Slaymish/3dSpanningTrees/releases/tag/v0.1.0",
+      "assets": [
+        {
+          "name": "MSTAdddon.py",
+          "url": "https://github.com/Slaymish/3dSpanningTrees/releases/download/v0.1.0/MSTAdddon.py"
+        }
+      ]
+    }
+  ]
+}

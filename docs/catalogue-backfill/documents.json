@@ -1,0 +1,3965 @@
+[
+  {
+    "title": "Echo Stats Finder",
+    "descriptor": "Echo VR player statistics",
+    "kind": "independent",
+    "date": "2021-11-10",
+    "timeframe": "November 2021",
+    "summary": "Built the networking behind a desktop tool for looking up Echo VR players and the league statistics of people in a public match.",
+    "introduction": "I worked on Echo Stats Finder with Silveridge, connecting a Python desktop app to Echo VR and VR Master League so players could look up the people they were playing with.",
+    "role": "Project setup, networking, testing and structure. Silveridge built the GUI and navigation.",
+    "result": "The project reached downloadable Windows releases, with player and public-match searching implemented. Ignite integration and automatic searching remained separate follow-up work.",
+    "tags": [
+      "Games",
+      "Python",
+      "Community tools"
+    ],
+    "_id": "catalogue-backfill-echo-stats-finder",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "echo-stats-finder"
+    },
+    "order": 8,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "Working on this meant joining two different views of the same player, as the headset knew who was in the current match while VR Master League held their team and league information, and the app let you search either starting point, with the player name providing the connection between a live match and a separate set of league records.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "I handled the requests and player lookups, and Silveridge put those results into a PyQt interface with separate views for league searches and public matches, including more detailed team information.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "We packaged Windows releases in November 2021, with connection instructions for both PC and standalone headset users, so the tool could be used outside the development environment.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved release on 10 November 2021.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/EchoStatsFinder",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Echo Stats Finder, showing Headset match, Player lookup, League statistics.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:EchoStatsFinder"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Watzon",
+    "descriptor": "Echo VR Discord bot",
+    "kind": "independent",
+    "date": "2022-06-29",
+    "timeframe": "June to July 2022",
+    "summary": "Built a Java Discord bot for the OCE Echo VR community, with league lookups, team rankings and server commands.",
+    "introduction": "Watzon brought Echo VR league information into Discord, where the OCE community could ask for team details and rankings without opening another site.",
+    "role": "Independent development. Java, JDA and the VR Master League API.",
+    "result": "A domain-specific Discord bot with implemented league commands and team displays. The preserved source also includes the earlier packaged versions of the project.",
+    "tags": [
+      "Games",
+      "Java",
+      "Community tools"
+    ],
+    "_id": "catalogue-backfill-watzon",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "watzon"
+    },
+    "order": 9,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I made Watzon around the Echo VR community, and the interesting part was getting the league's teams, players and matches into a form that made sense inside a Discord conversation, with the command response carrying enough of the team context to be useful inside the server itself.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The bot used JDA for Discord interactions and separate Java objects for league data, with commands that assembled team information and rankings into embeds, and server handling for things like captain roles.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "There were earlier packaged versions in WatzonOld, though I treat those as part of the same project, as they follow the same community and the same API integration.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 29 June 2022.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/Watzon",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Watzon, showing Discord command, VRML API, Team information.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:Watzon"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "ArticulateAI",
+    "descriptor": "Recorded voice assistant",
+    "kind": "independent",
+    "date": "2023-05-17",
+    "timeframe": "May 2023",
+    "summary": "Built a recording workflow that transcribed speech with Whisper, generated a GPT response and spoke short replies through ElevenLabs.",
+    "introduction": "ArticulateAI was one of my early voice experiments, recording a chosen amount of audio and passing it through transcription, a prompted response and optional speech output.",
+    "role": "Independent development. Python, OpenAI and ElevenLabs APIs.",
+    "result": "An implemented audio-to-response workflow, including saved transcripts and short spoken replies. It used separate API calls, with the user choosing each recording window.",
+    "tags": [
+      "AI",
+      "Voice",
+      "Python"
+    ],
+    "_id": "catalogue-backfill-articulate-ai",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "articulate-ai"
+    },
+    "order": 10,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I was working with voice interfaces in 2023, and this version started with a recording length and a choice of prompt, so the same audio path could be used for a question, lecture notes or a recipe, with the selected prompt changing what happened to the transcript after the recording had finished.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The program recorded from the microphone, sent the audio to Whisper and saved the transcript with a timestamp, then asked GPT for a response using the selected instructions.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "Short responses could go on to ElevenLabs for speech, though the implemented loop capped that at fewer than 100 characters, which kept this version close to a recording tool with spoken replies.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 17 May 2023.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/ArticulateAI",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original ArticulateAI command menu, with twelve options for processing a spoken transcript.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:ArticulateAI"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "L-system Generator",
+    "descriptor": "Procedural geometry tool",
+    "kind": "independent",
+    "date": "2023-05-20",
+    "timeframe": "May 2023",
+    "summary": "Built a JavaFX tool for generating L-system structures, saving their rules and exporting the resulting geometry to Blender.",
+    "introduction": "I made a small L-system editor that turns rewriting rules into branching structures, with an OBJ export so the result can move from JavaFX into Blender.",
+    "role": "Independent development. JavaFX, turtle geometry and OBJ export.",
+    "result": "A procedural editor with saved systems and Blender-compatible exports. The preserved examples show the generated structure and the geometry taken into Blender.",
+    "tags": [
+      "Graphics",
+      "Java",
+      "Blender"
+    ],
+    "_id": "catalogue-backfill-l-system-generator",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "l-system-generator"
+    },
+    "order": 11,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "Playing with L-systems meant starting with a short string and watching what repeated rewriting would produce, and I put that process into a JavaFX app with controls for the rules, iteration count and angle, with the generated string kept separate from the turtle that turned its instructions into geometry.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The geometry came from a turtle interpreting the generated string, with edges recorded as it moved through the structure and an exporter turning that result into an OBJ file.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "I added save and load for the systems themselves, so a useful set of rules could be kept alongside the exported geometry and brought back for another iteration.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 20 May 2023.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/LSystemGenerator",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original JavaFX screenshot showing the L-system controls beside a dense green branching structure.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:LSystemGenerator"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "3D Spanning Trees",
+    "descriptor": "Mesh graph transformation",
+    "kind": "independent",
+    "date": "2023-06-10",
+    "timeframe": "June 2023",
+    "summary": "Built a minimum-spanning-tree tool for OBJ geometry, with a Blender add-on and a packaged Java application.",
+    "introduction": "This takes the vertices and edges of an OBJ file and finds their minimum spanning tree, turning a connected mesh graph into a much sparser structure.",
+    "role": "Independent development. Java graph algorithms and a Blender add-on.",
+    "result": "A released geometry utility with OBJ input and output. The example shows the original edge grid alongside two sparse structures produced from it.",
+    "tags": [
+      "Graphics",
+      "Java",
+      "Blender"
+    ],
+    "_id": "catalogue-backfill-3d-spanning-trees",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "3d-spanning-trees"
+    },
+    "order": 12,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I was looking at meshes as graphs, and removing the faces left a useful starting point for finding the smallest collection of edges that still connected all the vertices, with the edge weights determining which connections were kept as the graph became a tree.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The Java implementation used Kruskal's algorithm and a union-find structure to select those edges, then wrote the result back to OBJ so it could be opened in Blender.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "I also made a Blender add-on and packaged the Java tool with launch scripts, which gave the same transformation a place inside a modelling workflow as well as a standalone application.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved release on 10 June 2023.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/3dSpanningTrees",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original project render showing a regular mesh edge grid beside two minimum spanning tree structures.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:3dSpanningTrees"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Parametric Bookshelf",
+    "descriptor": "Blender geometry nodes asset",
+    "kind": "independent",
+    "date": "2023-08-30",
+    "timeframe": "August 2023",
+    "summary": "Made a parametric bookshelf asset in Blender, with geometry-node controls and a reusable blend file.",
+    "introduction": "A small Blender asset for generating a bookshelf through geometry nodes, keeping the construction in the node graph so the shape can be adjusted without rebuilding it by hand.",
+    "role": "Independent modelling and geometry-node work in Blender.",
+    "result": "A reusable parametric blend asset, preserved with its geometry-node setup. The cover is the original node-graph image from the project README.",
+    "tags": [
+      "Graphics",
+      "Blender",
+      "Procedural design"
+    ],
+    "_id": "catalogue-backfill-parametric-bookshelf",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "parametric-bookshelf"
+    },
+    "order": 13,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I made this as a reusable Blender asset, with the bookshelf's construction held in a geometry-node graph so changing the inputs could change the object that appeared in the scene, with the reusable file keeping the construction and its controls together when the asset moved between scenes.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The project is the blend file itself, and the repository includes the node setup and instructions for adding it to an asset library, which made it easy to bring into another scene.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "It stayed a small modelling tool, though that is also the useful scale for it, as the work sits in how the object is constructed and how much of that construction remains adjustable.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 30 August 2023.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/BlenderBookShelf",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original Blender screenshot of the bookshelf geometry-node graph, with connected construction and transformation nodes.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:BlenderBookShelf"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Cookie Cat",
+    "descriptor": "Procedural Godot platformer",
+    "kind": "independent",
+    "date": "2023-07-14",
+    "timeframe": "July to August 2023",
+    "summary": "Made an endless Godot platformer with generated platforms, enemies, collectibles and shops for extra lives and jump upgrades.",
+    "introduction": "Cookie Cat was a university game project, with a player jumping through a generated level while collecting cookies and buying upgrades between encounters.",
+    "role": "University coursework. Game logic and integration in Godot, using third-party art assets.",
+    "result": "A playable coursework platformer with a recorded walkthrough. The generated level, enemy encounters and upgrade shops are part of the preserved game implementation.",
+    "tags": [
+      "Games",
+      "Godot",
+      "Procedural design"
+    ],
+    "_id": "catalogue-backfill-cookie-cat",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "cookie-cat"
+    },
+    "order": 14,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "This was an early Godot project for me, and the level kept generating as the player moved, so the main problem was making the next platform reachable while leaving enough variation for the game to keep moving, with enemies and collectibles placed in the same generated space that the player needed to cross.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "Cookies, frogs and their projectiles shared the generated space, and the player could spend collected currency on extra lives or jump upgrades when a shop appeared.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "Godot's scene and signal model took some getting used to, as objects needed to stay separate enough to reuse while still passing things like collisions, purchases and player state between them.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 14 July 2023.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "demo",
+        "label": "Recorded gameplay",
+        "href": "https://www.youtube.com/watch?v=c5CPZju70HY",
+        "external": true,
+        "kind": "other"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Cookie Cat, showing Generated platforms, Cookies and frogs, Upgrade shop.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:PlatformerGame"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Finlay and Lani's wedding website",
+    "descriptor": "Wedding information and RSVP website",
+    "kind": "professional",
+    "date": "2023-10-09",
+    "timeframe": "October 2023 to October 2024",
+    "summary": "Built a wedding website with a Vue interface, RSVP validation, Firebase content and an organiser view of responses.",
+    "introduction": "I built Finlay and Lani a wedding website that brought the event information and RSVP process together, with a separate view for managing the responses.",
+    "role": "Website development. Vue, Firebase and the RSVP workflow.",
+    "result": "A wedding information site with implemented RSVP handling and organiser administration. The preserved project spans the initial 2023 setup and subsequent work in 2024.",
+    "tags": [
+      "Web development",
+      "Vue",
+      "Firebase"
+    ],
+    "_id": "catalogue-backfill-finlay-lani-wedding",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "finlay-lani-wedding"
+    },
+    "order": 15,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "The website needed to carry the wedding information and give guests a straightforward way to respond, and I built the Vue version around those two jobs with a separate organiser view, with the guest form and the attending view working on the same response data in Firebase.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "Firebase held the content and response data, while the RSVP page handled form validation and the attending view brought the submissions back into the site for administration.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The repository preserves the earlier setup and the later Vue implementation, though the entry covers the resulting website and response workflow as one piece of work.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 9 October 2023.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/WeddingWebsite",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Finlay and Lani's wedding website, showing Wedding information, Guest RSVP, Organiser view.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:WeddingWebsite"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Birthday Gallery",
+    "descriptor": "Interactive Three.js gallery",
+    "kind": "independent",
+    "date": "2024-05-04",
+    "timeframe": "May 2024",
+    "summary": "Made an interactive birthday gallery with a custom 3D space, photographs, captions and camera movement between artworks.",
+    "introduction": "I made a birthday gallery for my dad, arranging photographs inside a small 3D space that you can move through in the browser.",
+    "role": "Independent design and development. Three.js, gallery models and photograph placement.",
+    "result": "A browser-based 3D birthday gallery with custom models and guided camera movement. The public cover illustrates the gallery structure without exposing the family photographs.",
+    "tags": [
+      "Graphics",
+      "Web development",
+      "Three.js"
+    ],
+    "_id": "catalogue-backfill-birthday-gallery",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "birthday-gallery"
+    },
+    "order": 16,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I made this around family photographs, and the gallery gave them a place in a small modelled space, with a card and captions that could be seen as the camera moved between the artworks, with the photograph positions and camera destinations held together so each move arrived at the next work.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "Three.js handled the scene and loaded the gallery models, while the application positioned the photographs and gave the viewer previous and next controls for moving through them.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "I kept the navigation tied to the works themselves, as the point was to move from one photograph to the next without needing to learn how to steer around the room.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 4 May 2024.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Birthday Gallery, showing Gallery model, Photographs, Guided camera.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:DadsBirthday"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "TransitSync",
+    "descriptor": "Calendar-linked Wellington transit planner",
+    "kind": "independent",
+    "date": "2025-04-05",
+    "timeframe": "April 2025",
+    "summary": "Built a prototype that connects calendar events with Wellington transit routing, with a separate open-source route-planning package.",
+    "introduction": "TransitSync connected Google Calendar locations with Metlink route planning, keeping the travel problem close to the events that made the journey necessary.",
+    "role": "Independent prototype development. Python, Flask, Google Calendar and Metlink routing.",
+    "result": "A calendar-linked routing prototype and a public Wellington transit package. The implementation is preserved separately from the proposed hosted product and its rollout plans.",
+    "tags": [
+      "Python",
+      "Transport",
+      "APIs"
+    ],
+    "_id": "catalogue-backfill-transit-sync",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "transit-sync"
+    },
+    "order": 17,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked on a planner for Wellington journeys that started from calendar events, as an event already had the destination and the time I needed to be there, which gave the routing a useful place to begin, with geocoding and nearby-stop lookup connecting the written address to the transit network behind the journey.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The app retrieved events and used a per-user routing service to connect their locations with transit plans, while the separate Python package handled geocoding, nearby stops and departure information.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The preserved version includes calendar integration and routing work, though the proposed multi-user rollout, scheduled syncing and realtime recalculation should be treated as development plans beyond that prototype.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 5 April 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "router",
+        "label": "Routing service source",
+        "href": "https://github.com/Slaymish/transitsync-routing",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original TransitSync project mark, combining a calendar and a bus above the project name.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:BusRouter"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "AndoSim",
+    "descriptor": "Blender cloth and shell simulation",
+    "kind": "independent",
+    "date": "2025-10-19",
+    "timeframe": "October 2025",
+    "summary": "Built a Blender simulation add-on with a C++ core, based on the cubic-barrier method for cloth and shell contact.",
+    "introduction": "AndoSim brought a published contact-simulation method into Blender, with a C++ solver, Python bindings and controls for cloth and shell experiments.",
+    "role": "Independent implementation and Blender integration. Based on published research and the PPF contact solver.",
+    "result": "A released Blender add-on and simulation codebase, with a native solver, bindings and test scenes. The underlying method and optional PPF backend are credited to their authors.",
+    "tags": [
+      "Graphics",
+      "Blender",
+      "C++",
+      "Simulation"
+    ],
+    "_id": "catalogue-backfill-ando-sim",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "ando-sim"
+    },
+    "order": 18,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked from the cubic-barrier paper towards a Blender add-on, and that meant joining the numerical solver with the scene data, controls and feedback needed to inspect a simulation as it ran, with the Python layer passing scene information into the native core and bringing simulation state back out.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The core used C++ with Eigen and pybind11, while the Blender layer exposed things like pin constraints, contact settings and debug overlays, with scripted scenes for exploring the solver's behaviour.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "There are numerical derivative tests and packaged releases alongside the demonstrations, though the recorded testing separates those checks from the broader integration and end-to-end validation still needed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved release on 19 October 2025.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "cover-credit",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "cover-credit-text",
+            "text": "The cover is the teaser collage included with the repository, illustrating the published simulation method rather than a separately verified run of my add-on.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/AndoSim",
+        "external": true,
+        "kind": "source"
+      },
+      {
+        "_key": "paper",
+        "label": "Underlying research paper",
+        "href": "https://doi.org/10.1145/3687908",
+        "external": true,
+        "kind": "other"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Teaser collage included in the AndoSim repository, showing several cloth and shell simulation scenes.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:AndoSim"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Bedroom Layout Designer",
+    "descriptor": "Browser-based room planning",
+    "kind": "independent",
+    "date": "2025-12-02",
+    "timeframe": "December 2025",
+    "summary": "Built a room planner with furniture editing, measurements, undo, local saving and printable PDF exports.",
+    "introduction": "Bedroom Layout Designer is a browser tool for trying room arrangements with actual dimensions, keeping furniture, openings and measurements in the same editable plan.",
+    "role": "Independent product design and development. React, TypeScript and local workspace storage.",
+    "result": "A browser-based planning app with local persistence, offline support and PDF output. The preserved work runs from December 2025 through the interaction updates in February 2026.",
+    "tags": [
+      "Web development",
+      "TypeScript",
+      "Product design"
+    ],
+    "_id": "catalogue-backfill-bedroom-layout-designer",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "bedroom-layout-designer"
+    },
+    "order": 19,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I made a room planner around the parts that need to agree before a layout is useful, as the room dimensions, furniture and door openings all have to share the same scale, with the plan keeping those measurements in shared workspace state as each object was moved or resized.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The workspace supports multiple rooms and measurement units, with placement, rotation and resizing for furniture and openings, and undo and redo across edits so an arrangement can be tried without losing the previous one.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "Plans save locally and can be exported as workspace files or PDFs, and I added tests around selection and state handling as those interactions determine whether the drawing stays predictable.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 2 December 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/BedroomLayoutDesigner",
+        "external": true,
+        "kind": "source"
+      },
+      {
+        "_key": "app",
+        "label": "Open the application",
+        "href": "https://bedroomlayout.app",
+        "external": true,
+        "kind": "other"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Screenshot of Bedroom Layout Designer showing the room-planning interface and editable plan.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:BedroomLayoutDesigner"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Piano Improvisation Helper",
+    "descriptor": "Browser audio key detection",
+    "kind": "independent",
+    "date": "2025-12-12",
+    "timeframe": "December 2025",
+    "summary": "Built a piano practice tool that searches for songs and estimates their key from available audio previews in the browser.",
+    "introduction": "This small app looks up a song, analyses an available preview and shows the likely key with alternate guesses, giving a starting point for playing along.",
+    "role": "Independent development. React, TypeScript, Web Audio and pitch-class analysis.",
+    "result": "A working search and preview-analysis interface with in-browser key detection and service tests. Results are estimates from the available clip, with alternate candidates shown.",
+    "tags": [
+      "Music",
+      "TypeScript",
+      "Audio"
+    ],
+    "_id": "catalogue-backfill-piano-improvisation-helper",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "piano-improvisation-helper"
+    },
+    "order": 20,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I made this around the moment of wanting to play along with a song, and the first version starts with a title and artist search before looking for an audio preview it can analyse, with the preview providing the audio material and the manual search keeping the initial interaction straightforward.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The detector decodes the preview in the browser and builds a pitch-class histogram across audio frames, then compares that distribution with major and minor key profiles to rank the possible keys.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The UI keeps alternate guesses visible and lets the analysis run for longer, though microphone-based song recognition is still a placeholder in this version and the implemented path starts with manual search.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 12 December 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/PianoImprovisationHelper",
+        "external": true,
+        "kind": "source"
+      },
+      {
+        "_key": "app",
+        "label": "Open the application",
+        "href": "https://pianoimprovisationhelper.netlify.app/",
+        "external": true,
+        "kind": "other"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Screenshot of Piano Improvisation Helper with its song search and preview-analysis interface.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:PianoImprovisationHelper"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Synod",
+    "descriptor": "Obsidian journal analysis plugin",
+    "kind": "independent",
+    "date": "2026-05-14",
+    "timeframe": "May 2026",
+    "summary": "Built an Obsidian plugin that reads journal entries through separate value agents and compiles their unresolved tensions into a bulletin.",
+    "introduction": "Synod reads a period of journal entries through separate agents for the values found in them, then brings their disagreements back into the vault as a bulletin.",
+    "role": "Independent plugin design and development. TypeScript, Obsidian and configurable language-model backends.",
+    "result": "A released Obsidian plugin with importers, value discovery and a bulletin pipeline. It offers competing readings of journal entries without presenting them as clinical advice.",
+    "tags": [
+      "AI",
+      "Obsidian",
+      "TypeScript"
+    ],
+    "_id": "catalogue-backfill-synod",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "synod"
+    },
+    "order": 21,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I built Synod around a journal being read from several positions at once, with each agent holding one value and the compiler looking at where their readings pulled in different directions, with each reading kept separate until the compiler had the different reports available to compare against each other.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The plugin imports entries from folders or supported journal exports, extracts candidate values and lets those values guide the analysis, with the resulting bulletin written back into the vault.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "Ollama is the default backend, though the settings also support compatible remote endpoints, so where the journal text goes depends on the connection the user chooses for the plugin.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved release on 14 May 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/Synod",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Synod’s actual Obsidian status panel, showing the journal import, value discovery and bulletin controls in an empty demonstration vault.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:Synod"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Lumen",
+    "descriptor": "Local Obsidian research plugin",
+    "kind": "independent",
+    "date": "2026-05-16",
+    "timeframe": "May 2026",
+    "summary": "Built a local research system for Obsidian, with related-note surfacing, retrieval, report generation and checks against source blocks.",
+    "introduction": "Lumen connects an Obsidian vault to a local research backend, surfacing related notes and assembling reports whose citations are checked against the vault.",
+    "role": "Independent plugin and backend development. TypeScript, Python and local model inference.",
+    "result": "A released local research plugin and backend, with note surfacing, report generation and source-block checks. GitHub preserves the plugin packages and evaluation code.",
+    "tags": [
+      "AI",
+      "Obsidian",
+      "Python"
+    ],
+    "_id": "catalogue-backfill-lumen",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "lumen"
+    },
+    "order": 22,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked on Lumen as a way of finding material already sitting in a vault, and the same retrieval system could surface related notes during ordinary writing or feed a longer research request, with the original note blocks kept available as sources when related material was assembled into a report.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The Obsidian plugin talked to a Python orchestrator, with separate packages for ingestion, retrieval, inference and memory, while a local model produced the research output and streamed progress back to the interface.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "Citation handling checked references against actual note blocks, and the project included evaluation and release tooling, though a valid source reference still needs to be read alongside the claim it is attached to.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved release on 16 May 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/Lumen",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Lumen’s actual research form in Obsidian, showing question input, sub-questions, vault and web sources, and memory controls.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:Lumen"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Otto",
+    "descriptor": "Native Mac voice assistant",
+    "kind": "independent",
+    "date": "2026-06-20",
+    "timeframe": "June 2026",
+    "summary": "Developed a native Swift version of a Mac voice assistant, with hotkeys, capability retrieval, session logs and local retrospective learning.",
+    "introduction": "Otto is a voice and text assistant for the Mac. I developed it from the voice-os project, moving the app into Swift and adding capability and session-learning work.",
+    "role": "Development of a fork of per-simmons/voice-os. Swift migration, interface and learning integration.",
+    "result": "Packaged Mac releases with a native Swift implementation and session-based capability work. The entry credits the upstream project and distinguishes my changes from its starting point.",
+    "tags": [
+      "AI",
+      "Voice",
+      "Swift",
+      "macOS"
+    ],
+    "_id": "catalogue-backfill-otto",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "otto"
+    },
+    "order": 23,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I started from voice-os and worked towards a native Mac app, with the voice connection, action handling and interface held in Swift instead of relying on the earlier Python process, with the native engine holding the connection and action state that the interface needed to show.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The app kept a capability index and session logs, and retrospective processing could add useful phrasings or proposed capabilities from a completed session, with a local Ollama option for that learning step.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "Hotkeys, onboarding and settings made it usable as a menu-bar application, and the June releases packaged the Swift app alongside tests for the capability and session components.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved release on 20 June 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/Otto",
+        "external": true,
+        "kind": "source"
+      },
+      {
+        "_key": "upstream",
+        "label": "Original voice-os project",
+        "href": "https://github.com/per-simmons/voice-os",
+        "external": true,
+        "kind": "other"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Otto’s native capability journal rendered with the original shipped app and music commands, in an offline demonstration.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:Otto"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Grid Diffusion AD",
+    "descriptor": "Diffusion-based fault detection study",
+    "kind": "research",
+    "date": "2025-11-12",
+    "timeframe": "November 2025 to February 2026",
+    "summary": "Investigated diffusion models for fault detection in power-system signals, with normal-only training and explicit false-alarm evaluation.",
+    "introduction": "I studied whether diffusion models trained on normal magnetic-field signals could identify electrical faults, separating reconstruction quality from the detection behaviour needed in a monitoring system.",
+    "role": "Academic research. Model implementation, experiments, evaluation and report.",
+    "result": "A completed implementation and evaluation study with recorded experiments and a report. The findings limit the detector claims, particularly under normal-only threshold calibration.",
+    "tags": [
+      "AI",
+      "Machine learning",
+      "Research",
+      "Time series"
+    ],
+    "_id": "catalogue-backfill-grid-diffusion-ad",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "grid-diffusion-ad"
+    },
+    "order": 24,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "The data was repetitive and multi-channel, and I worked on learning its normal structure with diffusion models before using reconstruction and denoising scores to look for fault-related departures, with each score needing to be tested against the normal variation that the model had already seen.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The pipeline included quantisation, categorical denoising and several scoring variants, with experiments comparing model settings and threshold calibration using normal data, as fault labels should not silently become part of the calibration process.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The report found that good reconstruction did not consistently produce useful detection, and the evaluated operating points still had high false-alarm rates, which made the deployment assumptions part of the result.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 12 November 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original experiment plot comparing four channels of signal data with their reconstructed waveforms.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:grid-diffusion-ad"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Conversational Timing Lab",
+    "descriptor": "Speech turn-taking experiments",
+    "kind": "research",
+    "date": "2026-09-04",
+    "timeframe": "September 2026",
+    "summary": "Built a speech-timing dataset and baseline evaluation to study turn completion and response onset in real conversations.",
+    "introduction": "I investigated when a speaker has actually finished, keeping turn completion separate from the timing of the next response and testing pause-based assumptions against recorded conversations.",
+    "role": "Independent research. Dataset adapters, causal labels, baseline evaluation and audio-model pipeline.",
+    "result": "A reproducible baseline investigation and audio-training pipeline. Pause duration offered limited separation on the recorded meeting data, with the corpus and interruption-budget caveats retained.",
+    "tags": [
+      "Voice",
+      "Machine learning",
+      "Research"
+    ],
+    "_id": "catalogue-backfill-conversational-timing-lab",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "conversational-timing-lab"
+    },
+    "order": 25,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I started with the difference between somebody finishing a thought and somebody pausing inside it, as both can leave the same silence while asking very different things of a voice assistant, with the next speaker supplying the label while the observed silence remained an input available at the time.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The dataset labels came from who spoke next, with observations limited to what was available at that moment, and the baseline evaluation used conversation-level splits to keep meetings from leaking across training and validation.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The recorded baseline run covered 100,004 boundaries from 171 AMI meetings, though the small audio-model run was only an end-to-end pipeline check and did not establish a useful trained predictor.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 4 September 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/conversational-timing-lab",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Conversational Timing Lab, showing Observed pause, Turn completion, Response onset.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:conversational-timing-lab"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Typed Diff Questions",
+    "descriptor": "Code-review model experiments",
+    "kind": "research",
+    "date": "2026-09-21",
+    "timeframe": "September 2026",
+    "summary": "Built an experiment harness comparing models on narrow questions about code diffs, with calibration and class-balanced evaluation.",
+    "introduction": "I tested whether small, typed questions about a changed hunk gave a useful basis for code review, comparing model agreement while keeping the eventual reviewer separate from the experiment.",
+    "role": "Independent research. Corpus sampling, model scoring, calibration and evaluation.",
+    "result": "Three recorded scoring runs and a reusable experiment harness. Human bug labels and the proposed reviewer interface remain outside the conclusions established by this work.",
+    "tags": [
+      "AI",
+      "Developer tools",
+      "Research"
+    ],
+    "_id": "catalogue-backfill-typed-diff-questions",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "typed-diff-questions"
+    },
+    "order": 26,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked on the question bank before building the reviewer, as a model answering a narrow question about a diff gives something that can be compared across runs without treating the whole review as one judgement, with each question producing a score that could be calibrated and compared with a simple baseline.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The harness sampled code hunks and compared Jev and Haiku with an Opus reference, with repeated scores, class-balanced measures and an always-negative baseline to expose how much the label distribution could inflate apparent agreement.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The findings changed between repositories, and the reference was still another model, so the experiment measured agreement under those conditions without establishing that a developer would accept the findings as real bugs.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 21 September 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Typed Diff Questions, showing Changed hunk, Typed questions, Calibrated scores.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:commit-reviewer"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Malware Classifier Backdoors",
+    "descriptor": "Academic classifier robustness study",
+    "kind": "research",
+    "date": "2025-02-17",
+    "timeframe": "February 2025",
+    "summary": "Investigated backdoor attacks on malware classifiers, preserving the manuscript, experiment comparisons and robustness plots.",
+    "introduction": "This academic study examined how poisoned training data affected malware classifiers, comparing attack success with the clean detection behaviour that still had to be preserved.",
+    "role": "Academic research and report. Using and extending an existing backdoor-study implementation.",
+    "result": "An academic manuscript with experiment figures and classifier comparisons. The entry describes the study without claiming a first-of-its-kind result or general immunity to backdoors.",
+    "tags": [
+      "Security",
+      "Machine learning",
+      "Research"
+    ],
+    "_id": "catalogue-backfill-malware-classifier-backdoors",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "malware-classifier-backdoors"
+    },
+    "order": 27,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked on malware classification under poisoned training data, where the important comparison involved both whether a trigger changed the prediction and what happened to ordinary detection at the same time, with the clean metric kept beside the attack metric so a change in one could not hide the other.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The manuscript brought together experiments across model choices and poisoning conditions, with plots separating clean performance from attack behaviour and supporting material for the feature and backdoor comparisons.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The preserved work includes an external implementation fork alongside the report, though the numerical claims belong to those recorded experiments and should be read with the dataset and attack assumptions they used.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 17 February 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original study plot comparing attack success rates across models and poisoning ratios.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:MalwareResearchPaper"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Cowrie Honeypot Analysis",
+    "descriptor": "Security log investigation",
+    "kind": "research",
+    "date": "2025-10-04",
+    "timeframe": "October 2025",
+    "summary": "Analysed Cowrie honeypot events and produced charts, query tools and reports on authentication, commands and attacker activity.",
+    "introduction": "I used Cowrie honeypot logs to examine the activity behind repeated login attempts, bringing event summaries and campaign-level observations into a pair of reports.",
+    "role": "Academic security analysis. Python analysis, visualisation and report preparation.",
+    "result": "A completed log-analysis workflow with charts and written reports. The public entry uses aggregate timing output rather than individual attacker addresses or credentials.",
+    "tags": [
+      "Security",
+      "Python",
+      "Research"
+    ],
+    "_id": "catalogue-backfill-cowrie-honeypot-analysis",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "cowrie-honeypot-analysis"
+    },
+    "order": 28,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "The starting point was a large collection of honeypot events, and I worked from those records towards views of authentication, session activity and the commands people attempted after gaining access, with the session records providing a way to connect separate events before interpreting their wider pattern.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The analysis code produced summaries and charts for timing, ports, credentials and command use, with separate query tools for looking more closely at the activity behind an aggregate count.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The saved report describes 480,998 events, and the repository preserves both an executive overview and a campaign deep dive, though those figures belong to that captured dataset and not an ongoing monitoring service.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 4 October 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original aggregate charts showing honeypot activity by hour of day and day of week.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:CYBRAnalysis"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Music Genre Classification",
+    "descriptor": "Academic music-data study",
+    "kind": "research",
+    "date": "2024-09-16",
+    "timeframe": "September 2024",
+    "summary": "Built a music classification workflow with exploratory plots, preprocessing, model training and saved predictions.",
+    "introduction": "I worked with track-level music data to compare genres through their features, building the preprocessing and training workflow alongside plots of the dataset.",
+    "role": "University machine-learning coursework. Data preparation, training and exploratory analysis.",
+    "result": "A preserved academic classification workflow with exploratory figures and prediction output. The cover shows feature relationships in the dataset rather than an accuracy claim.",
+    "tags": [
+      "Music",
+      "Machine learning",
+      "Research"
+    ],
+    "_id": "catalogue-backfill-music-genre-classification",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "music-genre-classification"
+    },
+    "order": 29,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "The dataset described ten genres with 5,000 training examples each, and I started by looking at how the available track features were distributed before turning them into inputs for classification, with the exploratory figures kept alongside the preparation code so the transformations could be checked against the data.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The code separates exploratory analysis, preprocessing and training, with plots for features such as energy and danceability and saved validation data and predictions alongside the model workflow.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "That separation made it possible to look back at the data transformations and the model output together, though a feature correlation plot describes the dataset and should not be read as a classification result.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 16 September 2024.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/Musicical-Genre-Classifier",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original correlation heatmap of the music dataset features, including energy, loudness and danceability.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:Musicical-Genre-Classifier"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Wellington Transport Network",
+    "descriptor": "JavaFX graph analysis coursework",
+    "kind": "independent",
+    "date": "2023-04-16",
+    "timeframe": "April 2023",
+    "summary": "Implemented route search, connected-component analysis and critical-stop detection for a Wellington transport network.",
+    "introduction": "This university project treated Wellington public transport as a graph, using the same network to find routes and inspect the stops that held parts of it together.",
+    "role": "University coursework. Graph and algorithm implementation within a supplied JavaFX framework.",
+    "result": "A coursework implementation of route and network-structure algorithms, with a map interface and tests. The supplied application framework is distinguished from my algorithm work.",
+    "tags": [
+      "Java",
+      "Transport",
+      "Algorithms"
+    ],
+    "_id": "catalogue-backfill-wellington-transport-network",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "wellington-transport-network"
+    },
+    "order": 30,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked from the stops and connections of the Wellington network, and the map gave the graph algorithms something recognisable to operate on, including walking connections within a chosen distance, with the walking edges changing the route graph while the critical-stop analysis used the relevant transport connections.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "A* searched for routes between stops, while connected-component and articulation-point work examined a different property of the same graph, identifying separated parts and stops whose removal would break connectivity.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The project included tests and a JavaFX map interface, though the route and structural analyses answer different questions, which is why the results need their own views of the network.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 16 April 2023.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Wellington Transport Network, showing Transport graph, A* search, Critical stops.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:WellingtonTrainNetwork"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Path Tracing Study",
+    "descriptor": "C++ rendering coursework",
+    "kind": "research",
+    "date": "2024-05-19",
+    "timeframe": "May 2024",
+    "summary": "Implemented coursework path-tracing features and a grid-based sampling variant, preserving the source and example renders.",
+    "introduction": "I worked on a C++ path tracer as part of university graphics coursework, exploring how sampling and scene materials showed up in the rendered image.",
+    "role": "University coursework. Rendering implementation within a supplied C++ framework.",
+    "result": "A completed rendering assignment with source and sample images. The additional grid sampling method is recorded separately from the supplied graphics framework.",
+    "tags": [
+      "Graphics",
+      "C++",
+      "Rendering"
+    ],
+    "_id": "catalogue-backfill-path-tracing-study",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "path-tracing-study"
+    },
+    "order": 31,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "The renderer made light transport visible a sample at a time, and I worked through the assignment's scene and tracing code while using the rendered images to inspect what the implementation was doing, with the material and light code determining how each traced path contributed to the eventual pixel value.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "I completed the listed coursework stages and added a sampling approach that stepped through an image grid, which gave another way to organise the samples alongside the existing random method.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The preserved render uses a small enclosed scene with coloured walls and curved objects, where indirect lighting and material differences can be seen without needing a complicated model to explain them.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 19 May 2024.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original path-traced scene with coloured walls and several spheres, showing noisy indirect illumination.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:CGRA251_Framework_A4"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Boids Simulation",
+    "descriptor": "Interactive flocking coursework",
+    "kind": "research",
+    "date": "2024-05-12",
+    "timeframe": "May 2024",
+    "summary": "Implemented a boids simulation with force-based movement, obstacles and interactive graphics controls.",
+    "introduction": "This graphics assignment explored flocking through individual movement rules, with boids moving through a shared space and responding to neighbours and obstacles.",
+    "role": "University coursework. Boid behaviour and scene work within a supplied graphics framework.",
+    "result": "An interactive coursework simulation with preserved source and example screenshots. The cover shows the original scene and its controls.",
+    "tags": [
+      "Graphics",
+      "C++",
+      "Simulation"
+    ],
+    "_id": "catalogue-backfill-boids-simulation",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "boids-simulation"
+    },
+    "order": 32,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked on the force calculation and update steps for the boids, and the movement came from those individual rules being applied across the group as the scene advanced, with obstacles held in the same scene so their effect could be included in those movement updates.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The project held boids, obstacles and scene handling in separate components, with controls for the simulation and several example models so the resulting motion could be inspected from the graphics interface.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The saved images show a large flock inside a bounded volume with obstacles, which is also where the local behaviour becomes easier to see as patterns across the whole group.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 12 May 2024.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/CGRA354_Framework_A3",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original boids simulation screenshot showing a green flock in a bounded space, red obstacles and a control panel.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:CGRA354_Framework_A3"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Geometry and Shader Study",
+    "descriptor": "Real-time graphics coursework",
+    "kind": "research",
+    "date": "2024-07-09",
+    "timeframe": "July 2024",
+    "summary": "Worked on generated geometry, lighting and texture techniques in an OpenGL graphics assignment.",
+    "introduction": "I explored how generated geometry and shader inputs meet in a real-time renderer, building the coursework shapes and working through lighting and texture techniques.",
+    "role": "University coursework. Geometry and shader implementation within a supplied OpenGL framework.",
+    "result": "A preserved real-time graphics study with geometry code, shader work and screenshots. The example cover is one of the original texture-mapping outputs.",
+    "tags": [
+      "Graphics",
+      "C++",
+      "Rendering"
+    ],
+    "_id": "catalogue-backfill-geometry-shader-study",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "geometry-shader-study"
+    },
+    "order": 33,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I started with the shape construction, including latitude-longitude and cube-derived spheres and a torus, where the generated vertices had to line up with the normals and texture coordinates used by the renderer, with the same mesh data feeding the lighting and mapping techniques explored in the later parts of the assignment.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The shader work covered reflection models, texture and normal mapping and shadow mapping, with the assignment notes and saved screenshots keeping the different techniques alongside the source that implemented them.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "It was a useful place to see an error in one layer appear in another, as the mesh and shader share enough assumptions that a lighting problem can begin in the geometry.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 9 July 2024.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/CGRA350-Assignment-1",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Original renderer screenshot of a red and black checker-textured cube against a plain background.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:CGRA350-Assignment-1"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Floor-plan Importer",
+    "descriptor": "Architectural Blender add-on",
+    "kind": "independent",
+    "date": "2024-05-29",
+    "timeframe": "May 2024",
+    "summary": "Built a Blender importer that turns structured floor-plan data into scene geometry.",
+    "introduction": "This Blender add-on reads floor-plan data and creates the corresponding geometry, keeping the import step close to the modelling tools used to work on the result.",
+    "role": "Blender add-on development. Python import and geometry construction in the OpenArchSpecs context.",
+    "result": "An implemented floor-plan import add-on with sample data and usage documentation. The cover is an explanatory plan-to-geometry diagram, not a captured Blender viewport.",
+    "tags": [
+      "Graphics",
+      "Blender",
+      "Python"
+    ],
+    "_id": "catalogue-backfill-floor-plan-importer",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "floor-plan-importer"
+    },
+    "order": 34,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked on bringing structured floor-plan data into Blender, where the useful part of an import is having something that can be edited in the scene after the file has been read, with the structured input supplying the plan information and the add-on doing the scene construction from it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The Python add-on separates the importer, interface and utility code, with a sample plan and documentation describing the file-import workflow and the generated architectural representation.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The repository links into OpenArchSpecs for distribution, so the entry keeps that project context attached to the importer instead of presenting the file format or surrounding work as something invented here.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 29 May 2024.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/blender-addon",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Floor-plan Importer, showing Floor-plan data, Geometry construction, Blender scene.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:blender-addon"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Piano Waveform Visualiser",
+    "descriptor": "Interactive audio synthesis study",
+    "kind": "independent",
+    "date": "2025-07-10",
+    "timeframe": "July 2025",
+    "summary": "Made an SDL2 piano keyboard that combines selected tones and displays their waveform and frequency information.",
+    "introduction": "I made a small C++ piano visualiser where selecting keys changes both the sound being synthesised and the waveform shown beside the keyboard.",
+    "role": "Independent development. C++17, SDL2 and audio synthesis.",
+    "result": "An interactive keyboard and synthesis experiment with a waveform display. The preserved program supports selected keys and display-scale controls, with MIDI and file input left as future work.",
+    "tags": [
+      "Music",
+      "C++",
+      "Audio"
+    ],
+    "_id": "catalogue-backfill-piano-waveform-visualiser",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "piano-waveform-visualiser"
+    },
+    "order": 35,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I was playing with the relationship between piano frequencies and the shape of their combined signal, and the on-screen keyboard gave the same set of notes a sound and a visible waveform, with the waveform drawn from the combined signal while each selected key still had its own frequency.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "SDL2 handled the interface and audio, with key selection and a scale control changing the display as the tones were combined, and hover information showing the individual key frequencies.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The aggregate frequency values are part of this visualisation's calculations, though a combination of notes still contains its separate components and should not be reduced to one physical pitch.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 10 July 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/PianoVisualiser",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Piano Waveform Visualiser, showing Selected keys, Summed tones, Waveform display.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:PianoVisualiser"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "GrooveBox",
+    "descriptor": "Keyboard-controlled beat sequencer",
+    "kind": "independent",
+    "date": "2025-11-23",
+    "timeframe": "November 2025",
+    "summary": "Built a desktop groovebox with sample playback, editable patterns and a Python sequencer backed by audio-engine experiments.",
+    "introduction": "GrooveBox is a small beat-sketching tool, using the computer keyboard to play samples and record patterns that can be changed while the sequencer runs.",
+    "role": "Independent development. Python, Pygame and C++ audio-engine work.",
+    "result": "A desktop sequencing prototype with sample audio, pattern editing and playback code. The cover diagrams the implemented loop without pretending to be a hardware product photograph.",
+    "tags": [
+      "Music",
+      "Python",
+      "Audio"
+    ],
+    "_id": "catalogue-backfill-groovebox",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "groovebox"
+    },
+    "order": 36,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I built the sequencer around playing a pad and keeping that action in a pattern, so the keyboard could serve as the input while a running loop kept the timing visible, with sample playback and pattern state kept separate enough for the same sequencer to use different audio backends.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The code includes quantised recording and pattern switching, with track-length changes, rotation and Euclidean-fill functions sitting alongside the playback state and audio backends.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The repository also has scene and persistence functions beyond the older README checklist, though the proposed physical controller stayed a separate direction from the desktop instrument implemented here.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 23 November 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/GrooveBox",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for GrooveBox, showing Pad input, Pattern sequencer, Sample playback.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:GrooveBox"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Pinterest Aesthetic Analysis",
+    "descriptor": "Image embedding and clustering tool",
+    "kind": "independent",
+    "date": "2025-08-06",
+    "timeframe": "August 2025",
+    "summary": "Built a pipeline for clustering Pinterest images with CLIP embeddings and comparing visual themes between saved runs.",
+    "introduction": "I used image embeddings to look at the themes inside a Pinterest board, grouping similar images and keeping snapshots that could be compared over time.",
+    "role": "Independent development. Python, CLIP embeddings and clustering.",
+    "result": "An implemented image-analysis pipeline with saved cluster assignments and a dated comparison summary. The cover illustrates the grouping process without reproducing the collected photographs.",
+    "tags": [
+      "AI",
+      "Python",
+      "Computer vision"
+    ],
+    "_id": "catalogue-backfill-pinterest-aesthetic-analysis",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "pinterest-aesthetic-analysis"
+    },
+    "order": 37,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked with a board as a collection of images, and the embedding step let the clustering operate on visual similarity while keeping the original images and metadata available for checking the groups, with the stored assignments making it possible to return from an abstract cluster to the images inside it.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The pipeline joined collection, embedding, clustering and comparison, with saved assignments and category refinements so a cluster could be inspected instead of accepting the generated label as an explanation by itself.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The checked-in August 2025 summary describes 171 images across three clusters, though that was a snapshot of one collection and not evidence that the same themes would remain stable on a different board.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 6 August 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/PinterestBoardEmbedding",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Pinterest Aesthetic Analysis, showing Board images, CLIP embeddings, Visual clusters.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:PinterestBoardEmbedding"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Spotify Playlist Demographics",
+    "descriptor": "Playlist metadata exploration",
+    "kind": "independent",
+    "date": "2024-03-23",
+    "timeframe": "March 2024",
+    "summary": "Built a playlist analysis tool that combines artist lookup, biographical text extraction and demographic visualisation.",
+    "introduction": "This experiment started with a Spotify playlist and followed its artists into biographical sources, using extracted metadata to build a view of the collection.",
+    "role": "Independent development. Python, Spotify, Wikipedia and language-model extraction.",
+    "result": "A preserved retrieval, extraction and plotting workflow. Its demographic fields are source-derived estimates, with no claim that every artist was described completely or correctly.",
+    "tags": [
+      "Music",
+      "Python",
+      "APIs"
+    ],
+    "_id": "catalogue-backfill-spotify-playlist-demographics",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "spotify-playlist-demographics"
+    },
+    "order": 38,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked from the artists in a playlist, with Spotify providing the names and Wikipedia providing biographical text that could be turned into structured fields for the analysis, with the cached artist records making the extraction step reusable when another playlist contained the same names.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The pipeline cached extracted information and used GPT to format uncached biographies, then passed those records into plotting code so the playlist could be examined as a group of artists.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The extraction stage makes this exploratory, as biographies can be incomplete and a model can misread them, so the charts need to stay attached to the sources and missing information behind each field.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 23 March 2024.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/Spotify-Demographics-Analyzer",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Spotify Playlist Demographics, showing Playlist artists, Biography extraction, Aggregate view.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:Spotify-Demographics-Analyzer"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Bank-to-Sheets Sync",
+    "descriptor": "Personal banking data pipeline",
+    "kind": "independent",
+    "date": "2025-11-15",
+    "timeframe": "November 2025",
+    "summary": "Built an Akahu-to-Google-Sheets sync with transaction categorisation, deduplication and balance reconciliation.",
+    "introduction": "I made a small banking pipeline that keeps settled transactions in Google Sheets, leaving the budget calculations in the sheet and handling the recurring sync in Python.",
+    "role": "Independent development. Python, Akahu and Google Sheets.",
+    "result": "An implemented personal banking sync with focused tests for state, categorisation and reconciliation. It is a precursor to the later finance projects, with sample data used for public illustration.",
+    "tags": [
+      "Python",
+      "Finance",
+      "Automation"
+    ],
+    "_id": "catalogue-backfill-bank-to-sheets-sync",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "bank-to-sheets-sync"
+    },
+    "order": 39,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked on getting the transaction data into a sheet reliably, as the formulas already had somewhere to live and the recurring job was to keep their underlying ledger up to date, with the saved sync state keeping track of the previous run before another batch of transactions arrived.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The sync used stable transaction IDs and stored its progress between runs, with configurable category rules and transfer detection applied before batched writes to the sheet.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "Reconciliation compared the available balance information with the recorded data, while settled transactions avoided some of the mutability that makes pending entries awkward to keep in a repeatable ledger.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 15 November 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/akahu-sheets-sync",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Bank-to-Sheets Sync, showing Settled transactions, Categorise and reconcile, Google Sheets.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:akahu-sheets-sync"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Metlink Departures Display",
+    "descriptor": "Glanceable home bus sign",
+    "kind": "independent",
+    "date": "2026-01-16",
+    "timeframe": "January 2026",
+    "summary": "Made a web and command-line display for upcoming Wellington bus departures, with a small service setup for home use.",
+    "introduction": "A small departures sign for Wellington buses, built to put the next arrivals somewhere glanceable instead of repeating the same stop lookup.",
+    "role": "Independent development. Python, Metlink departures and a home service.",
+    "result": "A compact web and CLI departure display with documented setup. The cover explains the sign format, with no live arrival data implied.",
+    "tags": [
+      "Python",
+      "Transport",
+      "Automation"
+    ],
+    "_id": "catalogue-backfill-metlink-departures-display",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "metlink-departures-display"
+    },
+    "order": 40,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I made this around a bus stop and its next departures, keeping the display small enough to be useful at home while the same lookup could also be read from the command line, with the server and terminal versions sharing the departure information that gave the sign its useful content.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The Python code includes the departure retrieval and a web sign server, with an example systemd service for keeping that display available without starting it by hand each time.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The configured stop and API connection determine the actual arrivals, so the illustration uses the display's structure without presenting made-up minutes as a live service reading.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 16 January 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/metlink-departures-display",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Metlink Departures Display, showing Configured stop, Metlink departures, Home display.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:metlink-departures-display"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Flat Power Calculator",
+    "descriptor": "Household electricity split tool",
+    "kind": "independent",
+    "date": "2026-04-21",
+    "timeframe": "April 2026",
+    "summary": "Built a small web tool for calculating and communicating the flat electricity-bill split, with a Home Assistant integration module.",
+    "introduction": "I made a small calculator for the flat power bill, keeping the calculation and the message about what each person owes close to the same inputs.",
+    "role": "Independent development. TypeScript calculation, formatting and Home Assistant integration.",
+    "result": "An implemented household calculation tool with a clear separation between inputs, split logic and output formatting. The cover shows the workflow using no personal bill amounts.",
+    "tags": [
+      "TypeScript",
+      "Finance",
+      "Automation"
+    ],
+    "_id": "catalogue-backfill-flat-power-calculator",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "flat-power-calculator"
+    },
+    "order": 41,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "The project started with the monthly power bill for the flat, and I kept the calculation separate from its formatting so the amount shown in the interface could also be used when communicating the split, with the browser interface taking the figures while the calculation module kept the sharing rule in one place.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The TypeScript modules separate the split calculation, display formatting and Home Assistant access, with a browser interface for entering the relevant figures and working through the result.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "It stayed a small household tool, though that scale made the rule easier to inspect, as there was one bill and a particular sharing arrangement behind the numbers.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 21 April 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/PowerCalculator",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Flat Power Calculator, showing Power bill, Household split, Amounts to share.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:PowerCalculator"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Wake-on-Join Minecraft",
+    "descriptor": "On-demand AWS game server",
+    "kind": "independent",
+    "date": "2026-07-26",
+    "timeframe": "July 2026",
+    "summary": "Built an AWS Minecraft setup that sleeps when idle and wakes when somebody tries to join, with infrastructure templates and a runbook.",
+    "introduction": "I put together a Minecraft server for friends that can sleep while nobody is playing, with the join attempt acting as the signal to bring it back.",
+    "role": "Independent infrastructure development. Paper, AWS templates and server operations tooling.",
+    "result": "An on-demand Paper server architecture with deployment templates and a runbook. The entry describes the wake and idle behaviour without claiming instant startup or a measured cost saving.",
+    "tags": [
+      "Cloud infrastructure",
+      "Games",
+      "Automation"
+    ],
+    "_id": "catalogue-backfill-wake-on-join-minecraft",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "wake-on-join-minecraft"
+    },
+    "order": 42,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "The server was for a small group, and keeping a machine running all the time was a different problem from making it available when somebody actually wanted to play, with the infrastructure keeping the wake mechanism available while the machine that ran the game could sleep.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The project separated the wake path from the game instance, with infrastructure templates, a control script and operating notes describing how the server starts and how idle periods are handled.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The join-triggered approach kept the familiar Minecraft connection as the entry point, though waking an instance still has a startup period before the game server becomes ready.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 26 July 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "source",
+        "label": "Source code",
+        "href": "https://github.com/Slaymish/YayMinecraftServer",
+        "external": true,
+        "kind": "source"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Wake-on-Join Minecraft, showing Join attempt, Wake instance, Paper server.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:YayMinecraftServer"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Sentient Environment Explorer",
+    "descriptor": "Reinforcement-learning simulation",
+    "kind": "independent",
+    "date": "2025-03-10",
+    "timeframe": "March 2025",
+    "summary": "Built a grid-world learning experiment with food, hazards, a neural agent and a live interface for observing its behaviour.",
+    "introduction": "Sentient was an experiment in an agent learning its way through a changing 2D environment, with food and hazards giving its movement a consequence.",
+    "role": "Independent experiment development. Python, deep Q-learning and simulation UI.",
+    "result": "A visual reinforcement-learning prototype with a running environment, controls and saved model checkpoints. The public cover is a schematic world, not a frame from a recorded run.",
+    "tags": [
+      "Machine learning",
+      "Python",
+      "Simulation"
+    ],
+    "_id": "catalogue-backfill-sentient-environment-explorer",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "sentient-environment-explorer"
+    },
+    "order": 43,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I built a small world where movement mattered to the agent's survival, with food, harmful objects and a hunger mechanism giving it more to do than simply cross an empty grid, with the environment changing as the agent moved and the reward values shaping which actions the learner would revisit.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The code separates the environment, neural learner and orchestrator, with a GUI for pausing the simulation, changing its speed and observing the behaviour while learning continues.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The repository includes saved checkpoints from training runs, though those show that the learning workflow ran and do not by themselves establish a general improvement in exploration or decision making.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 10 March 2025.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Sentient Environment Explorer, showing Environment, Agent action, Reward and replay.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:Sentient"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "DropETA",
+    "descriptor": "Delivery-route planning prototype",
+    "kind": "independent",
+    "date": "2026-03-20",
+    "timeframe": "March 2026",
+    "summary": "Built a delivery planner with address lookup, stop ordering, ETA calculations and previews of where a new stop fits.",
+    "introduction": "DropETA is a prototype for arranging a changing list of deliveries, using route durations to work through stop order and the arrival times that follow from it.",
+    "role": "Independent prototype development. TypeScript, routing services and browser UI.",
+    "result": "An implemented route-planning prototype with browser UI and stop-insertion logic. The captured interface shows the initial state, without implying a completed commercial rollout.",
+    "tags": [
+      "TypeScript",
+      "Transport",
+      "Product design"
+    ],
+    "_id": "catalogue-backfill-drop-eta",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "drop-eta"
+    },
+    "order": 44,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked on the point where a new delivery changes an existing route, as adding an address is easy but the useful part is seeing what it does to the stops that were already planned, with the duration matrix giving the ordering logic travel estimates to compare as the list of destinations changed.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The implementation has duration-matrix and route services, with stop-order evaluation, recalculated arrivals and an insertion preview that tests where another stop can fit in the current plan.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The interface ties those operations to a map and a stop list, though live position access and the configured routing services are still conditions for the corresponding ETA behaviour.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 20 March 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [
+      {
+        "_key": "app",
+        "label": "Open the application",
+        "href": "https://dropeta.vercel.app",
+        "external": true,
+        "kind": "other"
+      }
+    ],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Screenshot of the DropETA delivery-planning interface with the map hidden and the initial stop-list state.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:dropeta"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  },
+  {
+    "title": "Personal Language Corpus",
+    "descriptor": "Local language-analysis workflow",
+    "kind": "independent",
+    "date": "2026-10-02",
+    "timeframe": "October 2026",
+    "summary": "Built a local workflow for importing language samples with provenance and comparing quantitative features with source-linked observations.",
+    "introduction": "This workflow brings transcripts and exports into one small corpus, keeping passage IDs and source information attached to the analysis so a pattern can be checked against the words behind it.",
+    "role": "Independent development. Python importers, provenance and analysis workflow.",
+    "result": "A local, testable corpus workflow with provenance and sample data. It keeps the underlying passages inspectable while separating numerical features from qualitative interpretations.",
+    "tags": [
+      "Python",
+      "Writing tools",
+      "Research"
+    ],
+    "_id": "catalogue-backfill-personal-language-corpus",
+    "_type": "workStory",
+    "slug": {
+      "_type": "slug",
+      "current": "personal-language-corpus"
+    },
+    "order": 47,
+    "body": [
+      {
+        "_type": "block",
+        "_key": "paragraph-0",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-0-text",
+            "text": "I worked on the structure of the corpus before its interpretation, as a useful observation about language needs a way back to the passage and the source that produced it, with those identifiers kept through the import so later features and observations could still point to the same text.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-1",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-1-text",
+            "text": "The importers handle supported transcripts and exports, with stable passage IDs and role information carried into quantitative features, baseline comparisons and the qualitative workflow.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "paragraph-2",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "paragraph-2-text",
+            "text": "The repository includes sample inputs and workflow tests, which make it possible to try the pipeline without bringing a private conversation history into the demonstration.",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "_type": "block",
+        "_key": "archive-date",
+        "style": "normal",
+        "markDefs": [],
+        "children": [
+          {
+            "_type": "span",
+            "_key": "archive-date-text",
+            "text": "The catalogue date follows the first preserved commit on 2 October 2026.",
+            "marks": []
+          }
+        ]
+      }
+    ],
+    "links": [],
+    "cover": {
+      "_type": "object",
+      "kind": "image",
+      "alt": "Explanatory diagram for Personal Language Corpus, showing Source passages, Features and baselines, Linked observations.",
+      "image": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "LOCAL-COVER:personal-language-corpus"
+        }
+      }
+    },
+    "evidence": [],
+    "artifacts": [],
+    "related": []
+  }
+]

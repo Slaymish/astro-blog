@@ -1,0 +1,46 @@
+[
+  {
+    "repo": "ArticulateAI",
+    "file": "articulate-cover.png",
+    "kind": "original command menu capture",
+    "source": "Slaymish/ArticulateAI run.py, executed to its first prompt with audio/API imports disabled.",
+    "alt": "Original ArticulateAI command menu, with twelve options for processing a spoken transcript.",
+    "path": "real-media-2026-10-10/articulate-cover.png",
+    "width": 1600,
+    "height": 1000,
+    "capturedAt": "2026-10-09T23:58:54.620Z"
+  },
+  {
+    "repo": "Otto",
+    "file": "otto-cover.png",
+    "kind": "original native interface render",
+    "source": "Unmodified JournalView in Otto/Otto/JournalWindow.swift, rendered offline using shipped memory/capabilities.json. No microphone, model, commands or learning run.",
+    "alt": "Otto’s native capability journal rendered with the original shipped app and music commands, in an offline demonstration.",
+    "path": "real-media-2026-10-10/otto-cover.png",
+    "width": 1600,
+    "height": 1050,
+    "capturedAt": "2026-10-09T23:58:54.620Z"
+  },
+  {
+    "repo": "Synod",
+    "file": "synod-real-cover.png",
+    "kind": "actual Obsidian plugin screenshot",
+    "source": "Original src/ui/status-view.ts and styles.css, built from the repository and captured in Obsidian 1.13.7. Empty temporary vault, no personal notes or model runs.",
+    "alt": "Synod’s actual Obsidian status panel, showing the journal import, value discovery and bulletin controls in an empty demonstration vault.",
+    "path": "real-media-2026-10-10/synod-real-cover.png",
+    "width": 1600,
+    "height": 1200,
+    "capturedAt": "2026-10-10T00:04:20.378Z"
+  },
+  {
+    "repo": "Lumen",
+    "file": "lumen-real-cover.png",
+    "kind": "actual Obsidian plugin screenshot",
+    "source": "Original obsidian-plugin/src/research/index.ts and styles.css, built from the repository and captured in Obsidian 1.13.7. Empty temporary vault, no personal notes or model runs.",
+    "alt": "Lumen’s actual research form in Obsidian, showing question input, sub-questions, vault and web sources, and memory controls.",
+    "path": "real-media-2026-10-10/lumen-real-cover.png",
+    "width": 1600,
+    "height": 1200,
+    "capturedAt": "2026-10-10T00:04:20.443Z"
+  }
+]

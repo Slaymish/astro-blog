@@ -1,0 +1,14 @@
+{
+  "repo": "personal-language-corpus",
+  "private": true,
+  "branch": "main",
+  "createdAt": "2026-10-02T10:16:38Z",
+  "pushedAt": "2026-10-02T10:55:42Z",
+  "firstCommit": {
+    "sha": "ebaaae1979e97b60b3ced9eb0695384ae147e0af",
+    "date": "2026-10-02T10:16:39Z",
+    "message": "Initial commit",
+    "url": "https://github.com/Slaymish/personal-language-corpus/commit/ebaaae1979e97b60b3ced9eb0695384ae147e0af"
+  },
+  "releases": []
+}

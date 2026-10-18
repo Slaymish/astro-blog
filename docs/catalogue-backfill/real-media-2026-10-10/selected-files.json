@@ -1,0 +1,20 @@
+{
+  "EchoStatsFinder": "functions/base/vrmlplayersearcher.py",
+  "Watzon": "app/src/main/java/vrml/api/Bot.java",
+  "conversational-timing-lab": "results/e1_ami_3meetings.txt",
+  "commit-reviewer": "experiments/FINDINGS.md",
+  "WellingtonTrainNetwork": "src/main/java/AStar.java",
+  "blender-addon": "addon/Addon/floor_importer.py",
+  "PianoVisualiser": "piano.cpp",
+  "GrooveBox": "host/engine/groovebox/sequencer.py",
+  "PinterestBoardEmbedding": "cluster_images.py",
+  "Spotify-Demographics-Analyzer": "analysis.py",
+  "akahu-sheets-sync": "src/bank_sync/reconciliation.py",
+  "metlink-departures-display": "bus_sign_server.py",
+  "PowerCalculator": "src/calc.ts",
+  "YayMinecraftServer": "infra/site/index.html",
+  "Sentient": "Environment2D.py",
+  "personal-language-corpus": "language_corpus/quantitative.py",
+  "DadsBirthday": "app.js",
+  "WeddingWebsite": "wedding-site/src/assets/images/flower_header.webp"
+}
