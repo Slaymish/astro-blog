@@ -1,0 +1,114 @@
+---
+import Base from '../../layouts/Base.astro';
+import { CONTACT_EMAIL } from '../../site/config';
+---
+
+<Base
+  title="Hermes Agent privacy policy"
+  description="How Hermes Agent, a private single-user automation agent, accesses and stores data."
+  breadcrumbs={[
+    { name: 'Hermes Agent', path: '/hermes' },
+    { name: 'Privacy', path: '/hermes/privacy' },
+  ]}
+>
+  <article class="legal-page">
+    <header>
+      <p class="legal-page__eyebrow">Legal</p>
+      <h1>Hermes Agent privacy policy</h1>
+      <p class="legal-page__updated">Last updated 21 October 2026</p>
+    </header>
+
+    <div class="legal-page__content">
+      <p>
+        Hermes Agent is a private automation agent with exactly one user: me, Hamish Burke. It is
+        not offered to the public, has no sign-up, and is not installed on anyone else's machine.
+        This policy explains what it can access, where that data lives, who can see it, and how
+        that access is withdrawn.
+      </p>
+
+      <section aria-labelledby="operator">
+        <h2 id="operator">Who operates it</h2>
+        <p>
+          Hamish Burke, Wellington, New Zealand. Contact
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. There is no company, no other
+          account holder, and no other user.
+        </p>
+      </section>
+
+      <section aria-labelledby="access">
+        <h2 id="access">What it can access, and why</h2>
+        <p>
+          Access is granted by me, to myself, through Google's OAuth consent screen. Only the
+          scopes I approve are granted, and each exists to do a task I asked for.
+        </p>
+        <ul>
+          <li><strong>Gmail (read, send, modify):</strong> find and summarise email I ask about, draft replies, and send messages I have approved.</li>
+          <li><strong>Calendar:</strong> read my schedule to plan my day, and create or move events I ask for.</li>
+          <li><strong>Drive, Docs, Sheets:</strong> read and edit files I point it at, and create documents on my instruction.</li>
+          <li><strong>Contacts:</strong> resolve who an email is from or to, so it addresses the right person.</li>
+          <li><strong>Tasks:</strong> add, complete and list my own task items.</li>
+        </ul>
+        <p>It does not access anything outside these scopes, and does not read other people's accounts.</p>
+      </section>
+
+      <section aria-labelledby="storage">
+        <h2 id="storage">Where the data lives</h2>
+        <p>
+          On my own laptop, in local files only I can read. There is no Hermes server, no hosted
+          backend, and no cloud database holding this data. Nothing is sold, rented, or shared with
+          advertisers or data brokers, and nothing is used to train machine-learning models.
+        </p>
+      </section>
+
+      <section aria-labelledby="third-parties">
+        <h2 id="third-parties">Third parties</h2>
+        <p>
+          To produce answers, the agent sends the specific text needed for a task to a
+          large-language-model provider under my own account, in the same way I would send it to a
+          search engine. It uses no analytics or tracking services and no advertiser SDKs. Where a
+          task needs another service, only the minimum needed for that task is sent.
+        </p>
+      </section>
+
+      <section aria-labelledby="google-policy">
+        <h2 id="google-policy">Google API Services User Data Policy</h2>
+        <p>
+          Hermes Agent's use and transfer of information received from Google APIs adheres to the
+          <a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noopener">
+            Google API Services User Data Policy
+          </a>, including the Limited Use requirements. Google user data is not used for advertising,
+          is not sold, is not used to develop, improve or train generalised or non-personalised AI or
+          machine-learning models, and is not read by humans except where I read my own data or where
+          required for security or legal reasons.
+        </p>
+      </section>
+
+      <section aria-labelledby="retention">
+        <h2 id="retention">Retention and deletion</h2>
+        <p>
+          Data stays until I delete it. Local records can be removed at any time by deleting the
+          files on my machine, and the OAuth grant can be revoked at any time at
+          <a href="https://myaccount.google.com/permissions" rel="noopener">myaccount.google.com/permissions</a>,
+          which immediately ends the agent's access.
+        </p>
+      </section>
+
+      <section aria-labelledby="security">
+        <h2 id="security">Security</h2>
+        <p>
+          OAuth tokens are stored locally with file permissions restricted to my user account. The
+          machine is protected by its own login and disk encryption. No credentials are shared with,
+          or stored by, any third party.
+        </p>
+      </section>
+
+      <section aria-labelledby="changes">
+        <h2 id="changes">Changes</h2>
+        <p>
+          If this policy changes, the date at the top changes with it. Because there is one user,
+          there is nobody else to notify.
+        </p>
+      </section>
+    </div>
+  </article>
+</Base>

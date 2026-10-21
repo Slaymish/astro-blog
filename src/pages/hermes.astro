@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import { CONTACT_EMAIL } from '../site/config';
+---
+
+<Base
+  title="Hermes Agent"
+  description="Hermes Agent is a private, single-user automation agent that runs on its owner's own computer."
+  breadcrumbs={[{ name: 'Hermes Agent', path: '/hermes' }]}
+>
+  <article class="legal-page">
+    <header>
+      <p class="legal-page__eyebrow">Software</p>
+      <h1>Hermes Agent</h1>
+      <p class="legal-page__updated">Last updated 21 October 2026</p>
+    </header>
+
+    <div class="legal-page__content">
+      <p>
+        Hermes Agent is a private, single-user software agent. It is not a product, has no sign-up,
+        and is not offered to the public. It runs locally on my own laptop in Wellington, New
+        Zealand, and acts only on my behalf and only on my own accounts and devices.
+      </p>
+
+      <section aria-labelledby="what-it-does">
+        <h2 id="what-it-does">What it does</h2>
+        <ul>
+          <li>Reads and drafts email, and sends messages I have asked it to send.</li>
+          <li>Reads my calendar and creates or moves events when I ask.</li>
+          <li>Reads and writes my own documents, spreadsheets and task lists.</li>
+          <li>Keeps a local, private record of my finances from data I already have access to.</li>
+          <li>Runs scheduled reminders and summaries for me.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="how-it-works">
+        <h2 id="how-it-works">How it works</h2>
+        <p>
+          The agent runs on the same machine I use and stores its working data there. It talks to
+          Google services through the OAuth grant I give it myself, and only for the scopes I
+          approve on the consent screen. It is not a hosted service, has no servers of its own
+          holding user data, and no third party is given access to anything it can see.
+        </p>
+      </section>
+
+      <section aria-labelledby="privacy">
+        <h2 id="privacy">Privacy</h2>
+        <p>
+          What it can see, where that data is stored, and how to withdraw access are described in
+          the <a href="/hermes/privacy">privacy policy</a>.
+        </p>
+      </section>
+
+      <section aria-labelledby="contact">
+        <h2 id="contact">Contact</h2>
+        <p>
+          Owner and sole user: Hamish Burke, Wellington, New Zealand.
+          Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+        </p>
+      </section>
+    </div>
+  </article>
+</Base>
