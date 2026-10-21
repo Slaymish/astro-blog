@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy policy — Hermes Agent</title>
+<meta name="description" content="Privacy policy for Hermes Agent, a private single-user automation agent running on its owner's own computer.">
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         max-width: 42rem; margin: 4rem auto; padding: 0 1.25rem; color: #1a1a1a; background: #fff; }
+  @media (prefers-color-scheme: dark) { body { color: #e8e8e8; background: #111; } a { color: #8ab4f8; } }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin-bottom: .25rem; }
+  .sub { color: #666; margin-top: 0; }
+  @media (prefers-color-scheme: dark) { .sub { color: #999; } }
+  h2 { font-size: 1.15rem; margin-top: 2.2rem; }
+  table { border-collapse: collapse; width: 100%; margin: .5rem 0 1rem; font-size: .95rem; }
+  th, td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+  @media (prefers-color-scheme: dark) { th, td { border-color: #333; } }
+  footer { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid #ddd; color: #666; font-size: .9rem; }
+  @media (prefers-color-scheme: dark) { footer { border-color: #333; color: #999; } }
+</style>
+</head>
+<body>
+  <h1>Privacy policy</h1>
+  <p class="sub">Hermes Agent — last updated 21 October 2026</p>
+
+  <p>Hermes Agent is a private automation agent with exactly one user: its owner, Hamish Burke.
+  It is not offered to the public, has no sign-up, and is not installed on anyone else's
+  machine. This policy explains what it can access, where that data lives, who can see it, and
+  how access is withdrawn.</p>
+
+  <h2>Who operates it</h2>
+  <p>Hamish Burke, Wellington, New Zealand. Contact:
+  <a href="mailto:hamish@burke.kiwi">hamish@burke.kiwi</a>. There is no company, no other
+  account holder, and no other user.</p>
+
+  <h2>What it can access, and why</h2>
+  <p>Access is granted by the owner, to himself, through Google's OAuth consent screen. Only the
+  scopes he approves are granted, and each exists to do a task he asked for:</p>
+  <table>
+    <tr><th>Google data</th><th>Why</th></tr>
+    <tr><td>Gmail (read, send, modify)</td><td>Find and summarise email he asks about; draft replies; send messages he has approved.</td></tr>
+    <tr><td>Calendar</td><td>Read his schedule to plan his day; create or move events he asks for.</td></tr>
+    <tr><td>Drive, Docs, Sheets</td><td>Read and edit files he points it at, and create documents on his instruction.</td></tr>
+    <tr><td>Contacts</td><td>Resolve who an email is from or to, so it addresses the right person.</td></tr>
+    <tr><td>Tasks</td><td>Add, complete and list his own task items.</td></tr>
+  </table>
+  <p>It does not access anything outside these scopes, and does not read other people's
+  accounts.</p>
+
+  <h2>Where the data lives</h2>
+  <p>On the owner's own laptop, in local files that only he can read. There is no Hermes
+  server, no hosted backend and no cloud database holding this data. Nothing is sold, rented,
+  or shared with advertisers or data brokers, and nothing is used to train machine-learning
+  models.</p>
+
+  <h2>Third parties</h2>
+  <p>To produce answers, the agent sends the specific text needed for a task to a large-language-model
+  provider under the owner's own account, in the same way he would send it to a search engine.
+  It uses no analytics or tracking services, and no advertiser SDKs. When a task requires
+  another service (for example a price lookup), only the minimum needed for that task is sent.</p>
+
+  <h2>Google API Services User Data Policy</h2>
+  <p>Hermes Agent's use and transfer of information received from Google APIs adheres to the
+  <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API
+  Services User Data Policy</a>, including the Limited Use requirements. Google user data is
+  not used for advertising, is not sold, is not used to develop, improve or train generalised
+  or non-personalised AI or machine-learning models, and is not read by humans except where
+  the owner reads his own data or where required for security or legal reasons.</p>
+
+  <h2>Retention and deletion</h2>
+  <p>Data stays until the owner deletes it. Local records can be removed at any time by
+  deleting the files on his machine, and the OAuth grant can be revoked at any time at
+  <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>,
+  which immediately ends the agent's access. Revoking access does not require asking anyone.</p>
+
+  <h2>Security</h2>
+  <p>OAuth tokens are stored locally with file permissions restricted to the owner's user
+  account. The machine is protected by its own login and disk encryption. No credentials are
+  shared with, or stored by, any third party.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes, the date at the top changes with it. Because there is one user,
+  there is nobody else to notify.</p>
+
+  <footer>
+    <p><a href="/hermes/">About Hermes Agent</a> ·
+    <a href="mailto:hamish@burke.kiwi">hamish@burke.kiwi</a></p>
+  </footer>
+</body>
+</html>
