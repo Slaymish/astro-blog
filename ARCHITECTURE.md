@@ -281,7 +281,12 @@ If the header grows, change that token with it.
   attribute on purpose, since that fires before `prefers-reduced-motion` can be
   read — `src/client/videoTeaser.ts` starts playback, pauses it offscreen, and
   reveals the pause control that ships `hidden`. The posters live in
-  `src/assets/` instead, so the build hashes and optimises it.
+  `src/assets/` instead, so the build hashes and optimises it. A video element
+  between loads paints nothing, and over the page canvas that reads as a white
+  flash while scrolling, so the poster is rendered as a real `<img>` in the
+  frame and the clip is layered over it: the still sets the frame's height and
+  is what shows whenever the clip has no frame to paint. The clip preloads
+  metadata so its first play does not start from nothing.
 - **`pdfjs-dist` comes from npm** and fetches report PDFs straight from the
   Sanity CDN, which sends CORS headers for this origin. Its worker is imported
   with `?url`, so it is a hashed asset under `/_astro` and satisfies

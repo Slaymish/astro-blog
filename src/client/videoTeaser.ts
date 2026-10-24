@@ -45,13 +45,18 @@ export function initVideoTeaser(root: HTMLElement): void {
     else video.pause();
   });
 
+  // Play once enough of the clip is on screen, but only stop when nothing of it
+  // is left. Pausing at the same 10% boundary makes the two states flap while a
+  // thumb rests near it, and every restart is a frame the element may have to
+  // paint from scratch.
   new IntersectionObserver(
     ([entry]) => {
-      visible = entry?.isIntersecting ?? false;
-      if (!visible) video.pause();
-      else if (!reducedMotion.matches && !userPaused) play();
+      if (!entry) return;
+      visible = entry.isIntersecting;
+      if (!entry.isIntersecting) video.pause();
+      else if (entry.intersectionRatio >= VISIBLE_RATIO && !reducedMotion.matches && !userPaused) play();
     },
-    { threshold: VISIBLE_RATIO },
+    { threshold: [0, VISIBLE_RATIO] },
   ).observe(video);
 
   reducedMotion.addEventListener('change', () => {

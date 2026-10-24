@@ -6,6 +6,12 @@
  *
  * Playback is started by src/client/videoTeaser.ts, not by an autoplay
  * attribute, so prefers-reduced-motion can be honoured before the first frame.
+ *
+ * The still is a real image in the frame, not only the video's poster
+ * attribute. A video element that is between loads paints nothing, and a
+ * transparent video over the page background reads as a white flash while
+ * scrolling; the still underneath is what fills that gap, and the clip paints
+ * over it once it has a frame.
  */
 import { getImage } from 'astro:assets';
 
@@ -29,6 +35,17 @@ const still = await getImage({ src: poster, width, format: 'webp', quality: 80 }
 
 <div class:list={['work-cover', 'work-cover--video', elevated && 'is-elevated']}>
   <span class="sr-only">{alt}</span>
+  {/* alt="" because the span above carries the description and the clip is
+      decoration over it; a second description would repeat. */}
+  <img
+    class="work-cover__still"
+    src={still.src}
+    width={width}
+    height={height}
+    alt=""
+    loading="eager"
+    decoding="async"
+  />
   <video
     data-video-teaser
     poster={still.src}
@@ -37,7 +54,7 @@ const still = await getImage({ src: poster, width, format: 'webp', quality: 80 }
     muted
     loop
     playsinline
-    preload="none"
+    preload="metadata"
   >
     <source src={src} type="video/mp4" />
   </video>
@@ -56,13 +73,25 @@ const still = await getImage({ src: poster, width, format: 'webp', quality: 80 }
   }
 
   .work-cover--video {
+    background-color: var(--color-bg-inset);
     line-height: 0;
     overflow: hidden;
+    position: relative;
   }
 
-  .work-cover--video video {
+  .work-cover__still {
     display: block;
     height: auto;
+    width: 100%;
+  }
+
+  /* The still sets the frame's height, so the clip fills it rather than
+     defining it; nothing moves when the video element is between loads. */
+  .work-cover--video video {
+    display: block;
+    height: 100%;
+    inset: 0;
+    position: absolute;
     width: 100%;
   }
 </style>
