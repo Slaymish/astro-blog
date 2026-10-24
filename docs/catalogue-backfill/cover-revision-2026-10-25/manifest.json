@@ -1,0 +1,129 @@
+{
+  "revision": "2026-10-25",
+  "reason": "The 2026-10-10 backfill covers were a shared explainer template (label, three numbered boxes, arrows, footer disclaimer). This revision replaces them with either a capture of the project's own output or a single mark drawn from what the project does.",
+  "covers": [
+    {
+      "slug": "cookie-cat",
+      "file": "real-cookie-cat-title.png",
+      "kind": "real capture",
+      "source": "Godot web export in Slaymish/PlatformerGame (HTML/Assignment-1-godot.html) run headless in Chrome and captured at 2x. Title screen, untouched.",
+      "alt": "Title screen of Cookie Cat: hand-drawn lettering over a dark forest scene, from the game's own web export."
+    },
+    {
+      "slug": "conversational-timing-lab",
+      "file": "turn-timing-cover.png",
+      "kind": "real data",
+      "source": "Plotted from results/e0_ami_full.txt (commit e46e7a1) in Slaymish/conversational-timing-lab. Script: turn-timing-cover.py.",
+      "alt": "Two E0 plots: turn-end probability falling from 0.633 to 0.435 as the silence lengthens, and false interruption rates of 0.53 to 1.00 against a 5% budget."
+    },
+    {
+      "slug": "personal-language-corpus",
+      "file": "corpus-register-cover.png",
+      "kind": "real data",
+      "source": "Plotted from outputs/reference/nietzsche-profile.json in Slaymish/personal-language-corpus. Script: corpus-register-cover.py.",
+      "alt": "Scatter plot of 24 Nietzsche works: mean sentence length against exclamations per 1,000 words. Zarathustra and Poems and Dithyrambs sit short and exclamatory, Birth of Tragedy long and plain."
+    },
+    {
+      "slug": "echo-stats-finder",
+      "file": "diagrams/echo-stats-finder.png",
+      "kind": "mark",
+      "alt": "A grid of stat cells with one player's row picked out in red."
+    },
+    {
+      "slug": "watzon",
+      "file": "diagrams/watzon.png",
+      "kind": "mark",
+      "alt": "A wireframe solid with one red vertex, standing for the VRML model Watzon reads."
+    },
+    {
+      "slug": "finlay-lani-wedding",
+      "file": "diagrams/finlay-lani-wedding.png",
+      "kind": "mark",
+      "alt": "Three photo frames fanned out, the front one outlined in red."
+    },
+    {
+      "slug": "transit-sync",
+      "file": "diagrams/transit-sync.png",
+      "kind": "mark",
+      "alt": "A month grid with a red route running from the first day to a departure cell."
+    },
+    {
+      "slug": "typed-diff-questions",
+      "file": "diagrams/typed-diff-questions.png",
+      "kind": "mark",
+      "alt": "Two columns of line blocks, the changed lines on the right offset and filled red."
+    },
+    {
+      "slug": "wellington-transport-network",
+      "file": "diagrams/wellington-transport-network.png",
+      "kind": "mark",
+      "alt": "A transport network of connected nodes with the central hub in red."
+    },
+    {
+      "slug": "floor-plan-importer",
+      "file": "diagrams/floor-plan-importer.png",
+      "kind": "mark",
+      "alt": "A floor plan outline with its extruded copy behind it and one wall in red."
+    },
+    {
+      "slug": "piano-waveform-visualiser",
+      "file": "diagrams/piano-waveform-visualiser.png",
+      "kind": "mark",
+      "alt": "A decaying two-peak waveform above a run of keyboard blocks, one key in black."
+    },
+    {
+      "slug": "groovebox",
+      "file": "diagrams/groovebox.png",
+      "kind": "mark",
+      "alt": "Four tracks of sixteen steps with hits filled in, one snare hit in red."
+    },
+    {
+      "slug": "pinterest-aesthetic-analysis",
+      "file": "diagrams/pinterest-aesthetic-analysis.png",
+      "kind": "mark",
+      "alt": "Five clusters of six dots around a red centre, spread along an arc."
+    },
+    {
+      "slug": "spotify-playlist-demographics",
+      "file": "diagrams/spotify-playlist-demographics.png",
+      "kind": "mark",
+      "alt": "A ring of wedges of different lengths around a hollow centre, one wedge filled red."
+    },
+    {
+      "slug": "bank-to-sheets-sync",
+      "file": "diagrams/bank-to-sheets-sync.png",
+      "kind": "mark",
+      "alt": "Two grids of cells, the second shifted down a row so the newest column lines up empty."
+    },
+    {
+      "slug": "metlink-departures-display",
+      "file": "diagrams/metlink-departures-display.png",
+      "kind": "mark",
+      "alt": "A departures board grid with three rows called in red."
+    },
+    {
+      "slug": "flat-power-calculator",
+      "file": "diagrams/flat-power-calculator.png",
+      "kind": "mark",
+      "alt": "One long bar for the bill with a smaller red segment for the server's share."
+    },
+    {
+      "slug": "wake-on-join-minecraft",
+      "file": "diagrams/wake-on-join-minecraft.png",
+      "kind": "mark",
+      "alt": "A timeline that runs flat, steps up while the server is awake, then drops back, with red dots at both transitions."
+    },
+    {
+      "slug": "sentient-environment-explorer",
+      "file": "diagrams/sentient-environment-explorer.png",
+      "kind": "mark",
+      "alt": "A grid world with a red path stepping through it."
+    },
+    {
+      "slug": "birthday-gallery",
+      "file": "diagrams/birthday-gallery.png",
+      "kind": "mark",
+      "alt": "A box of photographs in perspective, one frame filled red."
+    }
+  ]
+}
