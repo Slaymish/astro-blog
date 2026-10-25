@@ -47,7 +47,10 @@ const client = createClient({
 });
 
 const manifest = JSON.parse(await fs.readFile(path.join(here, 'manifest.json'), 'utf8'));
-const slugs = manifest.covers.map((c) => c.slug);
+const only = (process.argv.find((a) => a.startsWith('--only=')) ?? '').split('=')[1];
+const slugs = manifest.covers.map((c) => c.slug).filter((s) => !only || s === only);
+if (!slugs.length) throw new Error(`--only=${only} matches nothing in the manifest`);
+manifest.covers = manifest.covers.filter((c) => slugs.includes(c.slug));
 
 const docs = await client.fetch(
   `*[_type == "workStory" && slug.current in $slugs]{

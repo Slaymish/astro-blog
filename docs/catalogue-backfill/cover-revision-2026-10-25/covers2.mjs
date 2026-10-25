@@ -283,15 +283,35 @@ const marks = {
     );
   },
 
-  // A server asleep until someone joins: the awake window filled in.
+  // A server asleep until someone joins: a block of world, one cube lit.
   'wake-on-join-minecraft': () => {
-    let out = rect(760, 300, 350, 220, ACCENT, ACCENT, 0);
-    let d = 'M 300 520 L 700 520';
-    d += ' C 730 520 740 520 760 520 L 760 300';
-    d += ' C 760 270 780 270 800 270 L 1080 270';
-    d += ' C 1100 270 1110 300 1110 300 L 1110 520 L 1300 520';
-    out += path2(d, 'none', INK, 5);
-    out += line(300, 520, 1300, 520, INK, 5);
+    const w = 150;
+    const h = 87;
+    const centre = 800;
+    const cubes = [];
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (i === 2 && j === 2) continue; // ragged edge, so it reads as terrain
+        cubes.push({ i, j, k: 0, lit: false });
+      }
+    }
+    cubes.push({ i: 1, j: 1, k: 1, lit: true });
+    cubes.sort((a, b) => a.i + a.j - (b.i + b.j) || a.k - b.k);
+
+    const poly = (pts, fill, stroke = INK, sw = 7) =>
+      path2(`M ${pts.map(([x, y]) => `${r(x)} ${r(y)}`).join(' L ')} Z`, fill, stroke, sw);
+
+    let out = '';
+    for (const { i, j, k, lit } of cubes) {
+      const px = centre + (i - j) * w;
+      const py = 120 + (i + j) * h - k * 2 * h;
+      const top = [[px, py], [px + w, py + h], [px, py + 2 * h], [px - w, py + h]];
+      const left = [[px - w, py + h], [px, py + 2 * h], [px, py + 4 * h], [px - w, py + 3 * h]];
+      const right = [[px + w, py + h], [px, py + 2 * h], [px, py + 4 * h], [px + w, py + 3 * h]];
+      out += poly(left, lit ? ACCENT : PAPER);
+      out += poly(right, lit ? ACCENT : PAPER);
+      out += poly(top, lit ? ACCENT : PAPER);
+    }
     return out;
   },
 

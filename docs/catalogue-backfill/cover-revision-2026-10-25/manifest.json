@@ -111,7 +111,7 @@
       "slug": "wake-on-join-minecraft",
       "file": "diagrams/wake-on-join-minecraft.png",
       "kind": "mark",
-      "alt": "A timeline that runs flat, steps up while the server is awake, then drops back, with red dots at both transitions."
+      "alt": "A small block of world in isometric cubes, one raised block filled red."
     },
     {
       "slug": "sentient-environment-explorer",
