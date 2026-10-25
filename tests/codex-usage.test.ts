@@ -22,3 +22,8 @@ test('invalid hours are rejected', () => {
   assert.throws(() => optimise(0), RangeError);
   assert.throws(() => optimise(Number.NaN), RangeError);
 });
+
+test('strategy labels can come entirely from Sanity copy', () => {
+  const strategy = { subscriptions: [1, 0, 0, 0], monthlyNzd: 50, creditsNzd: 9, includedHours: 1 };
+  assert.equal(describeStrategy(strategy, 'Credit label', ['Plan label', 'Second', 'Third', 'Fourth']), '1 × Plan label + Credit label');
+});

@@ -1,3 +1,4 @@
+import { codexUsagePage } from './codexUsagePage';
 import { aboutPage } from './aboutPage';
 import { blockContent } from './blockContent';
 import { book } from './book';
@@ -27,6 +28,7 @@ export const schemaTypes = [
   book,
   // Page copy singletons
   homePage,
+  codexUsagePage,
   workIndexPage,
   writingIndexPage,
   readingPage,

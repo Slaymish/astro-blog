@@ -357,3 +357,10 @@ textarea.input { line-height: 1.5; min-block-size: calc(var(--control-height-md)
   .btn:active,
   .chip:active { transform: none; }
 }
+
+/* Native checkbox with a generous shared touch target and a wrapping label. */
+.choice { display: flex; align-items: start; gap: var(--spacing-3); padding-block: var(--spacing-3); min-block-size: var(--control-height-md); cursor: pointer; }
+.choice input { flex-shrink: 0; margin-top: var(--spacing-1); accent-color: var(--color-action); inline-size: 1.25rem; block-size: 1.25rem; }
+.choice input:focus-visible { outline: var(--control-ring); outline-offset: 2px; }
+.input[type='file'] { max-inline-size: 100%; inline-size: 100%; min-inline-size: 0; }
+.input[type='file']::file-selector-button { font: inherit; margin-inline-end: var(--spacing-3); cursor: pointer; }
