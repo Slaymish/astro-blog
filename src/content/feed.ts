@@ -1,7 +1,9 @@
+import { isValueScore } from './valueScore';
 import type { FeedIndexCopy, WorkStory, WritingEntry } from './types';
 import { getWriting, tagSlug } from './writing';
 
 interface FeedBase {
+  valueScore?: number | null;
   href: string;
   publishedAt: string;
   tags: string[];
@@ -47,16 +49,28 @@ export function mergeFeed(stories: WorkStory[], writing: WritingEntry[]): FeedEn
   const entries: FeedEntry[] = [
     ...stories.map((story): FeedEntry => ({
       type: 'work', story, href: `/work/${story.slug}`,
+      valueScore: story.valueScore,
       publishedAt: story.date, tags: workTags(story),
     })),
     ...writing.map((entry): FeedEntry => ({
       type: 'writing', writing: entry, href: entry.href,
+      valueScore: entry.valueScore,
       publishedAt: entry.publishedAt, tags: uniqueTags(entry.tags),
     })),
   ];
   // Compare instants rather than date strings: dates and datetimes can coexist.
   return entries.sort((a, b) =>
     Date.parse(b.publishedAt) - Date.parse(a.publishedAt) || a.href.localeCompare(b.href),
+  );
+}
+
+/** Opt-in editorial ranking. Unassessed or invalid scores rank below explicit zero. */
+export function sortFeedByValue(entries: readonly FeedEntry[]): FeedEntry[] {
+  const score = (entry: FeedEntry): number => isValueScore(entry.valueScore) ? entry.valueScore : -1;
+  return [...entries].sort((a, b) =>
+    score(b) - score(a) ||
+    Date.parse(b.publishedAt) - Date.parse(a.publishedAt) ||
+    (a.href < b.href ? -1 : a.href > b.href ? 1 : 0),
   );
 }
 

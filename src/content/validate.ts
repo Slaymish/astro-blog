@@ -1,3 +1,4 @@
+import { isValueScore } from './valueScore';
 import type { Post, Report, SiteSettings, WorkStory } from './types';
 
 const missing = (value: string | undefined | null): boolean => !value || value.trim().length === 0;
@@ -28,6 +29,9 @@ export function validateWorkStories(stories: WorkStory[]): string[] {
 
   for (const story of stories) {
     const where = story.slug || story._id;
+    if (story.valueScore != null && !isValueScore(story.valueScore)) {
+      errors.push(`${where}: valueScore must be an integer from 0 to 100`);
+    }
 
     for (const field of ['introduction', 'summary', 'result', 'role'] as const) {
       if (missing(story[field])) errors.push(`${where}: ${field} is empty`);
@@ -78,6 +82,9 @@ export function validatePosts(posts: Post[]): string[] {
 
   for (const post of posts) {
     const where = post.slug || post._id;
+    if (post.valueScore != null && !isValueScore(post.valueScore)) {
+      errors.push(`${where}: valueScore must be an integer from 0 to 100`);
+    }
     if (missing(post.excerpt)) errors.push(`${where}: excerpt is empty`);
     if (missing(post.markdownBody)) errors.push(`${where}: markdownBody is empty`);
     if (post.coverImage?.asset?.url && missing(post.coverImage.alt)) {
@@ -97,6 +104,9 @@ export function validateReports(reports: Report[]): string[] {
 
   for (const report of reports) {
     const where = report.slug || report._id;
+    if (report.valueScore != null && !isValueScore(report.valueScore)) {
+      errors.push(`${where}: valueScore must be an integer from 0 to 100`);
+    }
     if (missing(report.description)) errors.push(`${where}: description is empty`);
     if (missing(report.pdfUrl)) errors.push(`${where}: pdfUrl is empty`);
   }

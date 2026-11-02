@@ -100,6 +100,8 @@ export interface RelatedEntry {
 }
 
 export interface Post {
+  /** Editorial portfolio significance; null or missing means unassessed. */
+  valueScore?: number | null;
   _id: string;
   title: string;
   slug: string;
@@ -113,6 +115,8 @@ export interface Post {
 }
 
 export interface Report {
+  /** Editorial portfolio significance; null or missing means unassessed. */
+  valueScore?: number | null;
   _id: string;
   updatedAt?: string;
   title: string;
@@ -127,6 +131,8 @@ export interface Report {
 }
 
 export interface WorkStory {
+  /** Editorial portfolio significance; null or missing means unassessed. */
+  valueScore?: number | null;
   _id: string;
   updatedAt?: string;
   title: string;
@@ -357,6 +363,8 @@ export interface SiteSettings {
 
 /** One entry in the merged posts-and-reports stream. */
 export interface WritingEntry {
+  /** Editorial portfolio significance; null or missing means unassessed. */
+  valueScore?: number | null;
   type: 'post' | 'report';
   title: string;
   excerpt: string;

@@ -1,3 +1,4 @@
+import { portfolioValueFields, highestValueOrdering } from './portfolioValue';
 import { defineField, defineType } from 'sanity';
 import { WORK_KINDS } from '../../content/work';
 
@@ -6,6 +7,7 @@ export const workStory = defineType({
   title: 'Work story',
   type: 'document',
   fields: [
+    ...portfolioValueFields,
     defineField({ name: 'title', title: 'Title', type: 'string', validation: (r) => r.required().max(80) }),
     defineField({
       name: 'descriptor',
@@ -254,7 +256,10 @@ export const workStory = defineType({
       validation: (r) => r.max(3).unique(),
     }),
   ],
-  orderings: [{ name: 'orderAsc', title: 'Order', by: [{ field: 'order', direction: 'asc' }] }],
+  orderings: [
+    { name: 'orderAsc', title: 'Order', by: [{ field: 'order', direction: 'asc' }] },
+    highestValueOrdering,
+  ],
   preview: {
     select: { title: 'title', kind: 'kind', descriptor: 'descriptor' },
     prepare: ({ title, kind, descriptor }) => ({
