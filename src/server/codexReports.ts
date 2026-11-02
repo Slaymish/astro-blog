@@ -1,5 +1,5 @@
 /** Strict v1 report validation. No user-supplied attribution is accepted. */
-export interface UsageBucket {
+interface UsageBucket {
   month: string; model: string; sessions: number; input_tokens: number;
   cached_input_tokens: number; output_tokens: number;
   reasoning_output_tokens: number; total_tokens: number;
