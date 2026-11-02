@@ -9,9 +9,13 @@
   "date": "2026-11-02",
   "timeframe": "2026",
   "tags": ["Front-end development"],
-  "summary": "Built a fashion designer's portfolio where the photographs lead and she publishes new work herself.",
+  "artifacts": [],
+  "related": [],
+  "summary": "Designed and built a fashion designer’s portfolio where the photographs lead and she publishes new work herself.",
   "introduction": "Beth's work is photographs of clothes on people, so the site is built to get out of their way. She adds a project or a photo set in the CMS and the site rebuilds without me.",
-  "role": "Front-end build and the content model.",
+  "role": "Design, front-end development and content model. Beth supplied the content and copy.",
+  "valueScore": 85,
+  "valueReason": "A completed client portfolio with original design, responsive photography layouts and a CMS publishing workflow. Hamish owned the design and build, and Beth supplied the content and copy. Comparable in portfolio significance to other end-to-end client deliveries.",
   "result": "Live at bethhurley.nz. Publishing in Contentful rebuilds production on its own, so a new collection goes up without a deploy from me.",
   "links": [
     {
