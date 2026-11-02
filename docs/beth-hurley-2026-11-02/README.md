@@ -1,7 +1,10 @@
 # Beth Hurley work story, 2026-11-02
 
-Staged, not published. `node publish-beth.mjs --check` validates it; the write needs an
-Editor token (queued for Hamish).
+Published to Sanity as `workStory-beth-hurley`, slug `beth-hurley`. The origin API readback confirmed its exact credit, value score, resolved cover and all three evidence assets. Public-page deployment is verified separately.
+
+Hamish confirmed that he designed and built the site and content model; Beth supplied the content and copy. The case study’s role field states that split explicitly. Copy mode: clean. Genre: portfolio case-study metadata.
+
+The work has `valueScore: 85`, consistent with substantial end-to-end client delivery. Its original date feeds the modest recency bonus. The publisher deliberately refuses to overwrite an existing document, so after publication use a guarded patch instead of rerunning it.
 
 ## Where the screenshots came from
 
@@ -20,14 +23,11 @@ to 2400px wide JPEG q88 with sharp.
 The hero at scroll 0 was rejected as the cover: it is a full-bleed photograph, so the card read
 as an image rather than as a site.
 
-## Open before publishing
+## Publication decisions
 
-- **Design credit.** `role` says "Front-end build and the content model." The other client stories
-  name who designed it (Brontë's says the design was hers). Confirm whether Beth brought the design,
-  and the sentence gets one clause.
-- **Timeframe.** Set to 2026 with the date at the launch, which is today. Adjust if it finished earlier.
-- **Order.** 45 is the next free integer; order values run 0 to 47 with no duplicates, and the
-  index sorts by date, so this only breaks a tie.
+- **Design credit.** Hamish confirmed the design was his, with Beth supplying content and copy. Both are stated in the role field.
+- **Timeframe.** Preserved the staged 2026 timeframe and 2 November date rather than inventing a new project date at publication.
+- **Order.** The legacy value 45 was checked unique before creation. Hidden value-plus-recency ranking now determines portfolio presentation.
 
 ## Shape it follows
 
