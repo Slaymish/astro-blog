@@ -52,6 +52,31 @@
   [headers.values]
     Cache-Control = "no-store"
 
+# Preserve webhook POST bodies when callers still use the old domain.
+[[redirects]]
+  from = "https://hamishburke.dev/api/*"
+  to = "https://hamishburke.com/api/:splat"
+  status = 308
+  force = true
+
+[[redirects]]
+  from = "https://hamishburke.dev/*"
+  to = "https://hamishburke.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://hamishburke.dev/*"
+  to = "https://hamishburke.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.hamishburke.dev/*"
+  to = "https://hamishburke.com/:splat"
+  status = 301
+  force = true
+
 # Legacy URL policy lives only here. force = true so these win over any
 # generated file of the same name.
 [[redirects]]

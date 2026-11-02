@@ -39,7 +39,7 @@ test('every rule declares a from, a to, a status and force', () => {
   for (const rule of parsed) {
     assert(rule.from, `a rule has no from: ${JSON.stringify(rule)}`);
     assert(rule.to, `${rule.from} has no to`);
-    assert([301, 302, 410].includes(rule.status), `${rule.from} has status ${rule.status}`);
+    assert([301, 302, 308, 410].includes(rule.status), `${rule.from} has status ${rule.status}`);
     assert(rule.force, `${rule.from} is not forced, so a generated file would win`);
   }
 });
