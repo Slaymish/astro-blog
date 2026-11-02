@@ -130,7 +130,7 @@ test('actual routes rank once at build time and pass the same stream to metadata
     const text = source(`src/pages/${route}/index.astro`);
     assert.match(text, /const now = Date.now\(\)/);
     assert.match(text, /const entries = rankByValue\(feed, now\)/);
-    assert.match(text, /feedMetadataEntries\(entries\)/);
+    assert.match(text, /feedMetadataEntries\(visibleEntries\)/);
     assert.match(text, /<FeedIndex entries=\{entries\}[^>]*mode="flat"/);
     assert.doesNotMatch(text, /resolveFeatured|featured=/);
   }

@@ -14,8 +14,8 @@ export function feedFilterUrl(url: URL, type: FeedView): string {
   return next.pathname + next.search + next.hash;
 }
 
-export function matchesFeedFilter(type: string, view: FeedView): boolean {
-  return view === 'all' || type === view;
+export function matchesFeedFilter(type: string, view: FeedView, linkedWriting = false): boolean {
+  return view === 'all' ? type !== 'writing' || !linkedWriting : type === view;
 }
 
 export function initFeedFilter(): void {
@@ -29,7 +29,11 @@ export function initFeedFilter(): void {
   const empty = feed.querySelector<HTMLElement>('[data-feed-empty]');
   const startHere = feed.querySelector<HTMLElement>('[data-start-here]');
   const defaultType = feed.dataset.defaultType === 'writing' ? 'writing' : 'all';
-  let state = readFeedFilter(new URL(window.location.href), defaultType);
+  const readState = (): FeedView => {
+    const url = new URL(window.location.href);
+    return readFeedFilter(url, url.pathname === '/writing' ? defaultType : 'all');
+  };
+  let state = readState();
 
   const apply = (push: boolean): void => {
     for (const view of views) {
@@ -37,7 +41,7 @@ export function initFeedFilter(): void {
     }
     let visible = 0;
     for (const entry of entries) {
-      const show = matchesFeedFilter(entry.dataset.feedType ?? '', state);
+      const show = matchesFeedFilter(entry.dataset.feedType ?? '', state, !!entry.dataset.associatedWork);
       entry.hidden = !show;
       if (show) visible += 1;
     }
@@ -63,7 +67,7 @@ export function initFeedFilter(): void {
     apply(true);
   });
   window.addEventListener('popstate', () => {
-    state = readFeedFilter(new URL(window.location.href), defaultType);
+    state = readState();
     apply(false);
   });
   apply(false);

@@ -3,16 +3,20 @@ import { feedMetadataEntries } from '../../content/metadata';
 import Base from '../../layouts/Base.astro';
 import FeedIndex from '../../components/FeedIndex.astro';
 import ContactBand from '../../components/ContactBand.astro';
-import { getFeed, getFeedIndexCopy } from '../../content/feed';
+import { associateFeed, getFeed, getFeedIndexCopy } from '../../content/feed';
+import { matchesFeedFilter } from '../../client/feedFilter';
 import { rankByValue } from '../../content/ranking';
 
 const now = Date.now();
 const [copy, feed] = await Promise.all([getFeedIndexCopy(), getFeed()]);
 const entries = rankByValue(feed, now);
+const visibleEntries = associateFeed(entries)
+  .filter(row => matchesFeedFilter(row.entry.type, 'all', !!row.associatedWork))
+  .map(row => row.entry);
 ---
 
 <Base pageType="CollectionPage"
-  collections={[{ id: 'entries', name: copy.navigationLabel, entries: feedMetadataEntries(entries) }]}
+  collections={[{ id: 'entries', name: copy.navigationLabel, entries: feedMetadataEntries(visibleEntries) }]}
   title={copy.seo.title}
   description={copy.seo.description}
   breadcrumbs={[{ name: copy.navigationLabel, path: '/work' }]}

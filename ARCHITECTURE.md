@@ -94,7 +94,14 @@ future dates gain zero points. Unassessed scores rank below explicit zero.
 Ties use base score, publication instant descending, then href ascending.
 Routes pass one explicit build clock; ordering only refreshes on a new build
 and deploy, never continuously in a static page. Ranked index metadata follows
-the same flat stream as the rendered entries. Filters only hide entries.
+the visible default view. In ranked flat FeedIndex mode, explicit artifact type and
+slug associate real writing URLs with the first project in the supplied stream.
+All and Work show those links inside that project's text area; associated writing
+rows ship hidden in All HTML and become full rows in Writing. The writing
+fallback ships writing rows visible and projects hidden without JavaScript.
+Associations use only supplied entries, so absent parents leave writing independent.
+Chronological tag archives and raw chronological/RSS helpers remain ungrouped.
+Collection metadata excludes rows hidden in the default view. Filters only hide entries.
 
 The homepage selects up to five assessed work stories scoring at least 70,
 including older work. Only when none qualify does it validate and use curated

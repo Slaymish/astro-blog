@@ -1,12 +1,13 @@
 ---
 import WorkCard from './WorkCard.astro';
 import EntryList from './EntryList.astro';
-import { groupFeedByYear, type FeedEntry } from '../content/feed';
+import { associateFeed, groupFeedByYear, type FeedEntry } from '../content/feed';
+import { matchesFeedFilter, type FeedView } from '../client/feedFilter';
 import { formatFullDate } from '../content/writing';
 import type { FeedIndexCopy } from '../content/types';
 
-interface Props { entries: FeedEntry[]; copy: FeedIndexCopy; id?: string; mode?: 'flat' | 'chronological' }
-const { entries, copy, id, mode = 'chronological' } = Astro.props;
+interface Props { entries: FeedEntry[]; copy: FeedIndexCopy; id?: string; mode?: 'flat' | 'chronological'; defaultType?: FeedView }
+const { entries, copy, id, mode = 'chronological', defaultType = 'all' } = Astro.props;
 const List = mode === 'flat' ? 'ol' : 'ul';
 const groups = mode === 'flat' ? [{ year: null, entries }] : groupFeedByYear(entries);
 ---
@@ -16,20 +17,23 @@ const groups = mode === 'flat' ? [{ year: null, entries }] : groupFeedByYear(ent
     <section class="feed-year" data-feed-year={year ? true : undefined} aria-labelledby={year ? `year-${year}` : undefined}>
       {year && <h2 class="feed-year__heading" id={`year-${year}`}>{year}</h2>}
       <List class="feed-year__entries">
-        {entries.map((entry) => (
+        {(mode === 'flat' ? associateFeed(entries) : entries.map(entry => ({ entry, associatedWork: undefined, linkedWriting: [] }))).map((row) => {
+          const { entry } = row;
+          return (
           <li class="feed-entry" data-feed-entry data-feed-type={entry.type}
-            data-date={entry.publishedAt}>
+            data-date={entry.publishedAt} data-associated-work={row.associatedWork}
+            hidden={!matchesFeedFilter(entry.type, defaultType, !!row.associatedWork)}>
             {entry.type === 'work' ? (
               <>
                 <time class="feed-date" datetime={entry.publishedAt}>{formatFullDate(entry.publishedAt)}</time>
-                <WorkCard story={entry.story} tags={entry.tags} />
+                <WorkCard story={entry.story} tags={entry.tags} linkedWriting={row.linkedWriting} />
               </>
             ) : (
               <EntryList entries={[{ ...entry.writing, tags: entry.tags, displayDate: formatFullDate(entry.publishedAt) }]}
                 typeLabel={copy.writingLabel} headingLevel="h3" showTags />
             )}
           </li>
-        ))}
+        ); })}
       </List>
     </section>
   ))}

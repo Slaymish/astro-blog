@@ -2,17 +2,21 @@
 import { feedMetadataEntries } from '../../content/metadata';
 import Base from '../../layouts/Base.astro';
 import FeedIndex from '../../components/FeedIndex.astro';
-import { getFeed, getFeedIndexCopy } from '../../content/feed';
+import { associateFeed, getFeed, getFeedIndexCopy } from '../../content/feed';
+import { matchesFeedFilter } from '../../client/feedFilter';
 import { rankByValue } from '../../content/ranking';
 
 // Netlify owns the redirect. This canonicalised fallback also works locally.
 const now = Date.now();
 const [feed, copy] = await Promise.all([getFeed(), getFeedIndexCopy()]);
 const entries = rankByValue(feed, now);
+const visibleEntries = associateFeed(entries)
+  .filter(row => matchesFeedFilter(row.entry.type, 'writing', !!row.associatedWork))
+  .map(row => row.entry);
 ---
 
 <Base pageType="CollectionPage"
-  collections={[{ id: 'entries', name: copy.navigationLabel, entries: feedMetadataEntries(entries) }]} title={copy.seo.title} description={copy.seo.description}
+  collections={[{ id: 'entries', name: copy.navigationLabel, entries: feedMetadataEntries(visibleEntries) }]} title={copy.seo.title} description={copy.seo.description}
   canonicalPath="/work" robots="noindex, follow"
   breadcrumbs={[{ name: copy.navigationLabel, path: '/work' }]}>
   <FeedIndex entries={entries} copy={copy} defaultType="writing" mode="flat" />

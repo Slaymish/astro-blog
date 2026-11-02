@@ -6,16 +6,17 @@ import IntroductionText from './IntroductionText.astro';
 import WorkCover from './WorkCover.astro';
 import EntryTags from './EntryTags.astro';
 import { getSiteSettings } from '../content/queries';
-import type { WorkStory } from '../content/types';
+import type { WorkStory, WritingEntry } from '../content/types';
 
 interface Props {
   story: WorkStory;
   variant?: 'featured' | 'row';
   reverse?: boolean;
   tags?: string[];
+  linkedWriting?: WritingEntry[];
 }
 
-const { story, variant = 'featured', reverse = false, tags = [] } = Astro.props;
+const { story, variant = 'featured', reverse = false, tags = [], linkedWriting = [] } = Astro.props;
 
 const { workCtaLabel, entryLabels } = await getSiteSettings();
 const repo = story.links.find((link) => link.kind === 'source');
@@ -40,6 +41,11 @@ const repoId = `work-card-${story.slug}-source`;
     <div class="work-card__content">
       <h3><a href={href} id={titleId}>{story.title}</a></h3>
       <p class="work-card__summary"><IntroductionText text={story.introduction} link={story.introductionLink} /></p>
+      {linkedWriting.length > 0 && (
+        <ul class="work-card__writing">
+          {linkedWriting.map(link => <li><a href={link.href}>{link.title}</a></li>)}
+        </ul>
+      )}
       <EntryTags tags={tags} />
       {
         repo && (
@@ -105,6 +111,14 @@ const repoId = `work-card-${story.slug}-source`;
 
   .work-card__content {
     align-self: center;
+  }
+
+  .work-card__content { min-width: 0; }
+  .work-card__writing {
+    margin-block: var(--spacing-4);
+    padding-inline-start: var(--spacing-4);
+    font-size: var(--type-body-small);
+    overflow-wrap: anywhere;
   }
 
   h3 {

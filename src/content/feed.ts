@@ -14,6 +14,36 @@ export type FeedEntry = FeedBase & (
   | { type: 'writing'; writing: WritingEntry }
 );
 
+export interface AssociatedFeedEntry {
+  entry: FeedEntry;
+  associatedWork?: string;
+  linkedWriting: WritingEntry[];
+}
+
+/** First parent in the supplied order owns each real writing URL. Never changes ranking. */
+export function associateFeed(entries: readonly FeedEntry[]): AssociatedFeedEntry[] {
+  const writing = new Map(entries.flatMap(entry =>
+    entry.type === 'writing' ? [[entry.href, entry.writing] as const] : []));
+  const owners = new Map<string, string>();
+  const links = new Map<string, WritingEntry[]>();
+  for (const entry of entries) {
+    if (entry.type !== 'work') continue;
+    for (const artifact of entry.story.artifacts ?? []) {
+      if (!artifact) continue;
+      const href = artifact._type === 'post' ? `/posts/${artifact.slug}` : `/reports/${artifact.slug}`;
+      const linked = writing.get(href);
+      if (!linked || linked.type !== artifact._type || owners.has(href)) continue;
+      owners.set(href, entry.href);
+      links.set(entry.href, [...(links.get(entry.href) ?? []), { ...linked, title: artifact.title }]);
+    }
+  }
+  return entries.map(entry => ({
+    entry,
+    associatedWork: entry.type === 'writing' ? owners.get(entry.href) : undefined,
+    linkedWriting: links.get(entry.href) ?? [],
+  }));
+}
+
 /**
  * Resolve the curated slugs to stories in the order they were curated.
  * A slug that no longer matches a story fails the build rather than leaving a
@@ -33,7 +63,7 @@ export function resolveFeatured(stories: WorkStory[], slugs: string[] | null = [
 
 /** Explicit project topics override the topics of its linked posts/reports. */
 export function workTags(story: WorkStory): string[] {
-  return uniqueTags(story.tags ?? story.artifacts.flatMap((artifact) => artifact.tags ?? []));
+  return uniqueTags(story.tags ?? (story.artifacts ?? []).flatMap((artifact) => artifact?.tags ?? []));
 }
 
 function uniqueTags(tags: string[]): string[] {

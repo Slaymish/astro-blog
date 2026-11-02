@@ -282,11 +282,11 @@ test('knowledge graphs have stable, unique identities and a connected canonical 
 });
 
 test('index graph lists match the entries visitors can actually browse', { skip }, () => {
-  for (const page of pages.filter((page) => page.path === '/work' || page.path.startsWith('/tags/'))) {
+  for (const page of pages.filter((page) => page.path === '/work' || page.path === '/writing' || page.path.startsWith('/tags/'))) {
     const document = parse(page.html);
     const graph = JSON.parse(document.querySelector('script[type="application/ld+json"]')!.textContent)['@graph'] as Array<Record<string, any>>;
     const list = graph.find((node) => node['@type'] === 'ItemList')!;
-    const entries = document.querySelectorAll('[data-feed-entry]');
+    const entries = document.querySelectorAll('[data-feed-entry]:not([hidden])');
     assert.equal(list.numberOfItems, entries.length, page.path);
     const visibleUrls = entries.map((entry) => entry.querySelector('h3 a')?.getAttribute('href') ?? entry.querySelector('.writing-list a')?.getAttribute('href'));
     const graphUrls = list.itemListElement.map((item: any) => graph.find((node) => node['@id'] === item.item['@id'])!.url);
@@ -327,4 +327,29 @@ test('the contact page keeps the callback form when it is published in Site Sett
   assert(form, 'callback form is published but missing from /contact');
   assert.equal(form.getAttribute('action'), '/api/contact');
   assert.equal(form.getAttribute('method'), 'post');
+});
+
+
+test('ranked default HTML groups associated writing with exactly one visible project', { skip }, () => {
+  const work = parse(readFileSync(join(dist, 'work.html'), 'utf8'));
+  const writing = parse(readFileSync(join(dist, 'writing.html'), 'utf8'));
+  const associated = work.querySelectorAll('[data-associated-work]');
+  assert(associated.length > 0, 'fixture must exercise real linked writing');
+  for (const row of associated) {
+    assert(row.hasAttribute('hidden'));
+    const href = row.querySelector('.writing-list a')!.getAttribute('href')!;
+    const ownerHref = row.getAttribute('data-associated-work');
+    const owners = work.querySelectorAll('[data-feed-type="work"]').filter(owner =>
+      owner.querySelector('h3 a')?.getAttribute('href') === ownerHref);
+    assert.equal(owners.length, 1);
+    assert.equal(owners[0]!.querySelectorAll('.work-card__writing a').filter(link => link.getAttribute('href') === href).length, 1);
+  }
+  for (const row of writing.querySelectorAll('[data-feed-entry]')) {
+    assert.equal(row.hasAttribute('hidden'), row.getAttribute('data-feed-type') === 'work');
+  }
+  for (const document of [work, writing]) {
+    assert.equal(document.querySelectorAll('[data-feed-entry] [data-feed-entry]').length, 0);
+    const ids = document.querySelectorAll('[id]').map(node => node.id);
+    assert.equal(new Set(ids).size, ids.length);
+  }
 });
