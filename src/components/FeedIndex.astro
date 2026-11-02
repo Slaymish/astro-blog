@@ -1,12 +1,19 @@
 ---
 import PageHeader from './PageHeader.astro';
 import FeedList from './FeedList.astro';
+import StartHere from './StartHere.astro';
 import type { FeedEntry } from '../content/feed';
-import type { FeedIndexCopy } from '../content/types';
+import type { FeedIndexCopy, WorkStory } from '../content/types';
 import type { FeedView } from '../client/feedFilter';
 
-interface Props { entries: FeedEntry[]; copy: FeedIndexCopy; defaultType?: FeedView }
-const { entries, copy, defaultType = 'all' } = Astro.props;
+interface Props {
+  entries: FeedEntry[];
+  copy: FeedIndexCopy;
+  defaultType?: FeedView;
+  featured?: WorkStory[];
+  featuredLabel?: string;
+}
+const { entries, copy, defaultType = 'all', featured = [], featuredLabel } = Astro.props;
 const views = [
   { type: 'all', label: copy.allLabel },
   { type: 'work', label: copy.workLabel },
@@ -16,6 +23,13 @@ const views = [
 
 <div id="feed-index" data-default-type={defaultType}>
   <PageHeader headline={copy.hero.headlineLines} intro={copy.hero.intro} measure="regular" />
+  {
+    featured.length > 0 && (
+      <div data-start-here>
+        <StartHere stories={featured} label={featuredLabel} />
+      </div>
+    )
+  }
   <div class="feed-controls" data-feed-controls hidden role="group" aria-label={copy.typeFilterLabel}>
     {views.map((view) => (
       <button class="chip" type="button" data-feed-view={view.type}

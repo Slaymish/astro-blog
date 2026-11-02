@@ -195,6 +195,9 @@ export interface WorkIndexPage {
   seo: Seo;
   hero: Hero;
   combined?: Partial<FeedIndexCopy>;
+  /** Slugs of the stories pinned above the index, in reading order. */
+  featured?: string[] | null;
+  featuredLabel?: string;
 }
 
 export interface FeedIndexCopy {

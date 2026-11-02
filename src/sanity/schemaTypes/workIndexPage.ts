@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity';
+import { defineArrayMember, defineField, defineType } from 'sanity';
 
 export const workIndexPage = defineType({
   name: 'workIndexPage',
@@ -43,6 +43,22 @@ export const workIndexPage = defineType({
         }),
         defineField({ name: 'intro', title: 'Intro', type: 'text', rows: 3, validation: (r) => r.required().max(280) }),
       ],
+    }),
+    defineField({
+      name: 'featured',
+      title: 'Start here',
+      type: 'array',
+      description:
+        'Up to three work stories pinned above the index, left to right. They keep their place in the list below, so pick the ones you would want read first.',
+      of: [defineArrayMember({ type: 'reference', to: [{ type: 'workStory' }] })],
+      validation: (r) => r.max(3).unique(),
+    }),
+    defineField({
+      name: 'featuredLabel',
+      title: 'Start here label',
+      type: 'string',
+      description: 'The eyebrow above the pinned stories. Leave blank to render the band unlabelled.',
+      validation: (r) => r.max(40),
     }),
   ],
   preview: { prepare: () => ({ title: 'Work index page' }) },

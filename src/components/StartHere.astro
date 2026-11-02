@@ -1,0 +1,84 @@
+---
+import WorkCover from './WorkCover.astro';
+import type { WorkStory } from '../content/types';
+
+interface Props {
+  stories: WorkStory[];
+  label?: string;
+}
+
+const { stories, label } = Astro.props;
+---
+
+{
+  stories.length > 0 && (
+    <section class="start-here" aria-label={label || 'Start here'}>
+      {label && <p class="start-here__label">{label}</p>}
+      <ul class="start-here__grid">
+        {stories.map((story) => {
+          const href = `/work/${story.slug}`;
+          return (
+            <li class="start-card">
+              {/* A mouse shortcut only: the title already links here, so the
+                  cover stays out of the tab order and the reading order. */}
+              <a class="start-card__visual" href={href} tabindex="-1" aria-hidden="true">
+                <WorkCover cover={story.cover} compact elevated />
+              </a>
+              <h2 class="start-card__title"><a href={href}>{story.title}</a></h2>
+              {story.descriptor && <p class="start-card__descriptor">{story.descriptor}</p>}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .start-here {
+    padding-block-start: var(--spacing-6);
+  }
+
+  .start-here__label {
+    color: var(--color-text-secondary);
+    font-size: var(--type-label);
+    letter-spacing: var(--letter-spacing-wide);
+    margin: 0 0 var(--spacing-4);
+    text-transform: uppercase;
+  }
+
+  .start-here__grid {
+    display: grid;
+    gap: var(--spacing-6);
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .start-card__visual {
+    display: block;
+    text-decoration: none;
+  }
+
+  .start-card__title {
+    font-size: var(--type-heading-3);
+    letter-spacing: var(--tracking-heading);
+    margin: var(--spacing-4) 0 var(--spacing-2);
+  }
+
+  .start-card__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .start-card__title a:hover {
+    color: var(--color-action);
+  }
+
+  .start-card__descriptor {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    margin: 0;
+  }
+</style>

@@ -27,6 +27,7 @@ export function initFeedFilter(): void {
   const entries = [...feed.querySelectorAll<HTMLElement>('[data-feed-entry]')];
   const years = [...feed.querySelectorAll<HTMLElement>('[data-feed-year]')];
   const empty = feed.querySelector<HTMLElement>('[data-feed-empty]');
+  const startHere = feed.querySelector<HTMLElement>('[data-start-here]');
   const defaultType = feed.dataset.defaultType === 'writing' ? 'writing' : 'all';
   let state = readFeedFilter(new URL(window.location.href), defaultType);
 
@@ -44,6 +45,8 @@ export function initFeedFilter(): void {
       year.hidden = !year.querySelector('[data-feed-entry]:not([hidden])');
     }
     if (empty) empty.hidden = visible > 0;
+    // The pinned band introduces the whole index, so it goes once a view is chosen.
+    if (startHere) startHere.hidden = state !== 'all';
     const current = new URL(window.location.href);
     // Keep the local writing fallback consistent with its Netlify redirect.
     current.pathname = '/work';

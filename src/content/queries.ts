@@ -62,7 +62,12 @@ export const getHomePage = () =>
   );
 
 export const getWorkIndexPage = () =>
-  once('workIndexPage', () => singleton<WorkIndexPage>('workIndexPage', '{ seo, hero, combined }'));
+  once('workIndexPage', () =>
+    singleton<WorkIndexPage>(
+      'workIndexPage',
+      '{ seo, hero, combined, featuredLabel, "featured": featured[]->slug.current }',
+    ),
+  );
 
 export const getReadingPage = () =>
   once('readingPage', () =>
