@@ -1,0 +1,476 @@
+{
+  "purpose": "Editorial portfolio significance, not measured quality. Scores are judgement calls, not probabilities.",
+  "scale": "0..100 in five-point steps. 90..100 flagship; 75..85 substantial; 60..70 solid; 45..55 focused/limited; 0..40 exploratory or weak evidence.",
+  "source": "Public non-draft workStory, post and report documents from Sanity production; full text snapshot in catalogue.json; report PDFs inspected.",
+  "total": 52,
+  "entries": [
+    {
+      "_id": "report-grid-diffusion-anomaly-detection",
+      "_rev": "9XvLRXwqhbo7x4WoGLPsV8",
+      "type": "report",
+      "slug": "grid-diffusion-anomaly-detection",
+      "title": "Anomaly (Out-of-Distribution) Detection for Electrical Distribution Networks using Discrete Diffusion Methods",
+      "valueScore": 100,
+      "valueReason": "The full Master of Computer Science submission: model formulation, normal-only training, a 36-run sweep, operational false-alarm evaluation and explicit limitations. The weak detector result does not reduce the value of the research contribution."
+    },
+    {
+      "_id": "catalogue-backfill-grid-diffusion-ad",
+      "_rev": "q3CdVB9kwXfGLnPHxM6CsD",
+      "type": "workStory",
+      "slug": "grid-diffusion-ad",
+      "title": "Grid Diffusion AD",
+      "valueScore": 95,
+      "valueReason": "The implementation and experiment record behind the master's submission. Substantial modelling and evaluation, rather than a demonstration of an API. This is the same underlying project as the report, not independent evidence of a second research project."
+    },
+    {
+      "_id": "workStory-the-city",
+      "_rev": "ufXqsgklGgab7shZzVNPSN",
+      "type": "workStory",
+      "slug": "the-city",
+      "title": "The City",
+      "valueScore": 90,
+      "valueReason": "A distinctive released macOS product joining stream parsing, permission handling, tested state reduction, 3D interaction and an update pipeline. Strong evidence of product design and systems work; the contributor's replay work remains credited."
+    },
+    {
+      "_id": "workStory-you-inc",
+      "_rev": "8KkzCZUbII50UCft80jWhV",
+      "type": "workStory",
+      "slug": "you-inc",
+      "title": "You Inc",
+      "valueScore": 90,
+      "valueReason": "A substantial finance product with a double-entry model, bank integration and explicit handling of uncertainty. Removing the commercial custody layer is a consequential product decision, not just interface work."
+    },
+    {
+      "_id": "catalogue-backfill-ando-sim",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "ando-sim",
+      "title": "AndoSim",
+      "valueScore": 85,
+      "valueReason": "Native C++ simulation, Python bindings and Blender integration around a published contact method, with derivative checks and packaged releases. Strong implementation depth without claiming the underlying method as original research."
+    },
+    {
+      "_id": "workStory-home-lab",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "home-lab",
+      "title": "Home Lab",
+      "valueScore": 85,
+      "valueReason": "A resource-constrained system with explicit access boundaries, encrypted recovery and a reported full restore test. Strong evidence of operational judgement, rather than a list of services installed."
+    },
+    {
+      "_id": "workStory-sprint-coach",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "sprint-coach",
+      "title": "Sprint Coach",
+      "valueScore": 85,
+      "valueReason": "End-to-end client delivery: design, copy, implementation, enquiry handling, staging separation, approval of the shipped commit and handover. Demonstrates responsibility for a real business outcome."
+    },
+    {
+      "_id": "catalogue-backfill-bedroom-layout-designer",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "bedroom-layout-designer",
+      "title": "Bedroom Layout Designer",
+      "valueScore": 80,
+      "valueReason": "A shipped planning application with coherent editing state, undo, persistence, offline support and PDF export. Tests address selection/state behaviour, giving more evidence than a visual prototype alone."
+    },
+    {
+      "_id": "catalogue-backfill-conversational-timing-lab",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0O4k",
+      "type": "workStory",
+      "slug": "conversational-timing-lab",
+      "title": "Conversational Timing Lab",
+      "valueScore": 80,
+      "valueReason": "An independent research question with causal labels, conversation-level splitting and a recorded baseline over 100,004 boundaries. The audio pipeline is not yet a trained predictor, so this remains below completed flagship research."
+    },
+    {
+      "_id": "workStory-health-agent",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "health-agent",
+      "title": "HealthAgent",
+      "valueScore": 80,
+      "valueReason": "An end-to-end personal data product spanning ingestion, raw-data preservation, canonical storage, authentication and cloud operations. Substantial integration work, with medical claims explicitly excluded."
+    },
+    {
+      "_id": "8b2b8d26-cbbe-462a-abb1-c5f34078f13a",
+      "_rev": "b4fa93b4-1cc7-41f1-b2c1-fd62970314f4",
+      "type": "report",
+      "slug": "home-lab-architectural-study",
+      "title": "Home Lab Architectural Study",
+      "valueScore": 80,
+      "valueReason": "A substantial architecture document with constraints, access mapping, ADRs and a measured recovery test. Strong supporting evidence for Home Lab, but the same underlying project rather than another independent delivery."
+    },
+    {
+      "_id": "catalogue-backfill-malware-classifier-backdoors",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "malware-classifier-backdoors",
+      "title": "Malware Classifier Backdoors",
+      "valueScore": 80,
+      "valueReason": "A research manuscript and experiment comparisons that keep clean performance beside attack success. Meaningful security evaluation, with upstream implementation credit and narrow claims."
+    },
+    {
+      "_id": "workStory-brontehf",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "brontehf",
+      "title": "BrontëHF",
+      "valueScore": 75,
+      "valueReason": "A real client portfolio with responsive implementation, CMS handover and a live publishing workflow. Strong delivery evidence, while the visual design contribution correctly belongs to Brontë."
+    },
+    {
+      "_id": "workStory-gpu-share",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "gpu-share",
+      "title": "GPUShare",
+      "valueScore": 75,
+      "valueReason": "Broad systems integration across accounts, streaming inference, rendering and accounting. The documented broken installer, estimated energy charges and trusted-file-only rendering prevent it ranking with the most complete deliveries."
+    },
+    {
+      "_id": "catalogue-backfill-lumen",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "lumen",
+      "title": "Lumen",
+      "valueScore": 75,
+      "valueReason": "A released Obsidian plugin and local backend with ingestion, retrieval and source-block citation checks. A coherent research workflow, though the catalogue gives no independent retrieval-quality evaluation."
+    },
+    {
+      "_id": "catalogue-backfill-otto",
+      "_rev": "76WjQXb3Gkj2ZaCBmszuZi",
+      "type": "workStory",
+      "slug": "otto",
+      "title": "Otto",
+      "valueScore": 75,
+      "valueReason": "A released native Swift migration with session state, capability retrieval, tests and signed releases. Substantial integration, with the upstream voice-os foundation explicitly credited."
+    },
+    {
+      "_id": "catalogue-backfill-typed-diff-questions",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0OP4",
+      "type": "workStory",
+      "slug": "typed-diff-questions",
+      "title": "Typed Diff Questions",
+      "valueScore": 75,
+      "valueReason": "A reusable evaluation harness with recorded runs, calibration, class balancing and a negative baseline. Valuable experimental judgement, tempered by a model reference and unverified developer bug labels."
+    },
+    {
+      "_id": "workStory-wildfire",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "wildfire-pyspark",
+      "title": "Wildfire PySpark",
+      "valueScore": 75,
+      "valueReason": "A sizeable distributed-learning coursework project with feature-leakage correction, model comparisons and concrete class-imbalance results. Limited by the unusable false-positive trade-off rather than credited as a deployed predictor."
+    },
+    {
+      "_id": "catalogue-backfill-cowrie-honeypot-analysis",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "cowrie-honeypot-analysis",
+      "title": "Cowrie Honeypot Analysis",
+      "valueScore": 70,
+      "valueReason": "A concrete security investigation across 480,998 events with session-level analysis, tools and two reports. Clear analytical substance, without a novel detection-system claim."
+    },
+    {
+      "_id": "catalogue-backfill-personal-language-corpus",
+      "_rev": "VYNU74ydPo0hva7ps4iqn2",
+      "type": "workStory",
+      "slug": "personal-language-corpus",
+      "title": "Personal Language Corpus",
+      "valueScore": 70,
+      "valueReason": "A testable local analysis workflow with stable passage IDs, provenance and traceable observations. The methodological care is valuable even though the current product scope is small."
+    },
+    {
+      "_id": "catalogue-backfill-synod",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "synod",
+      "title": "Synod",
+      "valueScore": 70,
+      "valueReason": "A released journal-analysis plugin with importers, value discovery and a deliberately distinct multi-perspective workflow. Original product framing, but the catalogue does not establish the quality of its generated readings."
+    },
+    {
+      "_id": "64644895-0cdc-4c42-a73f-171531516fc4",
+      "_rev": "b4fa93b4-1cc7-41f1-b2c1-fd62970314f4",
+      "type": "report",
+      "slug": "wildfire-analysis-with-pyspark",
+      "title": "Wildfire Analysis with PySpark",
+      "valueScore": 70,
+      "valueReason": "A complete coursework report with model and per-class results. The report fits preprocessing before its train/test split and overstates the operational value of very low precision, so it should not rank as exemplary validated research."
+    },
+    {
+      "_id": "catalogue-backfill-bank-to-sheets-sync",
+      "_rev": "VYNU74ydPo0hva7ps4itcw",
+      "type": "workStory",
+      "slug": "bank-to-sheets-sync",
+      "title": "Bank-to-Sheets Sync",
+      "valueScore": 65,
+      "valueReason": "A small but operationally useful banking pipeline with deduplication, saved state, reconciliation and tests. Limited scope, with stronger reliability evidence than a typical prototype."
+    },
+    {
+      "_id": "catalogue-backfill-path-tracing-study",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "path-tracing-study",
+      "title": "Path Tracing Study",
+      "valueScore": 65,
+      "valueReason": "Coursework implementation of rendering stages plus an additional sampling variant, backed by source and example renders. Good technical fundamentals within a supplied framework."
+    },
+    {
+      "_id": "516f451a-82b7-4879-b32a-a9ed7eba4941",
+      "_rev": "ufXqsgklGgab7shZzVNPSN",
+      "type": "post",
+      "slug": "building-a-private-ai-server-for-friends",
+      "title": "Sharing my GPU with friends",
+      "valueScore": 65,
+      "valueReason": "A detailed technical account that distinguishes local/cloud routing, accounting assumptions and trusted rendering limits. Stronger than a launch announcement, but supporting the same GPUShare project rather than adding another independent product."
+    },
+    {
+      "_id": "catalogue-backfill-wellington-transport-network",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0ORF",
+      "type": "workStory",
+      "slug": "wellington-transport-network",
+      "title": "Wellington Transport Network",
+      "valueScore": 65,
+      "valueReason": "Several graph algorithms implemented within coursework, including A*, connected components and articulation points. Solid algorithmic evidence, without claiming the supplied map framework as original work."
+    },
+    {
+      "_id": "catalogue-backfill-echo-stats-finder",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0O96",
+      "type": "workStory",
+      "slug": "echo-stats-finder",
+      "title": "Echo Stats Finder",
+      "valueScore": 60,
+      "valueReason": "A collaboratively shipped desktop tool with Windows builds and live-lobby/league joins. The score credits Hamish's networking and structure, not the collaborator's GUI, and recognises its historical context."
+    },
+    {
+      "_id": "catalogue-backfill-finlay-lani-wedding",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0ODS",
+      "type": "workStory",
+      "slug": "finlay-lani-wedding",
+      "title": "Finlay and Lani's wedding website",
+      "valueScore": 60,
+      "valueReason": "A finished site used through a real wedding cycle, with RSVP validation and an authenticated organiser view. Concrete delivery and utility within a modest technical scope."
+    },
+    {
+      "_id": "catalogue-backfill-floor-plan-importer",
+      "_rev": "8KkzCZUbII50UCft80m7mb",
+      "type": "workStory",
+      "slug": "floor-plan-importer",
+      "title": "Floor-plan Importer",
+      "valueScore": 60,
+      "valueReason": "A focused Blender importer that constructs editable scene geometry from sample structured plans. Useful integration and geometry work; the external OpenArchSpecs project owns the format."
+    },
+    {
+      "_id": "catalogue-backfill-geometry-shader-study",
+      "_rev": "76WjQXb3Gkj2ZaCBmszuZi",
+      "type": "workStory",
+      "slug": "geometry-shader-study",
+      "title": "Geometry and Shader Study",
+      "valueScore": 60,
+      "valueReason": "Implemented geometry, normals, texture techniques and shadow mapping with retained submission screenshots. Substantive graphics coursework, but narrower and more scaffolded than an independent product."
+    },
+    {
+      "_id": "catalogue-backfill-groovebox",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0OXm",
+      "type": "workStory",
+      "slug": "groovebox",
+      "title": "GrooveBox",
+      "valueScore": 60,
+      "valueReason": "A working pattern sequencer and instrument with Python UI and native audio experiments. More than a mock-up, but unbundled and without demonstrated timing or reliability evaluation."
+    },
+    {
+      "_id": "catalogue-backfill-music-genre-classification",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "music-genre-classification",
+      "title": "Music Genre Classification",
+      "valueScore": 60,
+      "valueReason": "A substantial coursework preprocessing and model-comparison workflow with retained data and predictions. Re-running requires a missing test split, and the catalogue gives no strong held-out performance result."
+    },
+    {
+      "_id": "08be16cc-8610-4145-96dc-88582ac28de0",
+      "_rev": "b4fa93b4-1cc7-41f1-b2c1-fd62970314f4",
+      "type": "post",
+      "slug": "healthagent-apple-health-data-ingestion-and-insights",
+      "title": "Putting my Apple Health data in one place",
+      "valueScore": 60,
+      "valueReason": "A concise first-hand account of the health pipeline and infrastructure. Useful supporting explanation, but less depth than the product case study and with the proposed correlation work still prospective."
+    },
+    {
+      "_id": "913864e1-beae-4536-8f6c-a100adb70030",
+      "_rev": "b4fa93b4-1cc7-41f1-b2c1-fd62970314f4",
+      "type": "post",
+      "slug": "splitting-the-stack-and-making-setup-actually-work",
+      "title": "Splitting GPUShare into two services",
+      "valueScore": 60,
+      "valueReason": "A focused architecture/refactoring note with concrete request paths and operational limitations. Useful engineering explanation, though narrower than the main GPUShare piece and with the installer still broken."
+    },
+    {
+      "_id": "catalogue-backfill-transit-sync",
+      "_rev": "8KkzCZUbII50UCft80m6yf",
+      "type": "workStory",
+      "slug": "transit-sync",
+      "title": "TransitSync",
+      "valueScore": 60,
+      "valueReason": "A working calendar-to-transit prototype with a separately published routing package. Meaningful integration and domain work, held below shipped products because the hosted version never launched."
+    },
+    {
+      "_id": "catalogue-backfill-wake-on-join-minecraft",
+      "_rev": "8KkzCZUbII50UCft80pGtT",
+      "type": "workStory",
+      "slug": "wake-on-join-minecraft",
+      "title": "Wake-on-Join Minecraft",
+      "valueScore": 60,
+      "valueReason": "An on-demand infrastructure design with templates, a stable-address problem and a runbook. Useful operational scope, but no measured wake latency or cost outcome in the catalogue."
+    },
+    {
+      "_id": "catalogue-backfill-birthday-gallery",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0P05",
+      "type": "workStory",
+      "slug": "birthday-gallery",
+      "title": "Birthday Gallery",
+      "valueScore": 55,
+      "valueReason": "A completed, personally specific 3D gallery with custom modelling and camera choreography. Stronger creative authorship than a generic demo, though it remains a small private experience."
+    },
+    {
+      "_id": "catalogue-backfill-boids-simulation",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "boids-simulation",
+      "title": "Boids Simulation",
+      "valueScore": 55,
+      "valueReason": "Force-based flocking, obstacle handling and interactive controls with retained results. Good graphics coursework within a supplied framework, rather than a novel simulation method."
+    },
+    {
+      "_id": "catalogue-backfill-drop-eta",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "drop-eta",
+      "title": "DropETA",
+      "valueScore": 55,
+      "valueReason": "A working delivery-planning prototype with insertion previews and recalculated ETAs. Useful interaction design, but the routing is explicitly the weaker unfinished part."
+    },
+    {
+      "_id": "catalogue-backfill-l-system-generator",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "l-system-generator",
+      "title": "L-system Generator",
+      "valueScore": 55,
+      "valueReason": "A working procedural-rule editor, persistence and OBJ export. Demonstrates geometry and tooling fundamentals; the 3D mesh construction remains unfinished."
+    },
+    {
+      "_id": "catalogue-backfill-watzon",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0OBH",
+      "type": "workStory",
+      "slug": "watzon",
+      "title": "Watzon",
+      "valueScore": 55,
+      "valueReason": "A community-oriented bot with multiple league queries and packaged historical releases. Real integration work, but the upstream game's shutdown means it is no longer a current usable service."
+    },
+    {
+      "_id": "catalogue-backfill-3d-spanning-trees",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "3d-spanning-trees",
+      "title": "3D Spanning Trees",
+      "valueScore": 50,
+      "valueReason": "A small released graph-to-geometry tool and Blender add-on. Concrete algorithmic implementation, but deliberately limited scope and little ongoing development."
+    },
+    {
+      "_id": "catalogue-backfill-cookie-cat",
+      "_rev": "VYNU74ydPo0hva7ps4iqAQ",
+      "type": "workStory",
+      "slug": "cookie-cat",
+      "title": "Cookie Cat",
+      "valueScore": 50,
+      "valueReason": "A playable coursework game with procedural reachability, upgrades and a recorded walkthrough. A finished exercise using third-party art, not a major independent game product."
+    },
+    {
+      "_id": "catalogue-backfill-metlink-departures-display",
+      "_rev": "VYNU74ydPo0hva7ps4iu2g",
+      "type": "workStory",
+      "slug": "metlink-departures-display",
+      "title": "Metlink Departures Display",
+      "valueScore": 50,
+      "valueReason": "A focused home-use service with both web and terminal views and a systemd setup. Real utility, but a small API integration rather than substantial routing or product work."
+    },
+    {
+      "_id": "catalogue-backfill-piano-waveform-visualiser",
+      "_rev": "VYNU74ydPo0hva7ps4isAq",
+      "type": "workStory",
+      "slug": "piano-waveform-visualiser",
+      "title": "Piano Waveform Visualiser",
+      "valueScore": 50,
+      "valueReason": "A working native audio-synthesis and waveform tool in C++/SDL2. Useful signal-processing fundamentals within a small interactive study, with MIDI and file input unfinished."
+    },
+    {
+      "_id": "catalogue-backfill-pinterest-aesthetic-analysis",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0Oc8",
+      "type": "workStory",
+      "slug": "pinterest-aesthetic-analysis",
+      "title": "Pinterest Aesthetic Analysis",
+      "valueScore": 50,
+      "valueReason": "A reproducible embedding/clustering workflow with saved image assignments and a dated 171-image run. Interesting exploratory analysis, not a validated account of aesthetic preference."
+    },
+    {
+      "_id": "catalogue-backfill-flat-power-calculator",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0OpC",
+      "type": "workStory",
+      "slug": "flat-power-calculator",
+      "title": "Flat Power Calculator",
+      "valueScore": 45,
+      "valueReason": "A useful household calculator with live energy integration and reusable calculation/formatting logic. Small scope and no tests yet, so it should not sit alongside major finance or infrastructure projects."
+    },
+    {
+      "_id": "catalogue-backfill-piano-improvisation-helper",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "piano-improvisation-helper",
+      "title": "Piano Improvisation Helper",
+      "valueScore": 45,
+      "valueReason": "A working browser preview-analysis path with visible alternative key estimates. Scope and evidence are modest, and microphone recognition remains a placeholder."
+    },
+    {
+      "_id": "catalogue-backfill-sentient-environment-explorer",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0Oxu",
+      "type": "workStory",
+      "slug": "sentient-environment-explorer",
+      "title": "Sentient Environment Explorer",
+      "valueScore": 45,
+      "valueReason": "A visual reinforcement-learning prototype with saved checkpoints and controls. The catalogue establishes a functioning experiment interface, not strong learned behaviour or a comparative evaluation."
+    },
+    {
+      "_id": "catalogue-backfill-parametric-bookshelf",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "parametric-bookshelf",
+      "title": "Parametric Bookshelf",
+      "valueScore": 40,
+      "valueReason": "A reusable geometry-node asset with the editable construction preserved. A legitimate small modelling piece, rather than a broad software or research contribution."
+    },
+    {
+      "_id": "catalogue-backfill-articulate-ai",
+      "_rev": "8KkzCZUbII50UCft80jSPB",
+      "type": "workStory",
+      "slug": "articulate-ai",
+      "title": "ArticulateAI",
+      "valueScore": 35,
+      "valueReason": "An early recorded-audio/API workflow with useful historical learning value. Mostly sequential service integration, and its 2023 model names need updating before it runs again."
+    },
+    {
+      "_id": "catalogue-backfill-spotify-playlist-demographics",
+      "_rev": "76WjQXb3Gkj2ZaCBmt0OgU",
+      "type": "workStory",
+      "slug": "spotify-playlist-demographics",
+      "title": "Spotify Playlist Demographics",
+      "valueScore": 35,
+      "valueReason": "A working retrieval/extraction/charting experiment, but demographic inference from incomplete biographies has substantial validity limits. Exploratory only, not strong evidence of reliable demographic analysis."
+    }
+  ]
+}

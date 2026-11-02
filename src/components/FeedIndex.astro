@@ -10,10 +10,11 @@ interface Props {
   entries: FeedEntry[];
   copy: FeedIndexCopy;
   defaultType?: FeedView;
+  mode?: 'flat' | 'chronological';
   featured?: WorkStory[];
   featuredLabel?: string;
 }
-const { entries, copy, defaultType = 'all', featured = [], featuredLabel } = Astro.props;
+const { entries, copy, defaultType = 'all', mode = 'chronological', featured = [], featuredLabel } = Astro.props;
 const views = [
   { type: 'all', label: copy.allLabel },
   { type: 'work', label: copy.workLabel },
@@ -36,25 +37,11 @@ const views = [
         aria-pressed={view.type === defaultType} aria-controls="feed-list">{view.label}</button>
     ))}
   </div>
-  <FeedList entries={entries} copy={copy} id="feed-list" />
+  <FeedList entries={entries} copy={copy} id="feed-list" mode={mode} />
   <p class="feed-empty" data-feed-empty hidden={entries.length > 0} role="status">{copy.emptyMessage}</p>
-  {/* A tool to try sits after the index, not in front of it. */}
-  <aside class="featured-tool" aria-label="Interactive project">
-    <h2><a href="/work/codex-usage">Codex usage optimiser <span aria-hidden="true">↗</span></a></h2>
-    <p>Estimate Codex subscription costs and preview a usage report.</p>
-  </aside>
 </div>
 
 <style>
-  .featured-tool {
-    border-block: 1px solid var(--color-stroke-subtle);
-    padding-block: var(--spacing-6);
-    margin-block-start: var(--spacing-16);
-  }
-  .featured-tool h2 { font-size: var(--type-heading-3); margin: 0 0 var(--spacing-2); }
-  .featured-tool h2 a { color: var(--color-text-primary); text-decoration: none; }
-  .featured-tool h2 a:hover { color: var(--color-action); }
-  .featured-tool p:last-child { color: var(--color-text-secondary); margin: 0; }
   .feed-controls {
     display: flex;
     flex-wrap: wrap;

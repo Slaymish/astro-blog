@@ -1,5 +1,5 @@
 import { LOCALE } from '../site/config';
-import type { WritingEntry } from './types';
+import type { Post, Report, WritingEntry } from './types';
 
 const monthYear = new Intl.DateTimeFormat(LOCALE, { month: 'short', year: 'numeric', timeZone: 'UTC' });
 const fullDate = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
@@ -28,9 +28,15 @@ export async function getWriting(): Promise<WritingEntry[]> {
   const { getPosts, getReports } = await import('./queries');
   const [posts, reports] = await Promise.all([getPosts(), getReports()]);
 
+  return mergeWriting(posts, reports);
+}
+
+/** Pure source-to-writing mapping; preserves unassessed scores and explicit zero. */
+export function mergeWriting(posts: Post[], reports: Report[]): WritingEntry[] {
   const entries: WritingEntry[] = [
     ...posts.map((post) => ({
       type: 'post' as const,
+      valueScore: post.valueScore,
       title: post.title,
       excerpt: post.excerpt,
       href: `/posts/${post.slug}`,
@@ -40,6 +46,7 @@ export async function getWriting(): Promise<WritingEntry[]> {
     })),
     ...reports.map((report) => ({
       type: 'report' as const,
+      valueScore: report.valueScore,
       title: report.title,
       excerpt: report.description,
       href: `/reports/${report.slug}`,

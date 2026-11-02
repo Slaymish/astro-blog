@@ -5,28 +5,32 @@ import { groupFeedByYear, type FeedEntry } from '../content/feed';
 import { formatFullDate } from '../content/writing';
 import type { FeedIndexCopy } from '../content/types';
 
-interface Props { entries: FeedEntry[]; copy: FeedIndexCopy; id?: string }
-const { entries, copy, id } = Astro.props;
-const groups = groupFeedByYear(entries);
+interface Props { entries: FeedEntry[]; copy: FeedIndexCopy; id?: string; mode?: 'flat' | 'chronological' }
+const { entries, copy, id, mode = 'chronological' } = Astro.props;
+const List = mode === 'flat' ? 'ol' : 'ul';
+const groups = mode === 'flat' ? [{ year: null, entries }] : groupFeedByYear(entries);
 ---
 
 <div class="feed-list" id={id}>
   {groups.map(({ year, entries }) => (
-    <section class="feed-year" data-feed-year aria-labelledby={`year-${year}`}>
-      <h2 class="feed-year__heading" id={`year-${year}`}>{year}</h2>
-      <ul class="feed-year__entries">
+    <section class="feed-year" data-feed-year={year ? true : undefined} aria-labelledby={year ? `year-${year}` : undefined}>
+      {year && <h2 class="feed-year__heading" id={`year-${year}`}>{year}</h2>}
+      <List class="feed-year__entries">
         {entries.map((entry) => (
           <li class="feed-entry" data-feed-entry data-feed-type={entry.type}
             data-date={entry.publishedAt}>
             {entry.type === 'work' ? (
-              <WorkCard story={entry.story} tags={entry.tags} />
+              <>
+                <time class="feed-date" datetime={entry.publishedAt}>{formatFullDate(entry.publishedAt)}</time>
+                <WorkCard story={entry.story} tags={entry.tags} />
+              </>
             ) : (
               <EntryList entries={[{ ...entry.writing, tags: entry.tags, displayDate: formatFullDate(entry.publishedAt) }]}
                 typeLabel={copy.writingLabel} headingLevel="h3" showTags />
             )}
           </li>
         ))}
-      </ul>
+      </List>
     </section>
   ))}
 </div>
@@ -47,6 +51,7 @@ const groups = groupFeedByYear(entries);
     .feed-year__heading { padding-block-end: var(--spacing-10); }
   }
   .feed-year__entries { list-style: none; margin: 0; padding: 0; }
+  .feed-date { color: var(--color-text-secondary); font-size: var(--type-body-small); }
   .feed-entry + .feed-entry { margin-top: var(--spacing-6); }
   .feed-entry :global(.work-card),
   .feed-entry :global(.writing-list),

@@ -9,14 +9,15 @@ import VideoCover from '../components/VideoCover.astro';
 import WorkCover from '../components/WorkCover.astro';
 import { LOGO_PATHS } from '../site/logo';
 import { getHomePage, getSiteSettings, getWorkStories } from '../content/queries';
-import { artifactHref } from '../content/work';
+import { selectHomeWork, selectHomeWriting } from '../content/ranking';
+import { getWriting } from '../content/writing';
 import { PAUSE_LABEL } from '../client/videoTeaser';
 import theCityPoster from '../assets/images/thecity-teaser-poster.jpg';
 import youIncPoster from '../assets/images/youinc-teaser-poster.jpg';
 
 /**
  * The features with a clip instead of a still. Keyed on slug so that
- * reordering homePage.featured in Studio moves the card without the clip
+ * ranking moves the card without the clip
  * following the wrong story.
  */
 const TEASERS: Record<string, { src: string; poster: ImageMetadata; width: number; height: number }> = {
@@ -24,26 +25,18 @@ const TEASERS: Record<string, { src: string; poster: ImageMetadata; width: numbe
   'you-inc': { src: '/media/youinc-teaser.mp4', poster: youIncPoster, width: 1280, height: 720 },
 };
 
-const [copy, stories, settings] = await Promise.all([getHomePage(), getWorkStories(), getSiteSettings()]);
-
-const featured = copy.featured
-  .map((slug) => stories.find((story) => story.slug === slug))
-  .filter((story): story is NonNullable<typeof story> => story !== undefined);
-
-if (featured.length !== copy.featured.length) {
-  const missing = copy.featured.filter((slug) => !stories.some((story) => story.slug === slug));
-  throw new Error(`homePage.featured references missing work stories: ${missing.join(', ')}`);
-}
-
-const writingHref = artifactHref(copy.writingEntry._type, copy.writingEntry.slug);
+const now = Date.now();
+const [copy, stories, settings, writing] = await Promise.all([getHomePage(), getWorkStories(), getSiteSettings(), getWriting()]);
+const featured = selectHomeWork(stories, copy.featured, now);
+const selectedWriting = selectHomeWriting(writing, featured, now);
 const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
   const entries: StructuredEntry[] = [{
     type: 'CreativeWork', name: story.title, url: `/work/${story.slug}`,
     description: story.introduction, publishedAt: story.date,
   }];
-  if (index === Math.min(1, featured.length - 1)) entries.push({
-    type: copy.writingEntry._type === 'post' ? 'BlogPosting' : 'Report',
-    name: copy.writingEntry.title, url: writingHref, description: copy.writingBlurb,
+  if (selectedWriting && index === Math.min(1, featured.length - 1)) entries.push({
+    type: selectedWriting.type === 'post' ? 'BlogPosting' : 'Report',
+    name: selectedWriting.title, url: selectedWriting.href, description: selectedWriting.excerpt, publishedAt: selectedWriting.publishedAt,
   });
   if (index === Math.min(3, featured.length - 1)) entries.push({
     type: 'WebPage', name: copy.readingLabel, url: '/reading', description: copy.readingText,
@@ -120,14 +113,14 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
               <p><IntroductionText text={story.introduction} link={story.introductionLink} /></p>
             </div>
           </article>
-          {index === Math.min(1, featured.length - 1) && (
+          {selectedWriting && index === Math.min(1, featured.length - 1) && (
             <section class="notes notes--writing" aria-labelledby="home-writing-heading">
               <p class="label">{copy.writingLabel}</p>
               <div class="notes__body">
-                <h2 id="home-writing-heading"><a href={writingHref}>{copy.writingEntry.title}</a></h2>
-                <p>{copy.writingBlurb}</p>
+                <h2 id="home-writing-heading"><a href={selectedWriting.href}>{selectedWriting.title}</a></h2>
+                <p>{selectedWriting.excerpt}</p>
                 <div class="notes__actions">
-                  <Button variant="ghost" href={writingHref}>{copy.writingLinkLabel}</Button>
+                  <Button variant="ghost" href={selectedWriting.href}>{copy.writingLinkLabel}</Button>
                   <Button variant="ghost" href="/work?type=writing">{copy.allWritingLabel}</Button>
                 </div>
               </div>
