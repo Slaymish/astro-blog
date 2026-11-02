@@ -1,0 +1,98 @@
+{
+  "_id": "workStory-beth-hurley",
+  "_type": "workStory",
+  "title": "Beth Hurley",
+  "descriptor": "Client portfolio website",
+  "slug": { "_type": "slug", "current": "beth-hurley" },
+  "kind": "professional",
+  "order": 45,
+  "date": "2026-11-02",
+  "timeframe": "2026",
+  "tags": ["Front-end development"],
+  "summary": "Built a fashion designer's portfolio where the photographs lead and she publishes new work herself.",
+  "introduction": "Beth's work is photographs of clothes on people, so the site is built to get out of their way. She adds a project or a photo set in the CMS and the site rebuilds without me.",
+  "role": "Front-end build and the content model.",
+  "result": "Live at bethhurley.nz. Publishing in Contentful rebuilds production on its own, so a new collection goes up without a deploy from me.",
+  "links": [
+    {
+      "_key": "l0",
+      "_type": "workLink",
+      "label": "Visit site",
+      "href": "https://bethhurley.nz",
+      "external": true,
+      "kind": "other"
+    }
+  ],
+  "body": [
+    {
+      "_type": "block",
+      "_key": "b0",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "b0s0",
+          "marks": [],
+          "text": "Nearly every pixel on this site is a photograph, so the build keeps the type on one left axis and lets the images run to the edge. A row of frames shares a height rather than a shelf: each card's width comes from its own ratio, so a portrait and a landscape sit in the same row without being cropped to match."
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b1",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "b1s0",
+          "marks": [],
+          "text": "Work pages carry a collection or an involvement with the role and credits beside it. Photography holds three sets, Japan plus black and white and colour film, each a board that reflows from one column on a phone to four on a desktop."
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b2",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "b2s0",
+          "marks": [],
+          "text": "The content lives in Contentful and is read at build time. Publishing there fires a production rebuild, which is the part that matters to Beth: a new collection or photo set goes live without her asking anyone."
+        }
+      ]
+    }
+  ],
+  "cover": {
+    "kind": "image",
+    "alt": "Beth Hurley's homepage: her name and a Work, About, Photography menu above a two-column layout, with an About paragraph on the left and a photograph of a model in a black fascinator on the right.",
+    "file": "assets/cover-site.jpg"
+  },
+  "evidence": [
+    {
+      "_key": "e0",
+      "heading": "A collection page",
+      "label": "Dear Bones",
+      "alt": "A project page for Dear Bones, with the collection title, role and credits in the left column and a full-length photograph of the outfit in the right.",
+      "file": "assets/work-page.jpg"
+    },
+    {
+      "_key": "e1",
+      "heading": "The photography index",
+      "label": "Photography",
+      "alt": "The photography index, a board of frames from the Japan set laid out in columns.",
+      "file": "assets/photography.jpg"
+    },
+    {
+      "_key": "e2",
+      "heading": "On a phone",
+      "label": "Mobile",
+      "alt": "The homepage on a phone, with the name and menu above the About text and a single photograph below.",
+      "file": "assets/mobile-homepage.jpg"
+    }
+  ]
+}
