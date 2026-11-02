@@ -12,7 +12,7 @@
  */
 import { createRequire } from 'node:module';
 import { homedir } from 'node:os';
-import { createReadStream, existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -137,8 +137,17 @@ const run = async () => {
   if (cover && mode === 'write') {
     const { createClient } = require('@sanity/client');
     const client = createClient({ projectId: project, dataset, token, apiVersion: '2024-01-01' });
-    const asset = await client.assets.upload('image', createReadStream(join(here, cover.image)), {
-      filename: 'cover-ando-sim.png',
+    // Sanity rejects the raw render, an 8-bit RGBA PNG, with 422 "unsupported
+    // image format". sharp re-encodes to JPEG and that uploads cleanly.
+    const sharp = require('sharp');
+    const source = resolve(repo, cover.image);
+    const jpeg = await sharp(source)
+      .resize({ width: 1600, withoutEnlargement: true })
+      .jpeg({ quality: 90 })
+      .toBuffer();
+    const asset = await client.assets.upload('image', jpeg, {
+      filename: 'cover-ando-sim.jpg',
+      contentType: 'image/jpeg',
     });
     console.log(`\nuploaded ${asset._id}`);
     mutations.push({
