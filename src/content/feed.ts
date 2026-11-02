@@ -12,6 +12,23 @@ export type FeedEntry = FeedBase & (
   | { type: 'writing'; writing: WritingEntry }
 );
 
+/**
+ * Resolve the curated slugs to stories in the order they were curated.
+ * A slug that no longer matches a story fails the build rather than leaving a
+ * gap in the band, the same way homePage.featured does.
+ */
+export function resolveFeatured(stories: WorkStory[], slugs: string[] | null = []): WorkStory[] {
+  // Sanity returns null for an unset field, and a default parameter only covers undefined.
+  const curated = slugs ?? [];
+  const bySlug = new Map(stories.map((story) => [story.slug, story]));
+  const missing = curated.filter((slug) => !bySlug.has(slug));
+  if (missing.length) throw new Error(`workIndexPage.featured references missing work stories: ${missing.join(', ')}`);
+  return curated.flatMap((slug) => {
+    const story = bySlug.get(slug);
+    return story ? [story] : [];
+  });
+}
+
 /** Explicit project topics override the topics of its linked posts/reports. */
 export function workTags(story: WorkStory): string[] {
   return uniqueTags(story.tags ?? story.artifacts.flatMap((artifact) => artifact.tags ?? []));

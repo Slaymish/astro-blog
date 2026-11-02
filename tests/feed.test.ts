@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { feedTags, groupFeedByYear, mergeFeed, workTags } from '../src/content/feed';
+import { feedTags, groupFeedByYear, mergeFeed, resolveFeatured, workTags } from '../src/content/feed';
 import { feedFilterUrl, matchesFeedFilter, readFeedFilter } from '../src/client/feedFilter';
 import type { WorkStory, WritingEntry } from '../src/content/types';
 
@@ -22,6 +22,17 @@ test('mixed feed orders actual dates and datetimes newest first without duplicat
   assert.deepEqual(feed.map((entry) => entry.href), ['/work/new', '/posts/post', '/reports/report', '/work/old']);
   assert.equal(feed.filter((entry) => entry.type === 'work').length, stories.length);
   assert.deepEqual(stories.map((entry) => entry.slug), ['new', 'old']);
+});
+
+test('the pinned band keeps the curated order rather than the feed order', () => {
+  const stories = [story('newest', '2026-03-27'), story('middle', '2026-02-01'), story('oldest', '2025-01-01')];
+  assert.deepEqual(resolveFeatured(stories, ['oldest', 'newest']).map((s) => s.slug), ['oldest', 'newest']);
+  assert.deepEqual(resolveFeatured(stories, undefined).map((s) => s.slug), []);
+});
+
+test('a pinned slug that matches no story fails the build instead of leaving a gap', () => {
+  assert.throws(() => resolveFeatured([story('kept', '2026-01-01')], ['kept', 'retired']),
+    /workIndexPage\.featured references missing work stories: retired/);
 });
 
 test('equal publication times have deterministic URL ordering', () => {

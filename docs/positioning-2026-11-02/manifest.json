@@ -29,8 +29,12 @@
     },
     "workIndexPage": {
       "set": {
-        "hero.intro": "Mostly things I built to answer a question, plus a couple of client sites and one piece of research. If you want the thread, start with the home lab, GPUShare and the malware backdoor study, all asking who can reach a system and what happens when it fails.",
-        "seo.description": "Independent projects, client sites and research by Hamish Burke, a software engineer in Wellington, New Zealand."
+        "hero.intro": "Mostly things I built to answer a question, plus a couple of client sites and one piece of research.",
+        "seo.description": "Independent projects, client sites and research by Hamish Burke, a software engineer in Wellington, New Zealand.",
+        "featuredLabel": "Start here",
+        "featured": {
+          "__refsBySlug": ["home-lab", "gpu-share", "malware-classifier-backdoors"]
+        }
       }
     },
     "contactPage": {
@@ -52,6 +56,7 @@
     "cvPage.academic.downloadCta.label": 60,
     "cvPage.academic.requestCta.label": 60,
     "workIndexPage.hero.intro": 280,
+    "workIndexPage.featuredLabel": 40,
     "workIndexPage.seo.description": 200,
     "contactPage.availabilityNote": 300
   }

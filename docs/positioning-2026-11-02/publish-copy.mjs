@@ -44,16 +44,36 @@ function toBlock(text) {
   ];
 }
 
-function resolve(patch) {
+async function refsBySlug(slugs) {
+  const q = `*[_type == "workStory" && slug.current in ${JSON.stringify(slugs)}]{_id, "slug": slug.current}`;
+  const url = `https://${projectId}.api.sanity.io/v${apiVersion}/data/query/${dataset}?query=${encodeURIComponent(q)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`featured lookup failed: ${res.status} ${await res.text()}`);
+  const ids = new Map((await res.json()).result.map((doc) => [doc.slug, doc._id]));
+  const missing = slugs.filter((slug) => !ids.has(slug));
+  if (missing.length) throw new Error(`featured slugs match no work story: ${missing.join(', ')}`);
+  return slugs.map((slug) => ({ _type: 'reference', _key: `featured-${slug}`, _ref: ids.get(slug) }));
+}
+
+async function resolve(patch) {
   const out = {};
   for (const [path, value] of Object.entries(patch)) {
-    out[path] = value && typeof value === 'object' && '__blockText' in value ? toBlock(value.__blockText) : value;
+    if (value && typeof value === 'object' && Array.isArray(value.__refsBySlug)) {
+      out[path] = await refsBySlug(value.__refsBySlug);
+    } else if (value && typeof value === 'object' && '__blockText' in value) {
+      out[path] = toBlock(value.__blockText);
+    } else {
+      out[path] = value;
+    }
   }
   return out;
 }
 
 function textOf(value) {
   if (typeof value === 'string') return value;
+  if (Array.isArray(value) && value.length && value.every((item) => item && item._ref)) {
+    return value.map((item) => item._ref).join(', ');
+  }
   if (Array.isArray(value)) {
     return value
       .flatMap((b) => (b && Array.isArray(b.children) ? b.children.map((c) => c.text || '') : []))
@@ -64,7 +84,7 @@ function textOf(value) {
 
 // 1. Field-level limits and punctuation, before anything touches the network.
 for (const [docId, { set }] of Object.entries(manifest.docs)) {
-  for (const [path, value] of Object.entries(resolve(set))) {
+  for (const [path, value] of Object.entries(await resolve(set))) {
     const text = textOf(value);
     const limit = manifest.limits[`${docId}.${path}`];
     if (limit && text.length > limit) problems.push(`${docId}.${path}: ${text.length} chars, limit ${limit}`);
@@ -107,11 +127,17 @@ for (const [docId, { set }] of Object.entries(manifest.docs)) {
     problems.push(`${docId}: document not found in ${dataset}`);
     continue;
   }
-  const patch = resolve(set);
+  const patch = await resolve(set);
   for (const [path, value] of Object.entries(patch)) {
     const current = getPath(doc, path);
+    // An absent plain field is a field being added; an absent _key selector means
+    // the array was reordered or the item deleted, which a patch would silently no-op.
+    if (current === undefined && path.includes('_key==')) {
+      problems.push(`${docId}.${path}: the key no longer matches an array item`);
+      continue;
+    }
     if (current === undefined) {
-      problems.push(`${docId}.${path}: no current value, the path does not resolve`);
+      console.log(`+ ${docId}.${path} (new field)`);
       continue;
     }
     const before = textOf(current);
