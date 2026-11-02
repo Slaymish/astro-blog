@@ -7,6 +7,9 @@
         "netlify/functions/*.mts",
         "netlify/edge-functions/*.ts",
         "scripts/*.{ts,mjs}"
+      ],
+      "ignore": [
+        "docs/**"
       ]
     },
     "studio": {}
