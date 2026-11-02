@@ -40,9 +40,8 @@ const views = [
   <p class="feed-empty" data-feed-empty hidden={entries.length > 0} role="status">{copy.emptyMessage}</p>
   {/* A tool to try sits after the index, not in front of it. */}
   <aside class="featured-tool" aria-label="Interactive project">
-    <p class="featured-tool__eyebrow">Interactive project</p>
     <h2><a href="/work/codex-usage">Codex usage optimiser <span aria-hidden="true">↗</span></a></h2>
-    <p>Estimate Codex subscription costs and preview a privacy-conscious usage report.</p>
+    <p>Estimate Codex subscription costs and preview a usage report.</p>
   </aside>
 </div>
 
@@ -51,13 +50,6 @@ const views = [
     border-block: 1px solid var(--color-stroke-subtle);
     padding-block: var(--spacing-6);
     margin-block-start: var(--spacing-16);
-  }
-  .featured-tool__eyebrow {
-    color: var(--color-text-secondary);
-    font-size: var(--type-label);
-    text-transform: uppercase;
-    letter-spacing: var(--letter-spacing-wide);
-    margin: 0 0 var(--spacing-2);
   }
   .featured-tool h2 { font-size: var(--type-heading-3); margin: 0 0 var(--spacing-2); }
   .featured-tool h2 a { color: var(--color-text-primary); text-decoration: none; }

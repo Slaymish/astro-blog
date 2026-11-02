@@ -1,7 +1,7 @@
 ---
 /**
  * The curated three at the top of the work index, set as a contents list rather
- * than a card grid: a rule per row, a monospace ordinal and year, and the title
+ * than a card grid: a rule per row, a descriptor beneath each title, and titles
  * in display type. The page's own hierarchy (huge heading, hairlines, generous
  * leading) carries the design, so this is a typographic row and not a box.
  *
@@ -17,8 +17,6 @@ interface Props {
 }
 
 const { stories, label } = Astro.props;
-
-const year = (date: string) => String(new Date(date).getUTCFullYear());
 ---
 
 {
@@ -26,19 +24,15 @@ const year = (date: string) => String(new Date(date).getUTCFullYear());
     <section class="start-here" aria-label={label || 'Start here'}>
       {label && <p class="start-here__label">{label}</p>}
       <ol class="start-here__list">
-        {stories.map((story, index) => {
+        {stories.map((story) => {
           const href = `/work/${story.slug}`;
           return (
             <li>
               <a class="start-row" href={href}>
-                <span class="start-row__ordinal" aria-hidden="true">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
                 <span class="start-row__text">
                   <span class="start-row__title">{story.title}</span>
                   <span class="start-row__descriptor">{story.descriptor}</span>
                 </span>
-                <span class="start-row__year" aria-hidden="true">{year(story.date)}</span>
               </a>
             </li>
           );
@@ -57,9 +51,7 @@ const year = (date: string) => String(new Date(date).getUTCFullYear());
   .start-here__label {
     color: var(--color-text-secondary);
     font-size: var(--type-label);
-    letter-spacing: var(--letter-spacing-wide);
     margin: 0 0 var(--spacing-2);
-    text-transform: uppercase;
   }
 
   .start-here__list {
@@ -70,41 +62,16 @@ const year = (date: string) => String(new Date(date).getUTCFullYear());
   }
 
   .start-row {
-    align-items: baseline;
     border-bottom: 1px solid var(--color-stroke-subtle);
     color: inherit;
-    display: grid;
-    gap: var(--spacing-3) var(--spacing-5);
-    grid-template-areas:
-      'ordinal year'
-      'text text';
-    grid-template-columns: auto 1fr;
+    display: block;
     padding-block: var(--spacing-6);
     text-decoration: none;
-  }
-
-  .start-row__ordinal,
-  .start-row__year {
-    color: var(--color-text-secondary);
-    font-family: var(--font-mono);
-    font-size: var(--type-label);
-    font-variant-numeric: tabular-nums;
-    line-height: 1.5;
-  }
-
-  .start-row__ordinal {
-    grid-area: ordinal;
-  }
-
-  .start-row__year {
-    grid-area: year;
-    justify-self: end;
   }
 
   .start-row__text {
     display: grid;
     gap: var(--spacing-2);
-    grid-area: text;
     min-width: 0;
   }
 
@@ -122,26 +89,13 @@ const year = (date: string) => String(new Date(date).getUTCFullYear());
   }
 
   .start-row:hover .start-row__title,
-  .start-row:hover .start-row__ordinal,
-  .start-row:focus-visible .start-row__title,
-  .start-row:focus-visible .start-row__ordinal {
+  .start-row:focus-visible .start-row__title {
     color: var(--color-action);
   }
 
-  /* From the tablet breakpoint the year moves out to its own column and the
-     title sits level with it, so the three rows read as one table. */
   @media (min-width: 48rem) {
     .start-row {
-      align-items: baseline;
-      grid-template-areas: 'ordinal text year';
-      grid-template-columns: 3rem minmax(0, 22rem) 1fr;
       padding-block: var(--spacing-8);
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .start-row {
-      grid-template-columns: 4rem minmax(0, 26rem) 1fr;
     }
   }
 </style>
