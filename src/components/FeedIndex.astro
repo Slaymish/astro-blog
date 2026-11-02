@@ -2,9 +2,9 @@
 import PageHeader from './PageHeader.astro';
 import FeedList from './FeedList.astro';
 import StartHere from './StartHere.astro';
-import type { FeedEntry } from '../content/feed';
+import { associateFeed, type FeedEntry } from '../content/feed';
 import type { FeedIndexCopy, WorkStory } from '../content/types';
-import type { FeedView } from '../client/feedFilter';
+import { matchesFeedFilter, type FeedView } from '../client/feedFilter';
 
 interface Props {
   entries: FeedEntry[];
@@ -15,6 +15,8 @@ interface Props {
   featuredLabel?: string;
 }
 const { entries, copy, defaultType = 'all', mode = 'chronological', featured = [], featuredLabel } = Astro.props;
+const visibleCount = (mode === 'flat' ? associateFeed(entries) : entries.map(entry => ({ entry, associatedWork: undefined })))
+  .filter(row => matchesFeedFilter(row.entry.type, defaultType, !!row.associatedWork)).length;
 const views = [
   { type: 'all', label: copy.allLabel },
   { type: 'work', label: copy.workLabel },
@@ -37,8 +39,8 @@ const views = [
         aria-pressed={view.type === defaultType} aria-controls="feed-list">{view.label}</button>
     ))}
   </div>
-  <FeedList entries={entries} copy={copy} id="feed-list" mode={mode} />
-  <p class="feed-empty" data-feed-empty hidden={entries.length > 0} role="status">{copy.emptyMessage}</p>
+  <FeedList entries={entries} copy={copy} id="feed-list" mode={mode} defaultType={defaultType} />
+  <p class="feed-empty" data-feed-empty hidden={visibleCount > 0} role="status">{copy.emptyMessage}</p>
 </div>
 
 <style>
