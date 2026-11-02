@@ -1,0 +1,38 @@
+{
+  "slug": "ando-sim",
+  "limits": {
+    "summary": 180,
+    "introduction": 320,
+    "result": 280,
+    "role": 180,
+    "descriptor": 60
+  },
+  "docs": {
+    "catalogue-backfill-ando-sim": {
+      "set": {
+        "summary": "A Blender add-on built on the cubic barrier method from a 2024 paper, and the debugging that turned it from a repo that builds into cloth that moves.",
+        "introduction": "AndoSim puts the cubic barrier contact method from a 2024 paper inside Blender, so cloth and shell contacts can be simulated and looked at in the scene. It shipped looking finished and did not actually simulate anything.",
+        "resultHeading": "State",
+        "result": "Version 1.2.0 ships a solver that sags, folds and holds its pins, with a test for each fix. Contact against solid geometry is still open.",
+        "body": [
+          {
+            "__blockText": "AndoSim began as a port of the 2024 cubic barrier paper into Blender. There's a C++ core with Eigen and pybind11, a Python layer that passes scene data in and brings state back out, and panels for pin constraints, contact settings and debug overlays."
+          },
+          {
+            "__blockText": "The add-on built, loaded and baked without complaining, which is why it looked finished. Baking a sheet and rendering it told a different story. The cloth fell, landed and never bent, and anything solid in its path was ignored."
+          },
+          {
+            "__blockText": "Four faults were stacked. The deformation gradient was measured against the rest pose instead of the current one, so elastic energy was zero in every configuration, gravity was integrated twice, so every fall covered double the distance, a flat sheet reported sixteen contacts against itself at a gap of exactly zero, which held the solver to a sixteenth of a step, and pins were barrier constraints that released a corner once it drifted past half a millimetre."
+          },
+          {
+            "__blockText": "Fixed, it does what the repo had been claiming: a sheet pinned at two corners sags, stretches and folds, and the bake writes one shape key per frame. Contact against solid geometry still fails, so the two end to end tests for it are marked as expected failures instead of being deleted."
+          }
+        ],
+        "cover": {
+          "alt": "A sheet of terracotta cloth hanging under its own weight, folding at the hem, in a render taken from the AndoSim cloth solver inside Blender.",
+          "image": "docs/example_images/cover-ando-sim.png"
+        }
+      }
+    }
+  }
+}
