@@ -3,7 +3,7 @@ import test from 'node:test';
 import { POST } from '../src/pages/api/recommend';
 
 function post(body: string): Promise<Response> {
-  return POST({ request: new Request('https://hamishburke.dev/api/recommend', { method: 'POST', body }) });
+  return POST({ request: new Request('https://hamishburke.com/api/recommend', { method: 'POST', body }) });
 }
 
 test('POST /api/recommend rejects malformed JSON', async () => {
@@ -33,7 +33,7 @@ test('POST /api/recommend reports unavailable when storage and delivery cannot r
 
 function postForm(title: string): Promise<Response> {
   return POST({
-    request: new Request('https://hamishburke.dev/api/recommend', {
+    request: new Request('https://hamishburke.com/api/recommend', {
       method: 'POST',
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ title }).toString(),
@@ -67,7 +67,7 @@ test('recommendation bounds native form bodies too', async () => {
 
 test('recommendation rejects null payloads and cross-origin JSON', async () => {
   assert.equal((await post('null')).status, 400);
-  const response = await POST({ request: new Request('https://hamishburke.dev/api/recommend', {
+  const response = await POST({ request: new Request('https://hamishburke.com/api/recommend', {
     method: 'POST', headers: { origin: 'https://elsewhere.example' }, body: JSON.stringify({ title: 'A Book' }),
   }) });
   assert.equal(response.status, 403);

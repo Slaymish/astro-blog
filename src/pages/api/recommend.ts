@@ -28,7 +28,7 @@ export async function POST({ request }: { request: Request }): Promise<Response>
     await store[RECOMMENDATION_STORE].setJSON(recommendationKey(dayStamp(), crypto.randomUUID()), {
       title, receivedAt: new Date().toISOString(),
     });
-    await sendNotification('A book recommendation for you', `Someone recommended:\n\n${title}\n\nSent from the reading page on hamishburke.dev.`);
+    await sendNotification('A book recommendation for you', `Someone recommended:\n\n${title}\n\nSent from the reading page on hamishburke.com.`);
     return result(200);
   } catch {
     console.error('Book recommendation notification failed');

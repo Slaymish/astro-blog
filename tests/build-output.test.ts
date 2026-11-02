@@ -17,7 +17,7 @@ import { markdownTwin } from '../netlify/edge-functions/markdown';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
-const SITE_URL = 'https://hamishburke.dev';
+const SITE_URL = 'https://hamishburke.com';
 
 const built = existsSync(join(dist, 'index.html'));
 const skip = built ? false : 'run pnpm run build first';

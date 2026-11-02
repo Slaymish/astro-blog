@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { STATS_COOKIE, authoriseStats } from '../src/server/statsAuth';
 
-const URL_BASE = 'https://hamishburke.dev/stats';
+const URL_BASE = 'https://hamishburke.com/stats';
 const SECRET = 'a-long-enough-secret';
 
 const request = (headers: Record<string, string> = {}) => new Request(URL_BASE, { headers });

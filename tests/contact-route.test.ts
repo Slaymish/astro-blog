@@ -4,7 +4,7 @@ import { POST } from '../src/pages/api/contact';
 import { cleanContactEmail } from '../src/server/contact';
 
 function post(body: string, headers: Record<string, string> = {}): Promise<Response> {
-  return POST({ request: new Request('https://hamishburke.dev/api/contact', { method: 'POST', body, headers }) });
+  return POST({ request: new Request('https://hamishburke.com/api/contact', { method: 'POST', body, headers }) });
 }
 
 test('contact accepts a single trimmed reply address and rejects header injection and lists', () => {

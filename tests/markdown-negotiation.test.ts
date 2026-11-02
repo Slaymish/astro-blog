@@ -64,7 +64,7 @@ function stubContext(twin: string | null) {
 }
 
 const ask = (path: string, accept: string, method = 'GET') =>
-  new Request(`https://hamishburke.dev${path}`, { method, headers: { accept } });
+  new Request(`https://hamishburke.com${path}`, { method, headers: { accept } });
 
 test('answers a markdown request with the twin and its headers', async () => {
   const { asked, context } = stubContext('# About\n');

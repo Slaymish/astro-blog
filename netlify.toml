@@ -251,13 +251,13 @@
   force = true
 
 [[redirects]]
-  from = "http://hamishburke.dev/*"
-  to = "https://hamishburke.dev/:splat"
+  from = "http://hamishburke.com/*"
+  to = "https://hamishburke.com/:splat"
   status = 301
   force = true
 
 [[redirects]]
-  from = "https://www.hamishburke.dev/*"
-  to = "https://hamishburke.dev/:splat"
+  from = "https://www.hamishburke.com/*"
+  to = "https://hamishburke.com/:splat"
   status = 301
   force = true
