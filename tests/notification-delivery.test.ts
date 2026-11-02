@@ -9,7 +9,7 @@ test('notifications reach Hamish, meter submissions and preserve books when Rese
   const previous = { context: process.env.NETLIFY_BLOBS_CONTEXT, key: process.env.RESEND_API_KEY, from: process.env.NOTIFICATION_FROM };
   process.env.NETLIFY_BLOBS_CONTEXT = Buffer.from(JSON.stringify({ siteID: 'test-site', token: 'test-token', edgeURL: 'https://blobs.example' })).toString('base64');
   process.env.RESEND_API_KEY = 'test-resend-key';
-  process.env.NOTIFICATION_FROM = 'Website <notifications@hamishburke.dev>';
+  process.env.NOTIFICATION_FROM = 'Website <notifications@hamishburke.com>';
   const writes: Array<{ path: string; body: Record<string, unknown> }> = [];
   const emails: Record<string, unknown>[] = [];
   let count = 0;
@@ -26,13 +26,13 @@ test('notifications reach Hamish, meter submissions and preserve books when Rese
     return new Response(null, { status: 200 });
   });
   t.mock.method(console, 'error', () => {});
-  const request = (path: string, body: unknown, form = false) => new Request(`https://hamishburke.dev/api/${path}`, {
+  const request = (path: string, body: unknown, form = false) => new Request(`https://hamishburke.com/api/${path}`, {
     method: 'POST', headers: { 'content-type': form ? 'application/x-www-form-urlencoded' : 'application/json' },
     body: form ? new URLSearchParams(body as Record<string, string>).toString() : JSON.stringify(body),
   });
   try {
     assert.equal((await recommend({ request: request('recommend', { title: 'A <book>' }) })).status, 200);
-    assert.equal(emails[0]?.text, 'Someone recommended:\n\nA <book>\n\nSent from the reading page on hamishburke.dev.');
+    assert.equal(emails[0]?.text, 'Someone recommended:\n\nA <book>\n\nSent from the reading page on hamishburke.com.');
     assert.deepEqual(emails[0]?.to, ['hamishapps@gmail.com']);
     assert.equal(emails[0]?.html, undefined);
     assert.ok(writes.some((write) => write.body.title === 'A <book>'));

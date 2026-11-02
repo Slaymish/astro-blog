@@ -12,7 +12,7 @@ const latinExt =
 const local = fontProviders.local();
 
 export default defineConfig({
-  site: 'https://hamishburke.dev',
+  site: 'https://hamishburke.com',
   output: 'static',
   // imageCDN off so local images are transformed at build time into hashed,
   // immutably cached files under /_astro, rather than through a Netlify

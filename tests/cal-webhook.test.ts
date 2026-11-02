@@ -30,7 +30,7 @@ function sign(body: string): string {
 }
 
 function request(body: string, signature: string): Request {
-  return new Request('https://hamishburke.dev/api/cal-webhook', {
+  return new Request('https://hamishburke.com/api/cal-webhook', {
     method: 'POST',
     headers: { 'x-cal-signature-256': signature },
     body
@@ -66,7 +66,7 @@ test('POST /api/cal-webhook rejects a forged signature', async () => {
 test('POST /api/cal-webhook rejects a missing signature', async () => {
   const body = JSON.stringify({ triggerEvent: 'BOOKING_CREATED' });
   const response = await POST({
-    request: new Request('https://hamishburke.dev/api/cal-webhook', { method: 'POST', body })
+    request: new Request('https://hamishburke.com/api/cal-webhook', { method: 'POST', body })
   });
 
   assert.equal(response.status, 401);

@@ -1,4 +1,4 @@
-export const SITE_URL = 'https://hamishburke.dev';
+export const SITE_URL = 'https://hamishburke.com';
 export const SITE_NAME = 'Hamish Burke';
 export const SITE_DESCRIPTION =
   'Hamish Burke is a software developer in Wellington, New Zealand. Independent projects, client work, and notes on AI and software systems.';

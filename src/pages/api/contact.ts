@@ -24,7 +24,7 @@ export async function POST({ request }: { request: Request }): Promise<Response>
     if (!store) return result(503, 'unavailable');
     const key = await counterKey(clientAddress(request.headers), windowId(), secrets.rateLimitSalt(), 'contact');
     if (!(await consume(store[RATE_LIMIT_STORE], key, 5))) return result(429, 'rate_limited');
-    await sendNotification('Someone would like to hear from you', `Please get in touch with ${email}.\n\nSent from the contact banner on hamishburke.dev.`, email);
+    await sendNotification('Someone would like to hear from you', `Please get in touch with ${email}.\n\nSent from the contact banner on hamishburke.com.`, email);
     return result(200);
   } catch {
     console.error('Contact notification failed');

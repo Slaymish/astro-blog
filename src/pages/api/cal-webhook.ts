@@ -84,7 +84,7 @@ export async function POST({ request }: { request: Request }) {
     headers: {
       'content-type': 'application/json',
       // Umami rejects requests without a User-Agent.
-      'user-agent': 'hamishburke.dev-cal-webhook'
+      'user-agent': 'hamishburke.com-cal-webhook'
     },
     body: JSON.stringify({
       type: 'event',
