@@ -1,5 +1,14 @@
 ---
-import WorkCover from './WorkCover.astro';
+/**
+ * The curated three at the top of the work index, set as a contents list rather
+ * than a card grid: a rule per row, a monospace ordinal and year, and the title
+ * in display type. The page's own hierarchy (huge heading, hairlines, generous
+ * leading) carries the design, so this is a typographic row and not a box.
+ *
+ * No cover in the row on purpose. Half these stories have a figure cover whose
+ * panel is content rather than a picture, so a cover column makes the rows
+ * different heights and looks broken; the covers are in the list below anyway.
+ */
 import type { WorkStory } from '../content/types';
 
 interface Props {
@@ -8,34 +17,40 @@ interface Props {
 }
 
 const { stories, label } = Astro.props;
+
+const year = (date: string) => String(new Date(date).getUTCFullYear());
 ---
 
 {
   stories.length > 0 && (
     <section class="start-here" aria-label={label || 'Start here'}>
       {label && <p class="start-here__label">{label}</p>}
-      <ul class="start-here__grid">
-        {stories.map((story) => {
+      <ol class="start-here__list">
+        {stories.map((story, index) => {
           const href = `/work/${story.slug}`;
           return (
-            <li class="start-card">
-              {/* A mouse shortcut only: the title already links here, so the
-                  cover stays out of the tab order and the reading order. */}
-              <a class="start-card__visual" href={href} tabindex="-1" aria-hidden="true">
-                <WorkCover cover={story.cover} compact elevated />
+            <li>
+              <a class="start-row" href={href}>
+                <span class="start-row__ordinal" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span class="start-row__text">
+                  <span class="start-row__title">{story.title}</span>
+                  <span class="start-row__descriptor">{story.descriptor}</span>
+                </span>
+                <span class="start-row__year" aria-hidden="true">{year(story.date)}</span>
               </a>
-              <h2 class="start-card__title"><a href={href}>{story.title}</a></h2>
-              {story.descriptor && <p class="start-card__descriptor">{story.descriptor}</p>}
             </li>
           );
         })}
-      </ul>
+      </ol>
     </section>
   )
 }
 
 <style>
   .start-here {
+    margin-block-end: var(--spacing-12);
     padding-block-start: var(--spacing-6);
   }
 
@@ -43,42 +58,90 @@ const { stories, label } = Astro.props;
     color: var(--color-text-secondary);
     font-size: var(--type-label);
     letter-spacing: var(--letter-spacing-wide);
-    margin: 0 0 var(--spacing-4);
+    margin: 0 0 var(--spacing-2);
     text-transform: uppercase;
   }
 
-  .start-here__grid {
-    display: grid;
-    gap: var(--spacing-6);
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  .start-here__list {
+    border-top: 1px solid var(--color-stroke-subtle);
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  .start-card__visual {
-    display: block;
-    text-decoration: none;
-  }
-
-  .start-card__title {
-    font-size: var(--type-heading-3);
-    letter-spacing: var(--tracking-heading);
-    margin: var(--spacing-4) 0 var(--spacing-2);
-  }
-
-  .start-card__title a {
+  .start-row {
+    align-items: baseline;
+    border-bottom: 1px solid var(--color-stroke-subtle);
     color: inherit;
+    display: grid;
+    gap: var(--spacing-3) var(--spacing-5);
+    grid-template-areas:
+      'ordinal year'
+      'text text';
+    grid-template-columns: auto 1fr;
+    padding-block: var(--spacing-6);
     text-decoration: none;
   }
 
-  .start-card__title a:hover {
+  .start-row__ordinal,
+  .start-row__year {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+  }
+
+  .start-row__ordinal {
+    grid-area: ordinal;
+  }
+
+  .start-row__year {
+    grid-area: year;
+    justify-self: end;
+  }
+
+  .start-row__text {
+    display: grid;
+    gap: var(--spacing-2);
+    grid-area: text;
+    min-width: 0;
+  }
+
+  .start-row__title {
+    font-family: var(--font-heading);
+    font-size: var(--type-heading-2);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+  }
+
+  .start-row__descriptor {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+  }
+
+  .start-row:hover .start-row__title,
+  .start-row:hover .start-row__ordinal,
+  .start-row:focus-visible .start-row__title,
+  .start-row:focus-visible .start-row__ordinal {
     color: var(--color-action);
   }
 
-  .start-card__descriptor {
-    color: var(--color-text-secondary);
-    font-size: var(--type-body-small);
-    margin: 0;
+  /* From the tablet breakpoint the year moves out to its own column and the
+     title sits level with it, so the three rows read as one table. */
+  @media (min-width: 48rem) {
+    .start-row {
+      align-items: baseline;
+      grid-template-areas: 'ordinal text year';
+      grid-template-columns: 3rem minmax(0, 22rem) 1fr;
+      padding-block: var(--spacing-8);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .start-row {
+      grid-template-columns: 4rem minmax(0, 26rem) 1fr;
+    }
   }
 </style>

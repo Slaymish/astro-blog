@@ -36,22 +36,21 @@ const views = [
         aria-pressed={view.type === defaultType} aria-controls="feed-list">{view.label}</button>
     ))}
   </div>
-  <aside class="featured-tool" aria-label="Interactive project">
-    <div>
-      <p class="featured-tool__eyebrow">Interactive project</p>
-      <h2><a href="/work/codex-usage">Codex usage optimiser <span aria-hidden="true">↗</span></a></h2>
-      <p>Estimate Codex subscription costs and preview a privacy-conscious usage report.</p>
-    </div>
-  </aside>
   <FeedList entries={entries} copy={copy} id="feed-list" />
   <p class="feed-empty" data-feed-empty hidden={entries.length > 0} role="status">{copy.emptyMessage}</p>
+  {/* A tool to try sits after the index, not in front of it. */}
+  <aside class="featured-tool" aria-label="Interactive project">
+    <p class="featured-tool__eyebrow">Interactive project</p>
+    <h2><a href="/work/codex-usage">Codex usage optimiser <span aria-hidden="true">↗</span></a></h2>
+    <p>Estimate Codex subscription costs and preview a privacy-conscious usage report.</p>
+  </aside>
 </div>
 
 <style>
   .featured-tool {
     border-block: 1px solid var(--color-stroke-subtle);
     padding-block: var(--spacing-6);
-    margin-block-end: var(--spacing-6);
+    margin-block-start: var(--spacing-16);
   }
   .featured-tool__eyebrow {
     color: var(--color-text-secondary);
