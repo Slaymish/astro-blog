@@ -37,6 +37,17 @@
         }
       }
     },
+    "catalogue-backfill-grid-diffusion-ad": {
+      "set": {
+        "artifacts": [
+          {
+            "_key": "paper",
+            "_type": "reference",
+            "_ref": "report-grid-diffusion-anomaly-detection"
+          }
+        ]
+      }
+    },
     "contactPage": {
       "set": {
         "availabilityNote": "I’m at Alphero and happy there. I’d still make time for a team working on machine learning infrastructure or reliability, remote from Wellington, if the problem is specific enough to describe in a paragraph. If that’s you, email me the paragraph."

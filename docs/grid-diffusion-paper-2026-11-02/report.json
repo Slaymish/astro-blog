@@ -1,0 +1,56 @@
+{
+  "_id": "report-grid-diffusion-anomaly-detection",
+  "_type": "report",
+  "title": "Anomaly (Out-of-Distribution) Detection for Electrical Distribution Networks using Discrete Diffusion Methods",
+  "slug": { "_type": "slug", "current": "grid-diffusion-anomaly-detection" },
+  "publishedAt": "2026-02-08T16:33:15+13:00",
+  "description": "The paper behind Grid Diffusion AD: discrete diffusion over quantised magnetic-field windows, trained on normal data only, scored against a false-alarm budget. The best configuration separated faults from normal weakly, and the paper reports that instead of rounding it up.",
+  "tags": ["Machine learning", "Research", "Time series", "AI"],
+  "related": [],
+  "body": [
+    {
+      "_type": "block",
+      "_key": "p0",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "p0s0",
+          "marks": [],
+          "text": "Electrical distribution monitoring is an awkward anomaly-detection problem. Normal measurements are everywhere and faults are rare, labelled and nothing like each other, the signal has a quasi-periodic structure with benign transients sitting on top of it, and the baseline drifts. So the detector has to be trained on normal data only, and it has to be scored in a way that survives a live feed."
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "p1",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "p1s0",
+          "marks": [],
+          "text": "The model is a discrete diffusion process over quantised amplitudes, trained as a categorical denoiser on fixed-length windows of magnetic-field data. Windows are scored two ways, from the reconstruction residual at a fixed corruption level and from a Monte Carlo denoising-loss used as a likelihood proxy, and the amplitude binning is tested as uniform against CDF and quantile binning."
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "p2",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "p2s0",
+          "marks": [],
+          "text": "Across a 36-run sweep the separation between faults and normal stayed weak. The best likelihood configuration reached a sequence-level AUROC of 0.548 and PR-AUC of 0.336 against a prevalence of 0.279, and reconstruction scoring came out at 0.515 and 0.347. Calibrating thresholds to a false-alarm budget still produced alert rates nobody would run, and a persistence filter traded false alarms for detections. The binding constraint is score stability rather than threshold choice, which is the part worth carrying into the next attempt."
+        }
+      ]
+    }
+  ],
+  "pdfFile": "paper.pdf",
+  "pdfNote": "report/main.pdf from Slaymish/grid-diffusion-ad at 2026-02-18, 95 pages, A4, compiled 2026-02-08."
+}
