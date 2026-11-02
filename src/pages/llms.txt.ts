@@ -1,4 +1,6 @@
 import type { APIRoute } from 'astro';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { getPosts, getReports, getWorkStories } from '../content/queries';
 import { feedTags, getFeed, workTags } from '../content/feed';
 import { tagSlug } from '../content/writing';
@@ -8,6 +10,32 @@ import { SITE_DESCRIPTION, SITE_NAME, absoluteUrl } from '../site/config';
 const line = (text: string): string => text.replace(/\s+/g, ' ').trim();
 const label = (text: string): string => line(text).replace(/([\\[\]])/g, '\\$1');
 const link = (name: string, url: string): string => `[${label(name)}](${absoluteUrl(url)})`;
+
+/**
+ * Work pages with no Sanity document. `/work/codex-usage` is a hand-built page,
+ * so reading only the published stories left it out of the directory while the
+ * sitemap, the Markdown twin and the page itself all published it. Read the
+ * source instead of listing ids here: a new static page then appears by itself,
+ * with the title and description it already declares.
+ */
+const staticWorkPages = (): { slug: string; title: string; description: string }[] => {
+  const dir = join(process.cwd(), 'src', 'pages', 'work');
+  let files: string[];
+  try {
+    files = readdirSync(dir);
+  } catch {
+    return [];
+  }
+  return files
+    .filter((file) => file.endsWith('.astro') && !file.includes('[') && file !== 'index.astro')
+    .flatMap((file) => {
+      const source = readFileSync(join(dir, file), 'utf8');
+      const props = source.match(/<Base\b[^>]*>/)?.[0] ?? '';
+      const title = props.match(/\btitle="([^"]+)"/)?.[1];
+      const description = props.match(/\bdescription="([^"]+)"/)?.[1];
+      return title ? [{ slug: file.replace(/\.astro$/, ''), title, description: description ?? '' }] : [];
+    });
+};
 
 export const GET: APIRoute = async () => {
   const [stories, posts, reports, feed] = await Promise.all([
@@ -24,12 +52,17 @@ This catalogue is generated from the same published content as the HTML pages. T
 - ${link('Home', '/')}
 - ${link('Work & Writing', '/work')}
 - ${link('Reading', '/reading')}`,
-    `## Projects\n${stories.map((story) => [
-      `- ${link(story.title, `/work/${story.slug}`)}: ${line(story.introduction)}`,
-      `  - Published: ${story.date}. ${line(story.descriptor)}.`,
-      ...(workTags(story).length ? [`  - Topics: ${workTags(story).map((tag) => link(tag, `/tags/${tagSlug(tag)}`)).join(', ')}.`] : []),
-      ...story.links.map((resource) => `  - ${link(resource.label, resource.href)}`),
-    ].join('\n')).join('\n')}`,
+    `## Projects\n${[
+      ...stories.map((story) => [
+        `- ${link(story.title, `/work/${story.slug}`)}: ${line(story.introduction)}`,
+        `  - Published: ${story.date}. ${line(story.descriptor)}.`,
+        ...(workTags(story).length ? [`  - Topics: ${workTags(story).map((tag) => link(tag, `/tags/${tagSlug(tag)}`)).join(', ')}.`] : []),
+        ...story.links.map((resource) => `  - ${link(resource.label, resource.href)}`),
+      ].join('\n')),
+      ...staticWorkPages()
+        .filter((page) => !stories.some((story) => story.slug === page.slug))
+        .map((page) => `- ${link(page.title, `/work/${page.slug}`)}${page.description ? `: ${line(page.description)}` : ''}`),
+    ].join('\n')}`,
     `## Articles\n${posts.map((post) => [
       `- ${link(post.title, `/posts/${post.slug}`)}: ${line(post.excerpt)}`,
       `  - Published: ${post.publishedAt}${post.updatedAt ? `. Updated: ${post.updatedAt}` : ''}.`,
