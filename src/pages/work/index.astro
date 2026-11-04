@@ -3,17 +3,12 @@ import { feedMetadataEntries } from '../../content/metadata';
 import Base from '../../layouts/Base.astro';
 import FeedIndex from '../../components/FeedIndex.astro';
 import ContactBand from '../../components/ContactBand.astro';
-import { getFeed, getFeedIndexCopy, resolveFeatured } from '../../content/feed';
-import { getWorkIndexPage, getWorkStories } from '../../content/queries';
+import { getFeed, getFeedIndexCopy } from '../../content/feed';
+import { rankByValue } from '../../content/ranking';
 
-const [copy, entries, workIndex, stories] = await Promise.all([
-  getFeedIndexCopy(),
-  getFeed(),
-  getWorkIndexPage(),
-  getWorkStories(),
-]);
-
-const featured = resolveFeatured(stories, workIndex.featured);
+const now = Date.now();
+const [copy, feed] = await Promise.all([getFeedIndexCopy(), getFeed()]);
+const entries = rankByValue(feed, now);
 ---
 
 <Base pageType="CollectionPage"
@@ -22,6 +17,6 @@ const featured = resolveFeatured(stories, workIndex.featured);
   description={copy.seo.description}
   breadcrumbs={[{ name: copy.navigationLabel, path: '/work' }]}
 >
-  <FeedIndex entries={entries} copy={copy} featured={featured} featuredLabel={workIndex.featuredLabel} />
+  <FeedIndex entries={entries} copy={copy} mode="flat" />
   <ContactBand booking />
 </Base>

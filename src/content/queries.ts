@@ -120,7 +120,7 @@ export const getSiteSettings = () =>
 export const getWorkStories = () =>
   once('workStories', async () => {
     const stories = await fetchSanity<WorkStory[]>(`*[_type == "workStory"] | order(order asc){
-      _id, title, descriptor, "slug": slug.current, kind, order, date, timeframe, tags,
+      _id, valueScore, title, descriptor, "slug": slug.current, kind, order, date, timeframe, tags,
       "updatedAt": _updatedAt,
       summary, introduction, introductionLink, ctaLabel, role, body, resultHeading, result,
       "links": links[]{ label, href, external, "kind": coalesce(kind, "other") },
@@ -140,7 +140,7 @@ export const getWorkStories = () =>
 export const getPosts = () =>
   once('posts', async () => {
     const posts = await fetchSanity<Post[]>(`*[_type == "post"] | order(publishedAt desc){
-      _id, title, "slug": slug.current, publishedAt, updatedAt, excerpt,
+      _id, valueScore, title, "slug": slug.current, publishedAt, updatedAt, excerpt,
       "tags": coalesce(tags, []), markdownBody,
       ${image('coverImage')},
       ${RELATED}
@@ -152,7 +152,7 @@ export const getPosts = () =>
 export const getReports = () =>
   once('reports', async () => {
     const reports = await fetchSanity<Report[]>(`*[_type == "report"] | order(publishedAt desc){
-      _id, title, "slug": slug.current, publishedAt, description, "updatedAt": _updatedAt,
+      _id, valueScore, title, "slug": slug.current, publishedAt, description, "updatedAt": _updatedAt,
       "tags": coalesce(tags, []), body,
       "pdfUrl": pdfFile.asset->url,
       "pdfBytes": pdfFile.asset->size,

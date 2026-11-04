@@ -75,14 +75,18 @@ test('every page has a canonical matching its route or its declared index alias'
   }
 });
 
-test('the combined index preserves distinct cards, chronological order and unique years', { skip }, () => {
+test('the combined index preserves distinct cards in one hidden-ranked stream', { skip }, () => {
   const document = parse(readFileSync(join(dist, 'work.html'), 'utf8'));
   const entries = document.querySelectorAll('[data-feed-entry]');
   assert(entries.length > 0);
   assert(entries.some((entry) => entry.getAttribute('data-feed-type') === 'work'));
   assert(entries.some((entry) => entry.getAttribute('data-feed-type') === 'writing'));
   const dates = entries.map((entry) => Date.parse(entry.getAttribute('data-date')!));
-  assert.deepEqual(dates, [...dates].sort((a, b) => b - a));
+  assert(dates.every(Number.isFinite), 'publication dates remain visible and valid');
+  assert.equal(document.querySelectorAll('#feed-list > section > ol').length, 1);
+  assert.equal(document.querySelectorAll('[data-feed-year]').length, 0);
+  assert.equal(document.querySelectorAll('[data-start-here]').length, 0);
+  assert.doesNotMatch(document.toString(), /valueScore|valueReason|data-(?:score|ranking|rank)=/);
   const workLinks = entries.filter((entry) => entry.getAttribute('data-feed-type') === 'work')
     .map((entry) => entry.querySelector('.work-card h3 a')?.getAttribute('href'));
   assert.equal(new Set(workLinks).size, workLinks.length);

@@ -1,3 +1,4 @@
+import { portfolioValueFields, highestValueOrdering } from './portfolioValue';
 import { defineField, defineType } from 'sanity';
 
 export const report = defineType({
@@ -5,6 +6,7 @@ export const report = defineType({
   title: 'Report',
   type: 'document',
   fields: [
+    ...portfolioValueFields,
     defineField({ name: 'title', title: 'Title', type: 'string', validation: (r) => r.required() }),
     defineField({
       name: 'slug',
@@ -41,6 +43,7 @@ export const report = defineType({
   ],
   orderings: [
     { name: 'publishedDesc', title: 'Newest first', by: [{ field: 'publishedAt', direction: 'desc' }] },
+    highestValueOrdering,
   ],
   preview: { select: { title: 'title', subtitle: 'description' } },
 });

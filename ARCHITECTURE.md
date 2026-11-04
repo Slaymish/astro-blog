@@ -13,8 +13,8 @@ catch people out:
 - **Request-time inputs do not exist on a prerendered page.** Query parameters,
   headers and cookies have to be resolved in the browser. The All / Work / Writing controls on
   `/work` mirror the selected view into the URL as `?type=work|writing`.
-  All is the default. History navigation restores the view; empty year
-  sections disappear. Legacy tag query parameters are discarded. Topics
+  All is the default. History navigation restores the view; chronological
+  archives hide empty year sections. Legacy tag query parameters are discarded. Topics
   appear as plain labels beneath entries, rather than index filters.
 - **Publishing in Sanity needs a Netlify build hook** to reach the site.
 - `build: { format: 'file' }` and `trailingSlash: 'never'`, so URLs emit as
@@ -66,8 +66,44 @@ a prerendered page negotiates a format it cannot decide for itself.
   newest first, and each project appears once. Topic identity uses tagSlug.
   Missing work-story tags inherit the unique topics of linked artifacts;
   an explicit empty array opts out. Single-entry topics are retained too.
-  `FeedList.astro` groups by UTC year, retaining WorkCard and writing rows.
+  `FeedList.astro` defaults to UTC year groups for tag archives. Ranked index
+  routes opt into a flat ordered stream, retaining WorkCard and writing rows.
 - Site constants and canonical helpers: `src/site/config.ts`
+
+## Editorial portfolio value
+
+Work stories, posts and reports share optional Studio fields `valueScore` and
+`valueReason`. The score is an integer from 0 to 100 representing editorial
+portfolio significance: higher means more representative or substantial. It is
+not measured quality or research performance. Missing or null means unassessed;
+explicit zero remains assessed. Runtime validators reject other present values.
+The reason is internal Studio metadata and is never projected into site content.
+
+Only `valueScore` flows through source document projections, `WritingEntry` and
+`FeedEntry`. `mergeWriting` preserves it when combining posts and reports.
+`sortFeedByValue` returns a new array sorted by score descending, publication
+instant descending, then href ascending. Missing, null and invalid scores rank
+below zero. This helper remains unchanged and opt-in; `mergeFeed`, `getFeed`, `getWriting`
+and RSS/Atom feeds retain chronological semantics.
+
+`src/content/ranking.ts` supplies hidden build-time ranking for `/work`, the
+`/writing` fallback and homepage selection. Assessed base scores gain at most
+five freshness points, decaying exponentially with a 90-day half-life from the
+original publication date (`story.date` for work), never `updatedAt`. Invalid or
+future dates gain zero points. Unassessed scores rank below explicit zero.
+Ties use base score, publication instant descending, then href ascending.
+Routes pass one explicit build clock; ordering only refreshes on a new build
+and deploy, never continuously in a static page. Ranked index metadata follows
+the same flat stream as the rendered entries. Filters only hide entries.
+
+The homepage selects up to five assessed work stories scoring at least 70,
+including older work. Only when none qualify does it validate and use curated
+featured slugs. The writing insert ranks independent writing, excluding artifacts
+of selected stories, with the existing curated entry/blurb as its empty fallback.
+The selected title, href, excerpt and type drive both the insert and metadata.
+The work index has no manually pinned band or calculator spotlight.
+Studio offers an additional highest-value ordering. No visitor UI displays scores
+or reasons.
 
 ## Page widths
 
