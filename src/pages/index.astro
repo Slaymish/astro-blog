@@ -174,18 +174,18 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
   .opening {
     position: relative;
     overflow-anchor: none;
-    align-content: center;
+    align-content: start;
     display: grid;
     gap: var(--spacing-6);
-    /* Mobile header is 4.25rem tall, plus its border. */
-    min-height: calc(100svh - 4.25rem - 1px);
-    padding-block: var(--hero-top-space) clamp(3rem, 7vw, 6rem);
+    padding-block: calc(var(--hero-top-space) * 0.6) var(--spacing-10);
     text-align: left;
   }
 
+  /* On a phone the fold carries the work too: the first cover runs to both
+     edges under the intro, so the left axis has something to sit against. */
   .opening__feature {
-    display: none;
-    margin: 0;
+    display: block;
+    margin: var(--spacing-4) calc(var(--page-gutter) * -1) 0;
   }
 
   @media (min-width: 64rem) {
@@ -194,6 +194,7 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
       column-gap: clamp(2rem, 6vw, 6rem);
       align-items: center;
       align-content: center;
+      min-height: calc(88svh - 4.25rem - 1px);
     }
 
     .opening > h1,
@@ -202,10 +203,10 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
     }
 
     .opening__feature {
-      display: block;
       grid-column: 2;
       grid-row: 1 / span 2;
       align-self: center;
+      margin: 0;
     }
 
     .opening h1 {
