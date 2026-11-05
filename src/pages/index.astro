@@ -67,9 +67,11 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
     {featured[0] && (
       <figure class="opening__feature">
         <a class="visual-link" href={`/work/${featured[0].slug}`} tabindex="-1" aria-hidden="true">
+          {/* The same cover appears on the first feature card below, which describes it
+              in its own alt text, so this instance is decorative. It is also not the
+              eager one: the card is the lead image, this is a second render of it. */}
           <WorkCover
-            cover={featured[0].cover}
-            priority
+            cover={{ ...featured[0].cover, alt: '' }}
             sizes="(min-width: 64rem) 38vw, 94vw"
           />
         </a>
