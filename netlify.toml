@@ -78,6 +78,14 @@
   status = 301
   force = true
 
+# Terms of use retired 2026-11-06: there is no agreement to accept on a personal
+# site with no accounts and nothing for sale. The privacy page stays.
+[[redirects]]
+  from = "/terms"
+  to = "/"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/tools"
   to = "/work"

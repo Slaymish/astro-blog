@@ -205,7 +205,6 @@ test('the build produced the pages the preserve list promises', { skip }, () => 
     '/cv',
     '/contact',
     '/privacy',
-    '/terms',
     '/404',
   ]) {
     assert(

@@ -18,7 +18,6 @@ const STATIC_PATHS = [
   '/cv',
   '/contact',
   '/privacy',
-  '/terms',
 ];
 
 function entry(path: string, lastmod?: string): string {
