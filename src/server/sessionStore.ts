@@ -72,6 +72,23 @@ export function isExpiredKey(key: string, cutoffDay: string): boolean {
   return day < cutoffDay;
 }
 
+/**
+ * How long collected sessions are kept. Well past the analysis window, so a
+ * lookback change does not silently start reading pruned days. The nightly job
+ * deletes to this, and /privacy states the same number, so both read it here.
+ */
+export const SESSION_RETENTION_DAYS = 30;
+
+/**
+ * Confirmed bookings are kept far longer. They are a handful of tiny records a
+ * year and the only ground truth the analysis has, so the storage saved by
+ * expiring them on the session schedule would not be worth losing them.
+ */
+export const CONVERSION_RETENTION_DAYS = 365;
+
+/** Rate-limit counters are only meaningful inside their own hour. */
+export const COUNTER_RETENTION_HOURS = 48;
+
 /** The oldest day worth keeping, given a retention period. */
 export function retentionCutoff(retentionDays: number, now: Date = new Date()): string {
   return dayStamp(new Date(now.getTime() - retentionDays * 86_400_000));

@@ -1,6 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import { CONTACT_EMAIL, NEW_TAB_NOTE_ID } from '../site/config';
+import {
+  CONVERSION_RETENTION_DAYS,
+  COUNTER_RETENTION_HOURS,
+  SESSION_RETENTION_DAYS,
+} from '../server/sessionStore';
 ---
 
 <Base
@@ -74,9 +79,15 @@ import { CONTACT_EMAIL, NEW_TAB_NOTE_ID } from '../site/config';
       <section aria-labelledby="retention-security">
         <h2 id="retention-security">Retention and security</h2>
         <p>
-          I keep personal information only for as long as it is reasonably needed for the
-          purposes described above or to meet legal requirements. I use reasonable safeguards,
-          but no website or transmission method is completely secure.
+          Analytics blobs are deleted {SESSION_RETENTION_DAYS} days after they are written, and
+          rate-limit counters after {COUNTER_RETENTION_HOURS} hours. A record that a booking was
+          confirmed is kept for {CONVERSION_RETENTION_DAYS} days, because that is what lets a
+          booked session be joined back to the visit that produced it. Messages sent through the
+          contact form are not stored on the server at all: they arrive by email, and I keep them
+          while the conversation is live and no longer.
+        </p>
+        <p>
+          I use reasonable safeguards, but no website or transmission method is completely secure.
         </p>
       </section>
 

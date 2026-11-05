@@ -17,8 +17,11 @@ import Anthropic from '@anthropic-ai/sdk';
 import { getStore, type Store } from '@netlify/blobs';
 import { RATE_LIMIT_STORE, isExpiredCounter, windowId } from '../../src/server/rateLimit';
 import {
+  CONVERSION_RETENTION_DAYS,
+  COUNTER_RETENTION_HOURS,
   INSIGHTS_STORE,
   LATEST_REPORT_KEY,
+  SESSION_RETENTION_DAYS,
   SESSION_STORE,
   conversionPrefix,
   isConversionKey,
@@ -36,22 +39,6 @@ const MAX_SESSIONS = 200;
  * whole lookback, so an unexpected flood would otherwise stall the function.
  */
 const MAX_CONVERSIONS = 200;
-
-/**
- * How long collected sessions are kept. Well past the analysis window, so a
- * lookback change does not silently start reading pruned days.
- */
-const SESSION_RETENTION_DAYS = 30;
-
-/**
- * Confirmed bookings are kept far longer. They are a handful of tiny records a
- * year and the only ground truth the analysis has, so the storage saved by
- * expiring them on the session schedule would not be worth losing them.
- */
-const CONVERSION_RETENTION_DAYS = 365;
-
-/** Rate-limit counters are only meaningful inside their own hour. */
-const COUNTER_RETENTION_HOURS = 48;
 
 interface StoredSession {
   day: string;
