@@ -1,0 +1,14 @@
+{
+  "note": "About page cleanup, 2026-11-05. Dead hero/portrait fields (both say 'Web developer'), and largeCopy rewritten so it stops repeating the intro's thesis and names the projects instead.",
+  "docs": {
+    "aboutPage": {
+      "set": {
+        "largeCopy": {
+          "__blockText": "I work at Alphero as a software engineer. The projects here are the ones I built outside that job: a self-hosted finance ledger, a GPU a few of us share, and a server at home I have to keep alive."
+        }
+      },
+      "unset": ["hero", "portrait"]
+    }
+  },
+  "limits": {}
+}
