@@ -4,37 +4,35 @@
   "docs": {
     "homePage": {
       "set": {
-        "intro": "Software engineer at Alphero, in Wellington. Most of what’s here I built on my own time, then tried to break.",
-        "seo.description": "Hamish Burke is a software engineer in Wellington, New Zealand. He builds systems, then tests what happens when they fail."
+        "intro": "I build software in Wellington. Most of what’s here I built on my own time, then tried to break.",
+        "seo.description": "Hamish Burke is a developer in Wellington, New Zealand, who builds systems and then tests what happens when they fail."
       }
     },
     "aboutPage": {
       "set": {
-        "heading": "Software engineer at Alphero, in Wellington.",
+        "heading": "Web developer at Alphero, in Wellington.",
         "intro": "I’m Hamish. I build software, and most of what’s on this site started with me wanting to find out how something worked, then building it on my own time. A lot of it comes back to the same two questions, who is allowed to reach a system, and what it does when part of it goes away.",
         "largeCopy": {
-          "__blockText": "I work at Alphero as a software engineer. The projects here are things I’ve built outside that job. They look scattered, though most of them come back to the same thing, a system somebody else can reach, and what it does when a part of it fails."
+          "__blockText": "I work at Alphero as a web developer. The work there has been a customer portal MVP with the principal architect, starting on the front end and moving into the middleware and the integrations, an AI feature on the company site, and the plugin repository the team’s tooling runs on. The projects here are things I’ve built outside that job, and they look scattered, though most of them come back to the same thing, a system somebody else can reach, and what it does when a part of it fails."
         },
-        "seo.description": "Hamish Burke is a software engineer at Alphero in Wellington, New Zealand, with a master’s in computer science from Victoria University of Wellington."
+        "seo.description": "Hamish Burke is a web developer at Alphero in Wellington, New Zealand, with a master’s in computer science from Victoria University of Wellington."
       }
     },
     "cvPage": {
       "set": {
-        "hero.intro": "I’m a software engineer at Alphero, and I take on a small number of independent projects alongside it.",
-        "facts[_key==\"role\"].value": "Software Engineer · Alphero",
-        "academic.body": "The thesis work is here as a PDF from before Alphero, so it still has the master’s down as in progress. Ask and I’ll send the current one.",
+        "hero.intro": "I’m a web developer at Alphero, and I take on a small number of independent projects alongside it.",
+        "facts[_key==\"role\"].value": "Junior Web Developer · Alphero",
+        "academic.body": "This CV went with the master’s and was written before Alphero, so it still lists the degree as in progress. The report it describes is on the site.",
         "academic.downloadCta.label": "Open the academic CV",
-        "academic.requestCta.label": "Email for the current CV"
+        "academic.requestCta.label": "The report itself",
+        "academic.requestCta.href": "/reports/grid-diffusion-anomaly-detection"
       }
     },
     "workIndexPage": {
       "set": {
         "hero.intro": "Mostly things I built to answer a question, plus a couple of client sites and one piece of research.",
-        "seo.description": "Independent projects, client sites and research by Hamish Burke, a software engineer in Wellington, New Zealand.",
-        "featuredLabel": "Start here",
-        "featured": {
-          "__refsBySlug": ["home-lab", "gpu-share", "malware-classifier-backdoors"]
-        }
+        "seo.description": "Independent projects, client sites and research by Hamish Burke, a web developer in Wellington, New Zealand.",
+        "featuredLabel": "Start here"
       }
     },
     "catalogue-backfill-grid-diffusion-ad": {

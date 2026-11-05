@@ -51,7 +51,7 @@ export const workIndexPage = defineType({
       description:
         'Up to three work stories pinned above the index, left to right. They keep their place in the list below, so pick the ones you would want read first.',
       of: [defineArrayMember({ type: 'reference', to: [{ type: 'workStory' }] })],
-      validation: (r) => r.max(3).unique(),
+      validation: (r) => r.max(4).unique(),
     }),
     defineField({
       name: 'featuredLabel',
