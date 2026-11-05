@@ -6,13 +6,9 @@ const { footer, header, newTabNote } = await getSiteSettings();
 
 const links = [
   { href: '/contact', label: header.contactLabel },
-  { href: '/cv', label: footer.cvLabel },
   { href: '/rss.xml', label: footer.rssLabel },
 ];
-const legalLinks = [
-  { href: '/privacy', label: footer.privacyLabel },
-  { href: '/terms', label: footer.termsLabel },
-];
+const legalLinks = [{ href: '/privacy', label: footer.privacyLabel }];
 ---
 
 <footer class="site-footer">
