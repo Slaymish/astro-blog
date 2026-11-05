@@ -73,19 +73,23 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
         const teaser = TEASERS[story.slug];
         return (
           <>
-          <article class="feature">
+          <article class:list={['feature', index === 0 ? 'feature--lead' : 'feature--row']}>
+            {index > 0 && <span class="feature__index">{String(index + 1).padStart(2, '0')}</span>}
             <div class="feature__media">
               {/* A mouse shortcut only: the title and the button already link here,
                   so the cover stays out of the tab order and the reading order. */}
               <a class="visual-link" href={href} tabindex="-1" aria-hidden="true">
                 {teaser ? (
-                  <VideoCover {...teaser} alt={story.cover.alt} elevated />
+                  <VideoCover {...teaser} alt={story.cover.alt} elevated={index === 0} />
                 ) : (
                   <WorkCover
                     cover={story.cover}
                     priority={index === 0}
-                    elevated
-                    sizes="(min-width: 118rem) 70rem, (min-width: 64rem) 60vw, 94vw"
+                    elevated={index === 0}
+                    compact={index > 0}
+                    sizes={index === 0
+                      ? '(min-width: 118rem) 70rem, (min-width: 64rem) 60vw, 94vw'
+                      : '(min-width: 64rem) 24rem, 94vw'}
                   />
                 )}
               </a>
@@ -342,7 +346,7 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
   /* Each story gets one whole row, so editorial inserts never strand a card. */
   .features {
     display: grid;
-    gap: clamp(3.5rem, 7vw, 7rem);
+    gap: clamp(2rem, 4vw, 3.5rem);
   }
 
   .feature {
@@ -350,6 +354,41 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
     min-width: 0;
     display: grid;
     gap: var(--spacing-6);
+  }
+
+  /* Below the lead, the sequence reads as an index rather than five more
+     posters: a mono ordinal, the sentence, and the cover as evidence on the
+     right, one hairline per row. */
+  .feature--lead {
+    margin-block-end: clamp(2rem, 5vw, 4rem);
+  }
+
+  .feature--row {
+    align-items: start;
+    border-block-start: 1px solid var(--color-stroke-subtle);
+    padding-block-start: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  /* On one column the number introduces the sentence, and the cover follows it. */
+  .feature--row .feature__index { order: -1; }
+  .feature--row .feature__text { order: 0; }
+  .feature--row .feature__media { order: 1; }
+
+  .feature__index {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    letter-spacing: var(--letter-spacing-wide);
+    line-height: 1.2;
+  }
+
+  .feature--row .feature__text h2 {
+    font-size: var(--type-heading-3);
+    max-width: 32ch;
+  }
+
+  .feature--row .feature__text p {
+    max-width: 52ch;
   }
 
   /* Reserves the half of the controls that hangs below the cover. */
@@ -441,6 +480,32 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
     .feature {
       column-gap: clamp(2.5rem, 5vw, 6rem);
       grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
+
+    /* A row is a number, a sentence and a piece of evidence, in that order. */
+    .feature--row {
+      column-gap: clamp(1.5rem, 3vw, 3rem);
+      grid-template-columns: 3.5rem minmax(0, 1fr) clamp(10rem, 18vw, 17rem);
+    }
+
+    .feature--row .feature__index {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .feature--row .feature__text {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .feature--row .feature__media {
+      grid-column: 3;
+      grid-row: 1;
+      padding-block-end: 0;
+    }
+
+    .feature--row .feature__actions {
+      display: none;
     }
 
     .opening {
