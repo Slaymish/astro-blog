@@ -167,9 +167,10 @@ const featuredMetadata: StructuredEntry[] = featured.flatMap((story, index) => {
     display: grid;
     gap: var(--spacing-6);
     /* Mobile header is 4.25rem tall, plus its border. */
-    min-height: calc(100svh - 4.25rem - 1px);
-    padding-block: var(--hero-top-space) clamp(3rem, 7vw, 6rem);
+    min-height: calc(88svh - 4.25rem - 1px);
+    padding-block: var(--hero-top-space) clamp(2rem, 5vw, 4rem);
     text-align: center;
+    border-block-end: 1px solid var(--color-line-200);
   }
 
   .opening .opening__intro {

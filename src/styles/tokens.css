@@ -50,7 +50,7 @@
   --type-body-small: var(--type-label);
   --font-size-sm: var(--type-label);
   /* The homepage name is an identity treatment, rather than an ordinary heading. */
-  --type-name: clamp(3.5rem, 8vw, 9rem);
+  --type-name: clamp(3.5rem, 9.5vw, 11rem);
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;
