@@ -12,7 +12,7 @@ import StreamReveal from '../../components/StreamReveal.astro';
  */
 const TITLE = 'The stream is one view of the answer';
 const LEDE =
-  'The model gives you text a few characters at a time, which is a fact about the model and not a rule about the screen. Five drawings of the same answer, with the layout cost of each measured in the page.';
+  'The model gives you text a few characters at a time, which is a fact about the model and not a rule about the screen. Six drawings of the same answer, with the layout cost of each measured in the page.';
 const MINUTES = 3;
 ---
 
@@ -101,11 +101,18 @@ const MINUTES = 3;
       </p>
 
       <p>
-        If I had to ship one of these it would be the chunks, which is not what I expected. Reading
-        does not happen a word at a time. Skimming a page I take in about a clause before I know what
-        it said, somewhere near the commas, and the meaning lands whether or not the rest of the
-        words have shown up. Chunks match that. Words feel like being read to. Characters feel like a
-        printer.
+        The one I would actually ship is the last one, which hardly animates at all. It holds the
+        answer, keeps the space the answer will take, says how long it has been working, and then
+        paints the finished thing in one go. The layout is decided before anyone sees a word, so the
+        reader gets a page instead of a performance of a page. Most of what I built here is the
+        animation, and the animation is the part I would cut.
+      </p>
+
+      <p>
+        Chunks are what I would use when the wait is too long to hide. Reading does not happen a word
+        at a time. Skimming a page I take in about a clause before I know what it said, somewhere
+        near the commas, and the meaning lands whether or not the rest of the words have shown up.
+        Chunks match that. Words feel like being read to. Characters feel like a printer.
       </p>
 
       <p>

@@ -1,12 +1,12 @@
 # Stream reveal
 
-An article about how an answer arrives on screen, with a live demonstration of the layout cost of five ways of drawing it.
+An article about how an answer arrives on screen, with a live demonstration of the layout cost of six ways of drawing it.
 
 ## What is here
 
 | File | What it is |
 |---|---|
-| `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, five ways of revealing it, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
+| `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, six ways of revealing it, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
 | `src/pages/notes/one-view-of-the-answer.astro` | Preview scaffold. Carries the article copy so the piece can be read on a real build before it exists in the CMS. |
 | `docs/stream-reveal/post-body.md` | The same copy as markdown for a `post` document's `markdownBody`. |
 
@@ -23,8 +23,11 @@ Measured at 390px wide, on the 336 character sample answer:
 | Chunks | 0 | 4.8 s |
 | Sentences | 0 | 1.3 s |
 | All at once | 0 | 0.6 s |
+| Held | 0 | 1.6 s |
 
 Every mode except Characters places its units in the DOM before anything is painted, so the paragraph is at its final size from the first frame and the animation only moves opacity, transform and blur. Characters is the only mode whose count moves with the viewport, because it is the only one that re-lays-out mid-answer.
+
+Held is the one the research supports: the answer is built and sized with `visibility: hidden`, a mono line at the top of the stage counts the wait in tenths of a second, and then the block is set visible in one paint with no transition. Space is identical before and after, which is why the count is zero rather than one. Its 1.6 s is a simulated wait, not a measurement of the model.
 
 ## How a chunk is chosen
 

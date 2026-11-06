@@ -24,12 +24,13 @@ const MODES = [
   { id: 'chunks', label: 'Chunks' },
   { id: 'sentences', label: 'Sentences' },
   { id: 'whole', label: 'All at once' },
+  { id: 'held', label: 'Held' },
 ];
 ---
 
 <section class="reveal" data-reveal-demo aria-labelledby="reveal-title">
   <div class="reveal__head">
-    <h2 id="reveal-title">The same answer, five ways</h2>
+    <h2 id="reveal-title">The same answer, six ways</h2>
     <p class="reveal__note">
       Measured in this page as you watch it. A reflow is a change in the height of the answer while
       it arrives, which is what moves a line out from under someone reading it.
@@ -99,10 +100,6 @@ const MODES = [
   @media (max-width: 34rem) {
     .reveal__modes {
       grid-template-columns: repeat(2, 1fr);
-    }
-
-    .reveal__mode:last-child {
-      grid-column: 1 / -1;
     }
   }
 
@@ -176,6 +173,31 @@ const MODES = [
 
   .reveal__metric [data-metric] {
     color: var(--color-text-primary);
+  }
+
+  .reveal__stage {
+    position: relative;
+  }
+
+  .reveal :global(.reveal__wait) {
+    display: block;
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    left: var(--spacing-5);
+    margin: 0;
+    position: absolute;
+    top: 0;
+  }
+
+  :global(.sr-lead) {
+    font-size: var(--type-lead);
+    line-height: 1.5;
+    margin: 0 0 var(--spacing-3);
+  }
+
+  :global(.sr-rest) {
+    margin: 0;
   }
 
   /* Reveal units are created by the script, so these rules cannot be scoped. */
@@ -386,6 +408,7 @@ const MODES = [
 
     function reset(text: string) {
       clear();
+      stage.querySelectorAll('.reveal__wait').forEach((node) => node.remove());
       answer.textContent = '';
       answer.style.opacity = '';
       answer.style.transition = '';
@@ -482,12 +505,57 @@ const MODES = [
       }, 600);
     }
 
+    function runHeld() {
+      // The answer is in the page from the first frame with its space already
+      // taken, and only the paint is held back. Nothing moves when it arrives,
+      // and the wait state says how long it has been, which is the only part
+      // that can be honest this early.
+      clear();
+      answer.textContent = '';
+      answer.style.opacity = '';
+      answer.style.transition = '';
+      partialOut.textContent = 'nothing partial on screen';
+
+      const [lead, ...rest] = sentencesOf(source).map((sentence) => sentence.trim());
+      const block = document.createElement('div');
+      const leadEl = document.createElement('p');
+      leadEl.className = 'sr-lead';
+      leadEl.textContent = lead ?? '';
+      block.append(leadEl);
+      if (rest.length) {
+        const restEl = document.createElement('p');
+        restEl.className = 'sr-rest';
+        restEl.textContent = rest.join(' ');
+        block.append(restEl);
+      }
+      block.style.visibility = 'hidden';
+      answer.append(block);
+
+      const wait = document.createElement('span');
+      wait.className = 'reveal__wait';
+      stage.append(wait);
+
+      startClock();
+      const began = performance.now();
+      const tick = window.setInterval(() => {
+        wait.textContent = `working ${((performance.now() - began) / 1000).toFixed(1)} s`;
+      }, 100);
+
+      cue(() => {
+        window.clearInterval(tick);
+        wait.remove();
+        block.style.visibility = 'visible';
+        stopClock();
+      }, 1600);
+    }
+
     const runners: Record<string, () => void> = {
       stream: runCharacters,
       words: runWords,
       chunks: runChunks,
       sentences: runSentences,
       whole: runWhole,
+      held: runHeld,
     };
 
     function play(mode: string) {
