@@ -1,6 +1,6 @@
 ---
 /**
- * One answer, four ways of putting it on screen, with the layout cost of each
+ * One answer, five ways of putting it on screen, with the layout cost of each
  * measured live rather than asserted.
  *
  * The paragraph is rendered here at build time, so a reader without JavaScript
@@ -15,12 +15,13 @@ interface Props {
 }
 
 const {
-  text = 'Server-sent events run over one long-lived HTTP response, and the browser reads it incrementally as it arrives. Each message is a block of small text fields followed by a blank line, so any proxy that buffers the response will hold the whole answer back until it completes. Check for buffering first when a stream looks frozen.',
+  text = 'The library on the corner shut in 2019 and the building sat empty for three years, until a group of neighbours raised enough between them to reopen it as a tool library. You can borrow a drill or a ladder for a week instead of buying one, which is how most of them get used once or twice and then sit in a garage. The whole thing runs on two retired librarians and a rota they keep in a spreadsheet.',
 } = Astro.props;
 
 const MODES = [
   { id: 'stream', label: 'Characters' },
   { id: 'words', label: 'Words' },
+  { id: 'chunks', label: 'Chunks' },
   { id: 'sentences', label: 'Sentences' },
   { id: 'whole', label: 'All at once' },
 ];
@@ -28,7 +29,7 @@ const MODES = [
 
 <section class="reveal" data-reveal-demo aria-labelledby="reveal-title">
   <div class="reveal__head">
-    <h2 id="reveal-title">The same answer, four ways</h2>
+    <h2 id="reveal-title">The same answer, five ways</h2>
     <p class="reveal__note">
       Measured in this page as you watch it. A reflow is a change in the height of the answer while
       it arrives, which is what moves a line out from under someone reading it.
@@ -91,8 +92,18 @@ const MODES = [
   .reveal__modes {
     display: grid;
     gap: var(--spacing-2);
-    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
     margin-block: var(--spacing-6) var(--spacing-5);
+  }
+
+  @media (max-width: 34rem) {
+    .reveal__modes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .reveal__mode:last-child {
+      grid-column: 1 / -1;
+    }
   }
 
   .reveal__mode {
@@ -170,6 +181,7 @@ const MODES = [
   /* Reveal units are created by the script, so these rules cannot be scoped. */
   :global(.sr-unit) {
     display: inline-block;
+    max-width: 100%;
     filter: blur(3px);
     opacity: 0;
     transform: translateY(5px);
@@ -177,6 +189,13 @@ const MODES = [
       opacity 260ms cubic-bezier(0.22, 0.68, 0.24, 1),
       transform 320ms cubic-bezier(0.22, 0.68, 0.24, 1),
       filter 280ms linear;
+  }
+
+  :global(.sr-unit--chunk) {
+    transition:
+      opacity 300ms ease-out,
+      transform 340ms cubic-bezier(0.22, 0.68, 0.24, 1),
+      filter 300ms linear;
   }
 
   :global(.sr-unit--sentence) {
@@ -233,6 +252,59 @@ const MODES = [
   const SPEED = 1;
 
   const sentencesOf = (text: string) => text.match(/[^.!?]+[.!?]+['\u2019]?\s*/g) ?? [text];
+
+  // Words that start a new idea rather than continue one, so a chunk breaks
+  // before them. A chunk is roughly what a reader takes in at a glance while
+  // skimming, which is why it is not a fixed number of words and never ends on
+  // "the" or "of".
+  const OPENS = new Set([
+    'and', 'but', 'so', 'or', 'until', 'which', 'where', 'when', 'because',
+    'that', 'while', 'though', 'then', 'instead', 'as',
+  ]);
+
+  const HOLDS = new Set([
+    'the', 'a', 'an', 'of', 'in', 'on', 'at', 'for', 'with', 'by', 'from',
+    'between', 'to', 'you',
+  ]);
+
+  // Deterministic, so a replay chunks the answer the same way twice.
+  const spread = (index: number) => (index * 2654435761) % 4294967296;
+
+  function chunksOf(text: string): string[] {
+    const words = text.split(/\s+/).filter(Boolean);
+    const out: string[] = [];
+    let current: string[] = [];
+
+    words.forEach((word, index) => {
+      current.push(word);
+      const next = (words[index + 1] ?? '').replace(/[^a-z]/gi, '').toLowerCase();
+      const endsClause = /[,;:.!?]$/.test(word);
+      const target = 3 + (spread(index) % 4);
+      const tooWide = current.length >= 7 || current.join(' ').length >= 30;
+
+      if (!(endsClause || OPENS.has(next) || current.length >= target || tooWide)) return;
+
+      const trails = HOLDS.has(word.replace(/[^a-z]/gi, '').toLowerCase());
+      if (!endsClause && trails && current.length < 7 && next && !OPENS.has(next)) return;
+
+      out.push(current.join(' '));
+      current = [];
+    });
+
+    if (current.length) out.push(current.join(' '));
+
+    // A chunk that is a single connective ("and", "or") reads as a stumble, so
+    // it joins the chunk in front unless the one before it ended a sentence.
+    return out.reduce<string[]>((merged, chunk) => {
+      const previous = merged[merged.length - 1];
+      if (previous && chunk.split(' ').length === 1 && !/[.!?]$/.test(previous)) {
+        merged[merged.length - 1] = `${previous} ${chunk}`;
+      } else {
+        merged.push(chunk);
+      }
+      return merged;
+    }, []);
+  }
 
   function init(root: HTMLElement) {
     const stage = root.querySelector<HTMLElement>('[data-stage]')!;
@@ -366,6 +438,26 @@ const MODES = [
       cue(stopClock, at + 60);
     }
 
+    function runChunks() {
+      reset('no partial words');
+      const spans = chunksOf(source).map((chunk) => {
+        const span = unit(chunk, 'sr-unit--chunk');
+        answer.append(span, document.createTextNode(' '));
+        return span;
+      });
+      startClock();
+
+      let at = 140;
+      spans.forEach((span) => {
+        const chunk = span.textContent ?? '';
+        cue(() => span.classList.add('is-in'), at);
+        at += 165
+          + (/[,;:]$/.test(chunk) ? 120 : /[.!?]$/.test(chunk) ? 200 : 0)
+          + Math.random() * 60;
+      });
+      cue(stopClock, at + 80);
+    }
+
     function runSentences() {
       reset('no partial words');
       const spans = sentencesOf(source).map((sentence) => {
@@ -393,6 +485,7 @@ const MODES = [
     const runners: Record<string, () => void> = {
       stream: runCharacters,
       words: runWords,
+      chunks: runChunks,
       sentences: runSentences,
       whole: runWhole,
     };
