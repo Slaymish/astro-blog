@@ -1,0 +1,436 @@
+---
+/**
+ * One answer, four ways of putting it on screen, with the layout cost of each
+ * measured live rather than asserted.
+ *
+ * The paragraph is rendered here at build time, so a reader without JavaScript
+ * gets the whole answer as ordinary prose. The script only takes it apart again.
+ *
+ * The numbers are real measurements of this page: a reflow is counted as a
+ * change in the stage's height while the text is arriving, timed with
+ * performance.now() from the first frame of a run to the last unit placed.
+ */
+interface Props {
+  text?: string;
+}
+
+const {
+  text = 'Server-sent events run over one long-lived HTTP response, and the browser reads it incrementally as it arrives. Each message is a block of small text fields followed by a blank line, so any proxy that buffers the response will hold the whole answer back until it completes. Check for buffering first when a stream looks frozen.',
+} = Astro.props;
+
+const MODES = [
+  { id: 'stream', label: 'Characters' },
+  { id: 'words', label: 'Words' },
+  { id: 'sentences', label: 'Sentences' },
+  { id: 'whole', label: 'All at once' },
+];
+---
+
+<section class="reveal" data-reveal-demo aria-labelledby="reveal-title">
+  <div class="reveal__head">
+    <h2 id="reveal-title">The same answer, four ways</h2>
+    <p class="reveal__note">
+      Measured in this page as you watch it. A reflow is a change in the height of the answer while
+      it arrives, which is what moves a line out from under someone reading it.
+    </p>
+  </div>
+
+  <div class="reveal__modes" role="group" aria-label="How the answer arrives">
+    {
+      MODES.map((mode, index) => (
+        <button
+          type="button"
+          class="reveal__mode"
+          data-mode={mode.id}
+          aria-pressed={index === 0 ? 'true' : 'false'}
+        >
+          {mode.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="reveal__stage" data-stage>
+    <p class="reveal__answer" data-answer>{text}</p>
+  </div>
+
+  <p class="reveal__metrics" aria-live="polite">
+    <span class="reveal__metric"><span data-metric="reflows">0</span> reflows</span>
+    <span class="reveal__metric"><span data-metric="time">0.0</span> s to full text</span>
+    <span class="reveal__metric" data-metric="partial">nothing partial on screen</span>
+  </p>
+</section>
+
+<style>
+  .reveal {
+    border-top: 1px solid var(--color-stroke-subtle);
+    margin-block: var(--spacing-12);
+    padding-top: var(--spacing-6);
+  }
+
+  .reveal__head {
+    max-width: 46rem;
+  }
+
+  .reveal__head h2 {
+    font-size: var(--type-heading-3);
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--tracking-heading);
+    margin: 0 0 var(--spacing-3);
+  }
+
+  .reveal__note {
+    color: var(--color-text-secondary);
+    font-size: var(--type-body-small);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 44rem;
+  }
+
+  .reveal__modes {
+    display: grid;
+    gap: var(--spacing-2);
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    margin-block: var(--spacing-6) var(--spacing-5);
+  }
+
+  .reveal__mode {
+    appearance: none;
+    background: transparent;
+    border: 1px solid var(--color-stroke-subtle);
+    border-radius: 0;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    letter-spacing: 0.02em;
+    min-block-size: var(--control-height-sm, 2.25rem);
+    padding-inline: var(--spacing-4);
+    transition: color 120ms ease, border-color 120ms ease;
+  }
+
+  .reveal__mode:hover {
+    border-color: var(--color-line-500);
+    color: var(--color-text-primary);
+  }
+
+  .reveal__mode:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 2px;
+  }
+
+  .reveal__mode[aria-pressed='true'] {
+    border-color: var(--color-action);
+    color: var(--color-text-primary);
+  }
+
+  .reveal__mode[aria-pressed='true']::before {
+    background: var(--color-action);
+    border-radius: 50%;
+    content: '';
+    display: inline-block;
+    height: 5px;
+    margin-right: var(--spacing-2);
+    vertical-align: 0.15em;
+    width: 5px;
+  }
+
+  .reveal__stage {
+    border-left: 1px solid var(--color-stroke-subtle);
+    min-block-size: 9.5rem;
+    padding-left: var(--spacing-5);
+  }
+
+  .reveal__answer {
+    color: var(--color-text-primary);
+    font-size: var(--type-body);
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  .reveal__metrics {
+    color: var(--color-text-secondary);
+    display: flex;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    gap: var(--spacing-2) var(--spacing-5);
+    margin-block: var(--spacing-5) 0;
+  }
+
+  .reveal__metric {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .reveal__metric [data-metric] {
+    color: var(--color-text-primary);
+  }
+
+  /* Reveal units are created by the script, so these rules cannot be scoped. */
+  :global(.sr-unit) {
+    display: inline-block;
+    filter: blur(3px);
+    opacity: 0;
+    transform: translateY(5px);
+    transition:
+      opacity 260ms cubic-bezier(0.22, 0.68, 0.24, 1),
+      transform 320ms cubic-bezier(0.22, 0.68, 0.24, 1),
+      filter 280ms linear;
+  }
+
+  :global(.sr-unit--sentence) {
+    display: inline;
+    transform: none;
+    filter: blur(2px);
+    transition:
+      opacity 380ms ease,
+      filter 420ms ease;
+  }
+
+  :global(.sr-unit.is-in) {
+    filter: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(.sr-caret) {
+    animation: sr-blink 1.05s steps(1, end) infinite;
+    background: var(--color-action);
+    display: inline-block;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: -0.12em;
+    width: 2px;
+  }
+
+  @keyframes sr-blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    50.01%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.sr-unit) {
+      filter: none;
+      opacity: 1;
+      transform: none;
+      transition-duration: 1ms;
+    }
+
+    :global(.sr-caret) {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const SPEED = 1;
+
+  const sentencesOf = (text: string) => text.match(/[^.!?]+[.!?]+['\u2019]?\s*/g) ?? [text];
+
+  function init(root: HTMLElement) {
+    const stage = root.querySelector<HTMLElement>('[data-stage]')!;
+    const answer = root.querySelector<HTMLElement>('[data-answer]')!;
+    const reflowOut = root.querySelector<HTMLElement>('[data-metric="reflows"]')!;
+    const timeOut = root.querySelector<HTMLElement>('[data-metric="time"]')!;
+    const partialOut = root.querySelector<HTMLElement>('[data-metric="partial"]')!;
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-mode]')];
+
+    if (!stage || !answer || !reflowOut || !timeOut || !partialOut) return;
+
+    const source = (answer.textContent ?? '').trim();
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let timers: number[] = [];
+    let observer: ResizeObserver | null = null;
+    let reflows = 0;
+    let lastHeight = 0;
+    let startedAt = 0;
+    let finished = false;
+    let ticker: number | null = null;
+    let touched = false;
+
+    const clear = () => {
+      timers.forEach((id) => window.clearTimeout(id));
+      timers = [];
+      if (ticker !== null) window.clearInterval(ticker);
+      ticker = null;
+      observer?.disconnect();
+      observer = null;
+    };
+
+    const cue = (fn: () => void, ms: number) => {
+      timers.push(window.setTimeout(fn, Math.max(0, ms / SPEED)));
+    };
+
+    const startClock = () => {
+      startedAt = performance.now();
+      finished = false;
+      reflows = 0;
+      lastHeight = answer.getBoundingClientRect().height;
+      reflowOut.textContent = '0';
+      timeOut.textContent = '0.0';
+      if (ticker !== null) window.clearInterval(ticker);
+      ticker = window.setInterval(() => {
+        if (finished) return;
+        timeOut.textContent = ((performance.now() - startedAt) / 1000).toFixed(1);
+      }, 100);
+
+      observer = new ResizeObserver(() => {
+        // The stage holds a fixed minimum height so the page does not jump, so
+        // the thing that actually moves is the paragraph inside it.
+        const height = answer.getBoundingClientRect().height;
+        if (Math.abs(height - lastHeight) >= 1) {
+          reflows += 1;
+          lastHeight = height;
+          reflowOut.textContent = String(reflows);
+        }
+      });
+      observer.observe(answer);
+    };
+
+    const stopClock = () => {
+      if (finished) return;
+      finished = true;
+      if (ticker !== null) window.clearInterval(ticker);
+      ticker = null;
+      observer?.disconnect();
+      observer = null;
+      timeOut.textContent = ((performance.now() - startedAt) / 1000).toFixed(1);
+    };
+
+    const unit = (word: string, cls = '') => {
+      const span = document.createElement('span');
+      span.className = `sr-unit${cls ? ` ${cls}` : ''}`;
+      span.textContent = word;
+      return span;
+    };
+
+    function reset(text: string) {
+      clear();
+      answer.textContent = '';
+      answer.style.opacity = '';
+      answer.style.transition = '';
+      partialOut.textContent = text;
+    }
+
+    function runCharacters() {
+      reset('partial words on screen');
+      const text = document.createTextNode('');
+      const caret = document.createElement('span');
+      caret.className = 'sr-caret';
+      answer.append(text, caret);
+      startClock();
+
+      let index = 0;
+      const step = () => {
+        const size = 2 + Math.floor(Math.random() * 3);
+        text.data += source.slice(index, index + size);
+        index += size;
+        if (index < source.length) {
+          cue(step, 30);
+        } else {
+          cue(() => {
+            caret.remove();
+            stopClock();
+          }, 420);
+        }
+      };
+      cue(step, 260);
+    }
+
+    function runWords() {
+      reset('no partial words');
+      const parts = source.split(/\s+/).filter(Boolean);
+      const spans = parts.map((word) => {
+        const span = unit(word);
+        answer.append(span, document.createTextNode(' '));
+        return span;
+      });
+      startClock();
+
+      let at = 0;
+      spans.forEach((span) => {
+        const word = span.textContent ?? '';
+        const base = 50 + word.length * 6;
+        const pause = /[,;:]$/.test(word) ? 150 : /[.!?]$/.test(word) ? 260 : 0;
+        cue(() => span.classList.add('is-in'), at);
+        at += Math.max(40, base + pause);
+      });
+      cue(stopClock, at + 60);
+    }
+
+    function runSentences() {
+      reset('no partial words');
+      const spans = sentencesOf(source).map((sentence) => {
+        const span = unit(sentence, 'sr-unit--sentence');
+        answer.append(span);
+        return span;
+      });
+      startClock();
+      spans.forEach((span, index) => cue(() => span.classList.add('is-in'), 180 + index * 300));
+      cue(stopClock, 180 + spans.length * 300 + 200);
+    }
+
+    function runWhole() {
+      reset('nothing to watch');
+      answer.textContent = source;
+      answer.style.opacity = '0';
+      answer.style.transition = 'opacity 300ms ease-out';
+      startClock();
+      cue(() => {
+        answer.style.opacity = '1';
+        stopClock();
+      }, 600);
+    }
+
+    const runners: Record<string, () => void> = {
+      stream: runCharacters,
+      words: runWords,
+      sentences: runSentences,
+      whole: runWhole,
+    };
+
+    function play(mode: string) {
+      buttons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.mode === mode));
+      });
+      if (reduce) {
+        reset('nothing to watch');
+        answer.textContent = source;
+        startClock();
+        stopClock();
+        return;
+      }
+      runners[mode]?.();
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        touched = true;
+        play(button.dataset.mode ?? 'stream');
+      });
+    });
+
+    // The building of the paragraph is the thing being described, so it does not
+    // run until the reader has it in view. Characters is the default because it
+    // is the thing every product already does.
+    const first = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        first.disconnect();
+        if (touched) return;
+        play('stream');
+      });
+    }, { threshold: 0.4 });
+    first.observe(root);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-reveal-demo]').forEach(init);
+</script>

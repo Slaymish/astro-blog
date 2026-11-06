@@ -1,0 +1,125 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleHeader from '../../components/ArticleHeader.astro';
+import StreamReveal from '../../components/StreamReveal.astro';
+
+/**
+ * Preview scaffold. The copy belongs in a Sanity `post` as markdownBody with
+ * {{stream-reveal}} on its own line, which renders <StreamReveal /> in
+ * src/pages/posts/[slug].astro. This page exists so the piece and the component
+ * can be read and measured on a real build before that write happens, then it
+ * comes out.
+ */
+const WORDS = 940;
+const MINUTES = Math.max(1, Math.round(WORDS / 220));
+---
+
+<Base
+  title="Token streaming is a transport detail"
+  description="The model sends characters a few at a time, which is a fact about the wire and not a decision about the screen. The same answer, drawn four ways, with the layout cost of each measured."
+  breadcrumbs={[
+    { name: 'Writing', path: '/work' },
+    { name: 'Token streaming is a transport detail', path: '/notes/token-streaming' },
+  ]}
+>
+  <article class="article">
+    <ArticleHeader
+      title="Token streaming is a transport detail"
+      lede="The model sends characters a few at a time, which is a fact about the wire and not a decision about the screen. The same answer, drawn four ways, with the layout cost of each measured."
+      meta={['7 November 2026', `${MINUTES} min read`]}
+      backHref="/work?type=writing"
+      backLabel="All writing"
+    />
+
+    <div class="prose article__body">
+      <p>
+        A chat box on a product I have been working in streams its answer one character at a time,
+        and everyone watching it does the same thing, which is try to read a sentence that is not
+        there yet. Words finish themselves while their eye is already on the next one, the wrap
+        changes underneath the sentence they are in the middle of, and roughly a third of the answer
+        gets read twice. I spent a while assuming that was a property of the model. It is a property
+        of the wire.
+      </p>
+
+      <p>
+        What comes over the connection is a sequence of small chunks, usually one token at a time and
+        a token is about three or four characters, often ending in the middle of a word. Server-sent
+        events deliver them in order and stop when the generation stops. Nothing in that stream says
+        the reader has to watch it, and nothing says the paragraph has to grow while they read.
+      </p>
+
+      <h2>What actually gives it away</h2>
+
+      <p>
+        The speed is not the tell, since a fast machine streaming a hundred tokens a second still
+        looks machine made. Three things do the work. Partial words are visible. The cadence is so
+        even that it is obviously a clock. And the layout moves while someone is reading it.
+      </p>
+
+      <p>
+        The first two are cosmetic and easy to let go of. The third is the one that costs a reader
+        their place, because a paragraph that reflows is a paragraph being edited by someone else mid
+        sentence.
+      </p>
+
+      <StreamReveal />
+
+      <h2>Holding it back is the whole trick</h2>
+
+      <p>
+        If you wait for the answer to finish before drawing any of it, the shape of the paragraph is
+        known at the first frame and nothing moves after that. Every word is placed and invisible,
+        and the animation only turns opacity and blur up. The reader's eye gets a fixed target, and
+        the answer appears to be written rather than emitted.
+      </p>
+
+      <p>
+        That costs the first second. A second of empty space reads longer than a second of watching
+        text fill in, which is the honest argument for streaming and the reason almost every product
+        does it. It is a real argument, and it only applies while the wait is longer than the thing
+        being waited for.
+      </p>
+
+      <h2>Where the line sits</h2>
+
+      <p>
+        Under about two seconds there is nothing to cover, so the time is better spent on the
+        drawing. Over about eight seconds the wait itself becomes the problem and text filling in is
+        the only honest signal that something is still happening.
+      </p>
+
+      <p>
+        Between those two numbers the answer is usually long enough to have structure, which is the
+        case streaming handles worst. A stream can only produce one shape, a paragraph growing
+        downward, so a comparison arrives as prose whether or not a table was the right answer. Once
+        the text is data before it is painted, the layout can be decided first: a heading, then rows,
+        or two columns, or a chart with one sentence underneath it, and the arrival is an animation
+        over a page that already exists.
+      </p>
+
+      <p>
+        That matters more than the animation. If you are going to hold the answer anyway, the thing
+        you draw does not have to be the thing that came off the wire.
+      </p>
+
+      <p>
+        The case I have not worked out is the four second answer with three sections in it, where
+        holding the whole thing feels long and streaming it as prose throws away structure you know
+        is coming. Probably that one gets the heading first, then the sections, and the movement goes
+        line to line instead of character to character. Which is still a stream, just not a stream of
+        text.
+      </p>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .article {
+    margin-inline: auto;
+    max-width: var(--reading-width);
+  }
+
+  .article__body {
+    margin-top: var(--spacing-10);
+  }
+</style>
