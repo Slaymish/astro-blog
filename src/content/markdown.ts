@@ -131,10 +131,28 @@ export function markdownToPlainText(markdown: string): string {
     .trim();
 }
 
-/** The rendered HTML either side of a component marker, or null if absent. */
-export function splitAtComponent(html: string, name: string): [string, string] | null {
-  const marker = `<!--component:${name}-->`;
-  const at = html.indexOf(marker);
-  if (at === -1) return null;
-  return [html.slice(0, at), html.slice(at + marker.length)];
+/** One rendered fragment of a body: HTML, or a component the route can render. */
+export type BodySegment = { type: 'html'; html: string } | { type: 'component'; name: string };
+
+/**
+ * Splits rendered HTML at the markers for the components a route can render,
+ * in reading order. A marker for anything else stays inside the HTML as a
+ * comment, which is invisible rather than a gap in the text.
+ */
+export function splitAtComponents(html: string, names: readonly string[]): BodySegment[] {
+  const known = new Set(names);
+  const marker = /<!--component:([a-z0-9-]+)-->/g;
+  const segments: BodySegment[] = [];
+  let cursor = 0;
+  for (let match = marker.exec(html); match; match = marker.exec(html)) {
+    const name = match[1]!;
+    if (!known.has(name)) continue;
+    const before = html.slice(cursor, match.index);
+    if (before) segments.push({ type: 'html', html: before });
+    segments.push({ type: 'component', name });
+    cursor = match.index + match[0].length;
+  }
+  const after = html.slice(cursor);
+  if (after) segments.push({ type: 'html', html: after });
+  return segments;
 }

@@ -1,0 +1,24 @@
+---
+/**
+ * The components a post body can place with a `{{name}}` marker on its own
+ * line. A marker for a name that is not here stays an invisible comment, so a
+ * typo loses the embed rather than printing the placeholder to a reader.
+ */
+import GpuCalculator from './GpuCalculator.astro';
+import StreamReveal from './StreamReveal.astro';
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+
+const EMBEDS: Record<string, typeof GpuCalculator> = {
+  'gpu-calculator': GpuCalculator,
+  'stream-reveal': StreamReveal,
+};
+
+const Embed = EMBEDS[name];
+---
+
+{Embed && <Embed />}

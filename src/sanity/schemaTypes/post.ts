@@ -50,7 +50,7 @@ export const post = defineType({
       title: 'Body',
       type: 'text',
       rows: 30,
-      description: 'Markdown. Put {{gpu-calculator}} on its own line to place the GPU cost calculator.',
+      description: 'Markdown. Put {{gpu-calculator}} or {{stream-reveal}} on its own line to place that component.',
       validation: (r) => r.required(),
     }),
     defineField({
