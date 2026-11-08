@@ -7,8 +7,10 @@ An article about how an answer arrives on screen, with a live demonstration of t
 | File | What it is |
 |---|---|
 | `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, six ways of revealing it, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
-| `src/pages/notes/one-view-of-the-answer.astro` | Preview scaffold. Carries the article copy so the piece can be read on a real build before it exists in the CMS. |
-| `docs/stream-reveal/post-body.md` | The same copy as markdown for a `post` document's `markdownBody`. |
+| `docs/stream-reveal/post-body.md` | The article copy, published as the `markdownBody` of the `post` below. |
+| `docs/stream-reveal/publish.mjs` | Creates that post. Dry run by default; `SANITY_WRITE_ACK=1 node docs/stream-reveal/publish.mjs --write` writes it, and it refuses when a post with that id or slug already exists. |
+
+The piece is a `post` (`post-one-view-of-the-answer`, `/posts/one-view-of-the-answer`), so it appears in the writing feed that `/work` and `/writing` read. It was previewed at `/notes/one-view-of-the-answer` before the CMS write; that scaffold page is deleted, and `netlify.toml` 301s the old path to the post.
 
 ## The measurement
 
@@ -42,17 +44,13 @@ pnpm run build
 python3 -m http.server 8899 --bind 127.0.0.1 --directory dist
 ```
 
-Then open `/notes/one-view-of-the-answer.html`. Two things bite in a headless browser:
+Then open `/posts/one-view-of-the-answer.html`. Two things bite in a headless browser:
 
 - A hidden tab gets no `IntersectionObserver` callbacks, so the demo appears dead. Call `Page.bringToFront` before measuring, and read `document.visibilityState` if a run seems not to start.
 - `Emulation.setDeviceMetricsOverride` has to be set after the navigation, followed by a `resize` event, or geometry comes back at the previous viewport.
 
 ## Publishing
 
-The copy ships today as a stand-in page. To land it as a normal post:
+Done on 8 November 2026: the copy is a `post` (`post-one-view-of-the-answer`) with `post-body.md` as `markdownBody`, `splitAtComponent` became `splitAtComponents` in `src/content/markdown.ts` and `src/pages/posts/[slug].astro` renders `<StreamReveal />` for `{{stream-reveal}}` through `src/components/PostEmbed.astro` beside the existing `{{gpu-calculator}}`, and the scaffold page is gone.
 
-1. Create a `post` in Sanity with `post-body.md` as `markdownBody`.
-2. Generalise `splitAtComponent` in `src/content/markdown.ts` to take more than one token and render `<StreamReveal />` for `{{stream-reveal}}` in `src/pages/posts/[slug].astro`, alongside the existing `{{gpu-calculator}}`.
-3. Delete `src/pages/notes/one-view-of-the-answer.astro`.
-
-The demonstration does not need the CMS to be useful, so the page is worth keeping if a static home is wanted instead.
+A second embed was a route change, not just a page: the marker was already generic in the renderer, so the work was the split helper, the component map, its tests and the schema description. Keeping the embed list in `PostEmbed.astro` means a token for anything not listed stays an invisible comment rather than printing to a reader.

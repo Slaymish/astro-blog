@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { markdownToHtml, markdownToPlainText, splitAtComponent } from '../src/content/markdown';
+import { markdownToHtml, markdownToPlainText, splitAtComponents } from '../src/content/markdown';
 
 test('markdownToHtml strips raw script tags', () => {
   const html = markdownToHtml('Hello<script>alert("xss")</script>');
@@ -45,20 +45,43 @@ test('a component marker is only recognised as a whole paragraph', () => {
   assert.match(markdownToHtml('text {{gpu-calculator}} inline'), /\{\{gpu-calculator\}\}/);
 });
 
-test('splitAtComponent returns the halves either side of the marker', () => {
+test('splitAtComponents returns the pieces either side of a marker', () => {
   const html = markdownToHtml('Before\n\n{{gpu-calculator}}\n\nAfter');
-  const halves = splitAtComponent(html, 'gpu-calculator');
+  const [first, middle, last] = splitAtComponents(html, ['gpu-calculator']);
 
-  assert(halves !== null);
-  assert.match(halves[0], /Before/);
-  assert.match(halves[1], /After/);
-  assert.equal(halves[0].includes('<!--component:'), false);
-  assert.equal(halves[1].includes('<!--component:'), false);
+  assert(first?.type === 'html' && middle?.type === 'component' && last?.type === 'html');
+  assert.match(first.html, /Before/);
+  assert.equal(middle.name, 'gpu-calculator');
+  assert.match(last.html, /After/);
+  assert.equal(first.html.includes('<!--component:'), false);
+  assert.equal(last.html.includes('<!--component:'), false);
 });
 
-test('splitAtComponent returns null when the marker is absent', () => {
-  assert.equal(splitAtComponent(markdownToHtml('Just prose.'), 'gpu-calculator'), null);
-  assert.equal(splitAtComponent(markdownToHtml('{{other-thing}}'), 'gpu-calculator'), null);
+test('splitAtComponents keeps every embed in reading order', () => {
+  const html = markdownToHtml('A\n\n{{stream-reveal}}\n\nB\n\n{{gpu-calculator}}\n\nC');
+  const segments = splitAtComponents(html, ['gpu-calculator', 'stream-reveal']);
+
+  assert.deepEqual(
+    segments.flatMap((segment) => segment.type === 'component' ? [segment.name] : []),
+    ['stream-reveal', 'gpu-calculator'],
+  );
+  assert.equal(segments.filter((segment) => segment.type === 'html').length, 3);
+});
+
+test('splitAtComponents leaves a marker for a component the route cannot render', () => {
+  const segments = splitAtComponents(markdownToHtml('{{other-thing}}'), ['gpu-calculator']);
+
+  assert.equal(segments.length, 1);
+  assert(segments[0]?.type === 'html');
+  assert.match(segments[0].html, /<!--component:other-thing-->/);
+});
+
+test('splitAtComponents returns one HTML segment when there is no marker', () => {
+  const segments = splitAtComponents(markdownToHtml('Just prose.'), ['gpu-calculator']);
+
+  assert.equal(segments.length, 1);
+  assert(segments[0]?.type === 'html');
+  assert.match(segments[0].html, /Just prose\./);
 });
 
 test('markdownToPlainText counts words without markup or code fences', () => {

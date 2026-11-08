@@ -1,11 +1,11 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ArticleHeader from '../../components/ArticleHeader.astro';
-import GpuCalculator from '../../components/GpuCalculator.astro';
+import PostEmbed from '../../components/PostEmbed.astro';
 import RelatedList from '../../components/RelatedList.astro';
 import SanityImage from '../../components/SanityImage.astro';
 import { sanitySrcSet } from '../../content/images';
-import { markdownToHtml, markdownToPlainText, splitAtComponent } from '../../content/markdown';
+import { markdownToHtml, markdownToPlainText, splitAtComponents } from '../../content/markdown';
 import { getPosts, getSiteSettings } from '../../content/queries';
 import { renderedContentMetadata } from '../../content/metadata';
 import { readingTime } from '../../content/readingTime';
@@ -26,7 +26,7 @@ const { post } = Astro.props;
 
 const html = markdownToHtml(post.markdownBody);
 const structuredBody = renderedContentMetadata(html);
-const split = splitAtComponent(html, 'gpu-calculator');
+const segments = splitAtComponents(html, ['gpu-calculator', 'stream-reveal']);
 const { minutes } = readingTime(markdownToPlainText(post.markdownBody));
 const related = await getRelated({ type: 'post', slug: post.slug, tags: post.tags, related: post.related });
 const { entryLabels } = await getSiteSettings();
@@ -70,17 +70,13 @@ const ogImage = post.coverImage ? sanitySrcSet(post.coverImage, [1200]).src : un
       )
     }
 
-    {
-      split ? (
-        <div class="prose article__body">
-          <Fragment set:html={split[0]} />
-          <GpuCalculator />
-          <Fragment set:html={split[1]} />
-        </div>
-      ) : (
-        <div class="prose article__body" set:html={html} />
-      )
-    }
+    <div class="prose article__body">
+      {
+        segments.map((segment) => segment.type === 'component'
+          ? <PostEmbed name={segment.name} />
+          : <Fragment set:html={segment.html} />)
+      }
+    </div>
 
     <RelatedList entries={related} />
   </article>
