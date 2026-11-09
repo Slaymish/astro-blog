@@ -97,6 +97,49 @@
   line-height: 1.75;
 }
 
+/* Footnote references in the text and the notes list that remark-gfm appends. */
+.prose sup {
+  font-size: 0.7em;
+  line-height: 0;
+  vertical-align: 0.45em;
+}
+
+.prose sup a {
+  border-bottom: none;
+  color: var(--color-text-secondary);
+  padding-inline: 0.1em;
+}
+
+/* Section headings already carry a rule underneath, so the notes list follows
+   the heading straight on with no rule of its own. */
+.prose [data-footnotes] {
+  margin-top: 0.5rem;
+}
+
+.prose [data-footnotes] ol {
+  color: var(--color-text-secondary);
+  font-size: var(--type-body-small);
+  margin-block: 0;
+  padding-left: 1.25rem;
+}
+
+.prose [data-footnotes] li {
+  line-height: 1.6;
+  margin-block: 0.5rem;
+}
+
+.prose [data-footnotes] li p {
+  margin: 0;
+}
+
+.prose [data-footnotes] a[data-footnote-backref] {
+  border-bottom: none;
+  color: var(--color-text-secondary);
+  margin-left: 0.35em;
+  opacity: 0.7;
+  text-decoration: none;
+}
+
 .prose blockquote {
   font-family: var(--font-body);
   font-size: var(--type-body);

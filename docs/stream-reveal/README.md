@@ -1,12 +1,12 @@
 # Stream reveal
 
-An article about how an answer arrives on screen, with a live demonstration of the layout cost of six ways of drawing it.
+An article about how an answer arrives on screen, with a live demonstration of what six arrival modes cost the reader who is trying to read them. Only characters reflows, and the last two modes draw the same paragraph with different waits.
 
 ## What is here
 
 | File | What it is |
 |---|---|
-| `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, six ways of revealing it, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
+| `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, six arrival modes, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
 | `docs/stream-reveal/post-body.md` | The article copy, published as the `markdownBody` of the `post` below. |
 | `docs/stream-reveal/publish.mjs` | Creates that post. Dry run by default; `SANITY_WRITE_ACK=1 node docs/stream-reveal/publish.mjs --write` writes it, and it refuses when a post with that id or slug already exists. |
 
@@ -29,7 +29,7 @@ Measured at 390px wide, on the 336 character sample answer:
 
 Every mode except Characters places its units in the DOM before anything is painted, so the paragraph is at its final size from the first frame and the animation only moves opacity, transform and blur. Characters is the only mode whose count moves with the viewport, because it is the only one that re-lays-out mid-answer.
 
-Held is the one the research supports: the answer is built and sized with `visibility: hidden`, a mono line at the top of the stage counts the wait in tenths of a second, and then the block is set visible in one paint with no transition. Space is identical before and after, which is why the count is zero rather than one. Its 1.6 s is a simulated wait, not a measurement of the model.
+Held is the one I would keep: the answer is built and sized with `visibility: hidden`, a mono line at the top of the stage counts the wait in tenths of a second, and then the block is set visible in one paint with no transition. Space is identical before and after, which is why the count is zero rather than one. Its 1.6 s is a simulated wait, not a measurement of the model.
 
 ## How a chunk is chosen
 

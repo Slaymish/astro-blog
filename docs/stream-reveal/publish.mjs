@@ -51,12 +51,12 @@ const SLUG = 'one-view-of-the-answer';
 const ID = `post-${SLUG}`;
 const TITLE = 'The stream is one view of the answer';
 const EXCERPT =
-  'The model gives you text a few characters at a time, which is a fact about the model and not a rule about the screen. Six drawings of the same answer, with the layout cost of each measured in the page.';
+  'How an answer arrives is part of the answer, and nobody designs it. One response drawn five ways, with the movement that costs a reader their place counted in the page.';
 const PUBLISHED_AT = '2026-11-07T00:00:00.000Z';
 const TAGS = ['Product design', 'UX design', 'AI'];
 const VALUE_SCORE = 70;
 const VALUE_REASON =
-  'A written argument carried by a demonstration that measures its own claim: the reflow cost of six ways of drawing one answer, observed in the page rather than asserted.';
+  'A written argument carried by a demonstration that measures its own claim: the reflow cost of five ways of drawing one answer, observed in the page, with the column it cannot measure labelled as the animation.';
 
 const body = (await fs.readFile(path.join(here, 'post-body.md'), 'utf8')).trim();
 
@@ -89,11 +89,37 @@ console.log(`excerpt ${EXCERPT.length}/240, body ${body.length} characters, tags
 console.log(`has {{stream-reveal}}: ${markers.length === 1}`);
 
 const existing = await client.fetch(
-  `*[_type == "post" && (_id == $id || slug.current == $slug)]{_id, "slug": slug.current, title}`,
+  `*[_type == "post" && (_id == $id || slug.current == $slug)]{_id, "slug": slug.current, title, "bodyLength": length(markdownBody)}`,
   { id: ID, slug: SLUG },
 );
-if (existing.length) {
+const update = process.argv.includes('--update');
+
+if (existing.length && !update) {
   throw new Error(`Already present, refusing to replace it: ${JSON.stringify(existing)}`);
+}
+
+if (update && !existing.length) {
+  throw new Error('--update needs a document that already exists; run without it to create one');
+}
+
+if (update) {
+  const current = existing[0];
+  console.log(`\nupdate: ${current._id} body ${current.bodyLength} -> ${body.length} characters`);
+  if (!write) {
+    console.log('Dry run. Re-run with SANITY_WRITE_ACK=1 and --write --update to patch it.');
+    process.exit(0);
+  }
+  const patched = await client
+    .patch(current._id)
+    .set({ markdownBody: body, excerpt: EXCERPT })
+    .commit();
+  const readBack = await client.fetch(
+    `*[_id == $id][0]{"bodyLength": length(markdownBody), "excerptLength": length(excerpt), "hasMarker": "{{stream-reveal}}" in markdownBody, "matches": markdownBody == $body, title}`,
+    { id: current._id, body },
+  );
+  console.log('patched:', JSON.stringify(patched._id));
+  console.log('read back:', JSON.stringify(readBack, null, 2));
+  process.exit(0);
 }
 
 if (!write) {
