@@ -8,7 +8,7 @@ A ticker is not a paragraph growing downward, and I wouldn't bet a design on one
 
 {{stream-reveal}}
 
-Only the character version reflows, nine times over this answer at phone width, none for the rest. Everything else puts its words into the paragraph first and animates opacity over space that is already taken, so nothing moves under you and the clock is the only thing changing. The seconds are the animation's, not a model's.
+Only the character version reflows, ten times over this answer at phone width, none for the rest. Everything else puts its words into the paragraph first and animates opacity over space that is already taken, so nothing moves under you and the clock is the only thing changing. The seconds are the animation's, not a model's.
 
 Buell and Norton are what keep me unsure. Identical search results, and people preferred the sites that showed their work over the ones that answered instantly, and waited longer when they could watch it happen.[^2] A token at a time is the same trick, and holding the reply takes it away from me.
 

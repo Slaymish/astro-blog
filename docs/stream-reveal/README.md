@@ -1,12 +1,12 @@
 # Stream reveal
 
-An article about how an answer arrives on screen, with a live demonstration of what six arrival modes cost the reader who is trying to read them. Only characters reflows, and the last two modes draw the same paragraph with different waits.
+An article about how an answer arrives on screen, with a live demonstration of what five arrival modes cost the reader who is trying to read them. Each one lands its full text at the same elapsed time, so the only thing that differs between them is how the text got there, and only characters reflows.
 
 ## What is here
 
 | File | What it is |
 |---|---|
-| `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, six arrival modes, a vertical speed slider that multiplies the playback clock from 0.25x to 2x, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
+| `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, five arrival modes, a vertical speed slider that multiplies the playback clock from 0.25x to 2x, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
 | `docs/stream-reveal/post-body.md` | The article copy, published as the `markdownBody` of the `post` below. |
 | `docs/stream-reveal/publish.mjs` | Creates that post. Dry run by default; `SANITY_WRITE_ACK=1 node docs/stream-reveal/publish.mjs --write` writes it, and it refuses when a post with that id or slug already exists. Once the post exists, edit `post-body.md` and run the same command with `--update`, which patches `markdownBody` and `excerpt` and leaves the title, tags and date alone. |
 
@@ -20,18 +20,21 @@ Measured at 390px wide, on the 336 character sample answer:
 
 | Mode | Reflows | Time to full text |
 |---|---|---|
-| Characters | 9 | 4.6 s |
-| Words | 0 | 7.0 s |
-| Chunks | 0 | 4.8 s |
-| Sentences | 0 | 1.3 s |
-| All at once | 0 | 0.6 s |
-| Held | 0 | 1.6 s |
+| Characters | 10 | 4.0 s |
+| Words | 0 | 4.0 s |
+| Chunks | 0 | 4.0 s |
+| Sentences | 0 | 4.0 s |
+| Held | 0 | 4.0 s |
+
+`TARGET` is 4000 ms: each runner builds a plan of raw delays from the reading behaviour it is imitating (word length, clause punctuation, sentence ends) and `pace()` rescales that plan so the last unit lands at the same moment. Without it the modes were comparing speed, since words ran for seven seconds and sentences for one, and a reader comparing them was judging duration rather than drawing. Held waits the same four seconds, so the choice on offer is shape and not duration.
+
+An earlier version had a sixth mode, "All at once", which painted the answer in 0.4 s. It went because it was not a case: nothing can paint before the model finishes, so the honest instant baseline is Held with its wait, and the two read as the same demo twice otherwise.
 
 Every mode except Characters places its units in the DOM before anything is painted, so the paragraph is at its final size from the first frame and the animation only moves opacity, transform and blur. Characters is the only mode whose count moves with the viewport, because it is the only one that re-lays-out mid-answer.
 
 The speed slider rescales every delay in the run, because every mode schedules through `cue()`. Two consequences worth knowing before changing it: the reflow count falls at high speed and rises at low speed, since the observer samples frames and several character steps can land inside one, so the count is a property of what a reader sees at that speed rather than a fixed score; and the "s to full text" metric is real elapsed time, so it moves with the slider too.
 
-Held is the one I would keep: the answer is built and sized with `visibility: hidden`, a mono line at the top of the stage counts the wait in tenths of a second, and then the block is set visible in one paint with no transition. Space is identical before and after, which is why the count is zero rather than one. Its 1.6 s is a simulated wait, not a measurement of the model.
+Held is the one I would keep: the answer is built and sized with `visibility: hidden`, a mono line at the top of the stage counts the wait in tenths of a second, and then the block is set visible in one paint with no transition. Space is identical before and after, which is why the count is zero rather than one. Its four seconds are a simulated wait, not a measurement of the model.
 
 ## How a chunk is chosen
 
