@@ -6,7 +6,7 @@ An article about how an answer arrives on screen, with a live demonstration of w
 
 | File | What it is |
 |---|---|
-| `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, six arrival modes, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
+| `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, six arrival modes, a vertical speed slider that multiplies the playback clock from 0.25x to 2x, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
 | `docs/stream-reveal/post-body.md` | The article copy, published as the `markdownBody` of the `post` below. |
 | `docs/stream-reveal/publish.mjs` | Creates that post. Dry run by default; `SANITY_WRITE_ACK=1 node docs/stream-reveal/publish.mjs --write` writes it, and it refuses when a post with that id or slug already exists. Once the post exists, edit `post-body.md` and run the same command with `--update`, which patches `markdownBody` and `excerpt` and leaves the title, tags and date alone. |
 
@@ -28,6 +28,8 @@ Measured at 390px wide, on the 336 character sample answer:
 | Held | 0 | 1.6 s |
 
 Every mode except Characters places its units in the DOM before anything is painted, so the paragraph is at its final size from the first frame and the animation only moves opacity, transform and blur. Characters is the only mode whose count moves with the viewport, because it is the only one that re-lays-out mid-answer.
+
+The speed slider rescales every delay in the run, because every mode schedules through `cue()`. Two consequences worth knowing before changing it: the reflow count falls at high speed and rises at low speed, since the observer samples frames and several character steps can land inside one, so the count is a property of what a reader sees at that speed rather than a fixed score; and the "s to full text" metric is real elapsed time, so it moves with the slider too.
 
 Held is the one I would keep: the answer is built and sized with `visibility: hidden`, a mono line at the top of the stage counts the wait in tenths of a second, and then the block is set visible in one paint with no transition. Space is identical before and after, which is why the count is zero rather than one. Its 1.6 s is a simulated wait, not a measurement of the model.
 

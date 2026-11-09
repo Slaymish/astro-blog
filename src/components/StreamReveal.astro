@@ -53,8 +53,26 @@ const MODES = [
     }
   </div>
 
-  <div class="reveal__stage" data-stage>
-    <p class="reveal__answer" data-answer>{text}</p>
+  <div class="reveal__run">
+    <label class="reveal__speed">
+      <span class="sr-only">Playback speed</span>
+      <span class="reveal__speed-shell">
+        <input
+          class="reveal__speed-input"
+          type="range"
+          min="0.25"
+          max="2"
+          step="0.25"
+          value="1"
+          data-speed
+        />
+      </span>
+      <span class="reveal__speed-value" data-speed-value aria-hidden="true">1x</span>
+    </label>
+
+    <div class="reveal__stage" data-stage>
+      <p class="reveal__answer" data-answer>{text}</p>
+    </div>
   </div>
 
   <p class="reveal__metrics" aria-live="polite">
@@ -145,8 +163,85 @@ const MODES = [
     width: 5px;
   }
 
+  .reveal__run {
+    align-items: stretch;
+    display: flex;
+    gap: var(--spacing-3);
+  }
+
+  .reveal__speed {
+    align-items: center;
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    justify-content: center;
+    width: 1.75rem;
+  }
+
+  /* The control is laid out horizontally and turned upright. writing-mode on a
+     range input is not honoured in every engine, and a rotation gives the same
+     result everywhere: 0.25x at the bottom, 2x at the top. */
+  .reveal__speed-shell {
+    align-items: center;
+    block-size: 6.5rem;
+    display: flex;
+    inline-size: 1.75rem;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* The hit area is the whole 28 by 104 box, so a thumb-sized target clears the
+     24px minimum even though the track is drawn 2px wide. */
+  .reveal__speed-input {
+    appearance: none;
+    background: transparent;
+    block-size: 1.75rem;
+    cursor: pointer;
+    inline-size: 6.5rem;
+    transform: rotate(-90deg);
+  }
+
+  .reveal__speed-input::-webkit-slider-runnable-track {
+    background: var(--color-stroke-strong);
+    block-size: 2px;
+  }
+
+  .reveal__speed-input::-webkit-slider-thumb {
+    appearance: none;
+    background: var(--color-action);
+    block-size: 0.875rem;
+    inline-size: 0.875rem;
+    margin-block-start: -6px;
+  }
+
+  .reveal__speed-input::-moz-range-track {
+    background: var(--color-stroke-strong);
+    block-size: 2px;
+  }
+
+  .reveal__speed-input::-moz-range-thumb {
+    background: var(--color-action);
+    border: 0;
+    block-size: 0.875rem;
+    inline-size: 0.875rem;
+  }
+
+  .reveal__speed-input:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 4px;
+  }
+
+  .reveal__speed-value {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--type-label);
+    font-variant-numeric: tabular-nums;
+  }
+
   .reveal__stage {
     border-left: 1px solid var(--color-stroke-subtle);
+    flex: 1;
     min-block-size: 9.5rem;
     padding-left: var(--spacing-5);
   }
@@ -272,7 +367,9 @@ const MODES = [
 </style>
 
 <script>
-  const SPEED = 1;
+  let speed = 1;
+  let current = 'stream';
+  let started = false;
 
   const sentencesOf = (text: string) => text.match(/[^.!?]+[.!?]+['\u2019]?\s*/g) ?? [text];
 
@@ -361,7 +458,7 @@ const MODES = [
     };
 
     const cue = (fn: () => void, ms: number) => {
-      timers.push(window.setTimeout(fn, Math.max(0, ms / SPEED)));
+      timers.push(window.setTimeout(fn, Math.max(0, ms / speed)));
     };
 
     const startClock = () => {
@@ -539,7 +636,7 @@ const MODES = [
       startClock();
       const began = performance.now();
       const tick = window.setInterval(() => {
-        wait.textContent = `working ${((performance.now() - began) / 1000).toFixed(1)} s`;
+        wait.textContent = `working ${(((performance.now() - began) / 1000) * speed).toFixed(1)} s`;
       }, 100);
 
       cue(() => {
@@ -560,6 +657,8 @@ const MODES = [
     };
 
     function play(mode: string) {
+      current = mode;
+      started = true;
       buttons.forEach((button) => {
         button.setAttribute('aria-pressed', String(button.dataset.mode === mode));
       });
@@ -578,6 +677,19 @@ const MODES = [
         touched = true;
         play(button.dataset.mode ?? 'stream');
       });
+    });
+
+    // Speed is a playback multiplier on the animation's own clock. Changing it
+    // mid-run restarts the run it is playing, so what the numbers show always
+    // belongs to the setting on screen.
+    const speedInput = root.querySelector<HTMLInputElement>('[data-speed]');
+    const speedValue = root.querySelector<HTMLElement>('[data-speed-value]');
+    speedInput?.addEventListener('input', () => {
+      const next = Number(speedInput.value);
+      if (!Number.isFinite(next) || next <= 0) return;
+      speed = next;
+      if (speedValue) speedValue.textContent = `${next}x`;
+      if (started && !reduce) play(current);
     });
 
     // The building of the paragraph is the thing being described, so it does not
