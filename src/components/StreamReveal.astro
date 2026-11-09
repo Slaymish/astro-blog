@@ -622,30 +622,11 @@ const MODES = [
     }
 
     function runHeld() {
-      // The answer is in the page from the first frame with its space already
-      // taken, and only the paint is held back. Nothing moves when it arrives,
-      // and the wait state says how long it has been, which is the only part
-      // that can be honest this early.
-      clear();
-      answer.textContent = '';
-      answer.style.opacity = '';
-      answer.style.transition = '';
-      partialOut.textContent = 'nothing partial on screen';
-
-      const [lead, ...rest] = sentencesOf(source).map((sentence) => sentence.trim());
-      const block = document.createElement('div');
-      const leadEl = document.createElement('p');
-      leadEl.className = 'sr-lead';
-      leadEl.textContent = lead ?? '';
-      block.append(leadEl);
-      if (rest.length) {
-        const restEl = document.createElement('p');
-        restEl.className = 'sr-rest';
-        restEl.textContent = rest.join(' ');
-        block.append(restEl);
-      }
-      block.style.visibility = 'hidden';
-      answer.append(block);
+      // Keep exactly the same paragraph as the other modes. Only its paint is
+      // held back; introducing nested blocks here changes wrapping and height.
+      reset('nothing partial on screen');
+      answer.textContent = source;
+      answer.style.opacity = '0';
 
       const wait = document.createElement('span');
       wait.className = 'reveal__wait';
@@ -653,16 +634,16 @@ const MODES = [
 
       startClock();
       const began = performance.now();
-      const tick = window.setInterval(() => {
-        wait.textContent = `working ${(((performance.now() - began) / 1000) * speed).toFixed(1)} s`;
-      }, 100);
+      const tick = () => {
+        if (finished) return;
+        wait.textContent = `working ${((performance.now() - began) / 1000).toFixed(1)} s`;
+        cue(tick, 100);
+      };
+      tick();
 
-      // The wait is the same length the streams spend arriving, so the choice
-      // on offer is one of shape rather than one of duration.
       cue(() => {
-        window.clearInterval(tick);
         wait.remove();
-        block.style.visibility = 'visible';
+        answer.style.opacity = '1';
         stopClock();
       }, TARGET);
     }
