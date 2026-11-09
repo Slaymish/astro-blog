@@ -8,7 +8,7 @@ An article about how an answer arrives on screen, with a live demonstration of w
 |---|---|
 | `src/components/StreamReveal.astro` | The demonstration. One server-rendered paragraph, six arrival modes, and the reflow count measured live with a `ResizeObserver` on the paragraph. |
 | `docs/stream-reveal/post-body.md` | The article copy, published as the `markdownBody` of the `post` below. |
-| `docs/stream-reveal/publish.mjs` | Creates that post. Dry run by default; `SANITY_WRITE_ACK=1 node docs/stream-reveal/publish.mjs --write` writes it, and it refuses when a post with that id or slug already exists. |
+| `docs/stream-reveal/publish.mjs` | Creates that post. Dry run by default; `SANITY_WRITE_ACK=1 node docs/stream-reveal/publish.mjs --write` writes it, and it refuses when a post with that id or slug already exists. Once the post exists, edit `post-body.md` and run the same command with `--update`, which patches `markdownBody` and `excerpt` and leaves the title, tags and date alone. |
 
 The piece is a `post` (`post-one-view-of-the-answer`, `/posts/one-view-of-the-answer`), so it appears in the writing feed that `/work` and `/writing` read. It was previewed at `/notes/one-view-of-the-answer` before the CMS write; that scaffold page is deleted, and `netlify.toml` 301s the old path to the post.
 
