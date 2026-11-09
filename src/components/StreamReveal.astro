@@ -18,6 +18,8 @@ const {
   text = 'The library on the corner shut in 2019 and the building sat empty for three years, until a group of neighbours raised enough between them to reopen it as a tool library. You can borrow a drill or a ladder for a week instead of buying one, which is how most of them get used once or twice and then sit in a garage. The whole thing runs on two retired librarians and a rota they keep in a spreadsheet.',
 } = Astro.props;
 
+const baseTokenRate = Math.ceil(text.length / 4) / 4;
+
 const MODES = [
   { id: 'stream', label: 'Characters' },
   { id: 'words', label: 'Words' },
@@ -54,19 +56,19 @@ const MODES = [
 
   <div class="reveal__run">
     <label class="reveal__speed">
-      <span class="sr-only">Playback speed</span>
+      <span class="sr-only">Simulated tokens per second (four characters per token)</span>
       <span class="reveal__speed-shell">
         <input
           class="reveal__speed-input"
           type="range"
-          min="0.25"
-          max="2"
-          step="0.25"
-          value="1"
+          min={baseTokenRate / 4}
+          max={baseTokenRate * 2}
+          step={baseTokenRate / 4}
+          value={baseTokenRate}
           data-speed
         />
       </span>
-      <span class="reveal__speed-value" data-speed-value aria-hidden="true">1x</span>
+      <span class="reveal__speed-value" data-speed-value aria-hidden="true" title="Simulated rate: four characters per token">{baseTokenRate} tok/s</span>
     </label>
 
     <div class="reveal__stage" data-stage>
@@ -239,6 +241,8 @@ const MODES = [
   }
 
   .reveal__speed-value {
+    text-align: center;
+    line-height: 1.3;
     color: var(--color-text-secondary);
     font-family: var(--font-mono);
     font-size: var(--type-label);
@@ -373,6 +377,7 @@ const MODES = [
 </style>
 
 <script>
+  import { completionOffsets } from '../client/stream-arrival';
   let speed = 1;
   let current = 'stream';
   let started = false;
@@ -519,19 +524,11 @@ const MODES = [
       partialOut.textContent = text;
     }
 
-    // Every mode lands its full text at the same elapsed time, so the only
-    // thing that differs between them is how it got there. A stream that takes
-    // seven seconds next to one that takes two is comparing speed, and speed is
-    // not what the five buttons are for.
+    // One simulated character stream for every view. Buffering waits for the
+    // last character of a unit; sentences cannot appear at time zero.
     const TARGET = 4000;
-    const TRAIL = 250;
-
-    /** Spaces a plan of raw delays so the last unit lands at TARGET - TRAIL. */
-    const pace = (plan: Array<[number, () => void]>) => {
-      const last = plan.reduce((max, [at]) => Math.max(max, at), 0);
-      const scale = last > 0 ? (TARGET - TRAIL) / last : 1;
-      plan.forEach(([at, fn]) => cue(fn, at * scale));
-    };
+    const baseTokenRate = Math.ceil(source.length / 4) / 4;
+    const arrivalTime = (offset: number) => TARGET * offset / source.length;
 
     function runCharacters() {
       reset('partial words on screen');
@@ -539,86 +536,38 @@ const MODES = [
       const caret = document.createElement('span');
       caret.className = 'sr-caret';
       answer.append(text, caret);
-
-      const steps: string[] = [];
-      for (let index = 0; index < source.length; ) {
-        const size = 2 + Math.floor(Math.random() * 3);
-        steps.push(source.slice(index, index + size));
-        index += size;
-      }
-
       startClock();
-      const plan: Array<[number, () => void]> = steps.map((chunk, index) => [
-        index,
-        () => {
-          text.data += chunk;
-        },
-      ]);
-      pace(plan);
-      cue(() => {
-        caret.remove();
-        stopClock();
-      }, TARGET);
+      Array.from({ length: source.length }, (_, index) => {
+        cue(() => { text.data = source.slice(0, index + 1); }, arrivalTime(index + 1));
+      });
+      cue(() => { caret.remove(); stopClock(); }, TARGET);
+    }
+
+    function runBuffered(parts: string[], cls = '', separator = ' ') {
+      reset('no partial words');
+      const offsets = completionOffsets(source, parts);
+      const spans = parts.map((part) => {
+        const span = unit(part, cls);
+        answer.append(span, document.createTextNode(separator));
+        return span;
+      });
+      startClock();
+      spans.forEach((span, index) => {
+        cue(() => span.classList.add('is-in'), arrivalTime(offsets[index]!));
+      });
+      cue(stopClock, TARGET);
     }
 
     function runWords() {
-      reset('no partial words');
-      const parts = source.split(/\s+/).filter(Boolean);
-      const spans = parts.map((word) => {
-        const span = unit(word);
-        answer.append(span, document.createTextNode(' '));
-        return span;
-      });
-      startClock();
-
-      const plan: Array<[number, () => void]> = [];
-      let at = 0;
-      spans.forEach((span) => {
-        const word = span.textContent ?? '';
-        const base = 50 + word.length * 6;
-        const pause = /[,;:]$/.test(word) ? 150 : /[.!?]$/.test(word) ? 260 : 0;
-        plan.push([at, () => span.classList.add('is-in')]);
-        at += Math.max(40, base + pause);
-      });
-      pace(plan);
-      cue(stopClock, TARGET);
+      runBuffered(source.split(/\s+/).filter(Boolean));
     }
 
     function runChunks() {
-      reset('no partial words');
-      const spans = chunksOf(source).map((chunk) => {
-        const span = unit(chunk, 'sr-unit--chunk');
-        answer.append(span, document.createTextNode(' '));
-        return span;
-      });
-      startClock();
-
-      const plan: Array<[number, () => void]> = [];
-      let at = 0;
-      spans.forEach((span) => {
-        const chunk = span.textContent ?? '';
-        plan.push([at, () => span.classList.add('is-in')]);
-        at += 165 + (/[,;:]$/.test(chunk) ? 120 : /[.!?]$/.test(chunk) ? 200 : 0) + Math.random() * 60;
-      });
-      pace(plan);
-      cue(stopClock, TARGET);
+      runBuffered(chunksOf(source), 'sr-unit--chunk');
     }
 
     function runSentences() {
-      reset('no partial words');
-      const spans = sentencesOf(source).map((sentence) => {
-        const span = unit(sentence, 'sr-unit--sentence');
-        answer.append(span);
-        return span;
-      });
-      startClock();
-
-      const plan: Array<[number, () => void]> = spans.map((span, index) => [
-        index,
-        () => span.classList.add('is-in'),
-      ]);
-      pace(plan);
-      cue(stopClock, TARGET);
+      runBuffered(sentencesOf(source), 'sr-unit--sentence', '');
     }
 
     function runHeld() {
@@ -687,8 +636,8 @@ const MODES = [
     speedInput?.addEventListener('input', () => {
       const next = Number(speedInput.value);
       if (!Number.isFinite(next) || next <= 0) return;
-      speed = next;
-      if (speedValue) speedValue.textContent = `${next}x`;
+      speed = next / baseTokenRate;
+      if (speedValue) speedValue.textContent = `${Number(next.toFixed(2))} tok/s`;
       if (started && !reduce) play(current);
     });
 

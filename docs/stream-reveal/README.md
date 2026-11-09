@@ -26,16 +26,14 @@ Measured at 390px wide, on the 336 character sample answer:
 | Sentences | 0 | 4.0 s |
 | Held | 0 | 4.0 s |
 
-`TARGET` is 4000 ms: each runner builds a plan of raw delays from the reading behaviour it is imitating (word length, clause punctuation, sentence ends) and `pace()` rescales that plan so the last unit lands at the same moment. Without it the modes were comparing speed, since words ran for seven seconds and sentences for one, and a reader comparing them was judging duration rather than drawing. Held waits the same four seconds, so the choice on offer is shape and not duration.
+`TARGET` is 4000 ms at the default 25 simulated tok/s. Every character has one arrival timestamp shared by all views. Words, chunks and sentences buffer until their final character and a boundary arrive; Held waits for EOF. The first sentence therefore waits for its entire prefix, rather than appearing at time zero. `completionOffsets()` is tested in `tests/stream-arrival.test.ts`.
 
+The vertical slider uses a four-character-per-token approximation (labelled simulated in its accessible name and tooltip), not a model tokenizer: default 25 tok/s, range 6.25–50 tok/s for the current sample. All arrivals use the same multiplier, so changing the rate changes latency in every mode.
 An earlier version had a sixth mode, "All at once", which painted the answer in 0.4 s. It went because it was not a case: nothing can paint before the model finishes, so the honest instant baseline is Held with its wait, and the two read as the same demo twice otherwise.
 
 Every mode except Characters places its units in the DOM before anything is painted, so the paragraph is at its final size from the first frame and the animation only moves opacity, transform and blur. Characters is the only mode whose count moves with the viewport, because it is the only one that re-lays-out mid-answer.
 
-The speed slider rescales every delay in the run, because every mode schedules through `cue()`. Two consequences worth knowing before changing it: the reflow count falls at high speed and rises at low speed, since the observer samples frames and several character steps can land inside one, so the count is a property of what a reader sees at that speed rather than a fixed score; and the "s to full text" metric is real elapsed time, so it moves with the slider too.
-
-Held is the one I would keep: the answer is built and sized with `visibility: hidden`, a mono line at the top of the stage counts the wait in tenths of a second, and then the block is set visible in one paint with no transition. Space is identical before and after, which is why the count is zero rather than one. Its four seconds are a simulated wait, not a measurement of the model.
-
+The speed slider rescales the character timestamps through `cue()`. The elapsed-time metric and wait label report real elapsed seconds. Held uses the identical paragraph as the other modes with opacity zero until EOF; it must not introduce nested paragraphs or change height. Browser checks compare paragraph height and the metrics position before, during and after Held on desktop and mobile.
 ## How a chunk is chosen
 
 Chunks are not a fixed word count. The splitter breaks after sentence and comma punctuation, before a connective that starts a new idea (`and`, `but`, `until`, `which`, `where`, `instead`), and otherwise at three to six words chosen by a deterministic hash so a replay is identical. A chunk that would end on `the`, `of`, `to` or another word that holds a phrase open takes one more word. A chunk left holding a single connective joins the chunk in front of it. No chunk exceeds 30 characters, which keeps it from overflowing a 390px screen as an inline block.
