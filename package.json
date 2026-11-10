@@ -31,7 +31,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",
     "@astrojs/netlify": "^8.2.10",
-    "@netlify/blobs": "^10.7.13",
+    "@netlify/blobs": "^11.1.8",
     "@portabletext/to-html": "^6.0.0",
     "@sanity/client": "^8.14.1",
     "@sanity/image-url": "^2.1.1",
