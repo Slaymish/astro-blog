@@ -33,7 +33,7 @@ test('notifications reach Hamish, meter submissions and preserve books when Rese
   try {
     assert.equal((await recommend({ request: request('recommend', { title: 'A <book>' }) })).status, 200);
     assert.equal(emails[0]?.text, 'Someone recommended:\n\nA <book>\n\nSent from the reading page on hamishburke.com.');
-    assert.deepEqual(emails[0]?.to, ['hamishapps@gmail.com']);
+    assert.deepEqual(emails[0]?.to, ['hamish@hamishburke.com']);
     assert.equal(emails[0]?.html, undefined);
     assert.ok(writes.some((write) => write.body.title === 'A <book>'));
 
