@@ -2,7 +2,7 @@ In a product I'm working on, the chat box streams its answer in a character at a
 
 I hadn't thought about it much before that. The API sends tokens, the client prints them as they arrive, and that's the whole design. No one decided the answer should show up that way, it's just the default.
 
-## Why moving text is hard to read
+## Reading text that moves
 
 Your eye doesn't move along a line word by word. It stops on a word for about a quarter of a second, then jumps ahead, and where it jumps to depends on what you've already read. If the text moves under you, that goes wrong.
 
@@ -10,7 +10,7 @@ Harvey and Walker compared scrolling text with a normal paragraph. People unders
 
 A scrolling ticker isn't the same as a paragraph growing downwards, and it's one study, so I wouldn't lean on it too hard. But it matches what I saw: text moving while you read it costs you something.
 
-## Six ways to show the same answer
+## Six reveal modes
 
 Here's one paragraph drawn six ways. The counter tracks how many times the text reflows as it comes in, and two clocks time the first thing you see and the last:
 
@@ -20,7 +20,7 @@ Characters moved ten times at phone width. Hybrid moved twice, both inside its f
 
 Hybrid is the version I'd want. It types the first clause a character at a time, so there's something on screen immediately, then goes a word at a time for the rest of that sentence, and whole sentences after that. The first moment is as fast as streaming, and the rest arrives at a pace I can read rather than a pace the server set.
 
-## Why I'm not sure holding the reply is better
+## Holding the reply
 
 The obvious fix is to wait for the whole answer and show it at once. A few studies make me less sure about that.
 
@@ -28,7 +28,7 @@ Buell and Norton found people preferred websites that showed the work happening 
 
 Tan and colleagues found two-second replies were rated less thoughtful and less useful than nine or twenty-second ones, because people took the wait as the model thinking harder.[^3] Holding the reply makes that wait as long as possible, but there's nothing to look at while it happens. A timer might help a bit. One study found showing elapsed time during a wait changed how long it felt, but not how well people did afterwards.[^4]
 
-## What I'd build instead
+## What I'd build
 
 I'd like the full answer to exist before anything gets drawn. Streaming only gives you one shape, a paragraph getting longer, so even when the answer should be a table it comes out as prose. That's fine to read but annoying when you want to scan it. If the layout comes first, the answer can be a table, a list or a few sections, whatever suits it.
 
