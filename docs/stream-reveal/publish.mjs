@@ -49,14 +49,14 @@ const client = createClient({
 
 const SLUG = 'one-view-of-the-answer';
 const ID = `post-${SLUG}`;
-const TITLE = 'The stream is one view of the answer';
+const TITLE = 'Testing six ways to show an AI answer';
 const EXCERPT =
-  'How an answer arrives is part of the answer, and nobody designs it. One response drawn five ways, with the movement that costs a reader their place counted in the page.';
+  'Streaming an AI answer a character at a time keeps moving the text while you try to read it. I tried six ways of showing the same answer and counted how often each one moves.';
 const PUBLISHED_AT = '2026-11-07T00:00:00.000Z';
 const TAGS = ['Product design', 'UX design', 'AI'];
 const VALUE_SCORE = 70;
 const VALUE_REASON =
-  'A written argument carried by a demonstration that measures its own claim: the reflow cost of five ways of drawing one answer, observed in the page, with the column it cannot measure labelled as the animation.';
+  'A written argument carried by a demonstration that measures its own claim: the reflow cost of six ways of drawing one answer, observed in the page, with the column it cannot measure labelled as the animation.';
 
 const body = (await fs.readFile(path.join(here, 'post-body.md'), 'utf8')).trim();
 
@@ -111,10 +111,10 @@ if (update) {
   }
   const patched = await client
     .patch(current._id)
-    .set({ markdownBody: body, excerpt: EXCERPT })
+    .set({ title: TITLE, markdownBody: body, excerpt: EXCERPT })
     .commit();
   const readBack = await client.fetch(
-    `*[_id == $id][0]{"bodyLength": length(markdownBody), "excerptLength": length(excerpt), "hasMarker": "{{stream-reveal}}" in markdownBody, "matches": markdownBody == $body, title}`,
+    `*[_id == $id][0]{"bodyLength": length(markdownBody), "excerptLength": length(excerpt), "hasMarker": markdownBody match "*{{stream-reveal}}*", "matches": markdownBody == $body, title}`,
     { id: current._id, body },
   );
   console.log('patched:', JSON.stringify(patched._id));
@@ -129,7 +129,7 @@ if (!write) {
 
 const created = await client.create(doc);
 const readBack = await client.fetch(
-  `*[_id == $id][0]{_id, title, "slug": slug.current, publishedAt, valueScore, "tags": tags, "excerptLength": length(excerpt), "bodyLength": length(markdownBody), "hasMarker": "{{stream-reveal}}" in markdownBody}`,
+  `*[_id == $id][0]{_id, title, "slug": slug.current, publishedAt, valueScore, "tags": tags, "excerptLength": length(excerpt), "bodyLength": length(markdownBody), "hasMarker": markdownBody match "*{{stream-reveal}}*"}`,
   { id: created._id },
 );
 console.log('\ncreated:', JSON.stringify(created._id));

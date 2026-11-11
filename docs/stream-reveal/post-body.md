@@ -1,22 +1,38 @@
-A chat box in a product I have been working in streams its answer a character at a time. Twelve people have used it while I sat and watched, and every one of them tries to read a sentence that isn't there yet. So did I, for about a month, until the wrap kept shifting under my own eye and I got annoyed enough to ask why.
+In a product I'm working on, the chat box streams its answer in a character at a time. I kept trying to read each sentence before it had finished, and the line kept rewrapping as new words came in, so I'd lose my place.
 
-Nobody designed the arrival. The API hands you tokens and the client prints them as they land, so the screen gets whatever order the server happened to produce.
+I hadn't thought about it much before that. The API sends tokens, the client prints them as they arrive, and that's the whole design. No one decided the answer should show up that way, it's just the default.
 
-Reading isn't a word at a time, whatever the screen is doing. Your eye lands on a word, sits about a quarter of a second, and jumps, and the jump is planned from what you have already read. Harvey and Walker had people read scrolling text against static paragraphs and comprehension fell, most of all on the questions that needed an inference.[^1] Every word was still readable. The sentences they were meant to make did not get built.
+## Why moving text is hard to read
 
-A ticker is not a paragraph growing downward, and I wouldn't bet a design on one study. It does say that text moving during reading has a cost, and moving text is the only thing a stream is doing. Here it is happening to a paragraph of mine, measured as it arrives:
+Your eye doesn't move along a line word by word. It stops on a word for about a quarter of a second, then jumps ahead, and where it jumps to depends on what you've already read. If the text moves under you, that goes wrong.
+
+Harvey and Walker compared scrolling text with a normal paragraph. People understood less from the scrolling version, and it was worst on questions where they had to work something out rather than remember it.[^1] They could still read every word, they just weren't putting the sentences together as well.
+
+A scrolling ticker isn't the same as a paragraph growing downwards, and it's one study, so I wouldn't lean on it too hard. But it matches what I saw: text moving while you read it costs you something.
+
+## Six ways to show the same answer
+
+Here's one paragraph drawn six ways. The counter tracks how many times the text reflows as it comes in, and two clocks time the first thing you see and the last:
 
 {{stream-reveal}}
 
-Only the character version reflows, ten times over this answer at phone width, none for the rest. Everything else puts its words into the paragraph first and animates opacity over space that is already taken, so nothing moves under you and the clock is the only thing changing. The seconds are the animation's, not a model's.
+Characters moved ten times at phone width. Hybrid moved twice, both inside its first half second, then held still. The other four lay out all the words first and fade them in, so the space is already taken and nothing shifts. The timings come from the animation, not a real model.
 
-Buell and Norton are what keep me unsure. Identical search results, and people preferred the sites that showed their work over the ones that answered instantly, and waited longer when they could watch it happen.[^2] A token at a time is the same trick, and holding the reply takes it away from me.
+Hybrid is the version I'd want. It types the first clause a character at a time, so there's something on screen immediately, then goes a word at a time for the rest of that sentence, and whole sentences after that. The first moment is as fast as streaming, and the rest arrives at a pace I can read rather than a pace the server set.
 
-Tan and colleagues make it worse. Two second replies were rated less thoughtful and less useful than nine and twenty second ones, and people read the wait as the model thinking.[^3] Holding maximises that wait and then shows them nothing for it. Counting the Wait is the awkward one: a timer during a wait changed how long the wait felt and nothing about how anyone did afterwards.[^4]
+## Why I'm not sure holding the reply is better
 
-What I want is the answer to exist before it gets drawn. A stream can only produce one shape, a paragraph getting longer downward, so a comparison arrives as prose whether a table was the right answer or not (I have shipped that, and it reads fine until you want to scan it). Layout first means the words are data before they are text and the reader gets a page instead of a performance of one.
+The obvious fix is to wait for the whole answer and show it at once. A few studies make me less sure about that.
 
-The case I haven't worked out is a four second reply with three sections in it, where holding feels long and streaming as prose throws away structure you already know is coming. Probably the heading goes first, then a block per section, and the movement is line to line. Still a stream, just not a stream of text.
+Buell and Norton found people preferred websites that showed the work happening over ones that gave the same results instantly, and were willing to wait longer for them.[^2] Streaming tokens is basically that, and if I hold the reply I lose it.
+
+Tan and colleagues found two-second replies were rated less thoughtful and less useful than nine or twenty-second ones, because people took the wait as the model thinking harder.[^3] Holding the reply makes that wait as long as possible, but there's nothing to look at while it happens. A timer might help a bit. One study found showing elapsed time during a wait changed how long it felt, but not how well people did afterwards.[^4]
+
+## What I'd build instead
+
+I'd like the full answer to exist before anything gets drawn. Streaming only gives you one shape, a paragraph getting longer, so even when the answer should be a table it comes out as prose. That's fine to read but annoying when you want to scan it. If the layout comes first, the answer can be a table, a list or a few sections, whatever suits it.
+
+The case I haven't worked out is a reply that takes about four seconds and has three sections. Holding it feels too long, but streaming it as prose throws away structure you already know is coming. I think the fix is to show the heading first, then each section as a block, so it still arrives in order, just a section at a time instead of a character at a time.
 
 ## Notes
 

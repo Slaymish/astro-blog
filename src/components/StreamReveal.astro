@@ -1,6 +1,6 @@
 ---
 /**
- * One answer, five ways of putting it on screen, with the layout cost of each
+ * One answer, six ways of putting it on screen, with the layout cost of each
  * measured live rather than asserted.
  *
  * The paragraph is rendered here at build time, so a reader without JavaScript
@@ -22,6 +22,7 @@ const baseTokenRate = Math.ceil(text.length / 4) / 4;
 
 const MODES = [
   { id: 'stream', label: 'Characters' },
+  { id: 'hybrid', label: 'Hybrid' },
   { id: 'words', label: 'Words' },
   { id: 'chunks', label: 'Chunks' },
   { id: 'sentences', label: 'Sentences' },
@@ -78,6 +79,7 @@ const MODES = [
 
   <p class="reveal__metrics" aria-live="polite">
     <span class="reveal__metric"><span data-metric="reflows">0</span> reflows</span>
+    <span class="reveal__metric"><span data-metric="first">0.0</span> s to first text</span>
     <span class="reveal__metric"><span data-metric="time">0.0</span> s to full text</span>
     <span class="reveal__metric" data-metric="partial">nothing partial on screen</span>
   </p>
@@ -377,12 +379,10 @@ const MODES = [
 </style>
 
 <script>
-  import { completionOffsets } from '../client/stream-arrival';
+  import { completionOffsets, hybridPhases, sentencesOf } from '../client/stream-arrival';
   let speed = 1;
   let current = 'stream';
   let started = false;
-
-  const sentencesOf = (text: string) => text.match(/[^.!?]+[.!?]+['\u2019]?\s*/g) ?? [text];
 
   // Words that start a new idea rather than continue one, so a chunk breaks
   // before them. A chunk is roughly what a reader takes in at a glance while
@@ -441,11 +441,12 @@ const MODES = [
     const stage = root.querySelector<HTMLElement>('[data-stage]')!;
     const answer = root.querySelector<HTMLElement>('[data-answer]')!;
     const reflowOut = root.querySelector<HTMLElement>('[data-metric="reflows"]')!;
+    const firstOut = root.querySelector<HTMLElement>('[data-metric="first"]')!;
     const timeOut = root.querySelector<HTMLElement>('[data-metric="time"]')!;
     const partialOut = root.querySelector<HTMLElement>('[data-metric="partial"]')!;
     const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-mode]')];
 
-    if (!stage || !answer || !reflowOut || !timeOut || !partialOut) return;
+    if (!stage || !answer || !reflowOut || !firstOut || !timeOut || !partialOut) return;
 
     const source = (answer.textContent ?? '').trim();
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -458,6 +459,16 @@ const MODES = [
     let finished = false;
     let ticker: number | null = null;
     let touched = false;
+    let firstMarked = false;
+
+    // The moment the first glyph becomes visible. It is what a reader feels as
+    // "the answer is there", and the number that separates a fast start from a
+    // fast arrival: Characters wins it and the buffered views cannot.
+    const markFirst = () => {
+      if (firstMarked) return;
+      firstMarked = true;
+      firstOut.textContent = ((performance.now() - startedAt) / 1000).toFixed(1);
+    };
 
     const clear = () => {
       timers.forEach((id) => window.clearTimeout(id));
@@ -476,8 +487,10 @@ const MODES = [
       startedAt = performance.now();
       finished = false;
       reflows = 0;
+      firstMarked = false;
       lastHeight = answer.getBoundingClientRect().height;
       reflowOut.textContent = '0';
+      firstOut.textContent = '0.0';
       timeOut.textContent = '0.0';
       if (ticker !== null) window.clearInterval(ticker);
       ticker = window.setInterval(() => {
@@ -538,7 +551,10 @@ const MODES = [
       answer.append(text, caret);
       startClock();
       Array.from({ length: source.length }, (_, index) => {
-        cue(() => { text.data = source.slice(0, index + 1); }, arrivalTime(index + 1));
+        cue(() => {
+          text.data = source.slice(0, index + 1);
+          if (index === 0) markFirst();
+        }, arrivalTime(index + 1));
       });
       cue(() => { caret.remove(); stopClock(); }, TARGET);
     }
@@ -553,13 +569,73 @@ const MODES = [
       });
       startClock();
       spans.forEach((span, index) => {
-        cue(() => span.classList.add('is-in'), arrivalTime(offsets[index]!));
+        cue(() => {
+          span.classList.add('is-in');
+          if (index === 0) markFirst();
+        }, arrivalTime(offsets[index]!));
       });
       cue(stopClock, TARGET);
     }
 
     function runWords() {
       runBuffered(source.split(/\s+/).filter(Boolean));
+    }
+
+    // A hybrid run starts at character speed so the first words are there at
+    // once, then coarsens: words for the rest of the first sentence, whole
+    // sentences after that. Each phase ends where the next begins, so the
+    // granularity follows the text rather than a second clock, and only the
+    // typed lead can move the paragraph. Everything after it is in the DOM from
+    // the first frame, waiting on opacity.
+    function runHybrid() {
+      const { lead, words, sentences } = hybridPhases(source);
+      reset('partial words on screen');
+
+      const text = document.createTextNode('');
+      const caret = document.createElement('span');
+      caret.className = 'sr-caret';
+      answer.append(text, caret);
+
+      const wordUnits: HTMLElement[] = [];
+      const sentenceUnits: HTMLElement[] = [];
+      const offsets = completionOffsets(source, [...words, ...sentences]);
+
+      if (words.length) answer.append(document.createTextNode(' '));
+      words.forEach((word) => {
+        const span = unit(word);
+        wordUnits.push(span);
+        answer.append(span, document.createTextNode(' '));
+      });
+      if (!words.length && sentences.length) answer.append(document.createTextNode(' '));
+      sentences.forEach((sentence, index) => {
+        const span = unit(sentence, 'sr-unit--sentence');
+        sentenceUnits.push(span);
+        answer.append(span);
+        if (index < sentences.length - 1) answer.append(document.createTextNode(' '));
+      });
+
+      startClock();
+
+      for (let index = 1; index <= lead.length; index += 1) {
+        cue(() => {
+          text.data = lead.slice(0, index);
+          if (index === 1) markFirst();
+        }, arrivalTime(index));
+      }
+
+      cue(() => {
+        caret.remove();
+        partialOut.textContent = 'no partial words';
+      }, arrivalTime(lead.length));
+
+      wordUnits.forEach((span, index) => {
+        cue(() => span.classList.add('is-in'), arrivalTime(offsets[index]!));
+      });
+      sentenceUnits.forEach((span, index) => {
+        cue(() => span.classList.add('is-in'), arrivalTime(offsets[words.length + index]!));
+      });
+
+      cue(stopClock, TARGET);
     }
 
     function runChunks() {
@@ -593,12 +669,14 @@ const MODES = [
       cue(() => {
         wait.remove();
         answer.style.opacity = '1';
+        markFirst();
         stopClock();
       }, TARGET);
     }
 
     const runners: Record<string, () => void> = {
       stream: runCharacters,
+      hybrid: runHybrid,
       words: runWords,
       chunks: runChunks,
       sentences: runSentences,
